@@ -1,0 +1,11 @@
+{
+  "name": "Princeton TigerTrade Revised",
+  "description": "COS 333 Project of Andrew, Casey, Evan, Maryam, and Perry",
+  "keywords": [
+    "Princeton",
+    "TigerTrade"
+  ],
+  "mount_dir": "src/tigertrade",
+  "website": "TODO",
+  "repository": "TODO"
+}
