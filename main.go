@@ -1,9 +1,9 @@
 package main
 
 import (
-	"os"
 	"log"
-    "net/http"
+	"net/http"
+	"os"
 
 	"github.com/gin-gonic/gin"
 )
@@ -25,5 +25,5 @@ func main() {
 		c.String(http.StatusOK, "Hello World!")
 	})
 
-    router.Run(":" + port)
+	router.Run(":" + port)
 }
