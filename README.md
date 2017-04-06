@@ -6,3 +6,8 @@ To build: go install
 Deploy locally: heroku local
 
 Push to heroku: git push heroku master
+
+
+# Development
+
+For dependency management, we use [govendor](https://github.com/kardianos/govendor).
