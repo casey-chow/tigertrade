@@ -1,6 +1,13 @@
 {
 	"comment": "",
 	"ignore": "test",
-	"package": [],
+	"package": [
+		{
+			"checksumSHA1": "kZOTpZZ4wxsdL/rZVAfwCHhYKmQ=",
+			"path": "github.com/revel/revel",
+			"revision": "75d66c3c990f01deb5ff2045c04da7eea5be39b2",
+			"revisionTime": "2017-03-24T21:26:34Z"
+		}
+	],
 	"rootPath": "github.com/TheGuyWithTheFace/tigertrade"
 }
