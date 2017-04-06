@@ -15,3 +15,7 @@
 
 # Ignore vendor folder
 vendor/*/
+
+# Revel-specific
+app/tmp/
+app/routes/

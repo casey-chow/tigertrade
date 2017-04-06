@@ -1,8 +1,6 @@
 # TigerTrade
 TigerTrade Revised - Princeton COS333 Project of Andrew Casey Evan Maryam Perry
 
-To build: go install
-
 Deploy locally: heroku local
 
 Push to heroku: git push heroku master
@@ -12,8 +10,8 @@ Push to heroku: git push heroku master
 This assumes you have initialized and migrated the database.
 
 ```sh
-govendor sync
-revel run tigertrade
+make install
+make run
 ```
 
 Go to [localhost:9000][].
