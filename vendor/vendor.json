@@ -3,10 +3,70 @@
 	"ignore": "test",
 	"package": [
 		{
+			"checksumSHA1": "icpCH3YuHsVobNkCCz6NUv69aFc=",
+			"path": "github.com/agtorre/gocolorize",
+			"revision": "99fea4bc9517f07eea8194702cb7076f4845b7de",
+			"revisionTime": "2017-02-17T02:13:38Z"
+		},
+		{
+			"checksumSHA1": "+CqJGh7NIDMnHgScq9sl9tPrnVM=",
+			"path": "github.com/klauspost/compress/flate",
+			"revision": "e80ca55b53e5e6f53deed5c7842e7b7da95e1dc7",
+			"revisionTime": "2017-04-02T14:06:18Z"
+		},
+		{
+			"checksumSHA1": "kWBC7CTgppTdJFXizt4XkURbyCE=",
+			"path": "github.com/klauspost/compress/gzip",
+			"revision": "e80ca55b53e5e6f53deed5c7842e7b7da95e1dc7",
+			"revisionTime": "2017-04-02T14:06:18Z"
+		},
+		{
+			"checksumSHA1": "+azPXaZpPF14YHRghNAer13ThQU=",
+			"path": "github.com/klauspost/compress/zlib",
+			"revision": "e80ca55b53e5e6f53deed5c7842e7b7da95e1dc7",
+			"revisionTime": "2017-04-02T14:06:18Z"
+		},
+		{
+			"checksumSHA1": "iKPMvbAueGfdyHcWCgzwKzm8WVo=",
+			"path": "github.com/klauspost/cpuid",
+			"revision": "09cded8978dc9e80714c4d85b0322337b0a1e5e0",
+			"revisionTime": "2016-03-02T07:53:16Z"
+		},
+		{
+			"checksumSHA1": "CoEBOYCjkx/0q2dcm6iGp2jGZjU=",
+			"path": "github.com/revel/config",
+			"revision": "662332b741dd464a886ab0901379c02b9bc5dc30",
+			"revisionTime": "2017-03-24T17:50:30Z"
+		},
+		{
 			"checksumSHA1": "kZOTpZZ4wxsdL/rZVAfwCHhYKmQ=",
 			"path": "github.com/revel/revel",
 			"revision": "75d66c3c990f01deb5ff2045c04da7eea5be39b2",
 			"revisionTime": "2017-03-24T21:26:34Z"
+		},
+		{
+			"checksumSHA1": "wtQXDLDa/OJuf3N+jviyY6pYNNA=",
+			"path": "github.com/robfig/pathtree",
+			"revision": "41257a1839e945fce74afd070e02bab2ea2c776a",
+			"revisionTime": "2014-01-21T04:10:23Z"
+		},
+		{
+			"checksumSHA1": "7EZyXN0EmZLgGxZxK01IJua4c8o=",
+			"path": "golang.org/x/net/websocket",
+			"revision": "d1e1b351919c6738fdeb9893d5c998b161464f0c",
+			"revisionTime": "2016-12-29T22:47:41Z"
+		},
+		{
+			"checksumSHA1": "ArDa4bMPKzhiS1I7iioemBwZ6tE=",
+			"path": "golang.org/x/sys/unix",
+			"revision": "7de4796419dc3b554e6dab3a119a62469569d299",
+			"revisionTime": "2017-04-06T16:25:34Z"
+		},
+		{
+			"checksumSHA1": "eIhF+hmL/XZhzTiAwhLD0M65vlY=",
+			"path": "gopkg.in/fsnotify.v1",
+			"revision": "629574ca2a5df945712d3079857300b5e4da0236",
+			"revisionTime": "2016-10-11T02:33:12Z"
 		}
 	],
 	"rootPath": "github.com/TheGuyWithTheFace/tigertrade"
