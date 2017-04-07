@@ -1,6 +1,7 @@
 package app
 
 import (
+	"github.com/getsentry/raven-go"
 	"github.com/revel/revel"
 )
 

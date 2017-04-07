@@ -39,6 +39,18 @@
 			"revisionTime": "2017-02-17T02:13:38Z"
 		},
 		{
+			"checksumSHA1": "TbUu0oEcNoMuYbLJbnJkTOpZ/iw=",
+			"path": "github.com/certifi/gocertifi",
+			"revision": "03be5e6bb9874570ea7fb0961225d193cbc374c5",
+			"revisionTime": "2017-01-23T21:22:43Z"
+		},
+		{
+			"checksumSHA1": "4zQLQu8b/FdePcoXsZa2f+PlaAM=",
+			"path": "github.com/getsentry/raven-go",
+			"revision": "b68337dbf03e7fbb53d9fd9b63fd09b28e8f13f7",
+			"revisionTime": "2017-03-10T19:37:35Z"
+		},
+		{
 			"checksumSHA1": "+CqJGh7NIDMnHgScq9sl9tPrnVM=",
 			"path": "github.com/klauspost/compress/flate",
 			"revision": "e80ca55b53e5e6f53deed5c7842e7b7da95e1dc7",
