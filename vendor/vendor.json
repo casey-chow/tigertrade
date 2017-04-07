@@ -3,6 +3,36 @@
 	"ignore": "test",
 	"package": [
 		{
+			"checksumSHA1": "Od59cqV+Ms+7gYsHkSIn06928D0=",
+			"path": "github.com/TheGuyWithTheFace/tigertrade/app",
+			"revision": "c30660a5d0ad33ccdbd527246d675b51175a3c1b",
+			"revisionTime": "2017-04-06T22:51:29Z"
+		},
+		{
+			"checksumSHA1": "gDEkGZDZFiks3rJ63hyv3HuGjUc=",
+			"path": "github.com/TheGuyWithTheFace/tigertrade/app/controllers",
+			"revision": "c30660a5d0ad33ccdbd527246d675b51175a3c1b",
+			"revisionTime": "2017-04-06T22:51:29Z"
+		},
+		{
+			"checksumSHA1": "/mfR+SUTvo2bJBAA5keMHtQQ0U8=",
+			"path": "github.com/TheGuyWithTheFace/tigertrade/app/routes",
+			"revision": "c30660a5d0ad33ccdbd527246d675b51175a3c1b",
+			"revisionTime": "2017-04-06T22:51:29Z"
+		},
+		{
+			"checksumSHA1": "NnLhTb24hbHwciH5h5seGGSbb1Q=",
+			"path": "github.com/TheGuyWithTheFace/tigertrade/app/tmp",
+			"revision": "c30660a5d0ad33ccdbd527246d675b51175a3c1b",
+			"revisionTime": "2017-04-06T22:51:29Z"
+		},
+		{
+			"checksumSHA1": "EGlmyAgMXmur1ykSLFafiojeKfo=",
+			"path": "github.com/TheGuyWithTheFace/tigertrade/tests",
+			"revision": "c30660a5d0ad33ccdbd527246d675b51175a3c1b",
+			"revisionTime": "2017-04-06T22:51:29Z"
+		},
+		{
 			"checksumSHA1": "icpCH3YuHsVobNkCCz6NUv69aFc=",
 			"path": "github.com/agtorre/gocolorize",
 			"revision": "99fea4bc9517f07eea8194702cb7076f4845b7de",
@@ -39,8 +69,32 @@
 			"revisionTime": "2017-03-24T17:50:30Z"
 		},
 		{
+			"checksumSHA1": "nMkTizSUpRIlhgg+m5PZ50b4/tU=",
+			"path": "github.com/revel/modules/static/app/controllers",
+			"revision": "209cc8b2b7ed93a55067bc0db97707b1432e49c4",
+			"revisionTime": "2017-03-24T17:50:17Z"
+		},
+		{
+			"checksumSHA1": "etxrHwItxesgksq2XqaRzQe3PLw=",
+			"path": "github.com/revel/modules/testrunner/app",
+			"revision": "209cc8b2b7ed93a55067bc0db97707b1432e49c4",
+			"revisionTime": "2017-03-24T17:50:17Z"
+		},
+		{
+			"checksumSHA1": "hnENNe3EvLGsD6nKbbFmETI12KY=",
+			"path": "github.com/revel/modules/testrunner/app/controllers",
+			"revision": "209cc8b2b7ed93a55067bc0db97707b1432e49c4",
+			"revisionTime": "2017-03-24T17:50:17Z"
+		},
+		{
 			"checksumSHA1": "kZOTpZZ4wxsdL/rZVAfwCHhYKmQ=",
 			"path": "github.com/revel/revel",
+			"revision": "75d66c3c990f01deb5ff2045c04da7eea5be39b2",
+			"revisionTime": "2017-03-24T21:26:34Z"
+		},
+		{
+			"checksumSHA1": "F3MxTVWYYo9QgEn17+djCsOCfn0=",
+			"path": "github.com/revel/revel/testing",
 			"revision": "75d66c3c990f01deb5ff2045c04da7eea5be39b2",
 			"revisionTime": "2017-03-24T21:26:34Z"
 		},
