@@ -2,26 +2,23 @@ package server
 
 import (
 	"fmt"
-	"log"
-
-	"github.com/buaazp/fasthttprouter"
-	"github.com/valyala/fasthttp"
+	"github.com/julienschmidt/httprouter"
+	"net/http"
 )
 
-func Index(ctx *fasthttp.RequestCtx) {
-	fmt.Fprint(ctx, "Welcome dude!!\n")
+func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	fmt.Fprint(w, "Welcome!\n")
 }
 
-func Hello(ctx *fasthttp.RequestCtx) {
-	fmt.Fprintf(ctx, "hello, %s!\n", ctx.UserValue("name"))
+func Hello(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	fmt.Fprintf(w, "hello, %s!\n", ps.ByName("name"))
 }
 
-func Main() {
-	fmt.Errorf("test")
-	router := fasthttprouter.New()
+func RouterEngine() http.Handler {
+	router := httprouter.New()
+
 	router.GET("/", Index)
 	router.GET("/hello/:name", Hello)
 
-	fmt.Printf("Listening on port 3000")
-	log.Fatal(fasthttp.ListenAndServe(":3000", router.Handler))
+	return router
 }
