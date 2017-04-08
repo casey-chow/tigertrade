@@ -84,6 +84,7 @@
     "multireducer": "^2.0.0",
     "piping": "^0.3.0",
     "pretty-error": "^1.2.0",
+    "prop-types": "^15.5.4",
     "react": "0.14.8",
     "react-bootstrap": "^0.28.1",
     "react-dom": "0.14.8",
