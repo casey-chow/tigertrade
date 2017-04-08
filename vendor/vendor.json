@@ -1,27 +1,33 @@
 {
 	"comment": "",
-	"ignore": "github.com/TheGuyWithTheFace/tigertrade/server",
+	"ignore": "github.com/casey-chow/tigertrade",
 	"package": [
 		{
-			"checksumSHA1": "fw88/hmt0Y1OMULwzZW81oo9RbE=",
-			"path": "github.com/agtorre/gocolorize",
-			"revision": "99fea4bc9517f07eea8194702cb7076f4845b7de",
-			"revisionTime": "2017-02-17T02:13:38Z"
+			"checksumSHA1": "EjhdwEb6ZA8Q7VSxJiLEUXAkH0w=",
+			"path": "github.com/buaazp/fasthttprouter",
+			"revision": "ade4e2031af3aed7fffd241084aad80a58faf421",
+			"revisionTime": "2016-12-15T12:12:41Z"
 		},
 		{
-			"checksumSHA1": "EKAwLldD4TW84cbtA1yrkxSq6gE=",
-			"path": "github.com/certifi/gocertifi",
-			"revision": "03be5e6bb9874570ea7fb0961225d193cbc374c5",
-			"revisionTime": "2017-01-23T21:22:43Z"
+			"checksumSHA1": "SL0uI6ji9x8NHjORes3bjVaSysA=",
+			"path": "github.com/codegangsta/envy/lib",
+			"revision": "4b78388c8ce4fa412440ca4eaa654e2fdd752e49",
+			"revisionTime": "2014-12-16T19:22:14Z"
 		},
 		{
-			"checksumSHA1": "MfujXHaNt8InnrWcV0fe0KKC858=",
-			"path": "github.com/getsentry/raven-go",
-			"revision": "b68337dbf03e7fbb53d9fd9b63fd09b28e8f13f7",
-			"revisionTime": "2017-03-10T19:37:35Z"
+			"checksumSHA1": "P8R2rg/NXh7tnBfplgfG02FYZzY=",
+			"path": "github.com/codegangsta/gin",
+			"revision": "1098d0e2b17023debc79aba853ec8896e65d31a4",
+			"revisionTime": "2017-03-11T01:35:42Z"
 		},
 		{
-			"checksumSHA1": "+CqJGh7NIDMnHgScq9sl9tPrnVM=",
+			"checksumSHA1": "hgTvPrHKNA20wBQx4zLddWtZRkI=",
+			"path": "github.com/codegangsta/gin/lib",
+			"revision": "1098d0e2b17023debc79aba853ec8896e65d31a4",
+			"revisionTime": "2017-03-11T01:35:42Z"
+		},
+		{
+			"checksumSHA1": "WntgKSWeV5Ydcona7Ed2K605Pd8=",
 			"path": "github.com/klauspost/compress/flate",
 			"revision": "e80ca55b53e5e6f53deed5c7842e7b7da95e1dc7",
 			"revisionTime": "2017-04-02T14:06:18Z"
@@ -45,65 +51,41 @@
 			"revisionTime": "2016-03-02T07:53:16Z"
 		},
 		{
-			"checksumSHA1": "gteclLzLjOWouA35nNKF+u8RUAA=",
-			"path": "github.com/revel/config",
-			"revision": "662332b741dd464a886ab0901379c02b9bc5dc30",
-			"revisionTime": "2017-03-24T17:50:30Z"
+			"checksumSHA1": "+XBOEaOknTZUv6ERXDur8AujE8Y=",
+			"path": "github.com/mattn/go-shellwords",
+			"revision": "005a0944d84452842197c2108bd9168ced206f78",
+			"revisionTime": "2017-02-20T02:22:20Z"
 		},
 		{
-			"checksumSHA1": "nMkTizSUpRIlhgg+m5PZ50b4/tU=",
-			"path": "github.com/revel/modules/static/app/controllers",
-			"revision": "209cc8b2b7ed93a55067bc0db97707b1432e49c4",
-			"revisionTime": "2017-03-24T17:50:17Z"
+			"checksumSHA1": "uWU+20+0+B3itBUWt55fHG8Oty8=",
+			"path": "github.com/valyala/bytebufferpool",
+			"revision": "e746df99fe4a3986f4d4f79e13c1e0117ce9c2f7",
+			"revisionTime": "2016-08-17T18:16:52Z"
 		},
 		{
-			"checksumSHA1": "etxrHwItxesgksq2XqaRzQe3PLw=",
-			"path": "github.com/revel/modules/testrunner/app",
-			"revision": "209cc8b2b7ed93a55067bc0db97707b1432e49c4",
-			"revisionTime": "2017-03-24T17:50:17Z"
+			"checksumSHA1": "4vejRU36VkB3DjRq26ojOTQ8FUU=",
+			"path": "github.com/valyala/fasthttp",
+			"revision": "fc109d6887b5edb43510d924d14d735f3975fb51",
+			"revisionTime": "2017-02-22T16:45:09Z"
 		},
 		{
-			"checksumSHA1": "hnENNe3EvLGsD6nKbbFmETI12KY=",
-			"path": "github.com/revel/modules/testrunner/app/controllers",
-			"revision": "209cc8b2b7ed93a55067bc0db97707b1432e49c4",
-			"revisionTime": "2017-03-24T17:50:17Z"
+			"checksumSHA1": "VALMOPS3NgXHV0IJaPF/hzaIHmI=",
+			"path": "github.com/valyala/fasthttp/fasthttputil",
+			"revision": "fc109d6887b5edb43510d924d14d735f3975fb51",
+			"revisionTime": "2017-02-22T16:45:09Z"
 		},
 		{
-			"checksumSHA1": "5ZHIp2SeiXyh/+ihChzB0mP42Cs=",
-			"path": "github.com/revel/revel",
-			"revision": "75d66c3c990f01deb5ff2045c04da7eea5be39b2",
-			"revisionTime": "2017-03-24T21:26:34Z"
+			"checksumSHA1": "ZmAZINQ0pDtVfO/wQPj+NC6mu/I=",
+			"path": "github.com/valyala/fasthttp/stackless",
+			"revision": "fc109d6887b5edb43510d924d14d735f3975fb51",
+			"revisionTime": "2017-02-22T16:45:09Z"
 		},
 		{
-			"checksumSHA1": "ihz0JD9hWsxQNeb7qvsDNc8dXvI=",
-			"path": "github.com/revel/revel/testing",
-			"revision": "75d66c3c990f01deb5ff2045c04da7eea5be39b2",
-			"revisionTime": "2017-03-24T21:26:34Z"
-		},
-		{
-			"checksumSHA1": "m/RZFSO+aO2+yF8JEYOfpPkdx6A=",
-			"path": "github.com/robfig/pathtree",
-			"revision": "41257a1839e945fce74afd070e02bab2ea2c776a",
-			"revisionTime": "2014-01-21T04:10:23Z"
-		},
-		{
-			"checksumSHA1": "f2c9iL80A0QRAN9FUVA9Aq1i914=",
-			"path": "golang.org/x/net/websocket",
-			"revision": "d1e1b351919c6738fdeb9893d5c998b161464f0c",
-			"revisionTime": "2016-12-29T22:47:41Z"
-		},
-		{
-			"checksumSHA1": "4K9ZcSGRZ8EPpsPhGUpgUJb+5sw=",
-			"path": "golang.org/x/sys/unix",
-			"revision": "7de4796419dc3b554e6dab3a119a62469569d299",
-			"revisionTime": "2017-04-06T16:25:34Z"
-		},
-		{
-			"checksumSHA1": "nGXjr6oY5leYbIOJNkJmHGiBp38=",
-			"path": "gopkg.in/fsnotify.v1",
-			"revision": "629574ca2a5df945712d3079857300b5e4da0236",
-			"revisionTime": "2016-10-11T02:33:12Z"
+			"checksumSHA1": "yS8myTnbXLqyY/tjblg8NoW3sCE=",
+			"path": "gopkg.in/urfave/cli.v1",
+			"revision": "0bdeddeeb0f650497d603c4ad7b20cfe685682f6",
+			"revisionTime": "2016-11-22T04:36:10Z"
 		}
 	],
-	"rootPath": "github.com/TheGuyWithTheFace/tigertrade/server"
+	"rootPath": "github.com/casey-chow/tigertrade"
 }

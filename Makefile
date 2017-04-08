@@ -1,21 +1,44 @@
 # Tigertrade Makefile
-default: run
-.PHONY: run dev-server install client fmt clean purge
 
-run:
-	revel run github.com/TheGuyWithTheFace/tigertrade/server
+# VARIABLES
+#######################################
+BIN = $(GOPATH)/bin
+IMPORT_PATH = $(shell pwd)
 
-# Simplifies, overwrites and prints the filename of any file with "bad" formatting.
-fmt:
-	gofmt -s -l -w .
+FRESH = $(BIN)/fresh
+GOVENDOR = $(BIN)/govendor
 
-install:
-	govendor sync
+# ENVIRONMENT
+#######################################
 
-# Removes all temporary files.
+$(FRESH):
+	go get github.com/pilu/fresh
+$(GOVENDOR):
+	go get github.com/kardianos/govendor
+
+# SERVER
+#######################################
+
+# Installs all dependencies
+install: $(GOVENDOR)
+	$(GOVENDOR) sync
+
+# Builds the server executable
+build: $(FRESH) clean
+
+# Serves the API server, rerendering
+serve: $(FRESH) clean
+	$(FRESH)
+
+
+# CLEANUP
+#######################################
+
+# Removes all temporary files
 clean:
-	revel clean github.com/TheGuyWithTheFace/tigertrade/server
+	rm -rf tmp/
 
-# Removes all temporary files, including installed dependencies.
+# Removes installed dependencies.
 purge: clean
 	rm -rf vendor/*/
+
