@@ -16,10 +16,10 @@ GOCONVEY = $(BIN)/goconvey
 $(FRESH):
 	go get github.com/pilu/fresh
 
-$(GOVENDOR):
-	go get github.com/smartystreets/goconvey\
-
 $(GOCONVEY):
+	go get github.com/smartystreets/goconvey
+
+$(GOVENDOR):
 	go get github.com/kardianos/govendor
 
 # SERVER
