@@ -9,7 +9,7 @@
     {
       "plan": "mongolab:shared-single-small",
       "as": "MONGO"
-    },
+    }
   ],
   "buildpacks": [
     {
