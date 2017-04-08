@@ -5,6 +5,17 @@
     "Princeton",
     "TigerTrade"
   ],
+  "addons": [
+    {
+      "plan": "mongolab:shared-single-small",
+      "as": "MONGO"
+    }
+  ],
+  "buildpacks": [
+    {
+      "url": "heroku/go"
+    }
+  ],
   "mount_dir": "src/tigertrade",
   "website": "TODO",
   "repository": "TODO"
