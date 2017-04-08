@@ -1,8 +1,8 @@
 # Tigertrade Makefile
 default: run
-.PHONY: run install
+.PHONY: run run-client install client
 
-run:
+run: client
 	revel run github.com/TheGuyWithTheFace/tigertrade
 
 # Simplifies, overwrites and prints the filename of any file with "bad" formatting.
@@ -11,3 +11,11 @@ fmt:
 
 install:
 	govendor sync
+
+# Removes all temporary files.
+clean:
+	revel clean github.com/TheGuyWithTheFace/tigertrade
+
+# Removes all temporary files, including installed dependencies.
+purge: clean
+	rm -rf vendor/*/
