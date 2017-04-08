@@ -5,6 +5,17 @@
     "Princeton",
     "TigerTrade"
   ],
+  "addons": [
+    {
+      "plan": "mongolab:shared-single-small",
+      "as": "MONGO"
+    },
+  ],
+  "buildpacks": [
+    {
+      "url": "https://github.com/revel/heroku-buildpack-go-revel.git"
+    }
+  ],
   "mount_dir": "src/tigertrade",
   "website": "TODO",
   "repository": "TODO"
