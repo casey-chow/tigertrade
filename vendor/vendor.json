@@ -1,5 +1,8 @@
 {
 	"comment": "",
+	"heroku": {
+		"goVersion": "go1.8"
+	},
 	"ignore": "github.com/casey-chow/tigertrade",
 	"package": [
 		{
