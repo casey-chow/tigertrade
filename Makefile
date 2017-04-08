@@ -27,6 +27,8 @@ $(GOVENDOR):
 
 # Installs all dependencies
 install: $(GOVENDOR)
+	$(! hash yarn && npm install --global yarn)
+	yarn install
 	$(GOVENDOR) sync
 
 # Builds the server executable
@@ -44,6 +46,7 @@ test:
 
 test-server: $(GOCONVEY)
 	$(GOCONVEY)
+
 
 # CLEANUP
 #######################################

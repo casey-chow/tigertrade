@@ -1,20 +1,17 @@
 # TigerTrade [![Build Status](https://travis-ci.com/casey-chow/tigertrade.svg?token=n7qYoTpmELGRfaEv2AM7&branch=master)](https://travis-ci.com/casey-chow/tigertrade)
-TigerTrade Revised - Princeton COS333 Project of Andrew Casey Evan Maryam Perry
 
-Deploy locally: heroku local
-
-Push to heroku: git push heroku master
+The Princeton COS333 Project of Andrew Casey Evan Maryam Perry.
 
 # Running
 
-This assumes you have initialized and migrated the database.
+This assumes you have initialized and migrated the database, and have Go and NPM installed.
 
 ```sh
 make install
 make serve
 ```
 
-Go to [localhost:9000][].
+Go to [http://localhost:3000][].
 
 # Development
 
