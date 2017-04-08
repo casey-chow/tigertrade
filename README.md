@@ -1,4 +1,4 @@
-# TigerTrade
+# TigerTrade [![Build Status](https://travis-ci.com/casey-chow/tigertrade.svg?token=n7qYoTpmELGRfaEv2AM7&branch=master)](https://travis-ci.com/casey-chow/tigertrade)
 TigerTrade Revised - Princeton COS333 Project of Andrew Casey Evan Maryam Perry
 
 Deploy locally: heroku local
