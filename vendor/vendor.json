@@ -108,6 +108,18 @@
 			"revisionTime": "2017-03-31T03:19:02Z"
 		},
 		{
+			"checksumSHA1": "axNNGK9AXZzNOCfYfG0qiYfdTYc=",
+			"path": "github.com/gopherjs/gopherjs/js",
+			"revision": "3496c6f94e1b945f3fc9580f6982675c0a74cd6c",
+			"revisionTime": "2017-03-27T17:11:18Z"
+		},
+		{
+			"checksumSHA1": "3tpCIywCgmASqlnNyJ16XXSpzMw=",
+			"path": "github.com/jtolds/gls",
+			"revision": "bb0351aa7eb6f322f32667d51375f26a2bca6628",
+			"revisionTime": "2016-12-28T00:43:38Z"
+		},
+		{
 			"checksumSHA1": "NcmcqgPMX8/PTdRyesQsg5+fDL8=",
 			"path": "github.com/julienschmidt/httprouter",
 			"revision": "6f3f3919c8781ce5c0509c83fffc887a7830c938",
@@ -154,6 +166,90 @@
 			"path": "github.com/pmezard/go-difflib/difflib",
 			"revision": "792786c7400a136282c1664665ae0a8db921c6c2",
 			"revisionTime": "2016-01-10T10:55:54Z"
+		},
+		{
+			"checksumSHA1": "BpFbfnxs4jrjGldU6aMIMcrDmXM=",
+			"path": "github.com/smartystreets/assertions",
+			"revision": "c9ee7d9e9a2aeec0bee7c4a516f3e0ad7cb7e558",
+			"revisionTime": "2017-02-13T16:53:18Z"
+		},
+		{
+			"checksumSHA1": "Vzb+dEH/LTYbvr8RXHmt6xJHz04=",
+			"path": "github.com/smartystreets/assertions/internal/go-render/render",
+			"revision": "c9ee7d9e9a2aeec0bee7c4a516f3e0ad7cb7e558",
+			"revisionTime": "2017-02-13T16:53:18Z"
+		},
+		{
+			"checksumSHA1": "r6FauVdOTFnwYQgrKGFuWUbIAJE=",
+			"path": "github.com/smartystreets/assertions/internal/oglematchers",
+			"revision": "c9ee7d9e9a2aeec0bee7c4a516f3e0ad7cb7e558",
+			"revisionTime": "2017-02-13T16:53:18Z"
+		},
+		{
+			"checksumSHA1": "egeG/afVkrtqk62j86WS7ATVAbI=",
+			"path": "github.com/smartystreets/goconvey",
+			"revision": "3bd662eac601ad6436e64776af2e112069eb2edc",
+			"revisionTime": "2017-01-10T12:00:22Z"
+		},
+		{
+			"checksumSHA1": "KYSYYlW1zv3HfpbNSLJpDYj5rJE=",
+			"path": "github.com/smartystreets/goconvey/convey",
+			"revision": "3bd662eac601ad6436e64776af2e112069eb2edc",
+			"revisionTime": "2017-01-10T12:00:22Z"
+		},
+		{
+			"checksumSHA1": "2x3M0H7g69Yul0dydYqLklCFDDA=",
+			"path": "github.com/smartystreets/goconvey/convey/gotest",
+			"revision": "3bd662eac601ad6436e64776af2e112069eb2edc",
+			"revisionTime": "2017-01-10T12:00:22Z"
+		},
+		{
+			"checksumSHA1": "/Vf/BK8DEzagv141VuY7P1UtI40=",
+			"path": "github.com/smartystreets/goconvey/convey/reporting",
+			"revision": "3bd662eac601ad6436e64776af2e112069eb2edc",
+			"revisionTime": "2017-01-10T12:00:22Z"
+		},
+		{
+			"checksumSHA1": "vy9gWYOHinweaktAiLb/48wcJHE=",
+			"path": "github.com/smartystreets/goconvey/web/server/api",
+			"revision": "3bd662eac601ad6436e64776af2e112069eb2edc",
+			"revisionTime": "2017-01-10T12:00:22Z"
+		},
+		{
+			"checksumSHA1": "V0alXzgbBQxGjEGFzfeUTEdtZ9A=",
+			"path": "github.com/smartystreets/goconvey/web/server/contract",
+			"revision": "3bd662eac601ad6436e64776af2e112069eb2edc",
+			"revisionTime": "2017-01-10T12:00:22Z"
+		},
+		{
+			"checksumSHA1": "qweQac2GVAcACUY0N2/4CEXjVvw=",
+			"path": "github.com/smartystreets/goconvey/web/server/executor",
+			"revision": "3bd662eac601ad6436e64776af2e112069eb2edc",
+			"revisionTime": "2017-01-10T12:00:22Z"
+		},
+		{
+			"checksumSHA1": "xMbJ3jGHKxxEcVtWpX9Sx4dojVw=",
+			"path": "github.com/smartystreets/goconvey/web/server/messaging",
+			"revision": "3bd662eac601ad6436e64776af2e112069eb2edc",
+			"revisionTime": "2017-01-10T12:00:22Z"
+		},
+		{
+			"checksumSHA1": "DZh6UnW9O91kHtuR4NjKiRHHbMA=",
+			"path": "github.com/smartystreets/goconvey/web/server/parser",
+			"revision": "3bd662eac601ad6436e64776af2e112069eb2edc",
+			"revisionTime": "2017-01-10T12:00:22Z"
+		},
+		{
+			"checksumSHA1": "39XjCSodqHTBGBqElEkJKHG0TX0=",
+			"path": "github.com/smartystreets/goconvey/web/server/system",
+			"revision": "3bd662eac601ad6436e64776af2e112069eb2edc",
+			"revisionTime": "2017-01-10T12:00:22Z"
+		},
+		{
+			"checksumSHA1": "dyHMuR46OX1aJaqBsBspwjDbb30=",
+			"path": "github.com/smartystreets/goconvey/web/server/watch",
+			"revision": "3bd662eac601ad6436e64776af2e112069eb2edc",
+			"revisionTime": "2017-01-10T12:00:22Z"
 		},
 		{
 			"checksumSHA1": "8rxOh1Vlti1bzoIy6mH5eL0RYsI=",
