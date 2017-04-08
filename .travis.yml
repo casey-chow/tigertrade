@@ -5,3 +5,25 @@ install: make install
 script: make test
 git:
   depth: 3
+
+# TODO: Frontend CI
+# Travis CI doesn't support multiple languages
+# language: node_js
+
+# node_js:
+#   - "0.12"
+#   - "4.0"
+#   - "4"
+#   - "5"
+#   - "stable"
+
+# sudo: false
+
+# before_script:
+#   - export DISPLAY=:99.0
+#   - sh -e /etc/init.d/xvfb start
+
+# script:
+#   - npm run lint
+#   - npm test
+#   - npm run test-node
