@@ -1,8 +1,8 @@
 # Tigertrade Makefile
 default: run
-.PHONY: run run-client install client
+.PHONY: run dev-server install client fmt clean purge
 
-run: client
+run:
 	revel run github.com/TheGuyWithTheFace/tigertrade
 
 # Simplifies, overwrites and prints the filename of any file with "bad" formatting.
