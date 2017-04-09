@@ -57,6 +57,9 @@ test:
 test-server: $(GOCONVEY)
 	$(GOCONVEY)
 
+# RUNNING
+production:
+	$(hash tigertrade && tigertrade || 0)
 
 # CLEANUP
 #######################################
