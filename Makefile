@@ -28,7 +28,7 @@ $(GOVENDOR):
 #######################################
 
 # Installs all dependencies
-install: $(GOVENDOR)
+install-server: $(GOVENDOR)
 	$(GOVENDOR) sync
 
 # Builds the server executable
@@ -41,10 +41,10 @@ serve: $(FRESH) clean
 
 
 # CLIENT
-#######################################	
+#######################################
 
 install-client:
-	$(! hash yarn && npm install --global yarn)
+	$(! type yarn && npm install --global yarn)
 	yarn install
 
 
