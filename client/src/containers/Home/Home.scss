@@ -5,6 +5,10 @@
     margin-bottom: 15px;
   }
 }
+h1 {
+  font-size: 4em;
+  font-family: 'Roboto';
+}
 .masthead {
   background: #2d2d2d;
   padding: 40px 20px;
@@ -31,7 +35,7 @@
   h1 {
     color: $cyan;
     font-size: 4em;
-    font-family: 'Roboto';
+    font-family: 'Roboto';  
   }
   h2 {
     color: #ddd;
