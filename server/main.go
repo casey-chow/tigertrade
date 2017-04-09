@@ -1,9 +1,9 @@
 package server
 
 import (
-	_ "github.com/lib/pq"
 	"database/sql"
 	"github.com/getsentry/raven-go"
+	_ "github.com/lib/pq"
 	"github.com/urfave/negroni"
 	"gopkg.in/cas.v1"
 	"log"
@@ -32,24 +32,23 @@ func SentryMiddleware() negroni.Handler {
 
 // Connects to database specified in DATABASE_URL env variable.
 func InitDatabase() {
-	// Connect to Database
 	var err error
 	db, err = sql.Open("postgres", os.Getenv("DATABASE_URL"))
 	if err != nil {
+		raven.CaptureErrorAndWait(err, nil)
 		log.Fatal(err)
 	} else {
 		log.Print("Connected to database")
 	}
 
-	// Test connection
 	if err = db.Ping(); err != nil {
+		raven.CaptureErrorAndWait(err, nil)
 		log.Fatal(err)
 	}
 }
 
 func App() http.Handler {
 	app := negroni.New()
-
 
 	app.Use(CASMiddleware())
 	app.Use(SentryMiddleware())
