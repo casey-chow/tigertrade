@@ -1,1 +1,1 @@
-web: make production
+web: bash ./run.sh
