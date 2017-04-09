@@ -6,10 +6,6 @@
 	"ignore": "github.com/casey-chow/tigertrade",
 	"package": [
 		{
-			"path": "get",
-			"revision": ""
-		},
-		{
 			"checksumSHA1": "dV5Q21yjknESpG735hf1nh5b9T4=",
 			"path": "github.com/appleboy/gofight",
 			"revision": "af6432bac536bf3cdf0053bd721d261589d528c1",
@@ -28,6 +24,12 @@
 			"revisionTime": "2017-03-25T17:55:28Z"
 		},
 		{
+			"checksumSHA1": "EKAwLldD4TW84cbtA1yrkxSq6gE=",
+			"path": "github.com/certifi/gocertifi",
+			"revision": "03be5e6bb9874570ea7fb0961225d193cbc374c5",
+			"revisionTime": "2017-01-23T21:22:43Z"
+		},
+		{
 			"checksumSHA1": "WRu+mhZ2PfQu27qRr69HVGjtN4Q=",
 			"path": "github.com/davecgh/go-spew/spew",
 			"revision": "346938d642f2ec3594ed81d874461961cd0faa76",
@@ -38,6 +40,12 @@
 			"path": "github.com/davecgh/go-spew/spew/testdata",
 			"revision": "346938d642f2ec3594ed81d874461961cd0faa76",
 			"revisionTime": "2016-10-29T20:57:26Z"
+		},
+		{
+			"checksumSHA1": "MfujXHaNt8InnrWcV0fe0KKC858=",
+			"path": "github.com/getsentry/raven-go",
+			"revision": "b68337dbf03e7fbb53d9fd9b63fd09b28e8f13f7",
+			"revisionTime": "2017-03-10T19:37:35Z"
 		},
 		{
 			"checksumSHA1": "0z76T5x2iveCIDSl+VYVxYmdf1Y=",
@@ -364,12 +372,6 @@
 			"path": "gopkg.in/h2non/gock.v1",
 			"revision": "2897ffde93a71060ce86518f1e7317ec8433d2d6",
 			"revisionTime": "2017-02-14T23:09:19Z"
-		},
-		{
-			"checksumSHA1": "QX69hdf0wsAInBxC21QNkmXXD4o=",
-			"path": "gopkg.in/yaml.v2",
-			"revision": "cd8b52f8269e0feb286dfeef29f8fe4d5b397e0b",
-			"revisionTime": "2017-04-07T17:21:22Z"
 		}
 	],
 	"rootPath": "github.com/casey-chow/tigertrade"
