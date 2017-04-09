@@ -27,15 +27,12 @@ $(GOVENDOR):
 # SERVER
 #######################################
 
-# Installs all dependencies
 install-server: $(GOVENDOR)
 	$(GOVENDOR) sync
 
-# Builds the server executable
-build: $(FRESH) clean
+build-server: $(FRESH) clean
 	go build
 
-# Serves the API server, rerendering
 serve: $(FRESH) clean
 	$(FRESH)
 
@@ -44,8 +41,14 @@ serve: $(FRESH) clean
 #######################################
 
 install-client:
-	$(! type yarn && npm install --global yarn)
+	$(! command -v yarn && npm install --global yarn)
 	yarn install
+
+build-client:
+	yarn build
+
+serve-client:
+	yarn start
 
 
 # TESTING
@@ -54,7 +57,7 @@ install-client:
 test:
 	go test github.com/casey-chow/tigertrade/server
 
-test-server: $(GOCONVEY)
+test-watch: $(GOCONVEY)
 	$(GOCONVEY)
 
 
