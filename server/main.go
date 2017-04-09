@@ -1,24 +1,29 @@
 package server
 
 import (
-	"fmt"
-	"github.com/julienschmidt/httprouter"
+	"github.com/urfave/negroni"
+	"gopkg.in/cas.v1"
 	"net/http"
+	"net/url"
 )
 
-func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	fmt.Fprint(w, "Welcome!")
+func makeCASMiddleware() negroni.Handler {
+	casUrl, _ := url.Parse("https://fed.princeton.edu/cas/")
+	casClient := cas.NewClient(&cas.Options{URL: casUrl})
+
+	// Thin wrapper on go-cas's middleware
+	return negroni.HandlerFunc(func(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
+		casClient.Handle(next).ServeHTTP(w, r)
+	})
 }
 
-func Hello(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	fmt.Fprintf(w, "hello, %s!\n", ps.ByName("name"))
-}
+func App() http.Handler {
+	app := negroni.New()
 
-func RouterEngine() http.Handler {
-	router := httprouter.New()
+	app.Use(makeCASMiddleware())
+	app.Use(negroni.NewRecovery())
+	app.Use(negroni.NewLogger())
+	app.UseHandler(Router())
 
-	router.GET("/", Index)
-	router.GET("/hello/:name", Hello)
-
-	return router
+	return app
 }

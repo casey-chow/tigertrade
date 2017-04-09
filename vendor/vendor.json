@@ -6,6 +6,10 @@
 	"ignore": "github.com/casey-chow/tigertrade",
 	"package": [
 		{
+			"path": "get",
+			"revision": ""
+		},
+		{
 			"checksumSHA1": "dV5Q21yjknESpG735hf1nh5b9T4=",
 			"path": "github.com/appleboy/gofight",
 			"revision": "af6432bac536bf3cdf0053bd721d261589d528c1",
@@ -58,6 +62,12 @@
 			"path": "github.com/gin-gonic/gin/render",
 			"revision": "e2212d40c62a98b388a5eb48ecbdcf88534688ba",
 			"revisionTime": "2016-12-04T22:13:08Z"
+		},
+		{
+			"checksumSHA1": "yUc84k7cfnRi9AlPFuRo77Y18Og=",
+			"path": "github.com/golang/glog",
+			"revision": "23def4e6c14b4da8ac2ed8007337bc5eb5007998",
+			"revisionTime": "2016-01-25T20:49:56Z"
 		},
 		{
 			"checksumSHA1": "OVfqk5qyKVLHFirVbQOfxSkFBPo=",
@@ -162,6 +172,12 @@
 			"revisionTime": "2017-03-22T23:44:13Z"
 		},
 		{
+			"checksumSHA1": "zZNZd7fvUDu3A7J2o9cneeQJIwo=",
+			"path": "github.com/nbio/st",
+			"revision": "e9e8d9816f3268def6dcbd2dea03301f40e9de94",
+			"revisionTime": "2014-06-26T01:07:06Z"
+		},
+		{
 			"checksumSHA1": "RZOdTSZN/PgcTqko5LzIAzw+UT4=",
 			"path": "github.com/pmezard/go-difflib/difflib",
 			"revision": "792786c7400a136282c1664665ae0a8db921c6c2",
@@ -258,6 +274,12 @@
 			"revisionTime": "2017-01-30T11:31:45Z"
 		},
 		{
+			"checksumSHA1": "BZCJ6db80F0silKh2oRRgldv7II=",
+			"path": "github.com/urfave/negroni",
+			"revision": "c0db5feaa33826cd5117930c8f4ee5c0f565eec6",
+			"revisionTime": "2017-02-26T00:53:33Z"
+		},
+		{
 			"checksumSHA1": "uWU+20+0+B3itBUWt55fHG8Oty8=",
 			"path": "github.com/valyala/bytebufferpool",
 			"revision": "e746df99fe4a3986f4d4f79e13c1e0117ce9c2f7",
@@ -268,6 +290,10 @@
 			"path": "github.com/valyala/fasttemplate",
 			"revision": "dcecefd839c4193db0d35b88ec65b4c12d360ab0",
 			"revisionTime": "2017-02-24T21:24:29Z"
+		},
+		{
+			"path": "go",
+			"revision": ""
 		},
 		{
 			"checksumSHA1": "s4qXa2lMJeMV+7OP4bCYjXa7obw=",
@@ -310,6 +336,12 @@
 			"revisionTime": "2017-04-05T16:58:12Z"
 		},
 		{
+			"checksumSHA1": "R1OhNlEyryHz56bGRz3Me1tLhqM=",
+			"path": "gopkg.in/cas.v1",
+			"revision": "fd85b5ae8a14a3e4a3989833499caecb4542fdf0",
+			"revisionTime": "2016-07-14T08:02:20Z"
+		},
+		{
 			"checksumSHA1": "538I8ghUdvZa25NxgMUDpq14Qic=",
 			"path": "gopkg.in/check.v1",
 			"revision": "20d25e2804050c1cd24a7eea1e7a6447dd0e74ec",
@@ -326,6 +358,12 @@
 			"path": "gopkg.in/go-playground/validator.v8",
 			"revision": "5f57d2222ad794d0dffb07e664ea05e2ee07d60c",
 			"revisionTime": "2016-07-18T13:41:25Z"
+		},
+		{
+			"checksumSHA1": "X/KpPeUtiQ509swN+9XhZVQDWBo=",
+			"path": "gopkg.in/h2non/gock.v1",
+			"revision": "2897ffde93a71060ce86518f1e7317ec8433d2d6",
+			"revisionTime": "2017-02-14T23:09:19Z"
 		},
 		{
 			"checksumSHA1": "QX69hdf0wsAInBxC21QNkmXXD4o=",

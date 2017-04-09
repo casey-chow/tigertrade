@@ -8,8 +8,8 @@ import (
 )
 
 func main() {
-	router := server.RouterEngine()
+	app := server.App()
 
 	fmt.Printf("Listening on port 3000")
-	log.Fatal(http.ListenAndServe(":3000", router))
+	log.Fatal(http.ListenAndServe(":3000", app))
 }
