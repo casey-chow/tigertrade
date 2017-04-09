@@ -41,10 +41,10 @@ serve: $(FRESH) clean
 
 
 # CLIENT
-#######################################	
+#######################################
 
 install-client:
-	$(! hash yarn && npm install --global yarn)
+	$(! type yarn && npm install --global yarn)
 	yarn install
 
 
