@@ -12,6 +12,8 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"path"
+	"runtime"
 	"strings"
 )
 
@@ -42,7 +44,9 @@ func loadEnvironment() {
 	log.Print("Heroku config variables not present. Loading manually from .env")
 
 	// Open .env file
-	file, err := os.Open("../.env")
+	_, filename, _, _ := runtime.Caller(1)
+	file, err := os.Open(path.Join(path.Dir(filename), "../.env"))
+
 	if err != nil {
 		log.Fatal(err)
 	}
