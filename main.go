@@ -10,6 +10,6 @@ import (
 func main() {
 	app := server.App()
 
-	fmt.Printf("Listening on port 3000")
+	fmt.Print("Listening on port 3000\n")
 	log.Fatal(http.ListenAndServe(":3000", app))
 }
