@@ -29,7 +29,7 @@ $(GOVENDOR):
 
 # Installs all dependencies
 install-server: $(GOVENDOR)
-	$(GOVENDOR) sync
+	$(GOVENDOR) sync -v
 
 # Builds the server executable
 build: $(FRESH) clean
