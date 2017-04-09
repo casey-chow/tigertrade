@@ -1,1 +1,1 @@
-web: bash -c "[ -z "$CLIENT_MODE" ] && ./tigertrade"
+web: bash -c "[ -z "$CLIENT_MODE" ] && tigertrade"
