@@ -28,7 +28,7 @@ $(GOVENDOR):
 #######################################
 
 # Installs all dependencies
-install-server: $(GOVENDOR)
+install: $(GOVENDOR)
 	$(GOVENDOR) sync
 
 # Builds the server executable
