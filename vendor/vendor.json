@@ -132,6 +132,12 @@
 			"revisionTime": "2017-03-27T17:11:18Z"
 		},
 		{
+			"checksumSHA1": "P6Y3EFM43VS8pxxv4+ga8NUXsaU=",
+			"path": "github.com/guregu/null",
+			"revision": "41961cea0328defc5f95c1c473f89ebf0d1813f6",
+			"revisionTime": "2016-02-28T00:53:16Z"
+		},
+		{
 			"checksumSHA1": "3tpCIywCgmASqlnNyJ16XXSpzMw=",
 			"path": "github.com/jtolds/gls",
 			"revision": "bb0351aa7eb6f322f32667d51375f26a2bca6628",
