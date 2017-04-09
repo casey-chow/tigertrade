@@ -39,12 +39,14 @@ build: $(FRESH) clean
 serve: $(FRESH) clean
 	$(FRESH)
 
+
 # CLIENT
 #######################################	
 
 install-client:
 	$(! hash yarn && npm install --global yarn)
 	yarn install
+
 
 # TESTING
 #######################################
@@ -55,6 +57,9 @@ test:
 test-server: $(GOCONVEY)
 	$(GOCONVEY)
 
+# RUNNING
+production:
+	$(hash tigertrade && tigertrade || 0)
 
 # CLEANUP
 #######################################
