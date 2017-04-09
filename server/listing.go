@@ -71,6 +71,6 @@ func GetRecentListings(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 		http.Error(w, http.StatusText(500), 500)
 		return
 	}
-	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Content-Type", "application/json;charset=utf-8")
 	fmt.Fprint(w, string(l))
 }
