@@ -6,6 +6,9 @@ The Princeton COS333 Project of Andrew Casey Evan Maryam Perry.
 
 This assumes you have initialized and migrated the database, and have Go and NPM installed.
 
+## NOTE: Before attempting to run the server, copy .env.example to .env and fill it out with your proper database url.
+(ours is in the drive)
+
 ```sh
 make install
 make serve
