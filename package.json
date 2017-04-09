@@ -36,7 +36,7 @@
       "env": {
         "NODE_PATH": "./client/src",
         "NODE_ENV": "development",
-        "PORT": 3000
+        "PORT": 3030
       }
     },
     "watch-client": {
@@ -44,7 +44,7 @@
       "env": {
         "UV_THREADPOOL_SIZE": 100,
         "NODE_PATH": "./client/src",
-        "PORT": 3000,
+        "PORT": 3030,
         "APIPORT": 3030
       }
     },
@@ -81,6 +81,7 @@
     "less-loader": "^2.2.1",
     "lru-memoize": "^1.0.0",
     "map-props": "^1.0.0",
+    "material-ui": "^0.17.1",
     "multireducer": "^2.0.0",
     "piping": "^0.3.0",
     "pretty-error": "^1.2.0",

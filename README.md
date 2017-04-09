@@ -2,7 +2,7 @@
 
 The Princeton COS333 Project of Andrew Casey Evan Maryam Perry.
 
-# Running
+# Running the server
 
 This assumes you have initialized and migrated the database, and have Go and NPM installed.
 
@@ -12,6 +12,19 @@ make serve
 ```
 
 Go to [http://localhost:3000][].
+
+# Running the client
+
+For development purposes, we've disabled server-side rendering. Re-enable it in `client/bin/server.js`:
+```
+global.__DISABLE_SSR___ = true;
+```
+
+Build and run with
+```
+yarn install
+yarn run dev
+```
 
 # Development
 
