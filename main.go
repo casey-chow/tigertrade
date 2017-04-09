@@ -2,7 +2,6 @@ package main
 
 import (
 	"bufio"
-	"fmt"
 	"github.com/casey-chow/tigertrade/server"
 	"log"
 	"net/http"
@@ -40,12 +39,13 @@ func loadEnvironment() {
 
 func main() {
 	loadEnvironment()
+	server.InitDatabase()
 	app := server.App()
 
 	port := os.Getenv("PORT")
 	if port == "" {
 		log.Fatal("PORT not set correctly.")
 	}
-	fmt.Printf("Listening on port %s", port)
+	log.Printf("Listening on port %s", port)
 	log.Fatal(http.ListenAndServe(":"+port, app))
 }
