@@ -6,18 +6,15 @@ const ListingCard = (props) => {
   const {listing} = props;
 
   return (
-   <Card style={{width: '30%'}}>
-    <CardMedia>
+   <Card>
+    <CardMedia
+      overlay={<CardTitle title={"$" + (listing.price / 100)} />}>
       <img src={listing.thumbnail} />
     </CardMedia>
     <CardTitle title={listing.title}/>
     <CardText>
       {listing.description}
     </CardText>
-    <CardActions>
-      <FlatButton label="Action1" />
-      <FlatButton label="Action2" />
-    </CardActions>
   </Card>
   );
 };
