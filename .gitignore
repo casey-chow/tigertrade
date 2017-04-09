@@ -3,6 +3,7 @@
 *.dll
 *.so
 *.dylib
+tigertrade
 
 # Test binary, build with `go test -c`
 *.test
