@@ -5,6 +5,9 @@
 *.dylib
 tigertrade
 
+# File containing sensitive environment variables
+.env
+
 # Test binary, build with `go test -c`
 *.test
 
