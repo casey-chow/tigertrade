@@ -6,6 +6,9 @@ The Princeton COS333 Project of Andrew Casey Evan Maryam Perry.
 
 This assumes you have initialized and migrated the database, and have Go and NPM installed.
 
+## NOTE: Before attempting to run the server, copy .env.example to .env and fill it out with your proper database url.
+(ours is in the drive)
+
 ```sh
 make install
 make serve
@@ -28,6 +31,29 @@ yarn run dev
 
 # Development
 
+**Server**
+
+```
+make install                    Install all dependencies
+make build                      Builds the server
+make serve                      Runs a hot-reloading server for development
+make test                       Runs the test suite
+make test-server                Runs a pretty testing server
+```
+
+**Client**
+```
+yarn start                      Runs an auto-reloading dev server
+yarn build                      Builds the client code
+yarn test                       Runs the test suite
+```
+
+**Both**
+```
+make clean                      Removes all temporary files
+make purge                      Uninstalls all dependencies, removes temp files
+```
+
 For dependency management, we use
 [govendor](https://github.com/kardianos/govendor). Their documentation isn't
 all that clear, so here's  a quick cheat sheet of relevant commands:
@@ -45,6 +71,7 @@ govendor list                   List all installed packages
 - Postgres [Database]
 - Sentry [Error Reporting]
 - React [Frontend]
+    - `create-react-app` for boilerplate
 
 ## Sentry
 
@@ -78,9 +105,9 @@ callback(function(err, res) {
 ## Code Layout
 
 ```
+client/             client code
 server/             server code
+node_modules/       Javascript dependencies
 vendor/             Go dependencies
-runner.conf         configuration for fresh
-Procfile            configuration for Heroku runs
 ```
 
