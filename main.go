@@ -36,7 +36,6 @@ func loadEnvironment() {
 		log.Fatal(err)
 	}
 
-
 }
 
 func main() {
@@ -44,9 +43,9 @@ func main() {
 	app := server.App()
 
 	port := os.Getenv("PORT")
-	if port = "" {
+	if port == "" {
 		log.Fatal("PORT not set correctly.")
 	}
 	fmt.Printf("Listening on port %s", port)
-	log.Fatal(http.ListenAndServe(":" + port, app))
+	log.Fatal(http.ListenAndServe(":"+port, app))
 }
