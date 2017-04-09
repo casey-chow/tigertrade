@@ -1,24 +1,37 @@
 package server
 
 import (
-	"fmt"
-	"github.com/julienschmidt/httprouter"
+	"github.com/getsentry/raven-go"
+	"github.com/urfave/negroni"
+	"gopkg.in/cas.v1"
 	"net/http"
+	"net/url"
 )
 
-func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	fmt.Fprint(w, "Welcome!")
+func CASMiddleware() negroni.Handler {
+	casUrl, _ := url.Parse("https://fed.princeton.edu/cas/")
+	casClient := cas.NewClient(&cas.Options{URL: casUrl})
+
+	// Thin wrapper on go-cas's middleware
+	return negroni.HandlerFunc(func(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
+		casClient.Handle(next).ServeHTTP(w, r)
+	})
 }
 
-func Hello(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	fmt.Fprintf(w, "hello, %s!\n", ps.ByName("name"))
+func SentryMiddleware() negroni.Handler {
+	return negroni.HandlerFunc(func(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
+		raven.RecoveryHandler(next)(w, r)
+	})
 }
 
-func RouterEngine() http.Handler {
-	router := httprouter.New()
+func App() http.Handler {
+	app := negroni.New()
 
-	router.GET("/", Index)
-	router.GET("/hello/:name", Hello)
 
-	return router
+	app.Use(CASMiddleware())
+	app.Use(SentryMiddleware())
+	app.Use(negroni.NewLogger())
+	app.UseHandler(Router())
+
+	return app
 }

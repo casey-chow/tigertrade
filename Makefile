@@ -9,6 +9,8 @@ FRESH = $(BIN)/fresh
 GOVENDOR = $(BIN)/govendor
 GOCONVEY = $(BIN)/goconvey
 
+default: build
+install: install-server install-client
 
 # ENVIRONMENT
 #######################################
@@ -26,17 +28,23 @@ $(GOVENDOR):
 #######################################
 
 # Installs all dependencies
-install: $(GOVENDOR)
-	$(! hash yarn && npm install --global yarn)
-	yarn install
+install-server: $(GOVENDOR)
 	$(GOVENDOR) sync
 
 # Builds the server executable
 build: $(FRESH) clean
+	go build
 
 # Serves the API server, rerendering
 serve: $(FRESH) clean
 	$(FRESH)
+
+# CLIENT
+#######################################	
+
+install-client:
+	$(! hash yarn && npm install --global yarn)
+	yarn install
 
 # TESTING
 #######################################
