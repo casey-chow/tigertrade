@@ -66,4 +66,5 @@ clean:
 # Removes installed dependencies.
 purge: clean
 	rm -rf vendor/*/
+	rm -rf node_modules/
 
