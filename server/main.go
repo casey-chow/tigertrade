@@ -20,8 +20,9 @@ func makeCASMiddleware() negroni.Handler {
 func App() http.Handler {
 	app := negroni.New()
 
-	app.Use(negroni.NewLogger())
 	app.Use(makeCASMiddleware())
+	app.Use(negroni.NewRecovery())
+	app.Use(negroni.NewLogger())
 	app.UseHandler(Router())
 
 	return app

@@ -172,6 +172,12 @@
 			"revisionTime": "2017-03-22T23:44:13Z"
 		},
 		{
+			"checksumSHA1": "zZNZd7fvUDu3A7J2o9cneeQJIwo=",
+			"path": "github.com/nbio/st",
+			"revision": "e9e8d9816f3268def6dcbd2dea03301f40e9de94",
+			"revisionTime": "2014-06-26T01:07:06Z"
+		},
+		{
 			"checksumSHA1": "RZOdTSZN/PgcTqko5LzIAzw+UT4=",
 			"path": "github.com/pmezard/go-difflib/difflib",
 			"revision": "792786c7400a136282c1664665ae0a8db921c6c2",
@@ -352,6 +358,12 @@
 			"path": "gopkg.in/go-playground/validator.v8",
 			"revision": "5f57d2222ad794d0dffb07e664ea05e2ee07d60c",
 			"revisionTime": "2016-07-18T13:41:25Z"
+		},
+		{
+			"checksumSHA1": "X/KpPeUtiQ509swN+9XhZVQDWBo=",
+			"path": "gopkg.in/h2non/gock.v1",
+			"revision": "2897ffde93a71060ce86518f1e7317ec8433d2d6",
+			"revisionTime": "2017-02-14T23:09:19Z"
 		},
 		{
 			"checksumSHA1": "QX69hdf0wsAInBxC21QNkmXXD4o=",
