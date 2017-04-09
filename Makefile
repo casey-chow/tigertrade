@@ -9,6 +9,7 @@ FRESH = $(BIN)/fresh
 GOVENDOR = $(BIN)/govendor
 GOCONVEY = $(BIN)/goconvey
 
+default: build
 
 # ENVIRONMENT
 #######################################
@@ -33,6 +34,7 @@ install: $(GOVENDOR)
 
 # Builds the server executable
 build: $(FRESH) clean
+	go build
 
 # Serves the API server, rerendering
 serve: $(FRESH) clean

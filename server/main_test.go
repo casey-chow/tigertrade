@@ -13,7 +13,7 @@ func TestIndexPage(t *testing.T) {
 
 		Convey("should return OK", func() {
 			r.GET("/").
-				Run(RouterEngine(), func(r gofight.HTTPResponse, rq gofight.HTTPRequest) {
+				Run(Router(), func(r gofight.HTTPResponse, rq gofight.HTTPRequest) {
 					So(r.Body.String(), ShouldEqual, "Welcome!")
 					So(r.Code, ShouldEqual, http.StatusOK)
 				})
