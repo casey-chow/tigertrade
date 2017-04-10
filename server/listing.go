@@ -7,9 +7,12 @@ import (
 	"log"
 	"fmt"
 	"net/http"
+	"strconv"
 )
 
 var maxDescriptionSize = 1024
+var defaultNumListings = 30
+var maxNumListings = 100
 
 // This is the "JSON" struct that appears in the array returned by getRecentListings
 type ListingsItem struct {
@@ -31,6 +34,22 @@ func GetRecentListings(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 		http.Error(w, http.StatusText(405), 405)
 		return
 	}
+
+	// Get limit from params
+	limitStr := r.URL.Query().Get("limit")
+	var limit int = defaultNumListings
+	var e error
+	if limitStr != "" {
+		limit, e = strconv.Atoi(limitStr)
+		if e != nil || limit == 0 {
+			limit = defaultNumListings
+		}
+	}
+	if limit > maxNumListings {
+		limit = maxNumListings
+	}
+
+	log.Print(limit)
 	// Query db
 	rows, err := db.Query("SELECT listings.key_id, listings.creation_date, " +
 		"listings.last_modification_date, title, left(description, $1), " +
@@ -39,7 +58,7 @@ func GetRecentListings(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 		"FROM listings LEFT OUTER JOIN thumbnails " +
 		"ON listings.thumbnail_id = thumbnails.key_id " +
 		"ORDER BY listings.creation_date DESC " +
-		"LIMIT 30;", maxDescriptionSize)
+		"LIMIT $2;", maxDescriptionSize, limit)
 	if err != nil {
 		log.Print(err)
 		http.Error(w, http.StatusText(500), 500)
