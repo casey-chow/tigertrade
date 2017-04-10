@@ -1,8 +1,6 @@
 package server
 
 import (
-	"encoding/json"
-	"fmt"
 	"github.com/getsentry/raven-go"
 	"github.com/guregu/null"
 	"github.com/julienschmidt/httprouter"
@@ -11,9 +9,9 @@ import (
 	"strconv"
 )
 
-var maxDescriptionSize = 1024
-var defaultNumListings = 30
-var maxNumListings = 100
+const maxDescriptionSize = 1024
+const defaultNumListings = 30
+const maxNumListings     = 100
 
 // This is the "JSON" struct that appears in the array returned by getRecentListings
 type ListingsItem struct {
@@ -21,7 +19,7 @@ type ListingsItem struct {
 	CreationDate         null.Time   `json:"creationDate"`
 	LastModificationDate null.Time   `json:"lastModificationDate"`
 	Title                string      `json:"title"`
-	Description          null.String `json:"description"`
+	Description          null.String `json:"description"` // expect to be truncated
 	UserID               int         `json:"userId"`
 	Price                null.Int    `json:"price"`
 	Status               null.String `json:"status"`
@@ -29,8 +27,8 @@ type ListingsItem struct {
 	Thumbnail            null.String `json:"thumbnail"`
 }
 
-// Returns the most recent count listings, based on original date created.
-func GetRecentListings(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+// Writes the most recent count listings, based on original date created to w
+func ServeRecentListings(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	if r.Method != "GET" {
 		http.Error(w, http.StatusText(405), 405)
 		return
@@ -50,6 +48,20 @@ func GetRecentListings(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 		limit = maxNumListings
 	}
 
+	listings, err, code := GetRecentListings(maxDescriptionSize, limit)
+	if err != nil {
+		raven.CaptureError(err, nil)
+		log.Print(err)
+		http.Error(w, http.StatusText(code), code)
+	}
+
+	Serve(w, listings)
+}
+
+// Returns the most recent count listings, based on original date created. On error
+// returns an error and the HTTP code associated with that error.
+func GetRecentListings(maxDescriptionSize int, limit int) ([]*ListingsItem, error, int) {
+
 	// Query db
 	rows, err := db.Query("SELECT listings.key_id, listings.creation_date, " +
 		"listings.last_modification_date, title, left(description, $1), " +
@@ -60,10 +72,7 @@ func GetRecentListings(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 		"ORDER BY listings.creation_date DESC " +
 		"LIMIT $2;", maxDescriptionSize, limit)
 	if err != nil {
-		raven.CaptureError(err, nil)
-		log.Print(err)
-		http.Error(w, http.StatusText(500), 500)
-		return
+		return nil, err, 500
 	}
 	defer rows.Close()
 
@@ -75,28 +84,13 @@ func GetRecentListings(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 			&l.Title, &l.Description, &l.UserID, &l.Price, &l.Status,
 			&l.ExpirationDate, &l.Thumbnail)
 		if err != nil {
-			log.Print(err)
-			raven.CaptureError(err, nil)
-			http.Error(w, http.StatusText(500), 500)
-			return
+			return nil, err, 500
 		}
 		listings = append(listings, l)
-		if err = rows.Err(); err != nil {
-			log.Print(err)
-			raven.CaptureError(err, nil)
-			http.Error(w, http.StatusText(500), 500)
-			return
-		}
+	}
+	if err = rows.Err(); err != nil {
+		return nil, err, 500
 	}
 
-	// Convert listings to JSON, Return to client
-	l, err := json.Marshal(listings)
-	if err != nil {
-		log.Print(err)
-		raven.CaptureError(err, nil)
-		http.Error(w, http.StatusText(500), 500)
-		return
-	}
-	w.Header().Set("Content-Type", "application/json;charset=utf-8")
-	fmt.Fprint(w, string(l))
+	return listings, nil, 0
 }

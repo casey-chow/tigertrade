@@ -1,8 +1,6 @@
 package server
 
 import (
-	"encoding/json"
-	"fmt"
 	"github.com/getsentry/raven-go"
 	"github.com/guregu/null"
 	"github.com/julienschmidt/httprouter"
@@ -18,8 +16,8 @@ type Photo struct {
 	Order                null.Float  `json:"order"`
 }
 
-// Returns all photos associated with a given listing's key id
-func GetPhotosByListingId(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+// Writes all photos associated with a given listing's key id to w
+func ServePhotosByListingId(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	if r.Method != "GET" {
 		http.Error(w, http.StatusText(405), 405)
 		return
@@ -33,48 +31,45 @@ func GetPhotosByListingId(w http.ResponseWriter, r *http.Request, ps httprouter.
 		return
 	}
 
-	// Query db for listing
+	// Retrieve photos by listing id
+	photos, err, code := GetPhotosByListingId(id)
+	if err != nil {
+		log.Print(err)
+		raven.CaptureError(err, nil)
+		http.Error(w, http.StatusText(code), code)
+	}
+
+	// Write photos object to output
+	Serve(w, photos)
+}
+
+// Returns all photos associated with a given listing's key id. On error
+// returns an error and the HTTP code associated with that error
+func GetPhotosByListingId(id string) ([]*Photo, error, int) {
+	// Query db for photo
 	rows, err := db.Query(
 		"SELECT key_id, creation_date, listing_id, url, \"order\" " +
 		"FROM photos " +
 		"WHERE listing_id = $1;", id)
 	if err != nil {
-		raven.CaptureError(err, nil)
-		log.Print(err)
-		http.Error(w, http.StatusText(500), 500)
-		return
+		return nil, err, 500
 	}
 	defer rows.Close()
 
-	// Populate listing struct
+	// Populate photo struct
 	photos := make([]*Photo, 0)
 	for rows.Next() {
 		p := new(Photo)
 		err := rows.Scan(&p.KeyID, &p.CreationDate, &p.ListingID, &p.Url,
 			&p.Order)
 		if err != nil {
-			log.Print(err)
-			raven.CaptureError(err, nil)
-			http.Error(w, http.StatusText(500), 500)
-			return
+			return nil, err, 500
 		}
 		photos = append(photos, p)
 	}
 	if err = rows.Err(); err != nil {
-		log.Print(err)
-		raven.CaptureError(err, nil)
-		http.Error(w, http.StatusText(500), 500)
-		return
+		return nil, err, 500
 	}
 
-	// Convert listings to JSON, Return to client
-	p, err := json.Marshal(photos)
-	if err != nil {
-		log.Print(err)
-		raven.CaptureError(err, nil)
-		http.Error(w, http.StatusText(500), 500)
-		return
-	}
-	w.Header().Set("Content-Type", "application/json;charset=utf-8")
-	fmt.Fprint(w, string(p))
+	return photos, nil, 0
 }
