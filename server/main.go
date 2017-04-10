@@ -4,11 +4,12 @@ import (
 	"bufio"
 	"database/sql"
 	"flag"
+	log "github.com/Sirupsen/logrus"
 	"github.com/getsentry/raven-go"
 	_ "github.com/lib/pq"
+	"github.com/meatballhat/negroni-logrus"
 	"github.com/urfave/negroni"
 	"gopkg.in/cas.v1"
-	"log"
 	"net/http"
 	"net/url"
 	"os"
@@ -33,6 +34,17 @@ func SentryMiddleware() negroni.Handler {
 	return negroni.HandlerFunc(func(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
 		raven.RecoveryHandler(next)(w, r)
 	})
+}
+
+func LogMiddleware() negroni.Handler {
+	var loglevel log.Level
+	if flag.Lookup("test.v") == nil {
+		loglevel = log.InfoLevel
+	} else {
+		loglevel = log.WarnLevel
+	}
+
+	return negronilogrus.NewCustomMiddleware(loglevel, &log.JSONFormatter{}, "web")
 }
 
 // Manually loads config variables from .env file if they are not already.
@@ -82,6 +94,20 @@ func initDatabase() {
 	}
 }
 
+// customize logging
+func init() {
+	// Log as JSON instead of the default ASCII formatter.
+	log.SetFormatter(&log.JSONFormatter{})
+
+	// Output to stdout instead of the default stderr
+	log.SetOutput(os.Stdout)
+
+	// raise loglevel for tests
+	if flag.Lookup("test.v") != nil {
+		log.SetLevel(log.WarnLevel)
+	}
+}
+
 func App() http.Handler {
 	loadEnvironment()
 	initDatabase()
@@ -89,12 +115,8 @@ func App() http.Handler {
 	app := negroni.New()
 
 	app.Use(CASMiddleware())
-
-	// if not in testing
-	if flag.Lookup("test.v") == nil {
-		app.Use(SentryMiddleware())
-		app.Use(negroni.NewLogger())
-	}
+	app.Use(SentryMiddleware())
+	app.Use(LogMiddleware())
 
 	app.UseHandler(Router())
 

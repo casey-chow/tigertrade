@@ -2,7 +2,7 @@ package server
 
 import (
 	"fmt"
-	"github.com/golang/glog"
+	log "github.com/Sirupsen/logrus"
 	"github.com/julienschmidt/httprouter"
 	"gopkg.in/cas.v1"
 	"net/http"
@@ -21,6 +21,9 @@ func CheckLoggedIn(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 
 // logs out from CAS
 func Logout(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	glog.Infof("logging out user: %s", cas.Username(r))
+	log.WithFields(log.Fields{
+		"user": cas.Username(r),
+	}).Info("logging out user")
+
 	cas.RedirectToLogout(w, r)
 }

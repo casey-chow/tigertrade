@@ -1,8 +1,8 @@
 package main
 
 import (
+	log "github.com/Sirupsen/logrus"
 	"github.com/casey-chow/tigertrade/server"
-	"log"
 	"net/http"
 	"os"
 )
