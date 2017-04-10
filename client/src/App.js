@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import AppBar from 'material-ui/AppBar';
 import logo from './logo.svg';
 //import './App.css';
-import Home from './containers/Home'
+import Home from './pages/Home'
 import {
   BrowserRouter as Router,
   Route,
