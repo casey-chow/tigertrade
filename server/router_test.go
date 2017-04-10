@@ -1,8 +1,6 @@
 package server
 
 import (
-	"fmt"
-	"github.com/appleboy/gofight"
 	. "github.com/smartystreets/goconvey/convey"
 	"gopkg.in/h2non/gock.v1"
 	"net/http"
@@ -10,48 +8,49 @@ import (
 )
 
 func TestRouter(t *testing.T) {
+	app := App()
+
 	Convey("the index page", t, func() {
-		r := gofight.New()
 
 		Convey("should return OK", func() {
-			r.GET("/").
-				Run(App(), func(r gofight.HTTPResponse, rq gofight.HTTPRequest) {
-					So(r.Body.String(), ShouldEqual, "Welcome!")
-					So(r.Code, ShouldEqual, http.StatusOK)
-				})
+			req, _ := http.NewRequest("GET", "/", nil)
+			res := executeRequest(app, req)
+
+			So(res.Code, ShouldEqual, http.StatusOK)
+			So(res.Body.String(), ShouldEqual, "Welcome!")
 		})
+
 	})
 
 	Convey("CAS authentication", t, func() {
-		r := gofight.New()
 
 		Convey("should redirect to CAS when not logged in", func() {
-			defer gock.Off()
 			gock.New("https://fed.princeton.edu").
 				Get("/cas/validate").
 				Reply(200).
 				BodyString("no\n\n")
+			defer gock.Off()
 
-			r.GET("/login").
-				Run(App(), func(r gofight.HTTPResponse, rq gofight.HTTPRequest) {
-					So(r.Code, ShouldEqual, http.StatusFound)
-				})
+			req, _ := http.NewRequest("GET", "/login", nil)
+			res := executeRequest(app, req)
+
+			So(res.Code, ShouldEqual, http.StatusFound)
 		})
 
 		// TODO: Figure out why this test doesn't work
 		SkipConvey("should return the proper user when logged in", func() {
-			defer gock.Off()
 			gock.New("https://fed.princeton.edu").
 				Get("/cas/validate").
 				Reply(200).
 				BodyString("yes\ntestuser\n")
+			defer gock.Off()
 
-			r.GET("/login").
-				Run(App(), func(r gofight.HTTPResponse, rq gofight.HTTPRequest) {
-					fmt.Printf("body: %s", r.Body.String())
-					So(r.Code, ShouldEqual, http.StatusOK)
-					So(r.Body.String(), ShouldEqual, "testuser")
-				})
+			req, _ := http.NewRequest("GET", "/login", nil)
+			res := executeRequest(app, req)
+
+			So(res.Code, ShouldEqual, http.StatusOK)
+			So(res.Body.String(), ShouldEqual, "testuser")
 		})
+
 	})
 }
