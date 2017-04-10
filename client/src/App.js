@@ -1,15 +1,24 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import AppBar from 'material-ui/AppBar';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
+
 import logo from './logo.svg';
 //import './App.css';
 import Home from './pages/Home'
 import {
   BrowserRouter as Router,
   Route,
-  Link
 } from 'react-router-dom'
 
-class App extends Component {
+class App extends PureComponent {
+  static childContextTypes = {
+    muiTheme: React.PropTypes.object.isRequired,
+  };
+
+  getChildContext() {
+    return {muiTheme: getMuiTheme()};
+  }
+
   render() {
     return (
       <div className="App">
