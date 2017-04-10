@@ -1,6 +1,7 @@
 package server
 
 import (
+	sq "github.com/Masterminds/squirrel"
 	"github.com/getsentry/raven-go"
 	"github.com/guregu/null"
 	"github.com/julienschmidt/httprouter"
@@ -46,11 +47,14 @@ func ServePhotosByListingId(w http.ResponseWriter, r *http.Request, ps httproute
 // Returns all photos associated with a given listing's key id. On error
 // returns an error and the HTTP code associated with that error
 func GetPhotosByListingId(id string) ([]*Photo, error, int) {
-	// Query db for photo
-	rows, err := db.Query(
-		"SELECT key_id, creation_date, listing_id, url, \"order\" " +
-		"FROM photos " +
-		"WHERE listing_id = $1;", id)
+	// Build query for photos
+	query := psql.
+		Select("key_id", "creation_date", "listing_id", "url", "\"order\" ").
+		From("photos").
+		Where(sq.Eq{"listing_id": id})
+
+	// Query db for photos
+	rows, err := query.RunWith(db).Query()
 	if err != nil {
 		return nil, err, 500
 	}
