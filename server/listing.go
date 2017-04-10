@@ -38,6 +38,7 @@ func GetRecentListings(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 		"thumbnails.url " +
 		"FROM listings LEFT OUTER JOIN thumbnails " +
 		"ON listings.thumbnail_id = thumbnails.key_id " +
+		"ORDER BY listings.creation_date DESC " +
 		"LIMIT 30;", maxDescriptionSize)
 	if err != nil {
 		log.Print(err)
