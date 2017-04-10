@@ -27,6 +27,7 @@ func TestRouter(t *testing.T) {
 			req.Header.Add("Origin", origin)
 			res := executeRequest(app, req)
 
+			So(origin, ShouldNotEqual, "")
 			So(res.Header().Get("Access-Control-Allow-Origin"), ShouldEqual, origin)
 		})
 
