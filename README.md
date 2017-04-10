@@ -1,4 +1,7 @@
-# TigerTrade [![Build Status](https://travis-ci.com/casey-chow/tigertrade.svg?token=n7qYoTpmELGRfaEv2AM7&branch=master)](https://travis-ci.com/casey-chow/tigertrade)
+# TigerTrade 
+
+Server: [![Build Status](https://travis-ci.com/casey-chow/tigertrade.svg?token=n7qYoTpmELGRfaEv2AM7&branch=master)](https://travis-ci.com/casey-chow/tigertrade)  
+Client: [![CircleCI](https://circleci.com/gh/casey-chow/tigertrade.svg?style=svg&circle-token=867a4bc4ca198e357b5dd0409c6becdf880a0596)](https://circleci.com/gh/casey-chow/tigertrade)
 
 The Princeton COS333 Project of Andrew Casey Evan Maryam Perry.
 

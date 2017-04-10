@@ -1,22 +1,46 @@
 import React from 'react';
-import {Card, CardActions, CardMedia, CardTitle, CardText} from 'material-ui/Card';
-import FlatButton from 'material-ui/FlatButton';
+import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
 
-const ListingCard = (props) => {
-  const {listing} = props;
+class ListingCard extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      expanded: false,
+    };
+  }
 
-  return (
-   <Card>
-    <CardMedia
-      overlay={<CardTitle title={"$" + (listing.price / 100)} />}>
-      <img src={listing.thumbnail} />
-    </CardMedia>
-    <CardTitle title={listing.title}/>
-    <CardText>
-      {listing.description}
-    </CardText>
-  </Card>
-  );
+  handleExpandChange = (expanded) => {
+    this.setState({expanded: expanded});
+  };
+
+  handleToggle = (event, toggle) => {
+    this.setState({expanded: toggle});
+  };
+
+  handleExpand = () => {
+    this.setState({expanded: true});
+  };
+
+  handleReduce = () => {
+    this.setState({expanded: false});
+  };
+
+  render() {
+    const {listing} = this.props;
+    return (
+     <Card expanded = {this.state.expanded} onExpandChange={this.handleExpandChange}>
+      <CardHeader title={listing.title} subtitle={'$' + (listing.price / 100)}actAsExpander={true}/>
+      
+      <CardMedia expandable={true}>
+          <img src={listing.thumbnail} style={{minWidth: undefined, maxHeight: '300px', width: 'auto'}}/>
+      </CardMedia>
+
+      <CardText expandable={true}>
+        {listing.description}
+      </CardText>
+    </Card>
+    );
+  }
 };
 
 ListingCard.propTypes = {

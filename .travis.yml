@@ -5,6 +5,9 @@ install: make install-server
 script: make test
 git:
   depth: 3
+notifications:
+  slack: pave-team:ybyoWBfz8v4zrsGs1lIgEcDi
+
 
 # TODO: Frontend CI
 # Travis CI doesn't support multiple languages
