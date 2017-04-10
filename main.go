@@ -14,6 +14,8 @@ func main() {
 	if port == "" {
 		log.Fatal("PORT not set correctly.")
 	}
-	log.Printf("Listening on port %s", port)
+	log.WithFields(log.Fields{
+		"port": port,
+	}).Printf("server is now listening")
 	log.Fatal(http.ListenAndServe(":"+port, app))
 }
