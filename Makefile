@@ -15,6 +15,9 @@ install: install-server install-client
 # ENVIRONMENT
 #######################################
 
+.env:
+	cp .env.example .env
+
 $(FRESH):
 	go get github.com/pilu/fresh
 
@@ -24,11 +27,13 @@ $(GOCONVEY):
 $(GOVENDOR):
 	go get github.com/kardianos/govendor
 
+dev: .env
+
 # SERVER
 #######################################
 
 install-server: $(GOVENDOR)
-	$(GOVENDOR) sync
+	$(GOVENDOR) sync -v
 
 build-server: $(FRESH) clean
 	go build
