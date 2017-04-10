@@ -15,6 +15,9 @@ install: install-server install-client
 # ENVIRONMENT
 #######################################
 
+.env:
+	cp .env.example .env
+
 $(FRESH):
 	go get github.com/pilu/fresh
 
@@ -24,18 +27,17 @@ $(GOCONVEY):
 $(GOVENDOR):
 	go get github.com/kardianos/govendor
 
+dev: .env
+
 # SERVER
 #######################################
 
-# Installs all dependencies
 install-server: $(GOVENDOR)
-	$(GOVENDOR) sync
+	$(GOVENDOR) sync -v
 
-# Builds the server executable
-build: $(FRESH) clean
+build-server: $(FRESH) clean
 	go build
 
-# Serves the API server, rerendering
 serve: $(FRESH) clean
 	$(FRESH)
 
@@ -44,8 +46,14 @@ serve: $(FRESH) clean
 #######################################
 
 install-client:
-	$(! type yarn && npm install --global yarn)
+	$(! command -v yarn && npm install --global yarn)
 	yarn install
+
+build-client:
+	yarn build
+
+serve-client:
+	yarn start
 
 
 # TESTING
@@ -54,7 +62,7 @@ install-client:
 test:
 	go test github.com/casey-chow/tigertrade/server
 
-test-server: $(GOCONVEY)
+test-watch: $(GOCONVEY)
 	$(GOCONVEY)
 
 
