@@ -1,6 +1,5 @@
 import React from 'react';
 import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
-import FlatButton from 'material-ui/FlatButton';
 
 class ListingCard extends React.Component {
   constructor(props) {
@@ -29,12 +28,10 @@ class ListingCard extends React.Component {
   render() {
     const {listing} = this.props;
     return (
-     <Card expanded = {this.state.expanded} onExpandChange={this.handleExpandChange}
-     >
-      <CardHeader title={listing.title} actAsExpander={true}/>
+     <Card expanded = {this.state.expanded} onExpandChange={this.handleExpandChange}>
+      <CardHeader title={listing.title} subtitle={'$' + (listing.price / 100)}actAsExpander={true}/>
       
-      <CardMedia 
-        expandable={true} overlay={<CardTitle title={"$" + (listing.price / 100)} />}>
+      <CardMedia expandable={true}>
           <img src={listing.thumbnail} style={{minWidth: undefined, maxHeight: '300px', width: 'auto'}}/>
       </CardMedia>
 

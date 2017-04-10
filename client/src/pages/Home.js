@@ -5,6 +5,7 @@ import { dummyListings } from './../util/dummyData'
 import { Container, Row, Col } from 'react-grid-system';
 import './Home.css'
 
+// react-grid-system: https://github.com/JSxMachina/react-grid-system
 
 class Home extends Component {
   render() {
@@ -12,7 +13,7 @@ class Home extends Component {
       <div className="Home">
         <Container>
         <Row>
-        <Col sm={12}>
+        <Col xs={12}>
         <div className="cardsContainer">
           {dummyListings.map((listing) => <ListingCard listing={listing}/>)}
         </div>
