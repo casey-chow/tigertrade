@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { Provider } from 'react-redux';
 import { Loader } from 'tectonic';
 import AppBar from 'material-ui/AppBar';
