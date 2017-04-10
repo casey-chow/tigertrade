@@ -27,6 +27,21 @@ type ListingsItem struct {
 	Thumbnail            null.String `json:"thumbnail"`
 }
 
+// Returned by a getById function
+type Listing struct {
+	KeyID                int         `json:"keyId"`
+	CreationDate         null.Time   `json:"creationDate"`
+	LastModificationDate null.Time   `json:"lastModificationDate"`
+	Title                string      `json:"title"`
+	Description          null.String `json:"description"`
+	UserID               int         `json:"userId"`
+	Price                null.Int    `json:"price"`
+	Status               null.String `json:"status"`
+	ExpirationDate       null.Time   `json:"expirationDate"`
+	Thumbnail            null.String `json:"thumbnail"`
+	Photos               []Photo     `json:"photos"`
+}
+
 // Writes the most recent count listings, based on original date created to w
 func ServeRecentListings(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	if r.Method != "GET" {
@@ -93,4 +108,70 @@ func GetRecentListings(maxDescriptionSize int, limit int) ([]*ListingsItem, erro
 	}
 
 	return listings, nil, 0
+}
+
+
+// Writes the most recent count listings, based on original date created to w
+func ServeListingById(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	if r.Method != "GET" {
+		http.Error(w, http.StatusText(405), 405)
+		return
+	}
+
+	// Get ID from params
+	id := ps.ByName("id")
+	if id == "" {
+		// Return 404 error with empty body if not found
+		http.Error(w, "", 404)
+		return
+	}
+
+	listings, err, code := GetListingById(id)
+	if err != nil {
+		raven.CaptureError(err, nil)
+		log.Print(err)
+		http.Error(w, http.StatusText(code), code)
+	}
+
+	Serve(w, listings)
+}
+
+// Returns the most recent count listings, based on original date created. On error
+// returns an error and the HTTP code associated with that error.
+func GetListingById(id string) (Listing, error, int) {
+	var listing Listing
+
+	// Query db for listing
+	rows, err := db.Query("SELECT listings.key_id, listings.creation_date, " +
+		"listings.last_modification_date, title, description, " +
+		"user_id, price, status, expiration_date, " +
+		"thumbnails.url " +
+		"FROM listings LEFT OUTER JOIN thumbnails " +
+		"ON listings.thumbnail_id = thumbnails.key_id " +
+		"WHERE listings.key_id = $1;", id)
+	if err != nil {
+		return listing, err, 500
+	}
+	defer rows.Close()
+
+	// Populate listing struct
+	rows.Next()
+	err = rows.Scan(&listing.KeyID, &listing.CreationDate,
+		&listing.LastModificationDate, &listing.Title, &listing.Description,
+		&listing.UserID, &listing.Price, &listing.Status,
+		&listing.ExpirationDate, &listing.Thumbnail)
+	if err != nil {
+		return listing, err, 500
+	}
+
+	// Add photos to struct
+	photos, err, code := GetPhotosByListingId(id)
+	if err != nil {
+		return listing, err, code
+	}
+	for i := range photos {
+		listing.Photos = append(listing.Photos, *photos[i])
+	}
+
+	return listing, nil, 0
 }

@@ -43,6 +43,7 @@ func Router() http.Handler {
 
 	// API Routes
 	router.GET("/api/listings", ServeRecentListings)
+	router.GET("/api/listings/:id", ServeListingById)
 	router.GET("/api/listings/:id/photos", ServePhotosByListingId)
 
 	return router
