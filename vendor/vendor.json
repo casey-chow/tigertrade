@@ -6,6 +6,12 @@
 	"ignore": "github.com/casey-chow/tigertrade",
 	"package": [
 		{
+			"checksumSHA1": "CEonWSn+KAO6bqzJCvPU0o9HhtY=",
+			"path": "github.com/Sirupsen/logrus",
+			"revision": "10f801ebc38b33738c9d17d50860f484a0988ff5",
+			"revisionTime": "2017-03-17T14:32:14Z"
+		},
+		{
 			"checksumSHA1": "EKAwLldD4TW84cbtA1yrkxSq6gE=",
 			"path": "github.com/certifi/gocertifi",
 			"revision": "03be5e6bb9874570ea7fb0961225d193cbc374c5",
@@ -124,6 +130,12 @@
 			"path": "github.com/mattn/go-isatty",
 			"revision": "fc9e8d8ef48496124e79ae0df75490096eccf6fe",
 			"revisionTime": "2017-03-22T23:44:13Z"
+		},
+		{
+			"checksumSHA1": "KUf1IwVJNW9JY/DLjWYkfSBrCYI=",
+			"path": "github.com/meatballhat/negroni-logrus",
+			"revision": "7c570a907cfc69cdc004ad506c6f5e234815b936",
+			"revisionTime": "2016-06-28T04:38:43Z"
 		},
 		{
 			"checksumSHA1": "zZNZd7fvUDu3A7J2o9cneeQJIwo=",
