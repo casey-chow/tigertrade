@@ -5,6 +5,11 @@
   "routes": {
     "/**": "index.html"
   },
+  "proxies": {
+    "/api/": {
+      "origin": "${API_URL}"
+    }
+  },
   "headers": {
     "/**": {
       "Strict-Transport-Security": "max-age=7776000"
