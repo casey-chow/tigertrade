@@ -144,6 +144,18 @@
 			"revisionTime": "2014-06-26T01:07:06Z"
 		},
 		{
+			"checksumSHA1": "4Am6YMPQZGR+f7rqKyvciJzyV6A=",
+			"path": "github.com/rs/cors",
+			"revision": "a62a804a8a009876ca59105f7899938a1349f4b3",
+			"revisionTime": "2016-06-17T23:19:35Z"
+		},
+		{
+			"checksumSHA1": "V/8FAqeii1sWRQXqu3xYIdJNUS4=",
+			"path": "github.com/rs/xhandler",
+			"revision": "ed27b6fd65218132ee50cd95f38474a3d8a2cd12",
+			"revisionTime": "2016-06-18T19:32:21Z"
+		},
+		{
 			"checksumSHA1": "BpFbfnxs4jrjGldU6aMIMcrDmXM=",
 			"path": "github.com/smartystreets/assertions",
 			"revision": "c9ee7d9e9a2aeec0bee7c4a516f3e0ad7cb7e558",

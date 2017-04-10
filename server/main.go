@@ -8,6 +8,7 @@ import (
 	"github.com/getsentry/raven-go"
 	_ "github.com/lib/pq"
 	"github.com/meatballhat/negroni-logrus"
+	"github.com/rs/cors"
 	"github.com/urfave/negroni"
 	"gopkg.in/cas.v1"
 	"net/http"
@@ -20,7 +21,7 @@ import (
 
 var db *sql.DB
 
-func CASMiddleware() negroni.Handler {
+func casMiddleware() negroni.Handler {
 	casUrl, _ := url.Parse("https://fed.princeton.edu/cas/")
 	casClient := cas.NewClient(&cas.Options{URL: casUrl})
 
@@ -30,13 +31,13 @@ func CASMiddleware() negroni.Handler {
 	})
 }
 
-func SentryMiddleware() negroni.Handler {
+func sentryMiddleware() negroni.Handler {
 	return negroni.HandlerFunc(func(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
 		raven.RecoveryHandler(next)(w, r)
 	})
 }
 
-func LogMiddleware() negroni.Handler {
+func logMiddleware() negroni.Handler {
 	var loglevel log.Level
 	if flag.Lookup("test.v") == nil {
 		loglevel = log.InfoLevel
@@ -45,6 +46,14 @@ func LogMiddleware() negroni.Handler {
 	}
 
 	return negronilogrus.NewCustomMiddleware(loglevel, &log.JSONFormatter{}, "web")
+}
+
+func corsMiddleware() negroni.Handler {
+	log.WithField("CLIENT_ROOT", os.Getenv("CLIENT_ROOT")).Print("activating CORS header")
+	return cors.New(cors.Options{
+		AllowedMethods: []string{"GET", "POST", "PUT", "UPDATE", "DELETE"},
+		AllowedOrigins: []string{os.Getenv("CLIENT_ROOT")},
+	})
 }
 
 // Manually loads config variables from .env file if they are not already.
@@ -114,9 +123,10 @@ func App() http.Handler {
 
 	app := negroni.New()
 
-	app.Use(CASMiddleware())
-	app.Use(SentryMiddleware())
-	app.Use(LogMiddleware())
+	app.Use(casMiddleware())
+	app.Use(sentryMiddleware())
+	app.Use(logMiddleware())
+	app.Use(corsMiddleware())
 
 	app.UseHandler(Router())
 
