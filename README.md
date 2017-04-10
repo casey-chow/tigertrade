@@ -14,7 +14,7 @@ make install
 make serve
 ```
 
-Go to [http://localhost:3000][].
+Go to [http://localhost:3000/]().
 
 # Running the client
 
