@@ -17,7 +17,6 @@ install: install-server install-client
 
 .env:
 	cp .env.example .env
-	[ -f ~/drive/COS\ 333/env ] && cp ~/drive/COS\ 333/env .env
 
 $(FRESH):
 	go get github.com/pilu/fresh
@@ -39,7 +38,7 @@ install-server: $(GOVENDOR)
 build-server: $(FRESH) clean
 	go build
 
-serve: .env $(FRESH) clean
+serve: $(FRESH) clean
 	$(FRESH)
 
 
