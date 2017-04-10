@@ -1,6 +1,11 @@
 import React, { PureComponent } from 'react';
+import { Provider } from 'react-redux';
+import { Loader } from 'tectonic';
 import AppBar from 'material-ui/AppBar';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
+
+import store from './store';
+import manager from './manager';
 
 import logo from './logo.svg';
 //import './App.css';
@@ -21,23 +26,27 @@ class App extends PureComponent {
 
   render() {
     return (
-      <div className="App">
-        <AppBar
-          title={document.title}
-          iconClassNameRight="muidocs-icon-navigation-expand-more"
-          style={{
-            position: 'fixed',
-            top: '0px',
-          }}
-        />
-        <Router>
-          <div style={{
-            marginTop: '5em',
-          }}>
-            <Route exact path="/" component={Home}/>
+      <Provider store={ store }>
+        <Loader manager={ manager }>
+          <div className="App">
+            <AppBar
+              title={document.title}
+              iconClassNameRight="muidocs-icon-navigation-expand-more"
+              style={{
+                position: 'fixed',
+                top: '0px',
+              }}
+            />
+            <Router>
+              <div style={{
+                marginTop: '5em',
+              }}>
+                <Route exact path="/" component={Home}/>
+              </div>
+            </Router>
           </div>
-        </Router>
-      </div>
+        </Loader>
+      </Provider>
     );
   }
 }

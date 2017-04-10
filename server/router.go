@@ -23,5 +23,8 @@ func Router() http.Handler {
 	router.GET("/login", CheckLoggedIn)
 	router.GET("/logout", Logout)
 
+	// API Routes
+	router.GET("/api/listings", GetRecentListings)
+
 	return router
 }

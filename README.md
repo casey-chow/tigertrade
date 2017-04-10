@@ -9,27 +9,21 @@ The Princeton COS333 Project of Andrew Casey Evan Maryam Perry.
 
 This assumes you have initialized and migrated the database, and have Go and NPM installed.
 
-## NOTE: Before attempting to run the server, copy .env.example to .env and fill it out with your proper database url.
-(ours is in the drive)
-
 ```sh
+make dev         # this copies our sample .env to your root, feel free to modify
 make install
 make serve
 ```
 
-Go to [http://localhost:3000/]().
+Go to [http://localhost:3030][].
 
 # Running the client
 
-For development purposes, we've disabled server-side rendering. Re-enable it in `client/bin/server.js`:
-```
-global.__DISABLE_SSR___ = true;
-```
-
 Build and run with
-```
-yarn install
-yarn run dev
+
+```sh
+make install
+make serve-client
 ```
 
 # Development
