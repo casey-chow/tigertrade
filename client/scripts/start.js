@@ -34,7 +34,8 @@ if (!checkRequiredFiles([paths.appHtml, paths.appIndexJs])) {
 }
 
 // Tools like Cloud9 rely on this.
-var DEFAULT_PORT = parseInt(process.env.PORT, 10) || 3030;
+// Prefer CLIENT_PORT because it's more specific and granular.
+var DEFAULT_PORT = parseInt(process.env.CLIENT_PORT, 10) || parseInt(process.env.PORT, 10) || 3030;
 var compiler;
 var handleCompile;
 
