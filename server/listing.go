@@ -50,7 +50,6 @@ func GetRecentListings(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 		limit = maxNumListings
 	}
 
-	log.Print(limit)
 	// Query db
 	rows, err := db.Query("SELECT listings.key_id, listings.creation_date, " +
 		"listings.last_modification_date, title, left(description, $1), " +
