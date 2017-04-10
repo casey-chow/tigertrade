@@ -9,6 +9,8 @@ import (
 	"net/http"
 )
 
+var maxDescriptionSize = 1024
+
 // This is the "JSON" struct that appears in the array returned by getRecentListings
 type ListingsItem struct {
 	KeyID int `json:"keyId"`
@@ -29,14 +31,14 @@ func GetRecentListings(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 		http.Error(w, http.StatusText(405), 405)
 		return
 	}
-	// Query db 
-	rows, err := db.Query(	"SELECT listings.key_id, listings.creation_date, " +
-								"listings.last_modification_date, title, description, " +
-								"user_id, price, status, expiration_date, " +
-								"thumbnails.url " + 
-							"FROM listings LEFT OUTER JOIN thumbnails " +
-							"ON listings.thumbnail_id = thumbnails.key_id " +
-							"LIMIT 30;")
+	// Query db
+	rows, err := db.Query("SELECT listings.key_id, listings.creation_date, " +
+		"listings.last_modification_date, title, left(description, $1), " +
+		"user_id, price, status, expiration_date, " +
+		"thumbnails.url " +
+		"FROM listings LEFT OUTER JOIN thumbnails " +
+		"ON listings.thumbnail_id = thumbnails.key_id " +
+		"LIMIT 30;", maxDescriptionSize)
 	if err != nil {
 		log.Print(err)
 		http.Error(w, http.StatusText(500), 500)
