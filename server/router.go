@@ -22,9 +22,9 @@ func Router() http.Handler {
 	router.GET("/hello/:name", Hello)
 
 	// Authentication Routes
-	router.GET("/user/redirect", RedirectUser)
-	router.GET("/user/logout", LogoutUser)
-	router.GET("/user/current", GetCurrentUser)
+	router.GET("/api/user/redirect", RedirectUser)
+	router.GET("/api/user/logout", LogoutUser)
+	router.GET("/api/user/current", GetCurrentUser)
 
 	// API Routes
 	router.GET("/api/listings", ServeRecentListings)
