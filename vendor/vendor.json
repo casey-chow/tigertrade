@@ -12,6 +12,12 @@
 			"revisionTime": "2017-03-17T14:32:14Z"
 		},
 		{
+			"checksumSHA1": "wK8RoiO25J9K4FoSj4bFUEa0Pns=",
+			"path": "github.com/Masterminds/squirrel",
+			"revision": "e13dbacee404686afd0acf2d44b8d34869605e03",
+			"revisionTime": "2015-03-02T16:50:45Z"
+		},
+		{
 			"checksumSHA1": "EKAwLldD4TW84cbtA1yrkxSq6gE=",
 			"path": "github.com/certifi/gocertifi",
 			"revision": "03be5e6bb9874570ea7fb0961225d193cbc374c5",
@@ -112,6 +118,18 @@
 			"path": "github.com/julienschmidt/httprouter",
 			"revision": "6f3f3919c8781ce5c0509c83fffc887a7830c938",
 			"revisionTime": "2017-03-24T20:14:42Z"
+		},
+		{
+			"checksumSHA1": "+kS4EJBu12v8vpSwwxc+I9HMKSQ=",
+			"path": "github.com/lann/builder",
+			"revision": "f22ce00fd9394014049dad11c244859432bd6820",
+			"revisionTime": "2015-08-08T15:11:31Z"
+		},
+		{
+			"checksumSHA1": "R5sMdLB/z+UzPqKHmAIcx4N6n6E=",
+			"path": "github.com/lann/ps",
+			"revision": "62de8c46ede02a7675c4c79c84883eb164cb71e3",
+			"revisionTime": "2015-08-10T15:23:59Z"
 		},
 		{
 			"checksumSHA1": "9xAISNM36+NZlA3v8MkPhklkphU=",
