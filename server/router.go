@@ -24,6 +24,7 @@ func Router() http.Handler {
 	// Authentication Routes
 	router.GET("/user/redirect", RedirectUser)
 	router.GET("/user/logout", LogoutUser)
+	router.GET("/user/current", GetCurrentUser)
 
 	// API Routes
 	router.GET("/api/listings", ServeRecentListings)
