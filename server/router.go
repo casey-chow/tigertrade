@@ -46,5 +46,7 @@ func Router() http.Handler {
 	router.GET("/api/listings/:id", ServeListingById)
 	router.GET("/api/listings/:id/photos", ServePhotosByListingId)
 
+	router.GET("/api/search/:query", ServeSearch)
+
 	return router
 }
