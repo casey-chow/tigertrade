@@ -1,50 +1,45 @@
 package server
 
 import (
-//	"encoding/json"
-	"fmt"
-	"github.com/buger/jsonparser"
-    . "github.com/smartystreets/goconvey/convey"
+	"github.com/bitly/go-simplejson"
+	. "github.com/smartystreets/goconvey/convey"
 	"net/http"
-    "testing"
+	"testing"
 )
 
 func TestSearch(t *testing.T) {
-    app := App()
+	app := App()
 
 	// Uses hardcoded data from the current testing database
-    Convey("When a listing is inserted,", t, func() {
-        Convey("a search on a word in its title returns it", func() {
+	Convey("when a listing is inserted", t, func() {
+		Convey("a search on a word in its title returns it", func() {
 			keyword := "ignore"
-			req, _ := http.NewRequest("GET", fmt.Sprintf("/api/search/%s", keyword), nil)
+			req, _ := http.NewRequest("GET", "/api/search/"+keyword, nil)
 			res := executeRequest(app, req)
 
 			So(res.Code, ShouldEqual, http.StatusOK)
-			So(res.Header().Get("Content-Type"), ShouldEqual, "application/json;charset=utf-8")
-			So(isJSON(res.Body.String()), ShouldBeTrue)
+			So(res.Header().Get("Content-Type"), ShouldContainSubstring, "application/json")
+			So(res.Body.String(), shouldBeJSON)
 
-			body := []byte(res.Body.String())
-			fUcKgO, _, _, err := jsonparser.Get(body)
-			value := string(fUcKgO)
+			result, err := simplejson.NewJson([]byte(res.Body.String()))
 			So(err, ShouldBeNil)
-			So(value, ShouldNotBeEmpty)
-			So(value, ShouldHaveLength, 1)
-//			user_id, _, _, err := jsonparser.Get(value[0])
-//			So(v[0]["user_id"], ShouldEqual, 1)
-//			So(v[0]["title"], ShouldContain, keyword)
-//			So(v[0]["description"], ShouldContain, keyword)
+
+			resultAsArray, err := result.Array()
+			So(err, ShouldBeNil)
+			So(len(resultAsArray), ShouldEqual, 1)
+
+			listing := result.GetIndex(0)
+			So(listing.Get("userId").MustInt(), ShouldEqual, 1)
+			So(listing.Get("title").MustString(), ShouldContainSubstring, keyword)
 		})
-        Convey("a search on a word in its description returns it", func() {
-			So(nil, ShouldNotBeNil)
-		})
-		Convey("a search on two words in its title/description returns it exactly once", func() {
-			So(nil, ShouldNotBeNil)
-		})
-		Convey("searching a word that is not in the title/description will not return it", func() {
-			So(nil, ShouldNotBeNil)
-		})
-		Convey("searching a word that is in multiple listings returns both", func() {
-			So(nil, ShouldNotBeNil)
-		})
-    })
+
+		Convey("a search on a word in its description returns it", nil)
+
+		Convey("a search on two words in its title/description returns it exactly once", nil)
+
+		Convey("searching a word that is not in the title/description will not return it", nil)
+
+		Convey("searching a word that is in multiple listings returns both", nil)
+
+	})
 }
