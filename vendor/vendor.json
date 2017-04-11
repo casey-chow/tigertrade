@@ -6,12 +6,6 @@
 	"ignore": "github.com/casey-chow/tigertrade",
 	"package": [
 		{
-			"checksumSHA1": "vdv6jsW/K7RDb1tW1nh4h4nalt0=",
-			"path": "github.com/Jeffail/gabs",
-			"revision": "c9fb5b700cddb62013b2ee9dfc9ce011caea55e0",
-			"revisionTime": "2017-03-22T22:36:35Z"
-		},
-		{
 			"checksumSHA1": "wK8RoiO25J9K4FoSj4bFUEa0Pns=",
 			"path": "github.com/Masterminds/squirrel",
 			"revision": "e13dbacee404686afd0acf2d44b8d34869605e03",
