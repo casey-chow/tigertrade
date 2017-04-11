@@ -3,10 +3,10 @@ package server
 import (
 	"fmt"
 	sq "github.com/Masterminds/squirrel"
+	log "github.com/Sirupsen/logrus"
 	"github.com/getsentry/raven-go"
 	"github.com/guregu/null"
 	"github.com/julienschmidt/httprouter"
-	"log"
 	"net/http"
 	"strconv"
 )
