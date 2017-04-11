@@ -31,7 +31,7 @@ export default class Listing extends Model {
 export const routes = [
   {
     meta: {
-      url: `${process.env.PUBLIC_URL}/api/listings`,
+      url: `${process.env.REACT_APP_SERVER_ROOT}/api/listings`,
     },
     returns: Listing.list(),
   },

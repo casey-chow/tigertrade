@@ -4,11 +4,13 @@ import (
 	"bufio"
 	"database/sql"
 	"flag"
+	log "github.com/Sirupsen/logrus"
 	"github.com/getsentry/raven-go"
 	_ "github.com/lib/pq"
+	"github.com/meatballhat/negroni-logrus"
+	"github.com/rs/cors"
 	"github.com/urfave/negroni"
 	"gopkg.in/cas.v1"
-	"log"
 	"net/http"
 	"net/url"
 	"os"
@@ -19,7 +21,7 @@ import (
 
 var db *sql.DB
 
-func CASMiddleware() negroni.Handler {
+func casMiddleware() negroni.Handler {
 	casUrl, _ := url.Parse("https://fed.princeton.edu/cas/")
 	casClient := cas.NewClient(&cas.Options{URL: casUrl})
 
@@ -29,9 +31,28 @@ func CASMiddleware() negroni.Handler {
 	})
 }
 
-func SentryMiddleware() negroni.Handler {
+func sentryMiddleware() negroni.Handler {
 	return negroni.HandlerFunc(func(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
 		raven.RecoveryHandler(next)(w, r)
+	})
+}
+
+func logMiddleware() negroni.Handler {
+	var loglevel log.Level
+	if flag.Lookup("test.v") == nil {
+		loglevel = log.InfoLevel
+	} else {
+		loglevel = log.WarnLevel
+	}
+
+	return negronilogrus.NewCustomMiddleware(loglevel, &log.JSONFormatter{}, "web")
+}
+
+func corsMiddleware() negroni.Handler {
+	log.WithField("CLIENT_ROOT", os.Getenv("CLIENT_ROOT")).Print("activating CORS header")
+	return cors.New(cors.Options{
+		AllowedMethods: []string{"GET", "POST", "PUT", "UPDATE", "DELETE"},
+		AllowedOrigins: []string{os.Getenv("CLIENT_ROOT")},
 	})
 }
 
@@ -82,19 +103,30 @@ func initDatabase() {
 	}
 }
 
+// customize logging
+func init() {
+	// Log as JSON instead of the default ASCII formatter.
+	log.SetFormatter(&log.JSONFormatter{})
+
+	// Output to stdout instead of the default stderr
+	log.SetOutput(os.Stdout)
+
+	// raise loglevel for tests
+	if flag.Lookup("test.v") != nil {
+		log.SetLevel(log.WarnLevel)
+	}
+}
+
 func App() http.Handler {
 	loadEnvironment()
 	initDatabase()
 
 	app := negroni.New()
 
-	app.Use(CASMiddleware())
-
-	// if not in testing
-	if flag.Lookup("test.v") == nil {
-		app.Use(SentryMiddleware())
-		app.Use(negroni.NewLogger())
-	}
+	app.Use(casMiddleware())
+	app.Use(sentryMiddleware())
+	app.Use(logMiddleware())
+	app.Use(corsMiddleware())
 
 	app.UseHandler(Router())
 
