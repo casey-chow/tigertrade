@@ -6,16 +6,16 @@
 	"ignore": "github.com/casey-chow/tigertrade",
 	"package": [
 		{
-			"checksumSHA1": "CEonWSn+KAO6bqzJCvPU0o9HhtY=",
-			"path": "github.com/Sirupsen/logrus",
-			"revision": "10f801ebc38b33738c9d17d50860f484a0988ff5",
-			"revisionTime": "2017-03-17T14:32:14Z"
-		},
-		{
 			"checksumSHA1": "wK8RoiO25J9K4FoSj4bFUEa0Pns=",
 			"path": "github.com/Masterminds/squirrel",
 			"revision": "e13dbacee404686afd0acf2d44b8d34869605e03",
 			"revisionTime": "2015-03-02T16:50:45Z"
+		},
+		{
+			"checksumSHA1": "CEonWSn+KAO6bqzJCvPU0o9HhtY=",
+			"path": "github.com/Sirupsen/logrus",
+			"revision": "10f801ebc38b33738c9d17d50860f484a0988ff5",
+			"revisionTime": "2017-03-17T14:32:14Z"
 		},
 		{
 			"checksumSHA1": "EKAwLldD4TW84cbtA1yrkxSq6gE=",

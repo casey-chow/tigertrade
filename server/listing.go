@@ -15,8 +15,6 @@ const maxDescriptionSize = 1024
 const defaultNumListings = 30
 const maxNumListings = 100
 
-var psql = sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
-
 // This is the "JSON" struct that appears in the array returned by getRecentListings
 type ListingsItem struct {
 	KeyID                int         `json:"keyId"`
