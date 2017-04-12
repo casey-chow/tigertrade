@@ -38,14 +38,7 @@ func sentryMiddleware() negroni.Handler {
 }
 
 func logMiddleware() negroni.Handler {
-	var loglevel log.Level
-	if flag.Lookup("test.v") == nil {
-		loglevel = log.InfoLevel
-	} else {
-		loglevel = log.WarnLevel
-	}
-
-	return negronilogrus.NewCustomMiddleware(loglevel, &log.JSONFormatter{}, "web")
+	return negronilogrus.NewCustomMiddleware(log.InfoLevel, &log.JSONFormatter{}, "web")
 }
 
 func corsMiddleware() negroni.Handler {

@@ -1,9 +1,11 @@
 package server
 
 import (
+	"database/sql"
 	sq "github.com/Masterminds/squirrel"
 	log "github.com/Sirupsen/logrus"
 	"github.com/getsentry/raven-go"
+	"github.com/guregu/null"
 	"github.com/julienschmidt/httprouter"
 	"gopkg.in/cas.v1"
 	"net/http"
@@ -17,9 +19,58 @@ var redirectToLogin = cas.RedirectToLogin
 var redirectToLogout = cas.RedirectToLogout
 var getUsername = cas.Username
 
-// GetCurrentUser returns the current user.
-func GetCurrentUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+// User represents a user of the app.
+type User struct {
+	KeyID                int       `json:"keyId"`
+	CreationDate         null.Time `json:"creationDate"`
+	LastModificationDate null.Time `json:"lastModificationDate"`
+	NetID                string    `json:"netId"`
+}
 
+// getUser gets the specified user, and HTTP codes corresponding. If does
+// not exist, returns nil, 404, err.
+func getUser(netID string) (*User, int, error) {
+	query := psql.
+		Select("key_id", "net_id", "creation_date", "last_modification_date").
+		From("users").
+		Where(sq.Eq{"net_id": netID}).
+		Limit(1)
+
+	user := new(User)
+	err := query.RunWith(db).
+		QueryRow().
+		Scan(
+			&user.KeyID,
+			&user.NetID,
+			&user.CreationDate,
+			&user.LastModificationDate,
+		)
+	if err == sql.ErrNoRows {
+		return nil, 404, err
+	} else if err != nil {
+		return nil, 500, err
+	}
+
+	return user, 0, nil
+}
+
+// ServeCurrentUser returns the current user, or an empty JSON object if not logged in.
+func ServeCurrentUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	netID := getUsername(r)
+	user, code, err := getUser(netID)
+	if err != nil {
+		http.Error(w, http.StatusText(code), code)
+	}
+
+	if err != nil && err != sql.ErrNoRows {
+		raven.CaptureError(err, map[string]string{"username": netID})
+		log.WithFields(log.Fields{
+			"err":      err,
+			"username": netID,
+		}).Error("encountered error while retrieving user")
+	} else {
+		Serve(w, user)
+	}
 }
 
 // UserExists returns true if a user with the username exists.

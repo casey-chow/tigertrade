@@ -2,17 +2,65 @@ package server
 
 import (
 	. "github.com/smartystreets/goconvey/convey"
+	"gopkg.in/DATA-DOG/go-sqlmock.v1"
 	"net/http"
 	"os"
 	"testing"
+	"time"
 )
 
 func TestAuthentication(t *testing.T) {
 	app := App()
 
-	Convey("GetCurrentUser", t, func() {
+	Convey("ServeCurrentUser", t, func() {
+		oldIsAuthenticated := isAuthenticated
+		oldGetUsername := getUsername
+		oldDb := db
+		defer func() {
+			isAuthenticated = oldIsAuthenticated
+			getUsername = oldGetUsername
+			db.Close()
+			db = oldDb
+		}()
 
-		Convey("returns the user profile", nil)
+		var mock sqlmock.Sqlmock
+		var err error
+		db, mock, err = sqlmock.New()
+		if err != nil {
+			t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
+		}
+
+		Convey("returns an empty JSON string if not found", func() {
+			getUsername = func(_ *http.Request) string { return "testuser" }
+			mock.ExpectQuery("SELECT .* FROM users .*").
+				WillReturnRows(sqlmock.NewRows([]string{
+					"key_id",
+					"net_id",
+					"creation_date",
+					"last_modification_date",
+				}))
+
+			req, _ := http.NewRequest("GET", "/api/users/current", nil)
+			res := executeRequest(app, req)
+
+			So(res.Code, ShouldEqual, http.StatusNotFound)
+			So(mock.ExpectationsWereMet(), ShouldBeNil)
+		})
+
+		Convey("returns the user profile if logged in", func() {
+			getUsername = func(_ *http.Request) string { return "testuser" }
+			mock.ExpectQuery("SELECT .* FROM users WHERE .*").
+				WillReturnRows(sqlmock.NewRows([]string{
+					"key_id", "net_id", "creation_date", "last_modification_date",
+				}).AddRow(1, "testuser", time.Now(), time.Now()))
+
+			req, _ := http.NewRequest("GET", "/api/users/current", nil)
+			res := executeRequest(app, req)
+
+			// TODO: more advanced JSON matching
+			So(res.Code, ShouldEqual, http.StatusOK)
+			So(mock.ExpectationsWereMet(), ShouldBeNil)
+		})
 
 	})
 
@@ -47,7 +95,7 @@ func TestAuthentication(t *testing.T) {
 			isAuthenticated = func(_ *http.Request) bool { return false }
 			redirectToLogin = func(_ http.ResponseWriter, _ *http.Request) { redirected = true }
 
-			req, _ := http.NewRequest("GET", "/api/user/redirect", nil)
+			req, _ := http.NewRequest("GET", "/api/users/redirect", nil)
 			executeRequest(app, req)
 
 			So(redirected, ShouldBeTrue)
@@ -61,7 +109,7 @@ func TestAuthentication(t *testing.T) {
 
 			isAuthenticated = func(r *http.Request) bool { return true }
 
-			req, _ := http.NewRequest("GET", "/api/user/redirect", nil)
+			req, _ := http.NewRequest("GET", "/api/users/redirect", nil)
 			res := executeRequest(app, req)
 
 			So(res.Code, ShouldEqual, http.StatusFound)
@@ -71,7 +119,7 @@ func TestAuthentication(t *testing.T) {
 		Convey("should redirect to an arbitrary valid URL", func() {
 			isAuthenticated = func(r *http.Request) bool { return true }
 
-			req, _ := http.NewRequest("GET", "/api/user/redirect?return=http%3A%2F%2Flocalhost%3A8888", nil)
+			req, _ := http.NewRequest("GET", "/api/users/redirect?return=http%3A%2F%2Flocalhost%3A8888", nil)
 			res := executeRequest(app, req)
 
 			So(res.Code, ShouldEqual, http.StatusFound)
@@ -81,7 +129,7 @@ func TestAuthentication(t *testing.T) {
 		Convey("should not redirect to an invalid URL", func() {
 			isAuthenticated = func(r *http.Request) bool { return true }
 
-			req, _ := http.NewRequest("GET", "/api/user/redirect?return=calh\\ost%3A8888", nil)
+			req, _ := http.NewRequest("GET", "/api/users/redirect?return=calh\\ost%3A8888", nil)
 			res := executeRequest(app, req)
 
 			So(res.Code, ShouldEqual, http.StatusFound)
@@ -108,7 +156,7 @@ func TestAuthentication(t *testing.T) {
 			isAuthenticated = func(_ *http.Request) bool { return true }
 			redirectToLogout = func(_ http.ResponseWriter, _ *http.Request) { redirected = true }
 
-			req, _ := http.NewRequest("GET", "/api/user/logout", nil)
+			req, _ := http.NewRequest("GET", "/api/users/logout", nil)
 			executeRequest(app, req)
 
 			So(redirected, ShouldBeTrue)
@@ -117,7 +165,7 @@ func TestAuthentication(t *testing.T) {
 		Convey("should redirect to the client root if logged out", func() {
 			isAuthenticated = func(r *http.Request) bool { return false }
 
-			req, _ := http.NewRequest("GET", "/api/user/logout", nil)
+			req, _ := http.NewRequest("GET", "/api/users/logout", nil)
 			res := executeRequest(app, req)
 
 			So(res.Code, ShouldEqual, http.StatusFound)
@@ -127,7 +175,7 @@ func TestAuthentication(t *testing.T) {
 		Convey("should redirect to the client, even if given a return param", func() {
 			isAuthenticated = func(r *http.Request) bool { return false }
 
-			req, _ := http.NewRequest("GET", "/api/user/logout?return=http%3A%2F%2Flocalhost%3A8888", nil)
+			req, _ := http.NewRequest("GET", "/api/users/logout?return=http%3A%2F%2Flocalhost%3A8888", nil)
 			res := executeRequest(app, req)
 
 			So(res.Code, ShouldEqual, http.StatusFound)
