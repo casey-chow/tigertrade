@@ -1,4 +1,6 @@
-const API_ROOT = `${process.env.REACT_APP_SERVER_ROOT}/api`;
+import fetch from 'isomorphic-fetch';
+
+import { API_ROOT } from './common';
 
 export function loadRecentListings() {
   return function (dispatch, getState) {

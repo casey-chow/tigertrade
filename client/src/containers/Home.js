@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Container, Row, Col } from 'react-grid-system';
 
 import ListingCard from './../components/ListingCard';
-import { loadRecentListings } from './../actions';
+import { loadRecentListings } from '../actions/listings';
 
 import './Home.css';
 

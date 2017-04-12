@@ -17,7 +17,9 @@ class App extends PureComponent {
       <div className="App">
         <TopBar />
 
-        <Route exact path="/" component={Home} />
+        <div style={{marginTop: '64px'}}>
+          <Route exact path="/" component={Home} />
+        </div>
       </div>
     );
   }
