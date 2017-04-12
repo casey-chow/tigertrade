@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 
 import {
   Card, 
-  CardActions, 
+  // CardActions, 
   CardHeader, 
   CardMedia, 
-  CardTitle, 
+  // CardTitle, 
   CardText
 } from 'material-ui/Card';
 
@@ -37,11 +37,11 @@ class ListingCard extends React.Component {
   render() {
     const {listing} = this.props;
     return (
-     <Card expanded = {this.state.expanded} onExpandChange={this.handleExpandChange}>
+     <Card expanded={this.state.expanded} onExpandChange={this.handleExpandChange}>
       <CardHeader title={listing.title} subtitle={'$' + (listing.price / 100)}actAsExpander={true}/>
       
       <CardMedia expandable={true}>
-          <img src={listing.thumbnail} style={{minWidth: undefined, maxHeight: '300px', width: 'auto'}}/>
+          <img alt={listing.title} src={listing.thumbnail} style={{minWidth: undefined, maxHeight: '300px', width: 'auto'}}/>
       </CardMedia>
 
       <CardText expandable={true}>
@@ -55,8 +55,8 @@ class ListingCard extends React.Component {
 ListingCard.propTypes = {
   listing: PropTypes.shape({
     keyId: PropTypes.number,
-    creationDate: PropTypes.number,
-    lastModificationDate: PropTypes.number,
+    creationDate: PropTypes.string,
+    lastModificationDate: PropTypes.string,
     title: PropTypes.string,
     description: PropTypes.string,
     userId: PropTypes.number,

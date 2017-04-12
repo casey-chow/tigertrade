@@ -1,31 +1,13 @@
 import {
   applyMiddleware,
   createStore,
-  combineReducers,
 } from 'redux';
-import { reducer } from 'tectonic';
+import { flowRight } from 'lodash';
 
-import { reducer as formReducer } from 'redux-form';
-import { reducer as uiReducer } from 'redux-ui';
-// Middleware and friends
-import { createLogger } from 'redux-logger';
+import reducers from './reducers';
+import middleware from './middleware';
 
-const middlewares = [];
-
-if (process.env.NODE_ENV === 'development') {
-  middlewares.push(createLogger({
-    collapsed: (getState, action) => {
-      return action.type.indexOf('redux-ui') > 0;
-    },
-  }));
-}
-
-const reducers = combineReducers({
-  ui: uiReducer,
-  form: formReducer,
-  tectonic: reducer,
-});
-
-const store = createStore(reducers, applyMiddleware(...middlewares));
+const compose = (window && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || flowRight;
+const store = createStore(reducers, compose(applyMiddleware(...middleware)));
 
 export default store;
