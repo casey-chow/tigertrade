@@ -7,6 +7,8 @@ import FlatButton from 'material-ui/FlatButton';
 import Popover, { PopoverAnimationVertical } from 'material-ui/Popover';
 import Menu from 'material-ui/Menu';
 import MenuItem from 'material-ui/MenuItem';
+import DatePicker from 'material-ui/DatePicker';
+import TextField from 'material-ui/TextField'
 
 class SearchBar extends Component {
 	state = {
@@ -65,10 +67,12 @@ class SearchBar extends Component {
           animation={PopoverAnimationVertical}
         >
           <Menu>
-            <MenuItem primaryText="Refresh" />
-            <MenuItem primaryText="Help &amp; feedback" />
-            <MenuItem primaryText="Settings" />
-            <MenuItem primaryText="Sign out" />
+          	<div style={{marginLeft: '1em'}}>
+          	<TextField hintText="Priced below" type="number"/>
+          	<DatePicker inset={true} container={'inline'} hintText="Posted after"/>
+          	<FlatButton label="OK" primary={true}/>
+          	<FlatButton label="Cancel" secondary={true}/>
+          	</div>
           </Menu>
         </Popover>
           </span>
