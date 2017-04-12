@@ -6,10 +6,28 @@
 	"ignore": "github.com/casey-chow/tigertrade",
 	"package": [
 		{
+			"checksumSHA1": "wK8RoiO25J9K4FoSj4bFUEa0Pns=",
+			"path": "github.com/Masterminds/squirrel",
+			"revision": "e13dbacee404686afd0acf2d44b8d34869605e03",
+			"revisionTime": "2015-03-02T16:50:45Z"
+		},
+		{
 			"checksumSHA1": "CEonWSn+KAO6bqzJCvPU0o9HhtY=",
 			"path": "github.com/Sirupsen/logrus",
 			"revision": "10f801ebc38b33738c9d17d50860f484a0988ff5",
 			"revisionTime": "2017-03-17T14:32:14Z"
+		},
+		{
+			"checksumSHA1": "xTy1x4EoWRSsBlstJxFp0z321NQ=",
+			"path": "github.com/bitly/go-simplejson",
+			"revision": "da1a8928f709389522c8023062a3739f3b4af419",
+			"revisionTime": "2017-02-06T15:46:32Z"
+		},
+		{
+			"checksumSHA1": "mJ8L+VEUNfB4s53n00P0foANAeM=",
+			"path": "github.com/bmizerany/assert",
+			"revision": "b7ed37b82869576c289d7d97fb2bbd8b64a0cb28",
+			"revisionTime": "2016-06-11T22:19:34Z"
 		},
 		{
 			"checksumSHA1": "EKAwLldD4TW84cbtA1yrkxSq6gE=",
@@ -112,6 +130,30 @@
 			"path": "github.com/julienschmidt/httprouter",
 			"revision": "6f3f3919c8781ce5c0509c83fffc887a7830c938",
 			"revisionTime": "2017-03-24T20:14:42Z"
+		},
+		{
+			"checksumSHA1": "oONaja1SA8xsG5eqRKz8UZ9IHVI=",
+			"path": "github.com/kr/pretty",
+			"revision": "cfb55aafdaf3ec08f0db22699ab822c50091b1c4",
+			"revisionTime": "2016-08-23T17:07:15Z"
+		},
+		{
+			"checksumSHA1": "yHHAiCGQPKOlbQZKsxZrY/PL+cw=",
+			"path": "github.com/kr/text",
+			"revision": "7cafcd837844e784b526369c9bce262804aebc60",
+			"revisionTime": "2016-05-04T02:26:26Z"
+		},
+		{
+			"checksumSHA1": "+kS4EJBu12v8vpSwwxc+I9HMKSQ=",
+			"path": "github.com/lann/builder",
+			"revision": "f22ce00fd9394014049dad11c244859432bd6820",
+			"revisionTime": "2015-08-08T15:11:31Z"
+		},
+		{
+			"checksumSHA1": "R5sMdLB/z+UzPqKHmAIcx4N6n6E=",
+			"path": "github.com/lann/ps",
+			"revision": "62de8c46ede02a7675c4c79c84883eb164cb71e3",
+			"revisionTime": "2015-08-10T15:23:59Z"
 		},
 		{
 			"checksumSHA1": "9xAISNM36+NZlA3v8MkPhklkphU=",
