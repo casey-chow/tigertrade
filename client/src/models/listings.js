@@ -16,16 +16,6 @@ export default class Listing extends Model {
     expirationDate: new Date(),
     thumbnail: ''
   }
-
-  /**
-   * Returns either the name or the URL of the page for use as the title
-   */
-  title() {
-    if (this.name !== '') {
-      return this.name;
-    }
-    return this.url;
-  }
 }
 
 export const routes = [

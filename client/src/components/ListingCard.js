@@ -1,5 +1,14 @@
 import React from 'react';
-import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
+import PropTypes from 'prop-types';
+
+import {
+  Card, 
+  CardActions, 
+  CardHeader, 
+  CardMedia, 
+  CardTitle, 
+  CardText
+} from 'material-ui/Card';
 
 class ListingCard extends React.Component {
   constructor(props) {
@@ -44,17 +53,17 @@ class ListingCard extends React.Component {
 };
 
 ListingCard.propTypes = {
-  listing: React.PropTypes.shape({
-    keyId: React.PropTypes.number,
-    creationDate: React.PropTypes.number,
-    lastModificationDate: React.PropTypes.number,
-    title: React.PropTypes.string,
-    description: React.PropTypes.string,
-    userId: React.PropTypes.number,
-    price: React.PropTypes.number,
-    status: React.PropTypes.string,
-    expirationDate: React.PropTypes.number,
-    thumbnail: React.PropTypes.string
+  listing: PropTypes.shape({
+    keyId: PropTypes.number,
+    creationDate: PropTypes.number,
+    lastModificationDate: PropTypes.number,
+    title: PropTypes.string,
+    description: PropTypes.string,
+    userId: PropTypes.number,
+    price: PropTypes.number,
+    status: PropTypes.string,
+    expirationDate: PropTypes.number,
+    thumbnail: PropTypes.string
   }).isRequired
 };
 

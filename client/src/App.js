@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
 import { Provider } from 'react-redux';
 import { Loader } from 'tectonic';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
@@ -17,7 +18,7 @@ import {
 
 class App extends PureComponent {
   static childContextTypes = {
-    muiTheme: React.PropTypes.object.isRequired,
+    muiTheme: PropTypes.object.isRequired,
   };
 
   getChildContext() {

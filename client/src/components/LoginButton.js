@@ -8,7 +8,7 @@ export default class LoginButton extends PureComponent {
   redirectToCas = (evt) => {
     evt.preventDefault();
     const curr = window.location.href;
-    const newLoc = `${process.env.REACT_APP_SERVER_ROOT}/api/user/redirect?return=${encodeURIComponent(curr)}`;
+    const newLoc = `${process.env.REACT_APP_SERVER_ROOT}/api/users/redirect?return=${encodeURIComponent(curr)}`;
     console.log(`login: redirecting to ${newLoc}`);
     window.location = newLoc;
   }
