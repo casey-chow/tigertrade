@@ -1,7 +1,8 @@
 import React, { PureComponent } from 'react';
 import { Provider } from 'react-redux';
 import { Loader } from 'tectonic';
-import AppBar from 'material-ui/AppBar';
+// import AppBar from 'material-ui/AppBar';
+import ActionBar from './components/ActionBar'
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
 import store from './store';
@@ -29,7 +30,7 @@ class App extends PureComponent {
       <Provider store={ store }>
         <Loader manager={ manager }>
           <div className="App">
-            <AppBar
+            <ActionBar
               title={document.title}
               iconClassNameRight="muidocs-icon-navigation-expand-more"
               style={{
