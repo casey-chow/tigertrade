@@ -85,6 +85,7 @@ func GetRecentListings(maxDescriptionSize int, limit uint64) ([]*ListingsItem, e
 		"title", fmt.Sprintf("left(description, %d)", maxDescriptionSize),
 		"user_id", "price", "status", "expiration_date", "thumbnails.url").
 		From("listings").
+		Where("listings.is_active=true").
 		LeftJoin("thumbnails ON listings.thumbnail_id = thumbnails.key_id").
 		OrderBy("listings.creation_date DESC").
 		Limit(limit)
@@ -152,6 +153,7 @@ func GetListingById(id string) (Listing, error, int) {
 		"title", "description", "user_id", "price", "status", "expiration_date",
 		"thumbnails.url").
 		From("listings").
+		Where("listings.is_active=true").
 		LeftJoin("thumbnails ON listings.thumbnail_id = thumbnails.key_id").
 		Where(sq.Eq{"listings.key_id": id})
 

@@ -51,7 +51,9 @@ func GetPhotosByListingId(id string) ([]*Photo, error, int) {
 	query := psql.
 		Select("key_id", "creation_date", "listing_id", "url", "\"order\" ").
 		From("photos").
-		Where(sq.Eq{"listing_id": id})
+		Where(sq.Eq{"listing_id": id}).
+		Where("is_active=true")
+
 
 	// Query db for photos
 	rows, err := query.RunWith(db).Query()
