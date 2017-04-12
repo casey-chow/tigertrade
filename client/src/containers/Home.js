@@ -1,34 +1,41 @@
-import React, { PureComponent, PropTypes } from 'react';
-import load, { Status } from 'tectonic';
-import ListingCard from './../components/ListingCard'
-import ListingModel from '../models/listings'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { Container, Row, Col } from 'react-grid-system';
-import './Home.css'
 
-// react-grid-system: https://github.com/JSxMachina/react-grid-system
+import ListingCard from './../components/ListingCard';
+import { loadRecentListings } from './../actions';
 
-@load((props) => ({
-  listings: ListingModel.getList(),
-}))
-class Home extends PureComponent {
+import './Home.css';
+
+class Home extends Component {
   static propTypes = {
-    // automatically injected status models, containing the http response
-    // code, any error messages, and the overall status of the query
-    status: PropTypes.shape({
-      listings: PropTypes.instanceOf(Status),
-    }),
-
-    // data loaded w/ tectonic
-    listings: PropTypes.arrayOf(PropTypes.instanceOf(ListingModel)),
+    listings: PropTypes.array.isRequired,
+    dispatch: PropTypes.func.isRequired,
   }
 
+  componentWillMount() {
+    this.props.dispatch(loadRecentListings());
+  }
+
+  // componentWillReceiveProps(nextProps) {
+  //   this.props.dispatch(loadRecentListings());
+  // }
+
   render() {
+    console.log(this.props.listings);
+    if (this.props.isFetching) {
+      return <p>Loading...</p>
+    }
+
+    const listings = this.props.listings.map((listing) => <ListingCard listing={listing}/>);
+
     return (
       <Container className="Home">
         <Row>
           <Col xs={12}>
             <div className="cardsContainer">
-              {this.props.listings.map((listing) => <ListingCard listing={listing}/>)}
+              {listings}
             </div>
           </Col>
         </Row>
@@ -37,4 +44,10 @@ class Home extends PureComponent {
   }
 }
 
-export default Home;
+const mapStateToProps = (state) => {
+  return ({
+    listings: state.listings,
+  });
+}
+
+export default connect(mapStateToProps)(Home);

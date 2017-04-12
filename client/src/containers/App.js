@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { Route } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
-import TopBar from './TopBar';
+import TopBar from '../components/TopBar';
 import Home from './Home';
 
 import './App.css';
