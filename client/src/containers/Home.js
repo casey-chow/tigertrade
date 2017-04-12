@@ -9,7 +9,7 @@ import './Home.css'
 
 @load((props) => ({
   listings: ListingModel.getList(),
-})) 
+}))
 class Home extends PureComponent {
   static propTypes = {
     // automatically injected status models, containing the http response
@@ -24,17 +24,15 @@ class Home extends PureComponent {
 
   render() {
     return (
-      <div className="Home">
-        <Container>
+      <Container className="Home">
         <Row>
-        <Col xs={12}>
-        <div className="cardsContainer">
-          {this.props.listings.map((listing) => <ListingCard listing={listing}/>)}
-        </div>
-        </Col>
+          <Col xs={12}>
+            <div className="cardsContainer">
+              {this.props.listings.map((listing) => <ListingCard listing={listing}/>)}
+            </div>
+          </Col>
         </Row>
-        </Container>
-      </div>
+      </Container>
     );
   }
 }

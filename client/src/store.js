@@ -3,6 +3,7 @@ import {
   createStore,
   combineReducers,
 } from 'redux';
+import { compose } from 'lodash';
 import { reducer } from 'tectonic';
 
 import { reducer as formReducer } from 'redux-form';
@@ -22,6 +23,7 @@ const reducers = combineReducers({
   tectonic: reducer,
 });
 
-const store = createStore(reducers, applyMiddleware(logger));
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const store = createStore(reducers, composeEnhancers(applyMiddleware(logger)));
 
 export default store;
