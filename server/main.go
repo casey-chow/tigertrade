@@ -38,7 +38,11 @@ func sentryMiddleware() negroni.Handler {
 }
 
 func logMiddleware() negroni.Handler {
-	return negronilogrus.NewCustomMiddleware(log.InfoLevel, &log.JSONFormatter{}, "web")
+	if os.Getenv("ENVIRONMENT") == "production" {
+		return negronilogrus.NewCustomMiddleware(log.InfoLevel, &log.JSONFormatter{}, "web")
+	}
+
+	return negronilogrus.NewCustomMiddleware(log.InfoLevel, &log.TextFormatter{}, "web")
 }
 
 func corsMiddleware() negroni.Handler {
@@ -99,8 +103,10 @@ func initDatabase() {
 
 // customize logging
 func init() {
-	// Log as JSON instead of the default ASCII formatter.
-	log.SetFormatter(&log.JSONFormatter{})
+	if os.Getenv("ENVIRONMENT") == "production" {
+		// Log as JSON instead of the default ASCII formatter.
+		log.SetFormatter(&log.JSONFormatter{})
+	}
 
 	// Output to stdout instead of the default stderr
 	log.SetOutput(os.Stdout)
