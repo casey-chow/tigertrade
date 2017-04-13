@@ -37,8 +37,8 @@ func Router() http.Handler {
 	router.GET("/api/seeks/:id", ServeSeekById)
 
 	router.GET("/api/savedsearches", ServeRecentSavedSearches)
-	router.POST("/api/savedsearches", ServeAddSeek)
-	router.GET("/api/savedsearches/:id", ServeSeekById)
+	router.POST("/api/savedsearches", ServeAddSavedSearch)
+	router.GET("/api/savedsearches/:id", ServeSavedSearchById)
 
 	router.GET("/api/search/:query", ServeSearch)
 
