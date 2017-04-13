@@ -2,7 +2,6 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
 import AppBar from 'material-ui/AppBar';
-import CircularProgress from 'material-ui/CircularProgress';
 
 import SearchBar from './SearchBar';
 import LoginButton from './LoginButton';
