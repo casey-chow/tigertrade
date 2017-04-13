@@ -10,21 +10,14 @@ import ComposeForm from './../components/ComposeForm';
 
 class Compose extends Component {
 
-  handleSubmit = (values) => {
-    // do something with the form values
-  }
   // componentWillReceiveProps(nextProps) {
   //   this.props.dispatch(loadRecentListings());
   // }
 
   render() {
-    /*return (
-      <div>
-      <Container className="Compose">
-      
-      </Container>
-      </div>
-    );*/
+  const handleSubmit = (values) => {
+    // do something with the form values
+  }
   return (
     <ComposeForm onSubmit={handleSubmit}/>
   )

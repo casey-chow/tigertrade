@@ -6,7 +6,7 @@ import { Field, reduxForm } from 'redux-form';
 const ComposeForm = (props) => {
     const { onSubmit, pristine, reset, submitting } = props
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={onSubmit}>
       <div>
         <label>First Name</label>
         <div>
