@@ -41,7 +41,7 @@ class Compose extends Component {
     return (
       <div>
       <Container className="Compose">
-        
+        <h1>Compose</h1>
       </Container>
       </div>
     );

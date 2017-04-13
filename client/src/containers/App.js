@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Route } from 'react-router-dom';
+import { Switch, Route, withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import ActionBar from '../components/ActionBar';
@@ -22,9 +22,11 @@ class App extends Component {
     return (
       <div className="App">
         <ActionBar user={this.props.user} />
-        <div style={{marginTop: '64px'}}>
-          <Route path="/compose" component={Compose}/>
-          <Route exact path="/" component={Home}/>
+        <div style={{marginTop: '5em'}}>
+          <Switch>
+            <Route exact path="/" component={Home}/>
+            <Route path="/compose" component={Compose}/>
+          </Switch>
         </div>
       </div>
     );
@@ -37,4 +39,4 @@ const mapStateToProps = (state) => {
   });
 };
 
-export default connect(mapStateToProps)(App);
+export default withRouter(connect(mapStateToProps)(App));
