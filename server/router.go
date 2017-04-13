@@ -28,6 +28,7 @@ func Router() http.Handler {
 
 	// API Routes
 	router.GET("/api/listings", ServeRecentListings)
+	router.POST("/api/listings", ServeAddListing)
 	router.GET("/api/listings/:id", ServeListingById)
 	router.GET("/api/listings/:id/photos", ServePhotosByListingId)
 
