@@ -1,6 +1,7 @@
 package server
 
 import (
+	"encoding/json"
 	"fmt"
 	sq "github.com/Masterminds/squirrel"
 	log "github.com/Sirupsen/logrus"
@@ -84,6 +85,7 @@ func GetRecentListings(maxDescriptionSize int, limit uint64) ([]*ListingsItem, e
 			"title", fmt.Sprintf("left(description, %d)", maxDescriptionSize),
 			"user_id", "price", "status", "expiration_date", "thumbnails.url").
 		From("listings").
+		Where("listings.is_active=true").
 		LeftJoin("thumbnails ON listings.thumbnail_id = thumbnails.key_id").
 		OrderBy("listings.creation_date DESC").
 		Limit(limit)
@@ -150,6 +152,7 @@ func GetListingById(id string) (Listing, error, int) {
 			"title", "description", "user_id", "price", "status", "expiration_date",
 			"thumbnails.url").
 		From("listings").
+		Where("listings.is_active=true").
 		LeftJoin("thumbnails ON listings.thumbnail_id = thumbnails.key_id").
 		Where(sq.Eq{"listings.key_id": id})
 
@@ -177,6 +180,63 @@ func GetListingById(id string) (Listing, error, int) {
 	}
 	for i := range photos {
 		listing.Photos = append(listing.Photos, *photos[i])
+	}
+
+	return listing, nil, 0
+}
+
+func ServeAddListing(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+
+	if r.Method != "POST" {
+		http.Error(w, http.StatusText(405), 405)
+		return
+	}
+
+	// Get listing to add from request body
+	listing := Listing{}
+	// TODO this fails silently for some reason if r.Body contains invalid JSON
+	json.NewDecoder(r.Body).Decode(&listing)
+
+	// Retrieve UserID
+	user, err := getUser(getUsername(r))
+	if err != nil { // Not authorized
+		raven.CaptureError(err, nil)
+		log.Print(err)
+		http.Error(w, http.StatusText(401), 401)
+	}
+
+	listing, err, code := AddListing(listing, user.KeyID)
+	if err != nil {
+		raven.CaptureError(err, nil)
+		log.Print(err)
+		http.Error(w, http.StatusText(code), code)
+	}
+
+	Serve(w, listing)
+}
+// Inserts the given listing (belonging to userId) into the database. Returns
+// listing with it's new KeyID added.
+func AddListing(listing Listing, userId int) (Listing, error, int) {
+	listing.UserID = userId
+
+	// Insert listing
+	stmt := psql.Insert("listings").
+		Columns("title", "description", "user_id", "price", "status", "expiration_date", "thumbnail_id").
+		Values(listing.Title, listing.Description, userId, listing.Price, listing.Status, listing.ExpirationDate, listing.Thumbnail).
+		Suffix("RETURNING key_id")
+
+	// Query db for listing
+	rows, err := stmt.RunWith(db).Query()
+	if err != nil {
+		return listing, err, 500
+	}
+	defer rows.Close()
+
+	// Populate listing struct
+	rows.Next()
+	err = rows.Scan(&listing.KeyID)
+	if err != nil {
+		return listing, err, 500
 	}
 
 	return listing, nil, 0
