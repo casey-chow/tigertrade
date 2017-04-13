@@ -9,7 +9,7 @@ FRESH = $(BIN)/fresh
 GOVENDOR = $(BIN)/govendor
 GOCONVEY = $(BIN)/goconvey
 
-default: build
+default: build-server
 install: install-server install-client
 
 # ENVIRONMENT

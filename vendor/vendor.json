@@ -18,6 +18,18 @@
 			"revisionTime": "2017-03-17T14:32:14Z"
 		},
 		{
+			"checksumSHA1": "xTy1x4EoWRSsBlstJxFp0z321NQ=",
+			"path": "github.com/bitly/go-simplejson",
+			"revision": "da1a8928f709389522c8023062a3739f3b4af419",
+			"revisionTime": "2017-02-06T15:46:32Z"
+		},
+		{
+			"checksumSHA1": "mJ8L+VEUNfB4s53n00P0foANAeM=",
+			"path": "github.com/bmizerany/assert",
+			"revision": "b7ed37b82869576c289d7d97fb2bbd8b64a0cb28",
+			"revisionTime": "2016-06-11T22:19:34Z"
+		},
+		{
 			"checksumSHA1": "EKAwLldD4TW84cbtA1yrkxSq6gE=",
 			"path": "github.com/certifi/gocertifi",
 			"revision": "03be5e6bb9874570ea7fb0961225d193cbc374c5",
@@ -118,6 +130,18 @@
 			"path": "github.com/julienschmidt/httprouter",
 			"revision": "6f3f3919c8781ce5c0509c83fffc887a7830c938",
 			"revisionTime": "2017-03-24T20:14:42Z"
+		},
+		{
+			"checksumSHA1": "oONaja1SA8xsG5eqRKz8UZ9IHVI=",
+			"path": "github.com/kr/pretty",
+			"revision": "cfb55aafdaf3ec08f0db22699ab822c50091b1c4",
+			"revisionTime": "2016-08-23T17:07:15Z"
+		},
+		{
+			"checksumSHA1": "yHHAiCGQPKOlbQZKsxZrY/PL+cw=",
+			"path": "github.com/kr/text",
+			"revision": "7cafcd837844e784b526369c9bce262804aebc60",
+			"revisionTime": "2016-05-04T02:26:26Z"
 		},
 		{
 			"checksumSHA1": "+kS4EJBu12v8vpSwwxc+I9HMKSQ=",
