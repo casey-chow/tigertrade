@@ -2,10 +2,8 @@ import React, { PureComponent } from 'react';
 import { Route } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
-import TopBar from '../components/TopBar';
+import ActionBar from '../components/ActionBar';
 import Home from './Home';
-
-import './App.css';
 
 class App extends PureComponent {
   static propTypes = {
@@ -15,7 +13,7 @@ class App extends PureComponent {
   render() {
     return (
       <div className="App">
-        <TopBar />
+        <ActionBar />
 
         <div style={{marginTop: '64px'}}>
           <Route exact path="/" component={Home} />
