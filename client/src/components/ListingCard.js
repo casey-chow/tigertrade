@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+
 import {
   Card, 
   // CardActions, 
@@ -55,7 +56,7 @@ ListingCard.propTypes = {
   listing: PropTypes.shape({
     keyId: PropTypes.number,
     creationDate: PropTypes.string,
-    lastModificationDate: PropTypes.number,
+    lastModificationDate: PropTypes.string,
     title: PropTypes.string,
     description: PropTypes.string,
     userId: PropTypes.number,
