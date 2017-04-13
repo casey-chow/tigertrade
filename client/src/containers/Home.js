@@ -23,7 +23,6 @@ class Home extends Component {
   // }
 
   render() {
-    console.log(this.props.listings);
     if (this.props.isFetching) {
       return <p>Loading...</p>
     }

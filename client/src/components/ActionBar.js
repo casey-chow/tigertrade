@@ -8,9 +8,14 @@ import Popover, { PopoverAnimationVertical } from 'material-ui/Popover';
 import Menu from 'material-ui/Menu';
 import MenuItem from 'material-ui/MenuItem';
 import DatePicker from 'material-ui/DatePicker';
-import TextField from 'material-ui/TextField'
+import TextField from 'material-ui/TextField';
+
+import LoginButton from './LoginButton';
+import LoggedInMenu from './LoggedInMenu';
+import PropTypes from 'prop-types';
 
 class SearchBar extends Component {
+
 	state = {
 	    dataSource: [],
 	    open: false,
@@ -48,6 +53,7 @@ class SearchBar extends Component {
 
   	//           	<FlatButton iconClassName="muidocs-icon-navigation-expand-more"/>          	<IconButton iconClassName="muidocs-icon-navigation-expand-more"/>
 	render() {
+    
 		return (
 			<span style={{marginLeft: '1em'}}>
 			<AutoComplete
@@ -81,12 +87,16 @@ class SearchBar extends Component {
 }
 
 export default class ActionBar extends Component {
+    static propTypes = {
+      user: PropTypes.object,
+    }
 
     render() {
+      const loggedIn = this.props.user.loggedIn;
         return ( 
         	<AppBar
         	title={<div>{document.title}<SearchBar/></div>}
-            iconClassNameRight = "muidocs-icon-navigation-expand-more"
+            iconElementRight={loggedIn ? <LoggedInMenu user={this.props.user}/> : <LoginButton />}
             style = {
                 {
                     position: 'fixed',

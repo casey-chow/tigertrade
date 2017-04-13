@@ -38,21 +38,15 @@ func sentryMiddleware() negroni.Handler {
 }
 
 func logMiddleware() negroni.Handler {
-	var loglevel log.Level
-	if flag.Lookup("test.v") == nil {
-		loglevel = log.InfoLevel
-	} else {
-		loglevel = log.WarnLevel
-	}
-
-	return negronilogrus.NewCustomMiddleware(loglevel, &log.JSONFormatter{}, "web")
+	return negronilogrus.NewCustomMiddleware(log.InfoLevel, &log.JSONFormatter{}, "web")
 }
 
 func corsMiddleware() negroni.Handler {
 	log.WithField("CLIENT_ROOT", os.Getenv("CLIENT_ROOT")).Print("activating CORS header")
 	return cors.New(cors.Options{
-		AllowedMethods: []string{"GET", "POST", "PUT", "UPDATE", "DELETE"},
-		AllowedOrigins: []string{os.Getenv("CLIENT_ROOT")},
+		AllowedMethods:   []string{"GET", "POST", "PUT", "UPDATE", "DELETE"},
+		AllowedOrigins:   []string{os.Getenv("CLIENT_ROOT")},
+		AllowCredentials: true,
 	})
 }
 
