@@ -14,17 +14,24 @@ func Hello(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	fmt.Fprintf(w, "hello, %s!\n", ps.ByName("name"))
 }
 
+// Router returns the router http handler for the package.
 func Router() http.Handler {
 	router := httprouter.New()
 
 	router.GET("/", Index)
 	router.GET("/hello/:name", Hello)
 
-	router.GET("/login", CheckLoggedIn)
-	router.GET("/logout", Logout)
+	// Authentication Routes
+	router.GET("/api/users/redirect", RedirectUser)
+	router.GET("/api/users/logout", LogoutUser)
+	router.GET("/api/users/current", ServeCurrentUser)
 
 	// API Routes
-	router.GET("/api/listings", GetRecentListings)
+	router.GET("/api/listings", ServeRecentListings)
+	router.GET("/api/listings/:id", ServeListingById)
+	router.GET("/api/listings/:id/photos", ServePhotosByListingId)
+
+	router.GET("/api/search/:query", ServeSearch)
 
 	return router
 }
