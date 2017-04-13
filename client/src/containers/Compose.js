@@ -31,4 +31,4 @@ const mapStateToProps = (state) => {
   });
 }
 
-export default connect(mapStateToProps)(reduxForm({form: 'compose'})(Compose));
+export default connect(mapStateToProps)(Compose);
