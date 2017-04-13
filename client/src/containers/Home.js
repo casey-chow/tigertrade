@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Container, Row, Col } from 'react-grid-system';
+import CircularProgress from 'material-ui/CircularProgress';
 
 import ListingCard from './../components/ListingCard';
 import { loadRecentListings } from '../actions/listings';
@@ -10,6 +11,7 @@ import './Home.css';
 
 class Home extends Component {
   static propTypes = {
+    listingsLoading: PropTypes.bool.isRequired,
     listings: PropTypes.array.isRequired,
     dispatch: PropTypes.func.isRequired,
   }
@@ -23,8 +25,8 @@ class Home extends Component {
   // }
 
   render() {
-    if (this.props.isFetching) {
-      return <p>Loading...</p>
+    if (this.props.listingsLoading) {
+      return <CircularProgress size={80} thickness={8} />;
     }
 
     const listings = this.props.listings.map((listing) => <ListingCard listing={listing}/>);
@@ -45,8 +47,9 @@ class Home extends Component {
 
 const mapStateToProps = (state) => {
   return ({
+    listingsLoading: state.listingsLoading,
     listings: state.listings,
   });
-}
+};
 
 export default connect(mapStateToProps)(Home);
