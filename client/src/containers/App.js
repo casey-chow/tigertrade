@@ -3,12 +3,10 @@ import { connect } from 'react-redux';
 import { Route } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
-import Navigation from '../components/Navigation';
+import ActionBar from '../components/ActionBar';
 import Home from './Home';
 
 import { loadCurrentUser } from '../actions/users';
-
-import './App.css';
 
 class App extends Component {
   static propTypes = {
@@ -22,8 +20,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <Navigation user={this.props.user} />
-
+        <ActionBar user={this.props.user} />
         <div style={{marginTop: '64px'}}>
           <Route exact path="/" component={Home} />
         </div>
