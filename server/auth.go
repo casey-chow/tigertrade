@@ -4,10 +4,10 @@ import (
 	"database/sql"
 	sq "github.com/Masterminds/squirrel"
 	log "github.com/Sirupsen/logrus"
+	"github.com/binjianwu/cas"
 	"github.com/getsentry/raven-go"
 	"github.com/guregu/null"
 	"github.com/julienschmidt/httprouter"
-	"gopkg.in/cas.v1"
 	"net/http"
 	"net/url"
 	"os"
@@ -86,7 +86,7 @@ func ServeCurrentUser(w http.ResponseWriter, r *http.Request, ps httprouter.Para
 	netID := getUsername(r)
 	log.WithField("netID", netID).Info("getting username")
 	if netID == "" {
-		Serve404(w)
+		http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
 		return
 	}
 

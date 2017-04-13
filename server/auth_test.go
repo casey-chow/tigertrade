@@ -30,13 +30,13 @@ func TestAuthentication(t *testing.T) {
 			t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
 		}
 
-		Convey("returns a 404 if not found", func() {
+		Convey("returns a 401 if not found", func() {
 			getUsername = func(_ *http.Request) string { return "" }
 
 			req, _ := http.NewRequest("GET", "/api/users/current", nil)
 			res := executeRequest(app, req)
 
-			So(res.Code, ShouldEqual, http.StatusNotFound)
+			So(res.Code, ShouldEqual, http.StatusUnauthorized)
 		})
 
 		Convey("creates a user if they do not already exist in the database", nil)
@@ -129,6 +129,8 @@ func TestAuthentication(t *testing.T) {
 			So(res.Code, ShouldEqual, http.StatusFound)
 			So(res.Header().Get("Location"), ShouldNotEqual, "calhost:8888")
 		})
+
+		Convey("validates the redirect to make sure it's redirecting to the client", nil)
 
 	})
 

@@ -6,6 +6,7 @@
     "lodash": "^4.17.4",
     "material-ui": "^0.17.2",
     "normalizr": "^3.2.2",
+    "raven-js": "^3.14.1",
     "react": "^15.4.3",
     "react-dom": "^15.5.3",
     "react-grid-system": "^2.7.0",
