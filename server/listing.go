@@ -198,9 +198,14 @@ func ServeAddListing(w http.ResponseWriter, r *http.Request, ps httprouter.Param
 	json.NewDecoder(r.Body).Decode(&listing)
 
 	// Retrieve UserID
-	userId := 0 // TODO
+	user, err := getUser(getUsername(r))
+	if err != nil { // Not authorized
+		raven.CaptureError(err, nil)
+		log.Print(err)
+		http.Error(w, http.StatusText(401), 401)
+	}
 
-	listing, err, code := AddListing(listing, userId)
+	listing, err, code := AddListing(listing, user.KeyID)
 	if err != nil {
 		raven.CaptureError(err, nil)
 		log.Print(err)
@@ -217,7 +222,7 @@ func AddListing(listing Listing, userId int) (Listing, error, int) {
 	// Insert listing
 	stmt := psql.Insert("listings").
 		Columns("title", "description", "user_id", "price", "status", "expiration_date", "thumbnail_id").
-		Values(listing.Title, listing.Description, listing.UserID, listing.Price, listing.Status, listing.ExpirationDate, listing.Thumbnail).
+		Values(listing.Title, listing.Description, userId, listing.Price, listing.Status, listing.ExpirationDate, listing.Thumbnail).
 		Suffix("RETURNING key_id")
 
 	// Query db for listing
