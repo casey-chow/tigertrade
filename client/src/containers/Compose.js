@@ -5,15 +5,14 @@ import { Container, Row, Col } from 'react-grid-system';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 
-import ListingCard from './../components/ListingCard';
-import { loadRecentListings } from '../actions/listings';
-
-import { Link } from 'react-router-dom';
-
 import { Field, reduxForm } from 'redux-form';
 import ComposeForm from './../components/ComposeForm';
 
 class Compose extends Component {
+
+  handleSubmit = (values) => {
+    // do something with the form values
+  }
   // componentWillReceiveProps(nextProps) {
   //   this.props.dispatch(loadRecentListings());
   // }
@@ -27,7 +26,7 @@ class Compose extends Component {
       </div>
     );*/
   return (
-    <ComposeForm/>
+    <ComposeForm onSubmit={handleSubmit}/>
   )
   }
 }

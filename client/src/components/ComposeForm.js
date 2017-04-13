@@ -4,7 +4,7 @@ import { Container, Row, Col } from 'react-grid-system';
 import { Field, reduxForm } from 'redux-form';
 
 const ComposeForm = (props) => {
-    const { handleSubmit, pristine, reset, submitting } = props
+    const { onSubmit, pristine, reset, submitting } = props
   return (
     <form onSubmit={handleSubmit}>
       <div>
