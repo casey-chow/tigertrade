@@ -7,6 +7,8 @@ import SearchBar from './SearchBar';
 import LoginButton from './LoginButton';
 import LoggedInMenu from './LoggedInMenu';
 
+import { Link } from 'react-router-dom';
+
 export default class ActionBar extends PureComponent {
     static muiName = 'AppBar';
 
@@ -16,13 +18,20 @@ export default class ActionBar extends PureComponent {
     }
 
     render() {
+
       const rightElement =  this.props.user.loggedIn ?
         <LoggedInMenu user={this.props.user}/> :
         <LoginButton />;
 
+      const middleElement = <div><Link to="/" style={{textDecoration: 'none', color: 'white'}}>
+                                    {document.title}
+                                  </Link>
+                                  <SearchBar/>
+                            </div>;
+
       return (
         <AppBar
-          title={<div>{document.title}<SearchBar/></div>}
+          title={middleElement}
           iconElementRight={rightElement}
           style={{
             position: 'fixed',

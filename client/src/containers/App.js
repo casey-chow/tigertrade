@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 
 import ActionBar from '../components/ActionBar';
 import Home from './Home';
+import Compose from './Compose';
 
 import { loadCurrentUser } from '../actions/users';
 
@@ -21,10 +22,11 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <ActionBar user={this.props.user} />
+        <ActionBar user={this.props.user} loading={this.props.loading} />
         <div style={{marginTop: '5em'}}>
           <Switch>
             <Route exact path="/" component={Home}/>
+            <Route path="/compose" component={Compose}/>
           </Switch>
         </div>
       </div>

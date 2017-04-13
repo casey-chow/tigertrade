@@ -2,12 +2,22 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Container, Row, Col } from 'react-grid-system';
+import FloatingActionButton from 'material-ui/FloatingActionButton';
+import ContentAdd from 'material-ui/svg-icons/content/add';
 import CircularProgress from 'material-ui/CircularProgress';
 
 import ListingCard from './../components/ListingCard';
 import { loadRecentListings } from '../actions/listings';
 
+import { Link } from 'react-router-dom';
+
 import './Home.css';
+
+const fabStyle = {
+  position: 'fixed',
+  bottom: '35px',
+  right: '35px',
+};
 
 class Home extends Component {
   static propTypes = {
@@ -32,6 +42,7 @@ class Home extends Component {
     const listings = this.props.listings.map((listing) => <ListingCard listing={listing}/>);
 
     return (
+      <div>
       <Container className="Home">
         <Row>
           <Col xs={12}>
@@ -41,6 +52,12 @@ class Home extends Component {
           </Col>
         </Row>
       </Container>
+      <Link to="/compose">
+      <FloatingActionButton style={fabStyle}>
+      <ContentAdd />
+      </FloatingActionButton>
+      </Link>
+      </div>
     );
   }
 }
