@@ -12,6 +12,7 @@ import (
 	"strconv"
 )
 
+const maxDescriptionSize = 1024
 const defaultNumListings = 30
 const maxNumListings = 100
 
@@ -213,9 +214,8 @@ func ServeAddListing(w http.ResponseWriter, r *http.Request, ps httprouter.Param
 
 	Serve(w, listing)
 }
-
 // Inserts the given listing (belonging to userId) into the database. Returns
-// listing with its new KeyID added.
+// listing with it's new KeyID added.
 func AddListing(listing Listing, userId int) (Listing, error, int) {
 	listing.UserID = userId
 

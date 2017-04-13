@@ -9,10 +9,6 @@ import (
 	"net/http"
 )
 
-// Maximum number of characters in a truncated description of listings/seeks
-// used in getRecentListings and getRecentSeeks 
-const maxDescriptionSize = 1024
-
 // Postgres Statement Builder instance
 var psql = sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
 
