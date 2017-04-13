@@ -1,6 +1,7 @@
 package server
 
 import (
+	"encoding/json"
 	"fmt"
 	sq "github.com/Masterminds/squirrel"
 	log "github.com/Sirupsen/logrus"
@@ -19,8 +20,8 @@ type SeeksItem struct {
 	Title                string      `json:"title"`
 	Description          null.String `json:"description"` // expect to be truncated
 	UserID               int         `json:"userId"`
-	SavedSearchID        int         `json:"savedSearchId"`
-	NotifyEnabled        bool        `json:"notifyEnabled"`
+	SavedSearchID        null.Int    `json:"savedSearchId"`
+	NotifyEnabled        null.Bool   `json:"notifyEnabled"`
 	Status               null.String `json:"status"`
 }
 // TODO Maybe use the same struct for both of these? The only difference is truncation of the descrip
@@ -32,8 +33,8 @@ type Seek struct {
 	Title                string      `json:"title"`
 	Description          null.String `json:"description"`
 	UserID               int         `json:"userId"`
-	SavedSearchID        int         `json:"savedSearchId"`
-	NotifyEnabled        bool        `json:"notifyEnabled"`
+	SavedSearchID        null.Int    `json:"savedSearchId"`
+	NotifyEnabled        null.Bool   `json:"notifyEnabled"`
 	Status               null.String `json:"status"`
 }
 
@@ -75,7 +76,7 @@ func GetRecentSeeks(maxDescriptionSize int, limit uint64) ([]*SeeksItem, error, 
 	query := psql.
 		Select("seeks.key_id", "seeks.creation_date", "seeks.last_modification_date",
 			"title", fmt.Sprintf("left(description, %d)", maxDescriptionSize),
-			"user_id", "saved_search_id", "notidy_enabled", "status").
+			"user_id", "saved_search_id", "notify_enabled", "status").
 		From("seeks").
 		Where("seeks.is_active=true").
 		OrderBy("seeks.creation_date DESC").
@@ -141,7 +142,7 @@ func GetSeekById(id string) (Seek, error, int) {
 	query := psql.
 		Select("seeks.key_id", "seeks.creation_date",
 		       "seeks.last_modification_date", "title", "description", "user_id",
-		"saved_search_id", "notidy_enabled", "status").
+		"saved_search_id", "notify_enabled", "status").
 		From("seeks").
 		Where("seeks.is_active=true").
 		Where(sq.Eq{"seeks.key_id": id})
@@ -155,7 +156,8 @@ func GetSeekById(id string) (Seek, error, int) {
 
 	// Populate seek struct
 	rows.Next()
-	err := rows.Scan(&l.KeyID, &l.CreationDate, &l.LastModificationDate,
+	l := new(SeeksItem)
+	err = rows.Scan(&l.KeyID, &l.CreationDate, &l.LastModificationDate,
                         &l.Title, &l.Description, &l.UserID, &l.SavedSearchID,
                         &l.NotifyEnabled, &l.Status)
 	if err != nil {
@@ -173,7 +175,7 @@ func ServeAddSeek(w http.ResponseWriter, r *http.Request, ps httprouter.Params) 
 	}
 
 	// Get seek to add from request body
-	seek := seek{}
+	seek := Seek{}
 	// TODO this fails silently for some reason if r.Body contains invalid JSON
 	json.NewDecoder(r.Body).Decode(&seek)
 
@@ -198,28 +200,28 @@ func ServeAddSeek(w http.ResponseWriter, r *http.Request, ps httprouter.Params) 
 // Inserts the given seek (belonging to userId) into the database. Returns
 // seek with its new KeyID added.
 func AddSeek(seek Seek, userId int) (Seek, error, int) {
-	listing.UserID = userId
+	seek.UserID = userId
 
 	// Insert seek
 	stmt := psql.Insert("seeks").
-		Columns("title", "description", "user_id", "price", "status", "expiration_date", "thumbnail_id").
-		Values(listing.Title, listing.Description, userId, listing.Price, listing.Status, listing.ExpirationDate, listing.Thumbnail).
+		Columns("title", "description", "user_id", "saved_search_id", "notify_enabled", "status").
+		Values(seek.Title, seek.Description, userId, seek.SavedSearchID, seek.NotifyEnabled, seek.Status).
 		Suffix("RETURNING key_id")
 
-	// Query db for listing
+	// Query db for seek
 	rows, err := stmt.RunWith(db).Query()
 	if err != nil {
-		return listing, err, 500
+		return seek, err, 500
 	}
 	defer rows.Close()
 
-	// Populate listing struct
+	// Populate seek struct
 	rows.Next()
-	err = rows.Scan(&listing.KeyID)
+	err = rows.Scan(&seek.KeyID)
 	if err != nil {
-		return listing, err, 500
+		return seek, err, 500
 	}
 
-	return listing, nil, 0
+	return seek, nil, 0
 }
 
