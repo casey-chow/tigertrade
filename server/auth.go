@@ -27,9 +27,8 @@ type User struct {
 	NetID                string    `json:"netId"`
 }
 
-// getUser gets the specified user, and HTTP codes corresponding. If does
-// not exist, returns nil, 404, err.
-func getUser(netID string) (*User, int, error) {
+// getUser gets the specified user. If user does not exist, returns an error.
+func getUser(netID string) (*User, error) {
 	query := psql.
 		Select("key_id", "net_id", "creation_date", "last_modification_date").
 		From("users").
@@ -45,73 +44,64 @@ func getUser(netID string) (*User, int, error) {
 			&user.CreationDate,
 			&user.LastModificationDate,
 		)
-	if err == sql.ErrNoRows {
-		return nil, 404, err
-	} else if err != nil {
-		return nil, 500, err
+	if err != nil {
+		return nil, err
 	}
 
-	return user, 0, nil
+	return user, nil
+}
+
+// getOrCreateUser makes sure the netID exists in the db, creating it if
+// it doesn't already.
+// Security Note: DO NOT allow user-generated data into this function. This assumes
+// the netID is from CAS.
+func getOrCreateUser(netID string) (*User, error) {
+	user, err := getUser(netID)
+	if err == nil {
+		return user, nil
+	}
+	if err != sql.ErrNoRows {
+		log.WithFields(log.Fields{
+			"err":   err,
+			"netID": netID,
+		}).Error("error while getting user")
+		return nil, err
+	}
+
+	log.WithField("netID", netID).
+		Print("creating user")
+	insert := psql.Insert("users").
+		Columns("net_id").Values(netID)
+
+	_, err = insert.RunWith(db).Exec()
+	if err != nil {
+		return nil, err
+	}
+
+	return getUser(netID)
 }
 
 // ServeCurrentUser returns the current user, or an empty JSON object if not logged in.
 func ServeCurrentUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	netID := getUsername(r)
-	user, code, err := getUser(netID)
-	if err != nil {
-		http.Error(w, http.StatusText(code), code)
-	}
-
-	if err != nil && err != sql.ErrNoRows {
-		raven.CaptureError(err, map[string]string{"username": netID})
-		log.WithFields(log.Fields{
-			"err":      err,
-			"username": netID,
-		}).Error("encountered error while retrieving user")
-	} else {
-		Serve(w, user)
-	}
-}
-
-// UserExists returns true if a user with the username exists.
-func UserExists(username string) bool {
-	query := psql.
-		Select("key_id").From("users").
-		Where(sq.Eq{"net_id": username}).
-		Limit(1)
-
-	rows, err := query.RunWith(db).Query()
-	if err != nil {
-		raven.CaptureError(err, map[string]string{"username": username})
-		log.WithField("username", username).
-			Error("database query failed in EnsureUserExists")
-	}
-	defer rows.Close()
-
-	for rows.Next() {
-		return true
-	}
-	return false
-}
-
-// EnsureUserExists makes sure the username exists in the db, creating it if
-// it doesn't already.
-func EnsureUserExists(username string) {
-	if exists := UserExists(username); exists {
+	log.WithField("netID", netID).Info("getting username")
+	if netID == "" {
+		Serve404(w)
 		return
 	}
 
-	log.WithField("username", username).
-		Print("creating user")
-	query := psql.Insert("users").
-		Columns("net_id").Values(username)
-
-	if _, err := query.RunWith(db).Query(); err != nil {
+	user, err := getOrCreateUser(netID)
+	if err != nil {
+		raven.CaptureError(err, map[string]string{"username": netID})
 		log.WithFields(log.Fields{
-			"err":      err,
-			"username": username,
-		}).Error("could not insert user")
+			"err":   err,
+			"netID": netID,
+		}).Error("encountered error while retrieving user")
+		http.Error(w, http.StatusText(500), 500)
+		return
 	}
+
+	Serve(w, user)
 }
 
 // RedirectUser redirects the user to CAS authentication if they are not
@@ -123,7 +113,7 @@ func RedirectUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params) 
 		return
 	}
 
-	go EnsureUserExists(getUsername(r))
+	go getOrCreateUser(getUsername(r))
 
 	// TODO: Validate the return parameter for domain correctness
 	redirect := r.URL.Query().Get("return")

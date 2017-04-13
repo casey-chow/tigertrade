@@ -15,7 +15,7 @@ export class Navigation extends PureComponent {
     return (
       <AppBar
         title="TigerTrade"
-        iconElementRight={loggedIn ? <LoggedInMenu /> : <LoginButton user={this.props.user}/>}
+        iconElementRight={loggedIn ? <LoggedInMenu user={this.props.user}/> : <LoginButton />}
         style={{
           position: 'fixed',
           top: '0px',

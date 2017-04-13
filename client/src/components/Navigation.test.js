@@ -16,13 +16,13 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
 describe('<Navigation />', () => {
   it('presents a login button when not logged in', () => {
-    const navigation = shallow(<Navigation loggedIn={false} />);
+    const navigation = shallow(<Navigation user={{loggedIn: false}} />);
 
     expect(navigation.find(AppBar).prop('iconElementRight').type).toBe(LoginButton);
   });
 
   it('presents a login menu when logged in', () => {
-    const navigation = shallow(<Navigation loggedIn={true} />);
+    const navigation = shallow(<Navigation user={{loggedIn: true}} />);
 
     expect(navigation.find(AppBar).prop('iconElementRight').type).toBe(LoggedInMenu);
   })

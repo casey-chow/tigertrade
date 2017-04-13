@@ -1,4 +1,4 @@
-import fetch from 'isomorphic-fetch';
+// import fetch from 'isomorphic-fetch';
 
 import { API_ROOT } from './common';
 
@@ -8,15 +8,17 @@ export function loadCurrentUser() {
       type: 'LOAD_CURRENT_USER_REQUEST',
     });
   
-    fetch(`${API_ROOT}/users/current`)
+    fetch(`${API_ROOT}/users/current`, {
+      credentials: "include",
+    })
       .then(response => response.json())
-      .catch(error => dispatch({
-        error,
-        type: 'LOAD_CURRENT_USER_FAILURE',
-      }))
       .then(json => dispatch({
         json,
         type: 'LOAD_CURRENT_USER_SUCCESS',
+      }))
+      .catch(error => dispatch({
+        error,
+        type: 'LOAD_CURRENT_USER_FAILURE',
       }));
   };
 }

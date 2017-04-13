@@ -30,22 +30,16 @@ func TestAuthentication(t *testing.T) {
 			t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
 		}
 
-		Convey("returns an empty JSON string if not found", func() {
-			getUsername = func(_ *http.Request) string { return "testuser" }
-			mock.ExpectQuery("SELECT .* FROM users .*").
-				WillReturnRows(sqlmock.NewRows([]string{
-					"key_id",
-					"net_id",
-					"creation_date",
-					"last_modification_date",
-				}))
+		Convey("returns a 404 if not found", func() {
+			getUsername = func(_ *http.Request) string { return "" }
 
 			req, _ := http.NewRequest("GET", "/api/users/current", nil)
 			res := executeRequest(app, req)
 
 			So(res.Code, ShouldEqual, http.StatusNotFound)
-			So(mock.ExpectationsWereMet(), ShouldBeNil)
 		})
+
+		Convey("creates a user if they do not already exist in the database", nil)
 
 		Convey("returns the user profile if logged in", func() {
 			getUsername = func(_ *http.Request) string { return "testuser" }

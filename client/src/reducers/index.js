@@ -19,7 +19,7 @@ const currentUser = (state = { loggedIn: false }, action) => {
   switch (action.type) {
     case 'LOAD_CURRENT_USER_REQUEST': // TODO: failure state
     case 'LOAD_CURRENT_USER_FAILURE':
-      return state;
+      return { loggedIn: false };
     case 'LOAD_CURRENT_USER_SUCCESS':
       return {
         ...action.json,
