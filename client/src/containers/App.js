@@ -11,6 +11,7 @@ import { loadCurrentUser } from '../actions/users';
 
 class App extends Component {
   static propTypes = {
+    loading: PropTypes.bool,
     user: PropTypes.object
   }
 
@@ -21,7 +22,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <ActionBar user={this.props.user} />
+        <ActionBar loading={this.props.loading} user={this.props.user} />
         <div style={{marginTop: '64px'}}>
           <Route path="/compose" component={Compose}/>
           <Route exact path="/" component={Home}/>
@@ -33,6 +34,7 @@ class App extends Component {
 
 const mapStateToProps = (state) => {
   return ({
+    loading: state.currentUserLoading,
     user: state.currentUser,
   });
 };
