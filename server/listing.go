@@ -12,9 +12,6 @@ import (
 	"strconv"
 )
 
-const defaultNumListings = 30
-const maxNumListings = 100
-
 // This is the "JSON" struct that appears in the array returned by getRecentListings
 type ListingsItem struct {
 	KeyID                int         `json:"keyId"`
@@ -53,19 +50,19 @@ func ServeRecentListings(w http.ResponseWriter, r *http.Request, ps httprouter.P
 
 	// Get limit from params
 	limitStr := r.URL.Query().Get("limit")
-	limit := defaultNumListings
+	limit := defaultNumResults
 	var e error
 	if limitStr != "" {
 		limit, e = strconv.Atoi(limitStr)
 		if e != nil || limit == 0 {
-			limit = defaultNumListings
+			limit = defaultNumResults
 		}
 	}
-	if limit > maxNumListings {
-		limit = maxNumListings
+	if limit > maxNumResults {
+		limit = maxNumResults
 	}
 
-	listings, err, code := GetRecentListings(maxDescriptionSize, uint64(limit))
+	listings, err, code := GetRecentListings(truncationLength, uint64(limit))
 	if err != nil {
 		raven.CaptureError(err, nil)
 		log.Print(err)

@@ -9,9 +9,14 @@ import (
 	"net/http"
 )
 
-// Maximum number of characters in a truncated description of listings/seeks
-// used in getRecentListings and getRecentSeeks 
-const maxDescriptionSize = 1024
+// Maximum number of characters in a truncated description of a datum
+// Used when obtaining and displaying many datum of a given structure
+const truncationLength = 1024
+
+// Default and maximum number of datum returned by bulk API queries
+// Used when obtaining and displaying many datum of a given structure
+const defaultNumResults = 30
+const maxNumResults = 100
 
 // Postgres Statement Builder instance
 var psql = sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
