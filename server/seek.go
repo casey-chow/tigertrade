@@ -12,9 +12,6 @@ import (
 	"strconv"
 )
 
-const defaultNumSeeks = 30
-const maxNumSeeks = 100
-
 // This is the "JSON" struct that appears in the array returned by getRecentSeeks
 type SeeksItem struct {
 	KeyID                int         `json:"keyId"`
@@ -50,19 +47,19 @@ func ServeRecentSeeks(w http.ResponseWriter, r *http.Request, ps httprouter.Para
 
 	// Get limit from params
 	limitStr := r.URL.Query().Get("limit")
-	limit := defaultNumSeeks
+	limit := defaultNumResults
 	var e error
 	if limitStr != "" {
 		limit, e = strconv.Atoi(limitStr)
 		if e != nil || limit == 0 {
-			limit = defaultNumSeeks
+			limit = defaultNumResults
 		}
 	}
-	if limit > maxNumSeeks {
-		limit = maxNumSeeks
+	if limit > maxNumResults {
+		limit = maxNumResults
 	}
 
-	seeks, err, code := GetRecentSeeks(maxDescriptionSize, uint64(limit))
+	seeks, err, code := GetRecentSeeks(truncationLength, uint64(limit))
 	if err != nil {
 		raven.CaptureError(err, nil)
 		log.Print(err)
