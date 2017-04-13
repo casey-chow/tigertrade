@@ -4,7 +4,6 @@ import { Route } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import ActionBar from '../components/ActionBar';
-import Navigation from '../components/Navigation';
 import Home from './Home';
 
 import { loadCurrentUser } from '../actions/users';
