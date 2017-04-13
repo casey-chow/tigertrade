@@ -1,13 +1,13 @@
 package server
 
 import (
+	"fmt"
+	log "github.com/Sirupsen/logrus"
 	"github.com/getsentry/raven-go"
 	"github.com/julienschmidt/httprouter"
-	"strings"
-	"log"
-	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 // Searches database for all occurrences of every space-separated word in query
@@ -62,22 +62,22 @@ func ServeSearch(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 
 	// Get limit from params
 	limitStr := r.URL.Query().Get("limit")
-	limit := defaultNumListings
+	limit := defaultNumResults
 	var e error
 	if limitStr != "" {
 		limit, e = strconv.Atoi(limitStr)
 		if e != nil || limit == 0 {
-			limit = defaultNumListings
+			limit = defaultNumResults
 		}
 	}
-	if limit > maxNumListings {
-		limit = maxNumListings
+	if limit > maxNumResults {
+		limit = maxNumResults
 	}
 
 	// Get search query from params
 	queryStr := ps.ByName("query")
 
-	listings, err, code := GetSearch(queryStr, maxDescriptionSize, uint64(limit))
+	listings, err, code := GetSearch(queryStr, truncationLength, uint64(limit))
 	if err != nil {
 		raven.CaptureError(err, nil)
 		log.Print(err)
