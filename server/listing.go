@@ -14,8 +14,7 @@ import (
 
 const maxDescriptionSize = 1024
 const defaultNumListings = 30
-const maxNumListings     = 100
-var   psql               = sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
+const maxNumListings = 100
 
 // This is the "JSON" struct that appears in the array returned by getRecentListings
 type ListingsItem struct {
@@ -83,8 +82,8 @@ func GetRecentListings(maxDescriptionSize int, limit uint64) ([]*ListingsItem, e
 	// Create listings query
 	query := psql.
 		Select("listings.key_id", "listings.creation_date", "listings.last_modification_date",
-		"title", fmt.Sprintf("left(description, %d)", maxDescriptionSize),
-		"user_id", "price", "status", "expiration_date", "thumbnails.url").
+			"title", fmt.Sprintf("left(description, %d)", maxDescriptionSize),
+			"user_id", "price", "status", "expiration_date", "thumbnails.url").
 		From("listings").
 		Where("listings.is_active=true").
 		LeftJoin("thumbnails ON listings.thumbnail_id = thumbnails.key_id").
@@ -116,7 +115,6 @@ func GetRecentListings(maxDescriptionSize int, limit uint64) ([]*ListingsItem, e
 
 	return listings, nil, 0
 }
-
 
 // Writes the most recent count listings, based on original date created to w
 func ServeListingById(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -151,8 +149,8 @@ func GetListingById(id string) (Listing, error, int) {
 	// Create listing query
 	query := psql.
 		Select("listings.key_id", "listings.creation_date", "listings.last_modification_date",
-		"title", "description", "user_id", "price", "status", "expiration_date",
-		"thumbnails.url").
+			"title", "description", "user_id", "price", "status", "expiration_date",
+			"thumbnails.url").
 		From("listings").
 		Where("listings.is_active=true").
 		LeftJoin("thumbnails ON listings.thumbnail_id = thumbnails.key_id").

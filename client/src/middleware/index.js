@@ -5,12 +5,13 @@ const middleware = [];
 
 middleware.push(thunk);
 
-const logger = createLogger({
-  collapsed: (getState, action) => {
-    return action.type.indexOf('redux-ui') > 0;
-  },
-});
-
-middleware.push(logger);
+if (process.env.NODE_ENV === 'development') {
+  const logger = createLogger({
+    collapsed: (getState, action) => {
+      return action.type.indexOf('redux-ui') > 0;
+    },
+  });
+  middleware.push(logger);
+}
 
 export default middleware;

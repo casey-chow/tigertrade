@@ -38,21 +38,19 @@ func sentryMiddleware() negroni.Handler {
 }
 
 func logMiddleware() negroni.Handler {
-	var loglevel log.Level
-	if flag.Lookup("test.v") == nil {
-		loglevel = log.InfoLevel
-	} else {
-		loglevel = log.WarnLevel
+	if os.Getenv("ENVIRONMENT") == "production" {
+		return negronilogrus.NewCustomMiddleware(log.InfoLevel, &log.JSONFormatter{}, "web")
 	}
 
-	return negronilogrus.NewCustomMiddleware(loglevel, &log.JSONFormatter{}, "web")
+	return negronilogrus.NewCustomMiddleware(log.InfoLevel, &log.TextFormatter{}, "web")
 }
 
 func corsMiddleware() negroni.Handler {
 	log.WithField("CLIENT_ROOT", os.Getenv("CLIENT_ROOT")).Print("activating CORS header")
 	return cors.New(cors.Options{
-		AllowedMethods: []string{"GET", "POST", "PUT", "UPDATE", "DELETE"},
-		AllowedOrigins: []string{os.Getenv("CLIENT_ROOT")},
+		AllowedMethods:   []string{"GET", "POST", "PUT", "UPDATE", "DELETE"},
+		AllowedOrigins:   []string{os.Getenv("CLIENT_ROOT")},
+		AllowCredentials: true,
 	})
 }
 
@@ -105,8 +103,10 @@ func initDatabase() {
 
 // customize logging
 func init() {
-	// Log as JSON instead of the default ASCII formatter.
-	log.SetFormatter(&log.JSONFormatter{})
+	if os.Getenv("ENVIRONMENT") == "production" {
+		// Log as JSON instead of the default ASCII formatter.
+		log.SetFormatter(&log.JSONFormatter{})
+	}
 
 	// Output to stdout instead of the default stderr
 	log.SetOutput(os.Stdout)
