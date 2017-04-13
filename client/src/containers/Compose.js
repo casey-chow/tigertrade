@@ -10,48 +10,33 @@ import { loadRecentListings } from '../actions/listings';
 
 import { Link } from 'react-router-dom';
 
-const fabStyle = {
-  position: 'fixed',
-  bottom: '35px',
-  right: '35px',
-};
+import { Field, reduxForm } from 'redux-form';
+import ComposeForm from './../components/ComposeForm';
 
 class Compose extends Component {
-  static propTypes = {
-    listings: PropTypes.array.isRequired,
-    dispatch: PropTypes.func.isRequired,
-  }
-
-  handleTouchTap = (event) => {
-
-  }
-
-  componentWillMount() {
-    this.props.dispatch(loadRecentListings());
-  }
-
   // componentWillReceiveProps(nextProps) {
   //   this.props.dispatch(loadRecentListings());
   // }
 
   render() {
-    if (this.props.isFetching) {
-      return <p>Loading...</p>
-    }
-    return (
+    /*return (
       <div>
       <Container className="Compose">
-        
+      
       </Container>
       </div>
-    );
+    );*/
+  return (
+    <ComposeForm/>
+  )
   }
 }
 
 const mapStateToProps = (state) => {
   return ({
-    listings: state.listings,
+    user: state.currentUser,
+    form: state.form,
   });
 }
 
-export default connect(mapStateToProps)(Compose);
+export default connect(mapStateToProps)(reduxForm({form: 'compose'})(Compose));
