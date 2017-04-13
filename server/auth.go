@@ -86,7 +86,7 @@ func ServeCurrentUser(w http.ResponseWriter, r *http.Request, ps httprouter.Para
 	netID := getUsername(r)
 	log.WithField("netID", netID).Info("getting username")
 	if netID == "" {
-		Serve404(w)
+		http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
 		return
 	}
 
