@@ -130,6 +130,8 @@ func TestAuthentication(t *testing.T) {
 			So(res.Header().Get("Location"), ShouldNotEqual, "calhost:8888")
 		})
 
+		Convey("validates the redirect to make sure it's redirecting to the client", nil)
+
 	})
 
 	Convey("LogoutUser", t, func() {
