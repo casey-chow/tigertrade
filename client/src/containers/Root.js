@@ -24,7 +24,7 @@ class Root extends PureComponent {
     return (
       <MuiThemeProvider>
         <Provider store={ store }>
-          <Router>
+          <Router basename="/" forceRefresh={true}>
             <App />
           </Router>
         </Provider>

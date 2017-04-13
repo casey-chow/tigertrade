@@ -14,6 +14,8 @@ import LoginButton from './LoginButton';
 import LoggedInMenu from './LoggedInMenu';
 import PropTypes from 'prop-types';
 
+import { Link } from 'react-router-dom';
+
 class SearchBar extends Component {
 
 	state = {
@@ -95,7 +97,7 @@ export default class ActionBar extends Component {
       const loggedIn = this.props.user.loggedIn;
         return ( 
         	<AppBar
-        	title={<div>{document.title}<SearchBar/></div>}
+        	title={<div><Link to="/" style={{textDecoration: 'none', color: 'white'}}>{document.title}</Link><SearchBar/></div>}
             iconElementRight={loggedIn ? <LoggedInMenu user={this.props.user}/> : <LoginButton />}
             style = {
                 {

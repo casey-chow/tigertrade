@@ -10,18 +10,20 @@ import { loadRecentListings } from '../actions/listings';
 
 import { Link } from 'react-router-dom';
 
-import './Home.css';
-
 const fabStyle = {
   position: 'fixed',
   bottom: '35px',
   right: '35px',
 };
 
-class Home extends Component {
+class Compose extends Component {
   static propTypes = {
     listings: PropTypes.array.isRequired,
     dispatch: PropTypes.func.isRequired,
+  }
+
+  handleTouchTap = (event) => {
+
   }
 
   componentWillMount() {
@@ -36,25 +38,11 @@ class Home extends Component {
     if (this.props.isFetching) {
       return <p>Loading...</p>
     }
-
-    const listings = this.props.listings.map((listing) => <ListingCard listing={listing}/>);
-
     return (
       <div>
-      <Container className="Home">
-        <Row>
-          <Col xs={12}>
-            <div className="cardsContainer">
-              {listings}
-            </div>
-          </Col>
-        </Row>
+      <Container className="Compose">
+        
       </Container>
-      <Link to="/compose">
-      <FloatingActionButton style={fabStyle}>
-      <ContentAdd />
-      </FloatingActionButton>
-      </Link>
       </div>
     );
   }
@@ -66,4 +54,4 @@ const mapStateToProps = (state) => {
   });
 }
 
-export default connect(mapStateToProps)(Home);
+export default connect(mapStateToProps)(Compose);

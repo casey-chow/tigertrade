@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 
 import ActionBar from '../components/ActionBar';
 import Home from './Home';
+import Compose from './Compose';
 
 import { loadCurrentUser } from '../actions/users';
 
@@ -22,7 +23,8 @@ class App extends Component {
       <div className="App">
         <ActionBar user={this.props.user} />
         <div style={{marginTop: '64px'}}>
-          <Route exact path="/" component={Home} />
+          <Route path="/compose" component={Compose}/>
+          <Route exact path="/" component={Home}/>
         </div>
       </div>
     );
