@@ -55,11 +55,6 @@ func GetSearch(queryStr string, maxDescriptionSize int, limit uint64) ([]*Listin
 
 // Searches database for all occurrences of every space-separated word in query
 func ServeSearch(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	if r.Method != "GET" {
-		http.Error(w, http.StatusText(405), 405)
-		return
-	}
-
 	// Get limit from params
 	limitStr := r.URL.Query().Get("limit")
 	limit := defaultNumResults

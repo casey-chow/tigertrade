@@ -25,11 +25,6 @@ type SavedSearch struct {
 
 // Writes the most recent count saved searches, based on original date created to w
 func ServeRecentSavedSearches(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	if r.Method != "GET" {
-		http.Error(w, http.StatusText(405), 405)
-		return
-	}
-
 	// Get limit from params
 	limitStr := r.URL.Query().Get("limit")
 	limit := defaultNumResults
@@ -104,11 +99,6 @@ func GetRecentSavedSearches(userId int, limit uint64) ([]*SavedSearch, error, in
 
 // Writes the most recent count saved searches, based on original date created to w
 func ServeSavedSearchById(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	if r.Method != "GET" {
-		http.Error(w, http.StatusText(405), 405)
-		return
-	}
-
 	// Get ID from params
 	id := ps.ByName("id")
 	if id == "" {
@@ -170,11 +160,6 @@ func GetSavedSearchById(id string, userId int) (SavedSearch, error, int) {
 }
 
 func ServeAddSavedSearch(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	if r.Method != "POST" {
-		http.Error(w, http.StatusText(405), 405)
-		return
-	}
-
 	// Get saved search to add from request body
 	savedSearch := SavedSearch{}
 	// TODO this fails silently for some reason if r.Body contains invalid JSON

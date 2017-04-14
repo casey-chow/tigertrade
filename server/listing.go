@@ -45,11 +45,6 @@ type Listing struct {
 
 // Writes the most recent count listings, based on original date created to w
 func ServeRecentListings(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	if r.Method != "GET" {
-		http.Error(w, http.StatusText(405), 405)
-		return
-	}
-
 	// Get limit from params
 	limitStr := r.URL.Query().Get("limit")
 	limit := defaultNumResults
@@ -116,11 +111,6 @@ func GetRecentListings(maxDescriptionSize int, limit uint64) ([]*ListingsItem, e
 
 // Writes the most recent count listings, based on original date created to w
 func ServeListingById(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	if r.Method != "GET" {
-		http.Error(w, http.StatusText(405), 405)
-		return
-	}
-
 	// Get ID from params
 	id := ps.ByName("id")
 	if id == "" {
@@ -186,11 +176,6 @@ func GetListingById(id string) (Listing, error, int) {
 }
 
 func ServeAddListing(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	if r.Method != "POST" {
-		http.Error(w, http.StatusText(405), 405)
-		return
-	}
-
 	// Get listing to add from request body
 	listing := Listing{}
 	// TODO this fails silently for some reason if r.Body contains invalid JSON
@@ -246,11 +231,6 @@ func AddListing(listing Listing, userId int) (Listing, error, int) {
 }
 
 func ServeUpdateListingById(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	if r.Method != "POST" {
-		http.Error(w, http.StatusText(405), 405)
-		return
-	}
-
 	// Get ID from params
 	id := ps.ByName("id")
 	if id == "" {

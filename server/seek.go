@@ -40,11 +40,6 @@ type Seek struct {
 
 // Writes the most recent count seeks, based on original date created to w
 func ServeRecentSeeks(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	if r.Method != "GET" {
-		http.Error(w, http.StatusText(405), 405)
-		return
-	}
-
 	// Get limit from params
 	limitStr := r.URL.Query().Get("limit")
 	limit := defaultNumResults
@@ -110,11 +105,6 @@ func GetRecentSeeks(maxDescriptionSize int, limit uint64) ([]*SeeksItem, error, 
 
 // Writes the most recent count seeks, based on original date created to w
 func ServeSeekById(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	if r.Method != "GET" {
-		http.Error(w, http.StatusText(405), 405)
-		return
-	}
-
 	// Get ID from params
 	id := ps.ByName("id")
 	if id == "" {
@@ -167,11 +157,6 @@ func GetSeekById(id string) (Seek, error, int) {
 }
 
 func ServeAddSeek(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	if r.Method != "POST" {
-		http.Error(w, http.StatusText(405), 405)
-		return
-	}
-
 	// Get seek to add from request body
 	seek := Seek{}
 	// TODO this fails silently for some reason if r.Body contains invalid JSON

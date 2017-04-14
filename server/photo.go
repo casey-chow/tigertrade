@@ -19,11 +19,6 @@ type Photo struct {
 
 // Writes all photos associated with a given listing's key id to w
 func ServePhotosByListingId(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	if r.Method != "GET" {
-		http.Error(w, http.StatusText(405), 405)
-		return
-	}
-
 	// Get ID from params
 	id := ps.ByName("id")
 	if id == "" {
