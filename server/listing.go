@@ -1,7 +1,9 @@
 package server
 
 import (
+	"database/sql"
 	"encoding/json"
+	"errors"
 	"fmt"
 	sq "github.com/Masterminds/squirrel"
 	log "github.com/Sirupsen/logrus"
@@ -165,7 +167,9 @@ func GetListingById(id string) (Listing, error, int) {
 		&listing.LastModificationDate, &listing.Title, &listing.Description,
 		&listing.UserID, &listing.Price, &listing.Status,
 		&listing.ExpirationDate, &listing.Thumbnail)
-	if err != nil {
+	if err == sql.ErrNoRows {
+		return listing, err, 404
+	} else if err != nil {
 		return listing, err, 500
 	}
 
@@ -182,7 +186,6 @@ func GetListingById(id string) (Listing, error, int) {
 }
 
 func ServeAddListing(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-
 	if r.Method != "POST" {
 		http.Error(w, http.StatusText(405), 405)
 		return
@@ -218,8 +221,10 @@ func AddListing(listing Listing, userId int) (Listing, error, int) {
 
 	// Insert listing
 	stmt := psql.Insert("listings").
-		Columns("title", "description", "user_id", "price", "status", "expiration_date", "thumbnail_id").
-		Values(listing.Title, listing.Description, userId, listing.Price, listing.Status, listing.ExpirationDate, listing.Thumbnail).
+		Columns("title", "description", "user_id", "price", "status",
+			"expiration_date", "thumbnail_id").
+		Values(listing.Title, listing.Description, userId, listing.Price,
+			listing.Status, listing.ExpirationDate, listing.Thumbnail).
 		Suffix("RETURNING key_id, creation_date")
 
 	// Query db for listing
@@ -237,4 +242,86 @@ func AddListing(listing Listing, userId int) (Listing, error, int) {
 	}
 
 	return listing, nil, 0
+}
+
+func ServeUpdateListingById(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	if r.Method != "POST" {
+		http.Error(w, http.StatusText(405), 405)
+		return
+	}
+
+	// Get ID from params
+	id := ps.ByName("id")
+	if id == "" {
+		// Return 404 error with empty body if not found
+		http.Error(w, "", 404)
+		return
+	}
+
+	// Get listing to add from request body
+	listing := Listing{}
+	// TODO this fails silently for some reason if r.Body contains invalid JSON
+	json.NewDecoder(r.Body).Decode(&listing)
+
+	// Retrieve UserID
+	user, err := getUser(getUsername(r))
+	if err != nil { // Not authorized
+		raven.CaptureError(err, nil)
+		log.Print(err)
+		http.Error(w, http.StatusText(401), 401)
+	}
+
+	listing, err, code := UpdateListingById(id, listing, user.KeyID)
+	if err != nil {
+		raven.CaptureError(err, nil)
+		log.Print(err)
+		http.Error(w, http.StatusText(code), code)
+	}
+
+	Serve(w, listing)
+}
+
+// Overwrites the listing in the database with the given id with the given listing
+// (belonging to userId). Returns the updated listing.
+func UpdateListingById(id string, listing Listing, userId int) (Listing, error, int) {
+	listing.UserID = userId
+
+	// Update listing
+	stmt := psql.Update("listings").
+		SetMap(map[string]interface{}{
+			"title": listing.Title,
+			"description": listing.Description,
+			"user_id": userId,
+			"price": listing.Price,
+			"status": listing.Status,
+			"expiration_date": listing.ExpirationDate,
+			"thumbnail_id": listing.Thumbnail}).
+		Where(sq.Eq{"listings.key_id": id}).
+		Where(sq.Eq{"listings.user_id": userId})
+
+	// Query db for listing
+	result, err := stmt.RunWith(db).Exec()
+	if err != nil {
+		return listing, err, 500
+	}
+
+	numRows, err := result.RowsAffected()
+	if err != nil {
+		return listing, err, 500
+	}
+	if numRows == 0 {
+		return listing, sql.ErrNoRows, 404
+	}
+	if numRows != 1 {
+		return listing, errors.New("Multiple rows affected by UpdateListingById"), 500
+	}
+	keyId, err := result.LastInsertId()
+	if err != nil {
+		return listing, err, 500
+	}
+	if string(keyId) != id {
+		return listing, errors.New("Wrong row affected by UpdateListingById"), 500
+	}
+
+	return GetListingById(id)
 }

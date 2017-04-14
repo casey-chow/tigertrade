@@ -30,15 +30,22 @@ func Router() http.Handler {
 	router.GET("/api/listings", ServeRecentListings)
 	router.POST("/api/listings", ServeAddListing)
 	router.GET("/api/listings/:id", ServeListingById)
+	router.POST("/api/listings/:id", ServeUpdateListingById)
+
 	router.GET("/api/listings/:id/photos", ServePhotosByListingId)
+//	router.POST("/api/listings/:id/photos", ServeAddPhoto)
+//	router.GET("/api/listings/:lid/photos/:pid", ServePhotoById)
+//	router.POST("/api/listings/:lid/photos/:pid", ServeUpdatePhotoById)
 
 	router.GET("/api/seeks", ServeRecentSeeks)
 	router.POST("/api/seeks", ServeAddSeek)
 	router.GET("/api/seeks/:id", ServeSeekById)
+//	router.POST("/api/seeks/:id", ServeUpdateSeekById)
 
 	router.GET("/api/savedsearches", ServeRecentSavedSearches)
 	router.POST("/api/savedsearches", ServeAddSavedSearch)
 	router.GET("/api/savedsearches/:id", ServeSavedSearchById)
+//	router.POST("/api/savedsearches/:id", ServeUpdateSavedSearchById)
 
 	router.GET("/api/search/:query", ServeSearch)
 
