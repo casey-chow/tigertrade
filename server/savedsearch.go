@@ -17,10 +17,10 @@ type SavedSearch struct {
 	CreationDate          null.Time   `json:"creationDate"`
 	LastModificationDate  null.Time   `json:"lastModificationDate"`
 	Query                 null.String `json:"query"`
-	MinPrice              null.Int    `json:"min_price"`
-	MaxPrice              null.Int    `json:"max_price"`
-	ListingExpirationDate null.Time   `json:"listing_expiration_date"`
-	SearchExpirationDate  null.Time   `json:"search_expiration_date"`
+	MinPrice              null.Int    `json:"minPrice"`
+	MaxPrice              null.Int    `json:"maxPrice"`
+	ListingExpirationDate null.Time   `json:"listingExpirationDate"`
+	SearchExpirationDate  null.Time   `json:"searchExpirationDate"`
 }
 
 // Writes the most recent count saved searches, based on original date created to w
