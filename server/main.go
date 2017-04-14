@@ -5,12 +5,12 @@ import (
 	"database/sql"
 	"flag"
 	log "github.com/Sirupsen/logrus"
+	"github.com/binjianwu/cas" // NOTE: use this until https://github.com/go-cas/cas/pull/10 is merged
 	"github.com/getsentry/raven-go"
 	_ "github.com/lib/pq"
 	"github.com/meatballhat/negroni-logrus"
 	"github.com/rs/cors"
 	"github.com/urfave/negroni"
-	"gopkg.in/cas.v1"
 	"net/http"
 	"net/url"
 	"os"
@@ -23,7 +23,10 @@ var db *sql.DB
 
 func casMiddleware() negroni.Handler {
 	casUrl, _ := url.Parse("https://fed.princeton.edu/cas/")
-	casClient := cas.NewClient(&cas.Options{URL: casUrl})
+	casClient := cas.NewClient(&cas.Options{
+		URL:         casUrl,
+		SendService: true,
+	})
 
 	// Thin wrapper on go-cas's middleware
 	return negroni.HandlerFunc(func(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {

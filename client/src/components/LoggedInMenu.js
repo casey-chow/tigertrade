@@ -13,9 +13,7 @@ export default class LoggedInMenu extends PureComponent {
   }
 
   logout = () => {
-    const curr = window.location.href;
-    const newLoc = `http://fed.princeton.edu/cas/logout?service=${encodeURIComponent(curr)}`;
-    console.log(`logout: redirecting to ${newLoc}`);
+    const newLoc = `${process.env.REACT_APP_SERVER_ROOT}/api/users/logout`;
     window.location = newLoc;
   }
 
@@ -25,7 +23,7 @@ export default class LoggedInMenu extends PureComponent {
         {...this.props}
         iconButtonElement={
           <FlatButton {...this.props}
-            style={{marginTop: '0', color: 'white'}} 
+            style={{marginTop: '0', color: 'white'}}
             labelPosition='before'
             label={this.props.user.netId}
             icon={<NavigationExpandMore />}
