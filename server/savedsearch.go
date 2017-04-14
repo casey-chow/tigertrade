@@ -43,7 +43,7 @@ func ServeRecentSavedSearches(w http.ResponseWriter, r *http.Request, ps httprou
 	user, err := getUser(getUsername(r))
 	if err != nil { // Not authorized
 		raven.CaptureError(err, nil)
-		log.Print(err)
+		log.WithField("err", err).Error("Error while authenticating user: not authorized")
 		http.Error(w, http.StatusText(401), 401)
 		return
 	}
@@ -51,7 +51,7 @@ func ServeRecentSavedSearches(w http.ResponseWriter, r *http.Request, ps httprou
 	savedSearches, err, code := GetRecentSavedSearches(user.KeyID, uint64(limit))
 	if err != nil {
 		raven.CaptureError(err, nil)
-		log.Print(err)
+		log.WithField("err", err).Error("Error while getting recent saved searches")
 		http.Error(w, http.StatusText(code), code)
 	}
 
@@ -111,7 +111,7 @@ func ServeSavedSearchById(w http.ResponseWriter, r *http.Request, ps httprouter.
 	user, err := getUser(getUsername(r))
 	if err != nil { // Not authorized
 		raven.CaptureError(err, nil)
-		log.Print(err)
+		log.WithField("err", err).Error("Error while authenticating user: not authorized")
 		http.Error(w, http.StatusText(401), 401)
 		return
 	}
@@ -119,7 +119,7 @@ func ServeSavedSearchById(w http.ResponseWriter, r *http.Request, ps httprouter.
 	savedSearches, err, code := GetSavedSearchById(id, user.KeyID)
 	if err != nil {
 		raven.CaptureError(err, nil)
-		log.Print(err)
+		log.WithField("err", err).Error("Error while getting saved search by ID")
 		http.Error(w, http.StatusText(code), code)
 	}
 
@@ -169,7 +169,7 @@ func ServeAddSavedSearch(w http.ResponseWriter, r *http.Request, ps httprouter.P
 	user, err := getUser(getUsername(r))
 	if err != nil { // Not authorized
 		raven.CaptureError(err, nil)
-		log.Print(err)
+		log.WithField("err", err).Error("Error while authenticating user: not authorized")
 		http.Error(w, http.StatusText(401), 401)
 		return
 	}
@@ -177,7 +177,7 @@ func ServeAddSavedSearch(w http.ResponseWriter, r *http.Request, ps httprouter.P
 	savedSearch, err, code := AddSavedSearch(savedSearch, user.KeyID)
 	if err != nil {
 		raven.CaptureError(err, nil)
-		log.Print(err)
+		log.WithField("err", err).Error("Error while getting adding saved search")
 		http.Error(w, http.StatusText(code), code)
 	}
 

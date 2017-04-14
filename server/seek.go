@@ -57,7 +57,7 @@ func ServeRecentSeeks(w http.ResponseWriter, r *http.Request, ps httprouter.Para
 	seeks, err, code := GetRecentSeeks(truncationLength, uint64(limit))
 	if err != nil {
 		raven.CaptureError(err, nil)
-		log.Print(err)
+		log.WithField("err", err).Error("Error while getting recent seeks")
 		http.Error(w, http.StatusText(code), code)
 	}
 
@@ -116,7 +116,7 @@ func ServeSeekById(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 	seeks, err, code := GetSeekById(id)
 	if err != nil {
 		raven.CaptureError(err, nil)
-		log.Print(err)
+		log.WithField("err", err).Error("Error while getting seek by ID")
 		http.Error(w, http.StatusText(code), code)
 	}
 
@@ -166,7 +166,7 @@ func ServeAddSeek(w http.ResponseWriter, r *http.Request, ps httprouter.Params) 
 	user, err := getUser(getUsername(r))
 	if err != nil { // Not authorized
 		raven.CaptureError(err, nil)
-		log.Print(err)
+		log.WithField("err", err).Error("Error while authenticating user: not authorized")
 		http.Error(w, http.StatusText(401), 401)
 		return
 	}
@@ -174,7 +174,7 @@ func ServeAddSeek(w http.ResponseWriter, r *http.Request, ps httprouter.Params) 
 	seek, err, code := AddSeek(seek, user.KeyID)
 	if err != nil {
 		raven.CaptureError(err, nil)
-		log.Print(err)
+		log.WithField("err", err).Error("Error while adding new seek")
 		http.Error(w, http.StatusText(code), code)
 	}
 

@@ -62,7 +62,7 @@ func ServeRecentListings(w http.ResponseWriter, r *http.Request, ps httprouter.P
 	listings, err, code := GetRecentListings(truncationLength, uint64(limit))
 	if err != nil {
 		raven.CaptureError(err, nil)
-		log.Print(err)
+		log.WithField("err", err).Error("Error while getting recent listings")
 		http.Error(w, http.StatusText(code), code)
 	}
 
@@ -122,7 +122,7 @@ func ServeListingById(w http.ResponseWriter, r *http.Request, ps httprouter.Para
 	listings, err, code := GetListingById(id)
 	if err != nil {
 		raven.CaptureError(err, nil)
-		log.Print(err)
+		log.WithField("err", err).Error("Error while getting listing by ID")
 		http.Error(w, http.StatusText(code), code)
 	}
 
@@ -185,7 +185,7 @@ func ServeAddListing(w http.ResponseWriter, r *http.Request, ps httprouter.Param
 	user, err := getUser(getUsername(r))
 	if err != nil { // Not authorized
 		raven.CaptureError(err, nil)
-		log.Print(err)
+		log.WithField("err", err).Error("Error while authenticating user: not authorized")
 		http.Error(w, http.StatusText(401), 401)
 		return
 	}
@@ -193,7 +193,7 @@ func ServeAddListing(w http.ResponseWriter, r *http.Request, ps httprouter.Param
 	listing, err, code := AddListing(listing, user.KeyID)
 	if err != nil {
 		raven.CaptureError(err, nil)
-		log.Print(err)
+		log.WithField("err", err).Error("Error while adding new listing")
 		http.Error(w, http.StatusText(code), code)
 	}
 
@@ -248,7 +248,7 @@ func ServeUpdateListingById(w http.ResponseWriter, r *http.Request, ps httproute
 	user, err := getUser(getUsername(r))
 	if err != nil { // Not authorized
 		raven.CaptureError(err, nil)
-		log.Print(err)
+		log.WithField("err", err).Error("Error while authenticating user: not authorized")
 		http.Error(w, http.StatusText(401), 401)
 		return
 	}
@@ -256,7 +256,7 @@ func ServeUpdateListingById(w http.ResponseWriter, r *http.Request, ps httproute
 	listing, err, code := UpdateListingById(id, listing, user.KeyID)
 	if err != nil {
 		raven.CaptureError(err, nil)
-		log.Print(err)
+		log.WithField("err", err).Error("Error while updating listing by ID")
 		http.Error(w, http.StatusText(code), code)
 	}
 

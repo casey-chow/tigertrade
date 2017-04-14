@@ -31,7 +31,7 @@ func Serve(w http.ResponseWriter, v interface{}) {
 		var err error
 		marshaled, err = json.Marshal(v)
 		if err != nil {
-			log.Print(err)
+			log.WithField("err", err).Error("Error while marshalling to JSON")
 			raven.CaptureError(err, nil)
 			http.Error(w, http.StatusText(500), 500)
 			return

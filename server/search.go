@@ -75,7 +75,7 @@ func ServeSearch(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	listings, err, code := GetSearch(queryStr, truncationLength, uint64(limit))
 	if err != nil {
 		raven.CaptureError(err, nil)
-		log.Print(err)
+		log.WithField("err", err).Error("Error while searching")
 		http.Error(w, http.StatusText(code), code)
 	}
 
