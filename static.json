@@ -7,7 +7,7 @@
   },
   "proxies": {
     "/api/": {
-      "origin": "${API_URL}"
+      "origin": "${REACT_APP_SERVER_ROOT}"
     }
   },
   "headers": {

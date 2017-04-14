@@ -22,6 +22,10 @@ const listings = (state = [], action) => {
       return [];
     case 'LOAD_LISTINGS_SUCCESS':
       return action.json;
+    case 'SEARCH_LISTINGS_REQUEST':
+      return [];
+    case 'SEARCH_LISTINGS_SUCCESS':
+      return action.json;
     default:
       return state;
   }
@@ -56,8 +60,8 @@ const currentUser = (state = { loggedIn: false }, action) => {
 
 const rootReducer = combineReducers({
   listings,
-  listingsLoading, 
-  currentUserLoading, 
+  listingsLoading,
+  currentUserLoading,
   currentUser,
   ui: uiReducer,
   form: formReducer,

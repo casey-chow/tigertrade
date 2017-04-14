@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 
 import AutoComplete from 'material-ui/AutoComplete';
 import Paper from 'material-ui/Paper';
+import { searchListings, loadRecentListings } from './../actions/listings';
+import { connect } from 'react-redux';
 
 
 import './SearchBar.css';
@@ -23,6 +25,11 @@ class SearchBar extends Component {
       'clothes',
       ],
     });
+    if(!value) {
+      this.props.dispatch(loadRecentListings());
+    } else {
+      this.props.dispatch(searchListings(value));
+    }
   };
 
   handleTouchTap = (event) => {
@@ -40,6 +47,10 @@ class SearchBar extends Component {
       open: false,
     });
   };
+
+  handleNewRequest = (chosenRequest, index) => {
+    this.props.dispatch(searchListings(chosenRequest));
+  }
 
   render() {
     const style = {
@@ -60,13 +71,14 @@ class SearchBar extends Component {
           dataSource={this.state.dataSource}
           onUpdateInput={this.handleUpdateInput}
           inputStyle={{color: 'white'}}
+          onNewRequest={this.handleNewRequest}
         />
       </Paper>
     );
   }
 }
 
-export default SearchBar;
+export default connect()(SearchBar);
 
 //  <FlatButton label="Filters" labelStyle={{color: 'white'}} onTouchTap={this.handleTouchTap}/>
 //  <Popover

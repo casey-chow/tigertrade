@@ -21,6 +21,24 @@ export function loadRecentListings() {
   };
 }
 
+export function searchListings(query) {
+  return function (dispatch, getState) {
+    dispatch({
+      type: 'SEARCH_LISTINGS_REQUEST',
+    });
+    fetch(`${API_ROOT}/search/` + encodeURIComponent(query))
+      .then(response => response.json())
+      .then(json => dispatch({
+        json,
+        type: 'SEARCH_LISTINGS_SUCCESS',
+      }))
+      .catch(error => dispatch({
+        error,
+        type: 'SEARCH_LISTINGS_FAILURE',
+      }));
+  };
+}
+
 export function postListing(listing) {
   return function (dispatch, getState) {
     dispatch({
