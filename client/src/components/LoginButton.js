@@ -6,7 +6,6 @@ export default class LoginButton extends PureComponent {
   static muiName = 'FlatButton';
 
   style = {
-    ...this.props.style,
     color: 'white',
     float: 'right',
     marginTop: '8px',
@@ -23,12 +22,13 @@ export default class LoginButton extends PureComponent {
 
   render() {
     return (
+      <div {...this.props}>
       <FlatButton
-        {...this.props}
         style={this.style}
         onClick={this.redirectToCas}
         label="Login"
       />
+      </div>
     );
   }
 }
