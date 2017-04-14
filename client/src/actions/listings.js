@@ -35,10 +35,13 @@ export function postListing(listing) {
       },
       body: JSON.stringify(listing)
     })
-    .then(json => dispatch({
+    .then(json => {
+      dispatch({
       json,
       type: 'POST_LISTING_SUCCESS',
-    }))
+    });
+      dispatch(loadRecentListings());
+    })
     .catch(error => dispatch({
       error,
       type: 'POST_LISTING_SUCCESS',

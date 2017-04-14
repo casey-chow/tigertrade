@@ -9,7 +9,7 @@ import RaisedButton from 'material-ui/RaisedButton'
 // https://stackoverflow.com/questions/33138370/how-to-wire-up-redux-form-bindings-to-the-forms-inputs
 
 const titleField = (field) => (<TextField hintText="What are you selling?" value={field.input.value}
-                                          onChange={field.input.onChange} maxlength="160"/>);
+                                          onChange={field.input.onChange} maxlength="160" fullWidth={true}/>);
 
 const priceField = (field) => (<div>{field.input.value ? '$' : ''}
                                <TextField hintText="How much are you charging?" value={field.input.value}
