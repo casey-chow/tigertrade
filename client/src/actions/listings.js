@@ -7,7 +7,7 @@ export function loadRecentListings() {
     dispatch({
       type: 'LOAD_LISTINGS_REQUEST',
     });
-  
+
     fetch(`${API_ROOT}/listings`)
       .then(response => response.json())
       .then(json => dispatch({
@@ -19,4 +19,32 @@ export function loadRecentListings() {
         type: 'LOAD_LISTINGS_FAILURE',
       }));
   };
+}
+
+export function postListing(listing) {
+  return function (dispatch, getState) {
+    dispatch({
+      type: 'POST_LISTING_REQUEST',
+    });
+
+    fetch(`${API_ROOT}/listings`, {
+      credentials: "include",
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(listing)
+    })
+    .then(json => {
+      dispatch({
+      json,
+      type: 'POST_LISTING_SUCCESS',
+    });
+      dispatch(loadRecentListings());
+    })
+    .catch(error => dispatch({
+      error,
+      type: 'POST_LISTING_SUCCESS',
+    }));
+  }
 }
