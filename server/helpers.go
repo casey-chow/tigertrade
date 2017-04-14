@@ -9,6 +9,15 @@ import (
 	"net/http"
 )
 
+// Maximum number of characters in a truncated description of a datum
+// Used when obtaining and displaying many datum of a given structure
+const truncationLength = 1024
+
+// Default and maximum number of datum returned by bulk API queries
+// Used when obtaining and displaying many datum of a given structure
+const defaultNumResults = 30
+const maxNumResults = 100
+
 // Postgres Statement Builder instance
 var psql = sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
 
@@ -22,7 +31,7 @@ func Serve(w http.ResponseWriter, v interface{}) {
 		var err error
 		marshaled, err = json.Marshal(v)
 		if err != nil {
-			log.Print(err)
+			log.WithField("err", err).Error("Error while marshalling to JSON")
 			raven.CaptureError(err, nil)
 			http.Error(w, http.StatusText(500), 500)
 			return

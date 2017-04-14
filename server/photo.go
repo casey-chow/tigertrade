@@ -2,10 +2,10 @@ package server
 
 import (
 	sq "github.com/Masterminds/squirrel"
+	log "github.com/Sirupsen/logrus"
 	"github.com/getsentry/raven-go"
 	"github.com/guregu/null"
 	"github.com/julienschmidt/httprouter"
-	"log"
 	"net/http"
 )
 
@@ -19,11 +19,6 @@ type Photo struct {
 
 // Writes all photos associated with a given listing's key id to w
 func ServePhotosByListingId(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	if r.Method != "GET" {
-		http.Error(w, http.StatusText(405), 405)
-		return
-	}
-
 	// Get ID from params
 	id := ps.ByName("id")
 	if id == "" {
@@ -35,7 +30,7 @@ func ServePhotosByListingId(w http.ResponseWriter, r *http.Request, ps httproute
 	// Retrieve photos by listing id
 	photos, err, code := GetPhotosByListingId(id)
 	if err != nil {
-		log.Print(err)
+		log.WithField("err", err).Error("Error while getting photo by ID")
 		raven.CaptureError(err, nil)
 		http.Error(w, http.StatusText(code), code)
 	}
