@@ -183,6 +183,7 @@ func ServeAddSeek(w http.ResponseWriter, r *http.Request, ps httprouter.Params) 
 		raven.CaptureError(err, nil)
 		log.Print(err)
 		http.Error(w, http.StatusText(401), 401)
+		return
 	}
 
 	seek, err, code := AddSeek(seek, user.KeyID)

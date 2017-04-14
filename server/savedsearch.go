@@ -16,7 +16,6 @@ type SavedSearch struct {
 	KeyID                 int         `json:"keyId"`
 	CreationDate          null.Time   `json:"creationDate"`
 	LastModificationDate  null.Time   `json:"lastModificationDate"`
-	UserID                int         `json:"userId"`
 	Query                 null.String `json:"query"`
 	MinPrice              null.Int    `json:"min_price"`
 	MaxPrice              null.Int    `json:"max_price"`
@@ -45,7 +44,16 @@ func ServeRecentSavedSearches(w http.ResponseWriter, r *http.Request, ps httprou
 		limit = maxNumResults
 	}
 
-	savedSearches, err, code := GetRecentSavedSearches(uint64(limit))
+	// Retrieve UserID
+	user, err := getUser(getUsername(r))
+	if err != nil { // Not authorized
+		raven.CaptureError(err, nil)
+		log.Print(err)
+		http.Error(w, http.StatusText(401), 401)
+		return
+	}
+
+	savedSearches, err, code := GetRecentSavedSearches(user.KeyID, uint64(limit))
 	if err != nil {
 		raven.CaptureError(err, nil)
 		log.Print(err)
@@ -57,13 +65,14 @@ func ServeRecentSavedSearches(w http.ResponseWriter, r *http.Request, ps httprou
 
 // Returns the most recent count saved searches, based on original date created. On error
 // returns an error and the HTTP code associated with that error.
-func GetRecentSavedSearches(limit uint64) ([]*SavedSearch, error, int) {
+func GetRecentSavedSearches(userId int, limit uint64) ([]*SavedSearch, error, int) {
 	// Create saved searches query
 	query := psql.
 		Select("saved_searches.key_id", "saved_searches.creation_date", "saved_searches.last_modification_date",
-			"user_id", "query", "min_price", "max_price", "listing_expiration_date", "search_expiration_date").
+			"query", "min_price", "max_price", "listing_expiration_date", "search_expiration_date").
 		From("saved_searches").
-		Where("saved_searches.is_active=true").
+		Where(sq.Eq{"saved_searches.user_id": userId,
+			"saved_searches.is_active": true}).
 		OrderBy("saved_searches.creation_date DESC").
 		Limit(limit)
 
@@ -79,7 +88,7 @@ func GetRecentSavedSearches(limit uint64) ([]*SavedSearch, error, int) {
 	for rows.Next() {
 		ss := new(SavedSearch)
 		err := rows.Scan(&ss.KeyID, &ss.CreationDate, &ss.LastModificationDate,
-			&ss.UserID, &ss.Query, &ss.MinPrice, &ss.MaxPrice,
+			&ss.Query, &ss.MinPrice, &ss.MaxPrice,
 			&ss.ListingExpirationDate, &ss.SearchExpirationDate)
 		if err != nil {
 			return nil, err, 500
@@ -108,7 +117,16 @@ func ServeSavedSearchById(w http.ResponseWriter, r *http.Request, ps httprouter.
 		return
 	}
 
-	savedSearches, err, code := GetSavedSearchById(id)
+	// Retrieve UserID
+	user, err := getUser(getUsername(r))
+	if err != nil { // Not authorized
+		raven.CaptureError(err, nil)
+		log.Print(err)
+		http.Error(w, http.StatusText(401), 401)
+		return
+	}
+
+	savedSearches, err, code := GetSavedSearchById(id, user.KeyID)
 	if err != nil {
 		raven.CaptureError(err, nil)
 		log.Print(err)
@@ -120,16 +138,19 @@ func ServeSavedSearchById(w http.ResponseWriter, r *http.Request, ps httprouter.
 
 // Returns the most recent count saved searches, based on original date created. On error
 // returns an error and the HTTP code associated with that error.
-func GetSavedSearchById(id string) (SavedSearch, error, int) {
+func GetSavedSearchById(id string, userId int) (SavedSearch, error, int) {
 	var savedSearch SavedSearch
 
 	// Create saved search query
 	query := psql.
 		Select("saved_searches.key_id", "saved_searches.creation_date", "saved_searches.last_modification_date",
-			"user_id", "query", "min_price", "max_price", "listing_expiration_date", "search_expiration_date").
+			"query", "min_price", "max_price", "listing_expiration_date", "search_expiration_date").
 		From("saved_searches").
-		Where("saved_searches.is_active=true").
-		Where(sq.Eq{"saved_searches.key_id": id})
+		Where(sq.Eq{
+			"saved_searches.is_active": true
+			"saved_searches.key_id": id,
+			"saved_searches.user_id": userId
+		})
 
 	// Query db for savedSearch
 	rows, err := query.RunWith(db).Query()
@@ -141,7 +162,7 @@ func GetSavedSearchById(id string) (SavedSearch, error, int) {
 	// Populate savedSearch struct
 	rows.Next()
 	err = rows.Scan(&savedSearch.KeyID, &savedSearch.CreationDate, &savedSearch.LastModificationDate,
-		&savedSearch.UserID, &savedSearch.Query, &savedSearch.MinPrice, &savedSearch.MaxPrice,
+		&savedSearch.Query, &savedSearch.MinPrice, &savedSearch.MaxPrice,
 		&savedSearch.ListingExpirationDate, &savedSearch.SearchExpirationDate)
 	if err != nil {
 		return savedSearch, err, 500
@@ -167,6 +188,7 @@ func ServeAddSavedSearch(w http.ResponseWriter, r *http.Request, ps httprouter.P
 		raven.CaptureError(err, nil)
 		log.Print(err)
 		http.Error(w, http.StatusText(401), 401)
+		return
 	}
 
 	savedSearch, err, code := AddSavedSearch(savedSearch, user.KeyID)
@@ -182,8 +204,6 @@ func ServeAddSavedSearch(w http.ResponseWriter, r *http.Request, ps httprouter.P
 // Inserts the given saved search (belonging to userId) into the database. Returns
 // saved search with its new KeyID added.
 func AddSavedSearch(savedSearch SavedSearch, userId int) (SavedSearch, error, int) {
-	savedSearch.UserID = userId
-
 	// Insert saved search
 	stmt := psql.Insert("saved_searches").
 		Columns("user_id", "query", "min_price", "max_price", "listing_expiration_date", "search_expiration_date").

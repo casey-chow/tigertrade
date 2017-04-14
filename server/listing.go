@@ -202,6 +202,7 @@ func ServeAddListing(w http.ResponseWriter, r *http.Request, ps httprouter.Param
 		raven.CaptureError(err, nil)
 		log.Print(err)
 		http.Error(w, http.StatusText(401), 401)
+		return
 	}
 
 	listing, err, code := AddListing(listing, user.KeyID)
@@ -269,6 +270,7 @@ func ServeUpdateListingById(w http.ResponseWriter, r *http.Request, ps httproute
 		raven.CaptureError(err, nil)
 		log.Print(err)
 		http.Error(w, http.StatusText(401), 401)
+		return
 	}
 
 	listing, err, code := UpdateListingById(id, listing, user.KeyID)
