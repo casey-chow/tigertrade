@@ -167,7 +167,6 @@ func GetSeekById(id string) (Seek, error, int) {
 }
 
 func ServeAddSeek(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-
 	if r.Method != "POST" {
 		http.Error(w, http.StatusText(405), 405)
 		return

@@ -151,7 +151,6 @@ func GetSavedSearchById(id string) (SavedSearch, error, int) {
 }
 
 func ServeAddSavedSearch(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-
 	if r.Method != "POST" {
 		http.Error(w, http.StatusText(405), 405)
 		return
