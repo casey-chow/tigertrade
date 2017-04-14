@@ -220,7 +220,7 @@ func AddListing(listing Listing, userId int) (Listing, error, int) {
 	stmt := psql.Insert("listings").
 		Columns("title", "description", "user_id", "price", "status", "expiration_date", "thumbnail_id").
 		Values(listing.Title, listing.Description, userId, listing.Price, listing.Status, listing.ExpirationDate, listing.Thumbnail).
-		Suffix("RETURNING key_id")
+		Suffix("RETURNING key_id, creation_date")
 
 	// Query db for listing
 	rows, err := stmt.RunWith(db).Query()
@@ -231,7 +231,7 @@ func AddListing(listing Listing, userId int) (Listing, error, int) {
 
 	// Populate listing struct
 	rows.Next()
-	err = rows.Scan(&listing.KeyID)
+	err = rows.Scan(&listing.KeyID, &listing.CreationDate)
 	if err != nil {
 		return listing, err, 500
 	}

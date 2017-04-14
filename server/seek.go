@@ -206,7 +206,7 @@ func AddSeek(seek Seek, userId int) (Seek, error, int) {
 	stmt := psql.Insert("seeks").
 		Columns("title", "description", "user_id", "saved_search_id", "notify_enabled", "status").
 		Values(seek.Title, seek.Description, userId, seek.SavedSearchID, seek.NotifyEnabled, seek.Status).
-		Suffix("RETURNING key_id")
+		Suffix("RETURNING key_id, creation_date")
 
 	// Query db for seek
 	rows, err := stmt.RunWith(db).Query()
@@ -217,7 +217,7 @@ func AddSeek(seek Seek, userId int) (Seek, error, int) {
 
 	// Populate seek struct
 	rows.Next()
-	err = rows.Scan(&seek.KeyID)
+	err = rows.Scan(&seek.KeyID, &seek.CreationDate)
 	if err != nil {
 		return seek, err, 500
 	}
