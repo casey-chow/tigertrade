@@ -7,6 +7,7 @@ import ContentAdd from 'material-ui/svg-icons/content/add';
 
 import { Field, reduxForm } from 'redux-form';
 import ComposeForm from './../components/ComposeForm';
+import { postListing } from '../actions/listings';
 
 class Compose extends Component {
 
@@ -14,15 +15,9 @@ class Compose extends Component {
     submitted: false
   }
 
-  // componentWillReceiveProps(nextProps) {
-  //   this.props.dispatch(loadRecentListings());
-  // }
-
   render() {
   const handleSubmit = (data) => {
-    console.log("submitted data")
-    console.log(data);
-    this.state.submitted = true;
+    this.props.dispatch(postListing(data))
   }
   return (<div>
     {this.state.submitted ? <h1>Submitted!</h1> : ''}
