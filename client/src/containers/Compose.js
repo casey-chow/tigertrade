@@ -10,16 +10,24 @@ import ComposeForm from './../components/ComposeForm';
 
 class Compose extends Component {
 
+  state = {
+    submitted: false
+  }
+
   // componentWillReceiveProps(nextProps) {
   //   this.props.dispatch(loadRecentListings());
   // }
 
   render() {
-  const handleSubmit = (values) => {
-    // do something with the form values
+  const handleSubmit = (data) => {
+    console.log("submitted data")
+    console.log(data);
+    this.state.submitted = true;
   }
-  return (
+  return (<div>
+    {this.state.submitted ? <h1>Submitted!</h1> : ''}
     <ComposeForm onSubmit={handleSubmit}/>
+    </div>
   )
   }
 }

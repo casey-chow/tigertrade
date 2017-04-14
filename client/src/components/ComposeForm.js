@@ -6,6 +6,8 @@ import TextField from 'material-ui/TextField';
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton'
 
+// https://stackoverflow.com/questions/33138370/how-to-wire-up-redux-form-bindings-to-the-forms-inputs
+
 const titleField = (field) => (<TextField hintText="What are you selling?" value={field.input.value}
                                           onChange={field.input.onChange} maxlength="160"/>);
 
@@ -18,13 +20,13 @@ const descriptionField = (field) => (<TextField hintText="Describe what's for sa
                                                 fullWidth={true}/>)
 
 const ComposeForm = (props) => {
-    const { onSubmit, pristine, reset, submitting } = props;
+    const { onSubmit, handleSubmit, pristine, reset, submitting } = props;
   return (
     <Container>
     <Row>
     <Col xs={12}>
     <Paper style={{padding: '1em'}}>
-    <form onSubmit={onSubmit}>
+    <form onSubmit={handleSubmit}>
       <div>
         <label>Title</label>
         <div>
