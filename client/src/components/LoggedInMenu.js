@@ -8,6 +8,13 @@ import FlatButton from 'material-ui/FlatButton';
 export default class LoggedInMenu extends PureComponent {
   static muiName = 'FlatButton';
 
+  style = {
+    ...this.props.style,
+    color: 'white',
+    marginTop: '8px',
+    marginBottom: '8px'
+  }
+
   reload = () => {
     location.reload();
   }
@@ -21,9 +28,15 @@ export default class LoggedInMenu extends PureComponent {
     return(
       <IconMenu
         {...this.props}
+        style={this.style}
         iconButtonElement={
           <FlatButton {...this.props}
-            style={{marginTop: '0', color: 'white'}}
+            style={{
+              color: 'white',
+              float: 'right',
+              marginTop: '0',
+              padding: '8px',
+            }}
             labelPosition='before'
             label={this.props.user.netId}
             icon={<NavigationExpandMore />}

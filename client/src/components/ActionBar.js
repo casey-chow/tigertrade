@@ -1,7 +1,9 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { withRouter } from 'react-router-dom';
 
 import AppBar from 'material-ui/AppBar';
+import {Tabs, Tab} from 'material-ui/Tabs';
 
 import SearchBar from './SearchBar';
 import LoginButton from './LoginButton';
@@ -9,35 +11,62 @@ import LoggedInMenu from './LoggedInMenu';
 
 import { Link } from 'react-router-dom';
 
-export default class ActionBar extends PureComponent {
-    static muiName = 'AppBar';
+class ActionBar extends Component {
+  static muiName = 'AppBar';
 
-    static propTypes = {
-      loading: PropTypes.bool,
-      user: PropTypes.object,
-    }
+  static propTypes = {
+    loading: PropTypes.bool,
+    user: PropTypes.object,
+    location: PropTypes.object,
+    history: PropTypes.object,
+  };
 
-    render() {
+  static pages = [
+    { name: 'Listings', url: '/' },
+    { name: 'Seeks', url: '/seeks' },
+    { name: 'Compose', url: '/compose' },
+  ];
 
-      const rightElement =  this.props.user.loggedIn ?
-        <LoggedInMenu user={this.props.user}/> :
-        <LoginButton />;
+  render() {
+    const Title = () => (
+      <Link to="/" style={{
+        color: 'white',
+        flexGrow: '1',
+        textDecoration: 'none',
+      }}>
+          {document.title}
+      </Link>
+    );
 
-      const middleElement = <div><Link to="/" style={{textDecoration: 'none', color: 'white'}}>
-                                    {document.title}
-                                  </Link>
-                                  <SearchBar/>
-                            </div>;
+    const RightElement = (props) => (
+      this.props.user.loggedIn ?
+      <LoggedInMenu {...props} user={this.props.user} /> :
+      <LoginButton {...props} />
+    );
 
-      return (
+    return (
+      <div style={{
+        position: 'fixed',
+        top: '0px',
+        width: '100%',
+        zIndex: '100',
+      }}>
         <AppBar
-          title={middleElement}
-          iconElementRight={rightElement}
-          style={{
-            position: 'fixed',
-            top: '0px',
-          }}
-        />
-      );
-    }
+          showMenuIconButton={false}
+          title={<Title />}
+          zDepth={0}
+        >
+          <SearchBar style={{ flex: '2 2 0%' }} />
+          <RightElement style={{ flex: '1 1 0%' }} />
+        </AppBar>
+        <Tabs onChange={this.changeTab} value={this.props.location.pathname}>
+          {ActionBar.pages.map((page) => (
+            <Tab label={page.name} value={page.url} containerElement={<Link to={page.url} />} />
+          ))}
+        </Tabs>
+      </div>
+    );
+  }
 }
+
+export default withRouter(ActionBar);

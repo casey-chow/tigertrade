@@ -23,7 +23,7 @@ class App extends Component {
     return (
       <div className="App">
         <ActionBar user={this.props.user} loading={this.props.loading} />
-        <div style={{marginTop: '5em'}}>
+        <div style={{marginTop: '9em'}}>
           <Switch>
             <Route exact path="/" component={Home}/>
             <Route path="/compose" component={Compose}/>
