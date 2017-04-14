@@ -298,8 +298,8 @@ func UpdateListingById(id string, listing Listing, userId int) (Listing, error, 
 			"status": listing.Status,
 			"expiration_date": listing.ExpirationDate,
 			"thumbnail_id": listing.Thumbnail}).
-		Where(sq.Eq{"listings.key_id": id}).
-		Where(sq.Eq{"listings.user_id": userId})
+		Where(sq.Eq{"listings.key_id": id,
+			"listings.user_id": userId})
 
 	// Query db for listing
 	result, err := stmt.RunWith(db).Exec()

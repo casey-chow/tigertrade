@@ -146,11 +146,9 @@ func GetSavedSearchById(id string, userId int) (SavedSearch, error, int) {
 		Select("saved_searches.key_id", "saved_searches.creation_date", "saved_searches.last_modification_date",
 			"query", "min_price", "max_price", "listing_expiration_date", "search_expiration_date").
 		From("saved_searches").
-		Where(sq.Eq{
-			"saved_searches.is_active": true
+		Where(sq.Eq{"saved_searches.is_active": true,
 			"saved_searches.key_id": id,
-			"saved_searches.user_id": userId
-		})
+			"saved_searches.user_id": userId})
 
 	// Query db for savedSearch
 	rows, err := query.RunWith(db).Query()
