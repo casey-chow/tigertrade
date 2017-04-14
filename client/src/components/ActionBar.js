@@ -1,5 +1,6 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { withRouter } from 'react-router-dom';
 
 import AppBar from 'material-ui/AppBar';
 import {Tabs, Tab} from 'material-ui/Tabs';
@@ -10,13 +11,21 @@ import LoggedInMenu from './LoggedInMenu';
 
 import { Link } from 'react-router-dom';
 
-export default class ActionBar extends PureComponent {
+class ActionBar extends Component {
   static muiName = 'AppBar';
 
   static propTypes = {
     loading: PropTypes.bool,
     user: PropTypes.object,
-  }
+    location: PropTypes.object,
+    history: PropTypes.object,
+  };
+
+  static pages = [
+    { name: 'Listings', url: '/' },
+    { name: 'Seeks', url: '/seeks' },
+    { name: 'Compose', url: '/compose' },
+  ];
 
   render() {
     const Title = () => (
@@ -50,18 +59,14 @@ export default class ActionBar extends PureComponent {
           <SearchBar style={{ flex: '2 2 0%' }} />
           <RightElement style={{ flex: '1 1 0%' }} />
         </AppBar>
-        <Tabs>
-          <Tab label="Item One" >
-          </Tab>
-          <Tab label="Item Two" >
-          </Tab>
-          <Tab
-            label="onActive"
-            data-route="/home"
-          >
-          </Tab>
+        <Tabs onChange={this.changeTab} value={this.props.location.pathname}>
+          {ActionBar.pages.map((page) => (
+            <Tab label={page.name} value={page.url} containerElement={<Link to={page.url} />} />
+          ))}
         </Tabs>
       </div>
     );
   }
 }
+
+export default withRouter(ActionBar);
