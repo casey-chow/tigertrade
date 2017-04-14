@@ -30,7 +30,7 @@ func Router() http.Handler {
 	router.GET("/api/listings", ServeRecentListings)
 	router.POST("/api/listings", ServeAddListing)
 	router.GET("/api/listings/:id", ServeListingById)
-//	router.POST("/api/listings/:id", ServeUpdateListingById)
+	router.POST("/api/listings/:id", ServeUpdateListingById)
 
 	router.GET("/api/listings/:id/photos", ServePhotosByListingId)
 //	router.POST("/api/listings/:id/photos", ServeAddPhoto)
