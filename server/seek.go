@@ -156,10 +156,9 @@ func GetSeekById(id string) (Seek, error, int) {
 
 	// Populate seek struct
 	rows.Next()
-	l := new(SeeksItem)
-	err = rows.Scan(&l.KeyID, &l.CreationDate, &l.LastModificationDate,
-                        &l.Title, &l.Description, &l.UserID, &l.SavedSearchID,
-                        &l.NotifyEnabled, &l.Status)
+	err = rows.Scan(&seek.KeyID, &seek.CreationDate, &seek.LastModificationDate,
+		&seek.Title, &seek.Description, &seek.UserID, &seek.SavedSearchID,
+		&seek.NotifyEnabled, &seek.Status)
 	if err != nil {
 		return seek, err, 500
 	}
