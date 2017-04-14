@@ -27,6 +27,8 @@ class SearchBar extends Component {
     });
     if(!value) {
       this.props.dispatch(loadRecentListings());
+    } else {
+      this.props.dispatch(searchListings(value));
     }
   };
 
