@@ -17,7 +17,10 @@ class Compose extends Component {
 
   render() {
   const handleSubmit = (data) => {
-    this.props.dispatch(postListing(data))
+    this.props.dispatch(postListing({
+      ...data,
+      price: data.price ? Math.round(parseFloat(data.price) * 100) : 0,
+    }))
   }
   return (<div>
     {this.state.submitted ? <h1>Submitted!</h1> : ''}
