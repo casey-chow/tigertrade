@@ -15,15 +15,7 @@ injectTapEventPlugin();
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
 describe('<ActionBar />', () => {
-  it('presents a login button when not logged in', () => {
-    const actionBar = shallow(<ActionBar user={{loggedIn: false}} />);
+  it('presents a login button when not logged in');
 
-    expect(actionBar.find(AppBar).prop('iconElementRight').type).toBe(LoginButton);
-  });
-
-  it('presents a login menu when logged in', () => {
-    const actionBar = shallow(<ActionBar user={{loggedIn: true}} />);
-
-    expect(actionBar.find(AppBar).prop('iconElementRight').type).toBe(LoggedInMenu);
-  })
+  it('presents a login menu when logged in')
 });
