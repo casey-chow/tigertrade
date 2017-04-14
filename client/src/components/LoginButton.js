@@ -5,6 +5,14 @@ import FlatButton from 'material-ui/FlatButton';
 export default class LoginButton extends PureComponent {
   static muiName = 'FlatButton';
 
+  style = {
+    ...this.props.style,
+    color: 'white',
+    float: 'right',
+    marginTop: '8px',
+    marginBottom: '8px'
+  }
+
   redirectToCas = (evt) => {
     evt.preventDefault();
     const curr = window.location.href;
@@ -15,7 +23,12 @@ export default class LoginButton extends PureComponent {
 
   render() {
     return (
-      <FlatButton {...this.props} onClick={this.redirectToCas} label="Login" />
+      <FlatButton
+        {...this.props}
+        style={this.style}
+        onClick={this.redirectToCas}
+        label="Login"
+      />
     );
   }
 }
