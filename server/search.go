@@ -44,14 +44,14 @@ func GetSearch(queryStr string, maxDescriptionSize int, limit uint64) ([]*Listin
 	// Create search query
 	query := psql.
 		Select("listings.key_id", "listings.creation_date", "listings.last_modification_date",
-		"title", fmt.Sprintf("left(description, %d)", maxDescriptionSize),
-		"user_id", "price", "status", "expiration_date", "thumbnails.url").
+			"title", fmt.Sprintf("left(description, %d)", maxDescriptionSize),
+			"user_id", "price", "status", "expiration_date", "thumbnails.url").
 		Distinct().
 		From("listings").
 		LeftJoin("thumbnails ON listings.thumbnail_id = thumbnails.key_id")
 
 	for i, word := range strings.Fields(queryStr) {
-		query = query.Where(fmt.Sprintf("(listings.title LIKE $%d OR listings.description LIKE $%d)", i+1, i+1), fmt.Sprint("%", word, "%"))
+		query = query.Where(fmt.Sprintf("(lower(listings.title) LIKE lower($%d) OR lower(listings.description) LIKE lower($%d))", i+1, i+1), fmt.Sprint("%", word, "%"))
 	}
 
 	query = query.Limit(limit)
