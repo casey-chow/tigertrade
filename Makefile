@@ -27,7 +27,9 @@ $(GOCONVEY):
 $(GOVENDOR):
 	go get github.com/kardianos/govendor
 
-dev: .env
+dev: .env $(GOVENDOR) $(GOCONVEY) $(FRESH)
+	go get -v -u github.com/golang/lint/golint
+	cp hooks/* .git/hooks
 
 # SERVER
 #######################################
@@ -59,6 +61,14 @@ serve-client:
 # TESTING
 #######################################
 
+vet:
+	go vet github.com/casey-chow/tigertrade/server/...
+	go vet github.com/casey-chow/tigertrade/server
+
+lint:
+	$(! command -v golint && go get -u github.com/golang/lint/golint)
+	golint . server/...
+
 test:
 	go test github.com/casey-chow/tigertrade/server
 
@@ -77,4 +87,5 @@ clean:
 purge: clean
 	rm -rf vendor/*/
 	rm -rf node_modules/
+	rm .git/hooks/*
 
