@@ -24,6 +24,7 @@ type SeeksItem struct {
 	NotifyEnabled        null.Bool   `json:"notifyEnabled"`
 	Status               null.String `json:"status"`
 }
+
 // TODO Maybe use the same struct for both of these? The only difference is truncation of the descrip
 // Returned by a getById function
 type Seek struct {
@@ -131,8 +132,8 @@ func GetSeekById(id string) (Seek, error, int) {
 	// Create seek query
 	query := psql.
 		Select("seeks.key_id", "seeks.creation_date",
-		       "seeks.last_modification_date", "title", "description", "user_id",
-		"saved_search_id", "notify_enabled", "status").
+			"seeks.last_modification_date", "title", "description", "user_id",
+			"saved_search_id", "notify_enabled", "status").
 		From("seeks").
 		Where("seeks.is_active=true").
 		Where(sq.Eq{"seeks.key_id": id})
@@ -208,4 +209,3 @@ func AddSeek(seek Seek, userId int) (Seek, error, int) {
 
 	return seek, nil, 0
 }
-

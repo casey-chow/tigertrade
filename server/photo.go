@@ -10,11 +10,11 @@ import (
 )
 
 type Photo struct {
-	KeyID                int         `json:"keyId"`
-	CreationDate         null.Time   `json:"creationDate"`
-	ListingID            int         `json:"listingId"`
-	Url                  string      `json:"url"`
-	Order                null.Float  `json:"order"`
+	KeyID        int        `json:"keyId"`
+	CreationDate null.Time  `json:"creationDate"`
+	ListingID    int        `json:"listingId"`
+	Url          string     `json:"url"`
+	Order        null.Float `json:"order"`
 }
 
 // Writes all photos associated with a given listing's key id to w
@@ -48,7 +48,6 @@ func GetPhotosByListingId(id string) ([]*Photo, error, int) {
 		From("photos").
 		Where(sq.Eq{"listing_id": id}).
 		Where("is_active=true")
-
 
 	// Query db for photos
 	rows, err := query.RunWith(db).Query()
