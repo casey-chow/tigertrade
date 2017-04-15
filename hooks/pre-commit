@@ -31,16 +31,7 @@ then
     exit 0
 fi
 
-make test >/dev/null 2>&1
-if [ $? -ne 0 ]
-then
-    echo "Failed to run Go tests. Please check the output of"
-    echo "go test or run commit with --no-verify if you know"
-    echo "what you are doing."
-    exit 1
-fi
-
-go fmt . server/... >/dev/null 2>&1
+make fmt >/dev/null 2>&1
 if [ $? -ne 0 ]
 then
     echo "Failed to run go fmt. This shouldn't happen. Please"
@@ -55,22 +46,32 @@ make vet >/dev/null 2>&1
 if [ $? -ne 0 ]
 then
     echo "go vet has detected potential issues in your project."
-    echo "Please check its output or run commit with --no-verify"
-    echo "if you know what you are doing."
+    echo "Please check the output of make vet or run commit"
+    echo " with --no-verify if you know what you are doing."
     exit 1
 fi
+
+# Disabled because too slow.
+# make test >/dev/null 2>&1
+# if [ $? -ne 0 ]
+# then
+#     echo "Failed to run Go tests. Please check the output of"
+#     echo "make test or run commit with --no-verify if you know"
+#     echo "what you are doing."
+#     exit 1
+# fi
 
 # Disabled because way too slow.
-yarn fmt >/dev/null 2>&1
-if [ $? -ne 0 ]
-then
-    echo "ESLint has detected linting issues with your project."
-    echo "check the output of yarn lint to see what's wrong"
-    echo "or run commit with --no-verify if you know what you"
-    echo "are doing."
+# yarn fmt >/dev/null 2>&1
+# if [ $? -ne 0 ]
+# then
+#     echo "ESLint has detected linting issues with your project."
+#     echo "check the output of yarn lint to see what's wrong"
+#     echo "or run commit with --no-verify if you know what you"
+#     echo "are doing."
 
-    exit 1
-fi
+#     exit 1
+# fi
 
 # Disable these tests because they're way too slow.
 # yarn test --no-watch >/dev/null 2>&1

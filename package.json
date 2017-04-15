@@ -47,6 +47,7 @@
     "eslint-plugin-jest": "^19.0.1",
     "eslint-plugin-jsx-a11y": "^4.0.0",
     "eslint-plugin-react": "^6.10.3",
+    "eslint_d": "^4.2.5",
     "extract-text-webpack-plugin": "1.0.1",
     "file-loader": "0.10.0",
     "fs-extra": "0.30.0",
@@ -70,8 +71,8 @@
   "scripts": {
     "start": "node client/scripts/start.js",
     "build": "node client/scripts/build.js",
-    "lint": "eslint client/src",
-    "fmt": "eslint client/src --fix",
+    "lint": "eslint_d client/src",
+    "fmt": "eslint_d client/src --fix",
     "test": "node client/scripts/test.js --env=jsdom"
   },
   "jest": {

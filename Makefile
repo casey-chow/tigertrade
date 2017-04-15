@@ -66,10 +66,13 @@ serve-client:
 
 vet:
 	go vet github.com/casey-chow/tigertrade/server/...
-	go vet github.com/casey-chow/tigertrade/server
+	go vet github.com/casey-chow/tigertrade
 
 lint: $(GOLINT)
 	golint . server/...
+
+fmt:
+	go fmt . ./server/...
 
 test:
 	go test github.com/casey-chow/tigertrade/server
