@@ -1,0 +1,22 @@
+{
+  "extends": "airbnb",
+  "parser": "babel-eslint",
+  "plugins": [
+    "react",
+    "jest"
+  ],
+  "env": {
+    "browser": true,
+    "jest/globals": true,
+    "node": true
+  },
+  "rules": {
+    "strict": "off",
+    "func-names": "off",
+    "import/prefer-default-export": "warn",
+    "react/jsx-filename-extension": "off",
+    "react/forbid-prop-types": "warn",
+    "no-unused-vars": [ "error", { "args": "none" } ],
+    "react/prefer-stateless-function": "off"
+  }
+}

@@ -29,6 +29,7 @@ tmp/
 
 # production
 /build
+/client/build
 
 # misc
 .DS_Store
