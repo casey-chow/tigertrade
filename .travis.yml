@@ -2,7 +2,9 @@ language: go
 go:
   - 1.8.x
 install: make install-server
-script: make test
+script:
+  - make lint
+  - make test
 git:
   depth: 3
 notifications:
