@@ -31,10 +31,10 @@ then
     exit 0
 fi
 
-go test . server/... >/dev/null 2>&1
+make test >/dev/null 2>&1
 if [ $? -ne 0 ]
 then
-    echo "Failed to run tests. Please check the output of"
+    echo "Failed to run Go tests. Please check the output of"
     echo "go test or run commit with --no-verify if you know"
     echo "what you are doing."
     exit 1
@@ -51,7 +51,7 @@ then
     exit 1
 fi
 
-go vet . server/... >/dev/null 2>&1
+make vet >/dev/null 2>&1
 if [ $? -ne 0 ]
 then
     echo "go vet has detected potential issues in your project."
@@ -59,3 +59,28 @@ then
     echo "if you know what you are doing."
     exit 1
 fi
+
+# Disabled because way too slow.
+yarn fmt >/dev/null 2>&1
+if [ $? -ne 0 ]
+then
+    echo "ESLint has detected linting issues with your project."
+    echo "check the output of yarn lint to see what's wrong"
+    echo "or run commit with --no-verify if you know what you"
+    echo "are doing."
+
+    exit 1
+fi
+
+# Disable these tests because they're way too slow.
+# yarn test --no-watch >/dev/null 2>&1
+# if [ $? -ne 0 ]
+# then
+#     echo "Failed to run javascript tests. Please check the output"
+#     echo "of yarn test or run commit with --no-verify if you"
+#     echo "know what you are doing."
+
+#     exit 1
+# fi
+
+
