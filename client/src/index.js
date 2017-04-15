@@ -13,6 +13,6 @@ if (process.env.REACT_APP_SENTRY_DSN) {
 
 injectTapEventPlugin();
 ReactDOM.render(
-	<Root />,
-  document.getElementById('root')
+  <Root />,
+  document.getElementById('root'),
 );

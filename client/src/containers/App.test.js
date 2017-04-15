@@ -1,9 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Root from './Root';
+import '../helpers.test';
 
-import injectTapEventPlugin from 'react-tap-event-plugin';
-injectTapEventPlugin();
+import Root from './Root';
 
 it('renders without crashing', () => {
   const div = document.createElement('div');
