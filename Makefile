@@ -8,6 +8,7 @@ IMPORT_PATH = $(shell pwd)
 FRESH = $(BIN)/fresh
 GOVENDOR = $(BIN)/govendor
 GOCONVEY = $(BIN)/goconvey
+GOLINT = $(BIN)/golint
 
 default: build-server
 install: install-server install-client
@@ -27,8 +28,10 @@ $(GOCONVEY):
 $(GOVENDOR):
 	go get github.com/kardianos/govendor
 
-dev: .env $(GOVENDOR) $(GOCONVEY) $(FRESH)
-	go get -v -u github.com/golang/lint/golint
+$(GOLINT):
+	go get github.com/golang/lint/golint
+
+dev: .env $(GOVENDOR) $(GOCONVEY) $(FRESH) $(GOLINT)
 	cp hooks/* .git/hooks
 
 # SERVER
@@ -65,8 +68,7 @@ vet:
 	go vet github.com/casey-chow/tigertrade/server/...
 	go vet github.com/casey-chow/tigertrade/server
 
-lint:
-	$(! command -v golint && go get -u github.com/golang/lint/golint)
+lint: $(GOLINT)
 	golint . server/...
 
 test:
