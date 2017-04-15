@@ -82,6 +82,7 @@ test-watch: $(GOCONVEY)
 # Removes all temporary files
 clean:
 	rm -rf tmp/
+	rm -rf client/build/
 
 # Removes installed dependencies.
 purge: clean

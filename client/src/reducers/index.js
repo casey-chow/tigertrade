@@ -29,7 +29,7 @@ const listings = (state = [], action) => {
     default:
       return state;
   }
-}
+};
 
 const currentUserLoading = (state = false, action) => {
   switch (action.type) {
@@ -56,7 +56,7 @@ const currentUser = (state = { loggedIn: false }, action) => {
     default:
       return state;
   }
-}
+};
 
 const rootReducer = combineReducers({
   listings,

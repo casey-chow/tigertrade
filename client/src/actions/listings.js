@@ -26,7 +26,7 @@ export function searchListings(query) {
     dispatch({
       type: 'SEARCH_LISTINGS_REQUEST',
     });
-    fetch(`${API_ROOT}/search/` + encodeURIComponent(query))
+    fetch(`${API_ROOT}/search/${encodeURIComponent(query)}`)
       .then(response => response.json())
       .then(json => dispatch({
         json,
@@ -46,23 +46,23 @@ export function postListing(listing) {
     });
 
     fetch(`${API_ROOT}/listings`, {
-      credentials: "include",
+      credentials: 'include',
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify(listing)
+      body: JSON.stringify(listing),
     })
-    .then(json => {
+    .then((json) => {
       dispatch({
-      json,
-      type: 'POST_LISTING_SUCCESS',
-    });
+        json,
+        type: 'POST_LISTING_SUCCESS',
+      });
       dispatch(loadRecentListings());
     })
     .catch(error => dispatch({
       error,
       type: 'POST_LISTING_SUCCESS',
     }));
-  }
+  };
 }

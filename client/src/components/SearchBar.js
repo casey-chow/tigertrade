@@ -1,36 +1,48 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 import AutoComplete from 'material-ui/AutoComplete';
 import Paper from 'material-ui/Paper';
+
 import { searchListings, loadRecentListings } from './../actions/listings';
-import { connect } from 'react-redux';
 
 
 import './SearchBar.css';
 
 class SearchBar extends Component {
+
+  static propTypes = {
+    dispatch: PropTypes.func.isRequired,
+    style: PropTypes.object,
+  }
+
+  static defaultProps = {
+    style: {},
+  }
+
   state = {
     dataSource: [],
     open: false,
-  };
+  }
 
   handleUpdateInput = (value) => {
     this.setState({
       dataSource: [
-      'apples',
-      'oranges',
-      'chairs',
-      'textbooks',
-      'clothing',
-      'clothes',
+        'apples',
+        'oranges',
+        'chairs',
+        'textbooks',
+        'clothing',
+        'clothes',
       ],
     });
-    if(!value) {
+    if (!value) {
       this.props.dispatch(loadRecentListings());
     } else {
       this.props.dispatch(searchListings(value));
     }
-  };
+  }
 
   handleTouchTap = (event) => {
     // This prevents ghost click.
@@ -65,12 +77,12 @@ class SearchBar extends Component {
     return (
       <Paper style={style}>
         <AutoComplete
-          className='SearchBar'
-          fullWidth={true}
-          hintText={<span style={{color: 'white', opacity: 0.7}}>What do you want to buy?</span>}
+          className="SearchBar"
+          fullWidth
+          hintText={<span style={{ color: 'white', opacity: 0.7 }}>What do you want to buy?</span>}
           dataSource={this.state.dataSource}
           onUpdateInput={this.handleUpdateInput}
-          inputStyle={{color: 'white'}}
+          inputStyle={{ color: 'white' }}
           onNewRequest={this.handleNewRequest}
         />
       </Paper>
@@ -79,22 +91,3 @@ class SearchBar extends Component {
 }
 
 export default connect()(SearchBar);
-
-//  <FlatButton label="Filters" labelStyle={{color: 'white'}} onTouchTap={this.handleTouchTap}/>
-//  <Popover
-//    open={this.state.open}
-//    anchorEl={this.state.anchorEl}
-//    anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
-//    targetOrigin={{horizontal: 'left', vertical: 'top'}}
-//    onRequestClose={this.handleRequestClose}
-//    animation={PopoverAnimationVertical}
-//  >
-//    <Menu>
-//      <div style={{marginLeft: '1em'}}>
-//        <TextField hintText="Priced below" type="number"/>
-//        <DatePicker inset={true} container={'inline'} hintText="Posted after"/>
-//        <FlatButton label="OK" primary={true}/>
-//        <FlatButton label="Cancel" secondary={true}/>
-//      </div>
-//    </Menu>
-//  </Popover>
