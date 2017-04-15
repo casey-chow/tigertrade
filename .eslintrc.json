@@ -16,6 +16,7 @@
     "import/prefer-default-export": "warn",
     "react/jsx-filename-extension": "off",
     "react/forbid-prop-types": "warn",
+    "no-console": "off",
     "no-unused-vars": [ "error", { "args": "none" } ],
     "react/prefer-stateless-function": "off"
   }

@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import '../helpers.test';
+import '../test-helpers';
 
 import Root from './Root';
 

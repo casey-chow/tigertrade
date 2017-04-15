@@ -9,25 +9,26 @@ class Compose extends Component {
 
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
-    history: PropTypes.history.isRequired,
+    history: PropTypes.object.isRequired,
   }
 
   state = {
     submitted: false,
   }
 
+  handleSubmit = (data) => {
+    this.props.dispatch(postListing({
+      ...data,
+      price: data.price ? Math.round(parseFloat(data.price) * 100) : 0,
+    }));
+    this.props.dispatch(loadRecentListings());
+    this.props.history.push('/');
+  };
+
   render() {
-    const handleSubmit = (data) => {
-      this.props.dispatch(postListing({
-        ...data,
-        price: data.price ? Math.round(parseFloat(data.price) * 100) : 0,
-      }));
-      this.props.dispatch(loadRecentListings());
-      this.props.history.push('/');
-    };
     return (<div>
       {this.state.submitted ? <h1>Submitted!</h1> : ''}
-      <ComposeForm onSubmit={handleSubmit} />
+      <ComposeForm onSubmit={this.handleSubmit} />
     </div>
     );
   }
