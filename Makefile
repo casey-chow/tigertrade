@@ -16,7 +16,7 @@ install: install-server install-client
 #######################################
 
 .env:
-	cp .env.example .env
+	cp -n .env.example .env
 
 $(FRESH):
 	go get github.com/pilu/fresh
