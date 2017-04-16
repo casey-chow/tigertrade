@@ -4,12 +4,19 @@ import { connect } from 'react-redux';
 
 import { postListing, loadRecentListings } from '../actions/listings';
 import ComposeForm from '../components/ComposeForm';
+import RedirectToCas from '../components/RedirectToCas';
 
 class Compose extends Component {
 
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
-    history: PropTypes.object.isRequired,
+    history: PropTypes.shape({
+      push: PropTypes.func.isRequired,
+    }).isRequired,
+    user: PropTypes.shape({
+      loggedIn: PropTypes.bool.isRequired,
+    }).isRequired,
+    currentUserLoading: PropTypes.bool.isRequired,
   }
 
   state = {
@@ -26,10 +33,15 @@ class Compose extends Component {
   };
 
   render() {
-    return (<div>
-      {this.state.submitted ? <h1>Submitted!</h1> : ''}
-      <ComposeForm onSubmit={this.handleSubmit} />
-    </div>
+    if (!this.props.currentUserLoading && !this.props.user.loggedIn) {
+      return <RedirectToCas />;
+    }
+
+    return (
+      <div>
+        {this.state.submitted ? <h1>Submitted!</h1> : ''}
+        <ComposeForm onSubmit={this.handleSubmit} />
+      </div>
     );
   }
 }
@@ -37,6 +49,7 @@ class Compose extends Component {
 const mapStateToProps = state => ({
   user: state.currentUser,
   form: state.form,
+  currentUserLoading: state.currentUserLoading,
 });
 
 export default connect(mapStateToProps)(Compose);
