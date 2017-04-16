@@ -75,7 +75,7 @@ fmt:
 	go fmt . ./server/...
 
 test:
-	go test github.com/casey-chow/tigertrade/server
+	go test github.com/casey-chow/tigertrade/server/...
 
 test-watch: $(GOCONVEY)
 	$(GOCONVEY)
