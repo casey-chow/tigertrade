@@ -137,7 +137,7 @@ func GetSavedSearchById(id string, userId int) (SavedSearch, error, int) {
 			"query", "min_price", "max_price", "listing_expiration_date", "search_expiration_date").
 		From("saved_searches").
 		Where(sq.Eq{"saved_searches.is_active": true,
-			"saved_searches.key_id": id,
+			"saved_searches.key_id":  id,
 			"saved_searches.user_id": userId})
 
 	// Query db for savedSearch

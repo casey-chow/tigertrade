@@ -271,13 +271,13 @@ func UpdateListingById(id string, listing Listing, userId int) (Listing, error, 
 	// Update listing
 	stmt := psql.Update("listings").
 		SetMap(map[string]interface{}{
-			"title": listing.Title,
-			"description": listing.Description,
-			"user_id": userId,
-			"price": listing.Price,
-			"status": listing.Status,
+			"title":           listing.Title,
+			"description":     listing.Description,
+			"user_id":         userId,
+			"price":           listing.Price,
+			"status":          listing.Status,
 			"expiration_date": listing.ExpirationDate,
-			"thumbnail_id": listing.Thumbnail}).
+			"thumbnail_id":    listing.Thumbnail}).
 		Where(sq.Eq{"listings.key_id": id,
 			"listings.user_id": userId})
 

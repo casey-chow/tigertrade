@@ -11,8 +11,11 @@ import { loadCurrentUser } from '../actions/users';
 
 class App extends Component {
   static propTypes = {
-    loading: PropTypes.bool,
-    user: PropTypes.object
+    dispatch: PropTypes.func.isRequired,
+    loading: PropTypes.bool.isRequired,
+    user: PropTypes.shape({
+      loggedIn: PropTypes.bool.isRequired,
+    }).isRequired,
   }
 
   componentWillMount() {
@@ -23,10 +26,10 @@ class App extends Component {
     return (
       <div className="App">
         <ActionBar user={this.props.user} loading={this.props.loading} />
-        <div style={{marginTop: '9em'}}>
+        <div style={{ marginTop: '9em' }}>
           <Switch>
-            <Route exact path="/" component={Home}/>
-            <Route path="/compose" component={Compose}/>
+            <Route exact path="/" component={Home} />
+            <Route path="/compose" component={Compose} />
           </Switch>
         </div>
       </div>
@@ -34,11 +37,9 @@ class App extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  return ({
-    loading: state.currentUserLoading,
-    user: state.currentUser,
-  });
-};
+const mapStateToProps = state => ({
+  loading: state.currentUserLoading,
+  user: state.currentUser,
+});
 
 export default withRouter(connect(mapStateToProps)(App));

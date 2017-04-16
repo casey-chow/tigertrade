@@ -1,6 +1,6 @@
-# TigerTrade 
+# TigerTrade
 
-Server: [![Build Status](https://travis-ci.com/casey-chow/tigertrade.svg?token=n7qYoTpmELGRfaEv2AM7&branch=master)](https://travis-ci.com/casey-chow/tigertrade)  
+Server: [![Build Status](https://travis-ci.com/casey-chow/tigertrade.svg?token=n7qYoTpmELGRfaEv2AM7&branch=master)](https://travis-ci.com/casey-chow/tigertrade)
 Client: [![CircleCI](https://circleci.com/gh/casey-chow/tigertrade.svg?style=svg&circle-token=867a4bc4ca198e357b5dd0409c6becdf880a0596)](https://circleci.com/gh/casey-chow/tigertrade)
 
 The Princeton COS333 Project of Andrew Casey Evan Maryam Perry.
@@ -10,7 +10,7 @@ The Princeton COS333 Project of Andrew Casey Evan Maryam Perry.
 This assumes you have initialized and migrated the database, and have Go and NPM installed.
 
 ```sh
-make dev         # this copies our sample .env to your root, feel free to modify
+make dev         # this installs dev dependencies
 make install
 make serve
 ```
@@ -22,6 +22,7 @@ Go to [http://localhost:3030][].
 Build and run with
 
 ```sh
+make dev
 make install
 make serve-client
 ```
@@ -47,6 +48,7 @@ yarn test                       Runs the test suite
 
 **Both**
 ```
+make dev                        Builds a development environment
 make clean                      Removes all temporary files
 make purge                      Uninstalls all dependencies, removes temp files
 ```

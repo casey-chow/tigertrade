@@ -2,12 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import {
-  Card, 
-  // CardActions, 
-  CardHeader, 
-  CardMedia, 
-  // CardTitle, 
-  CardText
+  Card,
+  // CardActions,
+  CardHeader,
+  CardMedia,
+  // CardTitle,
+  CardText,
 } from 'material-ui/Card';
 
 class ListingCard extends React.Component {
@@ -19,38 +19,38 @@ class ListingCard extends React.Component {
   }
 
   handleExpandChange = (expanded) => {
-    this.setState({expanded: expanded});
+    this.setState({ expanded });
   };
 
   handleToggle = (event, toggle) => {
-    this.setState({expanded: toggle});
+    this.setState({ expanded: toggle });
   };
 
   handleExpand = () => {
-    this.setState({expanded: true});
+    this.setState({ expanded: true });
   };
 
   handleReduce = () => {
-    this.setState({expanded: false});
+    this.setState({ expanded: false });
   };
 
   render() {
-    const {listing} = this.props;
+    const { listing } = this.props;
     return (
-     <Card expanded={this.state.expanded} onExpandChange={this.handleExpandChange}>
-      <CardHeader title={listing.title} subtitle={'$' + (listing.price / 100)}actAsExpander={true}/>
-      
-      <CardMedia expandable={true}>
-          <img alt={listing.title} src={listing.thumbnail} style={{minWidth: undefined, maxHeight: '300px', width: 'auto'}}/>
-      </CardMedia>
+      <Card expanded={this.state.expanded} onExpandChange={this.handleExpandChange}>
+        <CardHeader title={listing.title} subtitle={`$${listing.price / 100}`}actAsExpander />
 
-      <CardText expandable={true}>
-        {listing.description}
-      </CardText>
-    </Card>
+        <CardMedia expandable>
+          <img alt={listing.title} src={listing.thumbnail} style={{ minWidth: undefined, maxHeight: '300px', width: 'auto' }} />
+        </CardMedia>
+
+        <CardText expandable>
+          {listing.description}
+        </CardText>
+      </Card>
     );
   }
-};
+}
 
 ListingCard.propTypes = {
   listing: PropTypes.shape({
@@ -63,8 +63,8 @@ ListingCard.propTypes = {
     price: PropTypes.number,
     status: PropTypes.string,
     expirationDate: PropTypes.number,
-    thumbnail: PropTypes.string
-  }).isRequired
+    thumbnail: PropTypes.string,
+  }).isRequired,
 };
 
 export default ListingCard;

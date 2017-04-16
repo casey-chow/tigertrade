@@ -10,12 +10,10 @@ import ActionBar from './ActionBar';
 import LoggedInMenu from './LoggedInMenu';
 import LoginButton from './LoginButton';
 
-import injectTapEventPlugin from 'react-tap-event-plugin';
-injectTapEventPlugin();
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import '../test-helpers';
 
 describe('<ActionBar />', () => {
   it('presents a login button when not logged in');
 
-  it('presents a login menu when logged in')
+  it('presents a login menu when logged in');
 });

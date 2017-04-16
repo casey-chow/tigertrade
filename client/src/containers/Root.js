@@ -23,7 +23,7 @@ class Root extends PureComponent {
   render() {
     return (
       <MuiThemeProvider>
-        <Provider store={ store }>
+        <Provider store={store}>
           <Router>
             <App />
           </Router>
