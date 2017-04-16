@@ -3,6 +3,7 @@ package server
 import (
 	"fmt"
 	log "github.com/Sirupsen/logrus"
+	"github.com/casey-chow/tigertrade/server/models"
 	"github.com/getsentry/raven-go"
 	"github.com/julienschmidt/httprouter"
 	"net/http"
@@ -40,7 +41,7 @@ func ServeSearch(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 }
 
 // Searches database for all occurrences of every space-separated word in query
-func GetSearch(queryStr string, maxDescriptionSize int, limit uint64) ([]*ListingsItem, error, int) {
+func GetSearch(queryStr string, maxDescriptionSize int, limit uint64) ([]*models.ListingsItem, error, int) {
 	// Create search query
 	query := psql.
 		Select("listings.key_id", "listings.creation_date", "listings.last_modification_date",
@@ -64,9 +65,9 @@ func GetSearch(queryStr string, maxDescriptionSize int, limit uint64) ([]*Listin
 	defer rows.Close()
 
 	// Populate listing structs
-	listings := make([]*ListingsItem, 0)
+	listings := make([]*models.ListingsItem, 0)
 	for rows.Next() {
-		l := new(ListingsItem)
+		l := new(models.ListingsItem)
 		err := rows.Scan(&l.KeyID, &l.CreationDate, &l.LastModificationDate,
 			&l.Title, &l.Description, &l.UserID, &l.Price, &l.Status,
 			&l.ExpirationDate, &l.Thumbnail)
