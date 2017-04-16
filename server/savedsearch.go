@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	sq "github.com/Masterminds/squirrel"
 	log "github.com/Sirupsen/logrus"
+	"github.com/casey-chow/tigertrade/server/models"
 	"github.com/getsentry/raven-go"
 	"github.com/guregu/null"
 	"github.com/julienschmidt/httprouter"
@@ -40,7 +41,7 @@ func ServeRecentSavedSearches(w http.ResponseWriter, r *http.Request, ps httprou
 	}
 
 	// Retrieve UserID
-	user, err := getUser(getUsername(r))
+	user, err := models.GetUser(db, getUsername(r))
 	if err != nil { // Not authorized
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while authenticating user: not authorized")
@@ -108,7 +109,7 @@ func ServeSavedSearchById(w http.ResponseWriter, r *http.Request, ps httprouter.
 	}
 
 	// Retrieve UserID
-	user, err := getUser(getUsername(r))
+	user, err := models.GetUser(db, getUsername(r))
 	if err != nil { // Not authorized
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while authenticating user: not authorized")
@@ -166,7 +167,7 @@ func ServeAddSavedSearch(w http.ResponseWriter, r *http.Request, ps httprouter.P
 	json.NewDecoder(r.Body).Decode(&savedSearch)
 
 	// Retrieve UserID
-	user, err := getUser(getUsername(r))
+	user, err := models.GetUser(db, getUsername(r))
 	if err != nil { // Not authorized
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while authenticating user: not authorized")

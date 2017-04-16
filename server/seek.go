@@ -5,6 +5,7 @@ import (
 	"fmt"
 	sq "github.com/Masterminds/squirrel"
 	log "github.com/Sirupsen/logrus"
+	"github.com/casey-chow/tigertrade/server/models"
 	"github.com/getsentry/raven-go"
 	"github.com/guregu/null"
 	"github.com/julienschmidt/httprouter"
@@ -164,7 +165,7 @@ func ServeAddSeek(w http.ResponseWriter, r *http.Request, ps httprouter.Params) 
 	json.NewDecoder(r.Body).Decode(&seek)
 
 	// Retrieve UserID
-	user, err := getUser(getUsername(r))
+	user, err := models.GetUser(db, getUsername(r))
 	if err != nil { // Not authorized
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while authenticating user: not authorized")
