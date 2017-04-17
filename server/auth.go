@@ -1,12 +1,10 @@
 package server
 
 import (
-	"database/sql"
-	sq "github.com/Masterminds/squirrel"
 	log "github.com/Sirupsen/logrus"
 	"github.com/binjianwu/cas"
+	"github.com/casey-chow/tigertrade/server/models"
 	"github.com/getsentry/raven-go"
-	"github.com/guregu/null"
 	"github.com/julienschmidt/httprouter"
 	"net/http"
 	"net/url"
@@ -19,68 +17,6 @@ var redirectToLogin = cas.RedirectToLogin
 var redirectToLogout = cas.RedirectToLogout
 var getUsername = cas.Username
 
-// User represents a user of the app.
-type User struct {
-	KeyID                int       `json:"keyId"`
-	CreationDate         null.Time `json:"creationDate"`
-	LastModificationDate null.Time `json:"lastModificationDate"`
-	NetID                string    `json:"netId"`
-}
-
-// getUser gets the specified user. If user does not exist, returns an error.
-func getUser(netID string) (*User, error) {
-	query := psql.
-		Select("key_id", "net_id", "creation_date", "last_modification_date").
-		From("users").
-		Where(sq.Eq{"net_id": netID}).
-		Limit(1)
-
-	user := new(User)
-	err := query.RunWith(db).
-		QueryRow().
-		Scan(
-			&user.KeyID,
-			&user.NetID,
-			&user.CreationDate,
-			&user.LastModificationDate,
-		)
-	if err != nil {
-		return nil, err
-	}
-
-	return user, nil
-}
-
-// getOrCreateUser makes sure the netID exists in the db, creating it if
-// it doesn't already.
-// Security Note: DO NOT allow user-generated data into this function. This assumes
-// the netID is from CAS.
-func getOrCreateUser(netID string) (*User, error) {
-	user, err := getUser(netID)
-	if err == nil {
-		return user, nil
-	}
-	if err != sql.ErrNoRows {
-		log.WithFields(log.Fields{
-			"err":   err,
-			"netID": netID,
-		}).Error("error while getting user")
-		return nil, err
-	}
-
-	log.WithField("netID", netID).
-		Print("creating user")
-	insert := psql.Insert("users").
-		Columns("net_id").Values(netID)
-
-	_, err = insert.RunWith(db).Exec()
-	if err != nil {
-		return nil, err
-	}
-
-	return getUser(netID)
-}
-
 // ServeCurrentUser returns the current user, or an empty JSON object if not logged in.
 func ServeCurrentUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	netID := getUsername(r)
@@ -90,7 +26,7 @@ func ServeCurrentUser(w http.ResponseWriter, r *http.Request, ps httprouter.Para
 		return
 	}
 
-	user, err := getOrCreateUser(netID)
+	user, err := models.GetOrCreateUser(db, netID)
 	if err != nil {
 		raven.CaptureError(err, map[string]string{"username": netID})
 		log.WithFields(log.Fields{
@@ -113,7 +49,7 @@ func RedirectUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params) 
 		return
 	}
 
-	go getOrCreateUser(getUsername(r))
+	go models.GetOrCreateUser(db, getUsername(r))
 
 	// TODO: Validate the return parameter for domain correctness
 	redirect := r.URL.Query().Get("return")
