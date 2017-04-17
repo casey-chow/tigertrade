@@ -1,7 +1,6 @@
 package server
 
 import (
-	"encoding/json"
 	log "github.com/Sirupsen/logrus"
 	"github.com/casey-chow/tigertrade/server/models"
 	"github.com/getsentry/raven-go"
@@ -77,8 +76,13 @@ func ServeSavedSearchById(w http.ResponseWriter, r *http.Request, ps httprouter.
 func ServeAddSavedSearch(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	// Get saved search to add from request body
 	savedSearch := models.SavedSearch{}
-	// TODO this fails silently for some reason if r.Body contains invalid JSON
-	json.NewDecoder(r.Body).Decode(&savedSearch)
+	err := ParseJSONFromBody(r, &savedSearch)
+	if err != nil {
+		raven.CaptureError(err, nil)
+		log.WithField("err", err).Error("error while parsing JSON file")
+		http.Error(w, http.StatusText(500), 500)
+		return
+	}
 
 	// Retrieve UserID
 	user, err := models.GetUser(db, getUsername(r))
