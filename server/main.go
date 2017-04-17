@@ -15,7 +15,6 @@ import (
 	"net/url"
 	"os"
 	"path"
-	"runtime"
 	"strings"
 )
 
@@ -66,8 +65,8 @@ func loadEnvironment() {
 	log.Print("Heroku config variables not present. Loading manually from .env")
 
 	// Open .env file
-	_, filename, _, _ := runtime.Caller(1)
-	file, err := os.Open(path.Join(path.Dir(filename), "../.env"))
+	path := path.Join(os.Getenv("GOPATH"), "src/github.com/casey-chow/tigertrade/.env")
+	file, err := os.Open(path)
 
 	if err != nil {
 		log.WithField("err", err).Fatal("Unable to load .env file: file not found")
