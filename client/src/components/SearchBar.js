@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { withRouter } from 'react-router-dom';
 
 import AutoComplete from 'material-ui/AutoComplete';
 import Paper from 'material-ui/Paper';
@@ -15,6 +16,9 @@ class SearchBar extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     style: PropTypes.object,
+    history: PropTypes.shape({
+      push: PropTypes.func.isRequired,
+    }).isRequired,
   }
 
   static defaultProps = {
@@ -63,6 +67,8 @@ class SearchBar extends Component {
 
   handleNewRequest = (chosenRequest, index) => {
     this.props.dispatch(searchListings(chosenRequest));
+
+    this.props.history.push(`/listings/search/${encodeURIComponent(chosenRequest)}`);
   }
 
   handleOnFocus = () => {
@@ -106,4 +112,4 @@ class SearchBar extends Component {
   }
 }
 
-export default connect()(SearchBar);
+export default withRouter(connect()(SearchBar));

@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Switch, Route, withRouter } from 'react-router-dom';
+import { Switch, Route, Redirect, withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import ActionBar from '../components/ActionBar';
-import Home from './Home';
+
+import RecentListings from './RecentListings';
 import Compose from './Compose';
+import SearchListings from './SearchListings';
 
 import { loadCurrentUser } from '../actions/users';
 
@@ -28,7 +30,11 @@ class App extends Component {
         <ActionBar user={this.props.user} loading={this.props.loading} />
         <div style={{ marginTop: '9em' }}>
           <Switch>
-            <Route exact path="/" component={Home} />
+            <Route exact path="/">
+              <Redirect push to="/listings/" />
+            </Route>
+            <Route exact path="/listings" component={RecentListings} />
+            <Route path="/listings/search/:query" component={SearchListings} />
             <Route path="/compose" component={Compose} />
           </Switch>
         </div>
