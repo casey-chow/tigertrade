@@ -16,6 +16,7 @@ class SearchBar extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     style: PropTypes.object,
+    query: PropTypes.string,
     history: PropTypes.shape({
       push: PropTypes.func.isRequired,
     }).isRequired,
@@ -23,6 +24,7 @@ class SearchBar extends Component {
 
   static defaultProps = {
     style: {},
+    query: '',
   }
 
   state = {
@@ -105,6 +107,7 @@ class SearchBar extends Component {
           onFocus={this.handleOnFocus}
           onBlur={this.handleOnBlur}
           inputStyle={{ color: 'white' }}
+          searchText={this.props.query}
           onNewRequest={this.handleNewRequest}
         />
       </Paper>
@@ -112,4 +115,8 @@ class SearchBar extends Component {
   }
 }
 
-export default withRouter(connect()(SearchBar));
+const mapStateToProps = state => ({
+  query: state.currentQuery,
+});
+
+export default withRouter(connect(mapStateToProps)(SearchBar));

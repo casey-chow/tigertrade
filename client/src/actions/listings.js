@@ -39,6 +39,13 @@ export function searchListings(query) {
   };
 }
 
+export function setCurrentListingsQuery(query) {
+  return ({
+    type: 'SET_CURRENT_LISTINGS_QUERY',
+    query,
+  });
+}
+
 export function postListing(listing) {
   return function (dispatch, getState) {
     dispatch({

@@ -7,9 +7,9 @@ import CircularProgress from 'material-ui/CircularProgress';
 
 import Listings from '../components/Listings';
 
-import { searchListings } from './../actions/listings';
+import { setCurrentListingsQuery, searchListings } from './../actions/listings';
 
-class RecentListings extends Component {
+class SearchListings extends Component {
   static propTypes = {
     listingsLoading: PropTypes.bool.isRequired,
     listings: PropTypes.arrayOf(PropTypes.object).isRequired,
@@ -24,6 +24,7 @@ class RecentListings extends Component {
   componentWillMount() {
     const query = this.props.match.params.query;
     this.props.dispatch(searchListings(query));
+    this.props.dispatch(setCurrentListingsQuery(query));
   }
 
   render() {
@@ -46,4 +47,4 @@ const mapStateToProps = state => ({
   listings: state.searchListings,
 });
 
-export default withRouter(connect(mapStateToProps)(RecentListings));
+export default withRouter(connect(mapStateToProps)(SearchListings));

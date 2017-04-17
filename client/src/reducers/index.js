@@ -69,12 +69,22 @@ const currentUser = (state = { loggedIn: false }, action) => {
   }
 };
 
+const currentQuery = (state = '', action) => {
+  switch (action.type) {
+    case 'SET_CURRENT_LISTINGS_QUERY':
+      return decodeURIComponent(action.query);
+    default:
+      return state;
+  }
+};
+
 const rootReducer = combineReducers({
   recentListings,
   listingsLoading,
   searchListings,
   currentUserLoading,
   currentUser,
+  currentQuery,
   ui: uiReducer,
   form: formReducer,
 });
