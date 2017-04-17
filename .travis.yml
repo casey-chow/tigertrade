@@ -1,6 +1,8 @@
 language: go
 go:
   - 1.8.x
+before_install:
+  - go get github.com/mattn/goveralls
 install: make install-server
 script:
   - make vet
