@@ -24,6 +24,7 @@ class SearchBar extends Component {
   state = {
     dataSource: [],
     open: false,
+    focus: false,
   }
 
   handleUpdateInput = (value) => {
@@ -64,6 +65,18 @@ class SearchBar extends Component {
     this.props.dispatch(searchListings(chosenRequest));
   }
 
+  handleOnFocus = () => {
+    this.setState({
+      focus: true,
+    });
+  }
+
+  handleOnBlur = () => {
+    this.setState({
+      focus: false,
+    });
+  }
+
   render() {
     const style = {
       ...this.props.style,
@@ -75,13 +88,16 @@ class SearchBar extends Component {
     };
 
     return (
-      <Paper style={style}>
+      <Paper style={style} className={this.state.focus ? 'focus' : 'blur'} zDepth={2}>
         <AutoComplete
           className="SearchBar"
           fullWidth
-          hintText={<span style={{ color: 'white', opacity: 0.7 }}>What do you want to buy?</span>}
+          hintText={<span className="hint-text">What do you want to buy?</span>}
           dataSource={this.state.dataSource}
           onUpdateInput={this.handleUpdateInput}
+          onClose={this.handleRequestClose}
+          onFocus={this.handleOnFocus}
+          onBlur={this.handleOnBlur}
           inputStyle={{ color: 'white' }}
           onNewRequest={this.handleNewRequest}
         />
