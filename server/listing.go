@@ -59,8 +59,13 @@ func ServeListingById(w http.ResponseWriter, r *http.Request, ps httprouter.Para
 func ServeAddListing(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	// Get listing to add from request body
 	listing := models.Listing{}
-	// TODO this fails silently for some reason if r.Body contains invalid JSON
-	json.NewDecoder(r.Body).Decode(&listing)
+	err := ParseJSONFromBody(r, &listing)
+	if err != nil {
+		raven.CaptureError(err, nil)
+		log.WithField("err", err).Error("error while parsing JSON file")
+		http.Error(w, http.StatusText(500), 500)
+		return
+	}
 
 	// Retrieve UserID
 	user, err := models.GetUser(db, getUsername(r))

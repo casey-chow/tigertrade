@@ -6,6 +6,7 @@ import (
 	sq "github.com/Masterminds/squirrel"
 	log "github.com/Sirupsen/logrus"
 	"github.com/getsentry/raven-go"
+	"io/ioutil"
 	"net/http"
 )
 
@@ -45,4 +46,18 @@ func Serve(w http.ResponseWriter, v interface{}) {
 // Serve404 returns a 404 code to w. It does not end the stream.
 func Serve404(w http.ResponseWriter) {
 	http.Error(w, http.StatusText(404), 404)
+}
+
+func ParseJSONFromBody(r *http.Request, v interface{}) error {
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(body, v)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
