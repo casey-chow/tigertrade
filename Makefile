@@ -80,6 +80,9 @@ test:
 test-watch: $(GOCONVEY)
 	$(GOCONVEY)
 
+coverage: $(GOVERALLS)
+	go test -cover github.com/casey-chow/tigertrade/server/...
+
 
 # CLEANUP
 #######################################
@@ -94,4 +97,3 @@ purge: clean
 	rm -rf vendor/*/
 	rm -rf node_modules/
 	rm .git/hooks/*
-
