@@ -1,6 +1,8 @@
 import React, { PureComponent } from 'react';
 import FlatButton from 'material-ui/FlatButton';
 
+import { redirectToCas } from '../helpers/cas';
+
 // Button for logged in state
 export default class LoginButton extends PureComponent {
   static muiName = 'FlatButton';
@@ -12,20 +14,12 @@ export default class LoginButton extends PureComponent {
     marginBottom: '8px',
   }
 
-  redirectToCas = (evt) => {
-    evt.preventDefault();
-    const curr = window.location.href;
-    const newLoc = `${process.env.REACT_APP_SERVER_ROOT}/api/users/redirect?return=${encodeURIComponent(curr)}`;
-    console.log(`login: redirecting to ${newLoc}`);
-    window.location = newLoc;
-  }
-
   render() {
     return (
       <div {...this.props}>
         <FlatButton
           style={this.style}
-          onClick={this.redirectToCas}
+          onClick={redirectToCas}
           label="Login"
         />
       </div>
