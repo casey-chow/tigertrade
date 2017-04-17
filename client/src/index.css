@@ -1,4 +1,8 @@
 /* global styles go here */
+html {
+    background-color: #ECEFF1;
+}
+
 body {
   margin: 0;
   padding: 0;
