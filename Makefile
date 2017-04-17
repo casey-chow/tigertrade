@@ -80,6 +80,9 @@ test:
 test-watch: $(GOCONVEY)
 	$(GOCONVEY)
 
+coverage: $(GOVERALLS)
+	go test -cover github.com/casey-chow/tigertrade/server/...
+
 
 # CLEANUP
 #######################################
