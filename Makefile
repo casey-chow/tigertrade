@@ -8,6 +8,7 @@ IMPORT_PATH = $(shell pwd)
 FRESH = $(BIN)/fresh
 GOVENDOR = $(BIN)/govendor
 GOCONVEY = $(BIN)/goconvey
+GOLINT = $(BIN)/golint
 
 default: build-server
 install: install-server install-client
@@ -16,7 +17,7 @@ install: install-server install-client
 #######################################
 
 .env:
-	cp .env.example .env
+	cp -n .env.example .env
 
 $(FRESH):
 	go get github.com/pilu/fresh
@@ -27,7 +28,11 @@ $(GOCONVEY):
 $(GOVENDOR):
 	go get github.com/kardianos/govendor
 
-dev: .env
+$(GOLINT):
+	go get github.com/golang/lint/golint
+
+dev: .env $(GOVENDOR) $(GOCONVEY) $(FRESH) $(GOLINT)
+	cp hooks/* .git/hooks
 
 # SERVER
 #######################################
@@ -59,8 +64,18 @@ serve-client:
 # TESTING
 #######################################
 
+vet:
+	go vet github.com/casey-chow/tigertrade/server/...
+	go vet github.com/casey-chow/tigertrade
+
+lint: $(GOLINT)
+	golint . server/...
+
+fmt:
+	go fmt . ./server/...
+
 test:
-	go test github.com/casey-chow/tigertrade/server
+	go test github.com/casey-chow/tigertrade/server/...
 
 test-watch: $(GOCONVEY)
 	$(GOCONVEY)
@@ -72,9 +87,11 @@ test-watch: $(GOCONVEY)
 # Removes all temporary files
 clean:
 	rm -rf tmp/
+	rm -rf client/build/
 
 # Removes installed dependencies.
 purge: clean
 	rm -rf vendor/*/
 	rm -rf node_modules/
+	rm .git/hooks/*
 

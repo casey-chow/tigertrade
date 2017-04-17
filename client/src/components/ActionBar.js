@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { withRouter } from 'react-router-dom';
+import { withRouter, propTypes, Link } from 'react-router-dom';
 
 import AppBar from 'material-ui/AppBar';
 import {Tabs, Tab} from 'material-ui/Tabs';
@@ -10,16 +10,15 @@ import SearchBar from './SearchBar';
 import LoginButton from './LoginButton';
 import LoggedInMenu from './LoggedInMenu';
 
-import { Link } from 'react-router-dom';
-
 class ActionBar extends Component {
   static muiName = 'AppBar';
 
   static propTypes = {
-    loading: PropTypes.bool,
-    user: PropTypes.object,
-    location: PropTypes.object,
-    history: PropTypes.object,
+    ...propTypes,
+    loading: PropTypes.bool.isRequired,
+    user: PropTypes.shape({
+      loggedIn: PropTypes.bool.isRequired,
+    }).isRequired,
   };
 
   static pages = [
@@ -30,19 +29,21 @@ class ActionBar extends Component {
 
   render() {
     const Title = () => (
-      <Link to="/" style={{
-        color: 'white',
-        flexGrow: '1',
-        textDecoration: 'none',
-      }}>
-          {document.title}
+      <Link
+        to="/" style={{
+          color: 'white',
+          flexGrow: '1',
+          textDecoration: 'none',
+        }}
+      >
+        {document.title}
       </Link>
     );
 
-    const RightElement = (props) => (
+    const RightElement = props => (
       this.props.user.loggedIn ?
-      <LoggedInMenu {...props} user={this.props.user} /> :
-      <LoginButton {...props} />
+        <LoggedInMenu {...props} user={this.props.user} /> :
+        <LoginButton {...props} />
     );
 
     return (
