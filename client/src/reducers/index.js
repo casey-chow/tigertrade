@@ -5,23 +5,34 @@ import { combineReducers } from 'redux';
 
 const listingsLoading = (state = false, action) => {
   switch (action.type) {
-    case 'LOAD_LISTINGS_REQUEST':
+    case 'RECENT_LISTINGS_REQUEST':
+    case 'SEARCH_LISTINGS_REQUEST':
       return true;
-    case 'LOAD_LISTINGS_FAILURE':
-    case 'LOAD_LISTINGS_SUCCESS':
+    case 'RECENT_LISTINGS_FAILURE':
+    case 'SEARCH_LISTINGS_FAILURE':
+    case 'RECENT_LISTINGS_SUCCESS':
+    case 'SEARCH_LISTINGS_SUCCESS':
       return false;
     default:
       return state;
   }
 };
 
-const listings = (state = [], action) => {
+const recentListings = (state = [], action) => {
   switch (action.type) {
-    case 'LOAD_LISTINGS_FAILURE': // TODO: failure state
-    case 'LOAD_LISTINGS_REQUEST':
+    case 'RECENT_LISTINGS_FAILURE': // TODO: failure state
+    case 'RECENT_LISTINGS_REQUEST':
       return [];
-    case 'LOAD_LISTINGS_SUCCESS':
+    case 'RECENT_LISTINGS_SUCCESS':
       return action.json;
+    default:
+      return state;
+  }
+};
+
+const searchListings = (state = [], action) => {
+  switch (action.type) {
+    case 'SEARCH_LISTINGS_FAILURE': // TODO: failure state
     case 'SEARCH_LISTINGS_REQUEST':
       return [];
     case 'SEARCH_LISTINGS_SUCCESS':
@@ -58,11 +69,22 @@ const currentUser = (state = { loggedIn: false }, action) => {
   }
 };
 
+const currentQuery = (state = '', action) => {
+  switch (action.type) {
+    case 'SET_CURRENT_LISTINGS_QUERY':
+      return decodeURIComponent(action.query);
+    default:
+      return state;
+  }
+};
+
 const rootReducer = combineReducers({
-  listings,
+  recentListings,
   listingsLoading,
+  searchListings,
   currentUserLoading,
   currentUser,
+  currentQuery,
   ui: uiReducer,
   form: formReducer,
 });
