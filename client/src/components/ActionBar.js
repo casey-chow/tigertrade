@@ -22,7 +22,7 @@ class ActionBar extends Component {
   };
 
   static pages = [
-    { name: 'Listings', url: '/' },
+    { name: 'Listings', url: '/listings' },
     { name: 'Seeks', url: '/seeks' },
     { name: 'Compose', url: '/compose' },
   ];
@@ -65,7 +65,12 @@ class ActionBar extends Component {
         </AppBar>
         <Tabs onChange={this.changeTab} value={this.props.location.pathname}>
           {ActionBar.pages.map(page => (
-            <Tab label={page.name} value={page.url} containerElement={<Link to={page.url} />} />
+            <Tab
+              key={page.name}
+              label={page.name}
+              value={page.url}
+              containerElement={<Link to={page.url} />}
+            />
           ))}
         </Tabs>
       </Paper>
