@@ -8,7 +8,7 @@ export function loadCurrentUser() {
 
     client.get('/users/current')
       .then(res => dispatch({
-        json: res.data,
+        data: res.data,
         type: 'LOAD_CURRENT_USER_SUCCESS',
       }))
       .catch(error => dispatch({

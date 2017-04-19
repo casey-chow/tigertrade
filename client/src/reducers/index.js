@@ -21,11 +21,11 @@ const listings = (state = [], action) => {
     case 'LOAD_LISTINGS_REQUEST':
       return [];
     case 'LOAD_LISTINGS_SUCCESS':
-      return action.json;
+      return action.data;
     case 'SEARCH_LISTINGS_REQUEST':
       return [];
     case 'SEARCH_LISTINGS_SUCCESS':
-      return action.json;
+      return action.data;
     default:
       return state;
   }
@@ -50,7 +50,7 @@ const currentUser = (state = { loggedIn: false }, action) => {
       return { loggedIn: false };
     case 'LOAD_CURRENT_USER_SUCCESS':
       return {
-        ...action.json,
+        ...action.data,
         loggedIn: true,
       };
     default:

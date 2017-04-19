@@ -10,7 +10,7 @@ export function loadRecentListings() {
     client.get('/listings')
       .then((res) => {
         dispatch({
-          json: res.data,
+          data: res.data,
           type: 'LOAD_LISTINGS_SUCCESS',
         });
       })
@@ -31,7 +31,7 @@ export function searchListings(query) {
 
     client.get(`/search/${encodeURIComponent(query)}`)
       .then(res => dispatch({
-        json: res.data,
+        data: res.data,
         type: 'SEARCH_LISTINGS_SUCCESS',
       }))
       .catch(error => dispatch({
@@ -55,7 +55,7 @@ export function postListing(listing) {
     })
     .then((res) => {
       dispatch({
-        json: res.data,
+        data: res.data,
         type: 'POST_LISTING_SUCCESS',
       });
       dispatch(loadRecentListings());
