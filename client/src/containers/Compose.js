@@ -25,6 +25,8 @@ class Compose extends Component {
       ...data,
       price: data.price ? Math.round(parseFloat(data.price) * 100) : 0,
     }));
+    this.props.dispatch(loadRecentListings());
+    this.props.history.push('/');
   };
 
   render() {
