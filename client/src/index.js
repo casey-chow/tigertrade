@@ -16,3 +16,14 @@ ReactDOM.render(
   <Root />,
   document.getElementById('root'),
 );
+
+if (module.hot) {
+  module.hot.accept('./containers/Root', () => {
+    // eslint-disable-next-line global-require
+    const NewRoot = require('./containers/Root').default;
+    ReactDOM.render(
+      <NewRoot />,
+      document.getElementById('root'),
+    );
+  });
+}
