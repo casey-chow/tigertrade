@@ -37,4 +37,10 @@ func TestListings(t *testing.T) {
 
 	})
 
+	Convey("ServeAddSeek", t, func() {
+
+		Convey("works given invalid JSON", nil)
+
+	})
+
 }

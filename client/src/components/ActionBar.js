@@ -4,6 +4,7 @@ import { withRouter, propTypes, Link } from 'react-router-dom';
 
 import AppBar from 'material-ui/AppBar';
 import { Tabs, Tab } from 'material-ui/Tabs';
+import Paper from 'material-ui/Paper';
 
 import SearchBar from './SearchBar';
 import LoginButton from './LoginButton';
@@ -46,7 +47,7 @@ class ActionBar extends Component {
     );
 
     return (
-      <div
+      <Paper
         style={{
           position: 'fixed',
           top: '0px',
@@ -64,15 +65,10 @@ class ActionBar extends Component {
         </AppBar>
         <Tabs onChange={this.changeTab} value={this.props.location.pathname}>
           {ActionBar.pages.map(page => (
-            <Tab
-              key={page.name}
-              label={page.name}
-              value={page.url}
-              containerElement={<Link to={page.url} />}
-            />
+            <Tab label={page.name} value={page.url} containerElement={<Link to={page.url} />} />
           ))}
         </Tabs>
-      </div>
+      </Paper>
     );
   }
 }
