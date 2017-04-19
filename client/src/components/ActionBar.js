@@ -46,6 +46,8 @@ class ActionBar extends Component {
         <LoginButton {...props} />
     );
 
+    const currentMajorPath = this.props.location.pathname.split('/')[1];
+
     return (
       <Paper
         style={{
@@ -63,12 +65,12 @@ class ActionBar extends Component {
           <SearchBar style={{ flex: '2 2 0%' }} />
           <RightElement style={{ flex: '1 1 0%' }} />
         </AppBar>
-        <Tabs onChange={this.changeTab} value={this.props.location.pathname}>
+        <Tabs onChange={this.changeTab} value={currentMajorPath}>
           {ActionBar.pages.map(page => (
             <Tab
               key={page.name}
               label={page.name}
-              value={page.url}
+              value={page.url.split('/')[1]}
               containerElement={<Link to={page.url} />}
             />
           ))}
