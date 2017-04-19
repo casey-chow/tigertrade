@@ -62,7 +62,7 @@ export function postListing(listing) {
     })
     .catch(error => dispatch({
       error,
-      type: 'POST_LISTING_SUCCESS',
+      type: 'POST_LISTING_FAILURE',
     }));
   };
 }
