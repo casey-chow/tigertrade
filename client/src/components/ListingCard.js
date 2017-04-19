@@ -3,12 +3,15 @@ import PropTypes from 'prop-types';
 
 import {
   Card,
-  // CardActions,
+  CardActions,
   CardHeader,
   CardMedia,
-  // CardTitle,
+  CardTitle,
   CardText,
 } from 'material-ui/Card';
+import FlatButton from 'material-ui/FlatButton';
+import EmailIcon from 'material-ui/svg-icons/communication/email';
+import FavoriteIcon from 'material-ui/svg-icons/action/favorite';
 
 class ListingCard extends React.Component {
 
@@ -39,14 +42,18 @@ class ListingCard extends React.Component {
   }
 
   handleExpandChange = (expanded) => {
-    console.log('ListingCard: expanding to', expanded, this.props.listing.keyId);
     this.props.onExpandChange(expanded, this.props.listing.keyId);
   }
 
   render() {
     const { listing, expanded } = this.props;
+
+    const cardStyles = expanded ? {
+      margin: '1.5em -3em',
+    } : {};
+
     return (
-      <Card expanded={expanded} onExpandChange={this.handleExpandChange}>
+      <Card expanded={expanded} style={cardStyles} onExpandChange={this.handleExpandChange}>
         <CardHeader
           title={listing.title}
           subtitle={`$${listing.price / 100}`}
@@ -57,9 +64,16 @@ class ListingCard extends React.Component {
           <img alt={listing.title} src={listing.thumbnail} style={{ minWidth: undefined, maxHeight: '300px', width: 'auto' }} />
         </CardMedia>
 
+        <CardTitle title={listing.title} expandable />
+
         <CardText expandable>
           {listing.description}
         </CardText>
+
+        <CardActions expandable>
+          <FlatButton primary icon={<EmailIcon />} label="Contact Seller" />
+          <FlatButton secondary icon={<FavoriteIcon />} label="Save" />
+        </CardActions>
       </Card>
     );
   }

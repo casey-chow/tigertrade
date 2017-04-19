@@ -42,7 +42,8 @@ class Listings extends PureComponent {
       <div>
         <Container className="Listings">
           <Row>
-            <Col xs={12}>
+            <Col xs={1} />
+            <Col xs={10}>
               <div className="cardsContainer">
                 {this.props.listings.map(listing =>
                   <ListingCard
