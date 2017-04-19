@@ -21,10 +21,10 @@ const listingsLoading = (state = false, action) => {
 const recentListings = (state = [], action) => {
   switch (action.type) {
     case 'RECENT_LISTINGS_FAILURE': // TODO: failure state
-    case 'RECENT_LISTINGS_REQUEST':
       return [];
     case 'RECENT_LISTINGS_SUCCESS':
       return action.json;
+    case 'RECENT_LISTINGS_REQUEST':
     default:
       return state;
   }
@@ -33,10 +33,10 @@ const recentListings = (state = [], action) => {
 const searchListings = (state = [], action) => {
   switch (action.type) {
     case 'SEARCH_LISTINGS_FAILURE': // TODO: failure state
-    case 'SEARCH_LISTINGS_REQUEST':
       return [];
     case 'SEARCH_LISTINGS_SUCCESS':
       return action.json;
+    case 'SEARCH_LISTINGS_REQUEST':
     default:
       return state;
   }

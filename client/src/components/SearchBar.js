@@ -6,7 +6,7 @@ import { withRouter } from 'react-router-dom';
 import AutoComplete from 'material-ui/AutoComplete';
 import Paper from 'material-ui/Paper';
 
-import { searchListings, loadRecentListings } from './../actions/listings';
+import { searchListings } from './../actions/listings';
 
 
 import './SearchBar.css';
@@ -17,6 +17,9 @@ class SearchBar extends Component {
     dispatch: PropTypes.func.isRequired,
     style: PropTypes.object,
     query: PropTypes.string,
+    location: PropTypes.shape({
+      pathname: PropTypes.string.isRequired,
+    }).isRequired,
     history: PropTypes.shape({
       push: PropTypes.func.isRequired,
     }).isRequired,
@@ -31,6 +34,9 @@ class SearchBar extends Component {
     dataSource: [],
     open: false,
     focus: false,
+     // submitIntent is true when the user last expressed some
+     // intent of submission, in this case a "request"
+    submitIntent: true,
   }
 
   handleUpdateInput = (value) => {
@@ -44,11 +50,13 @@ class SearchBar extends Component {
         'clothes',
       ],
     });
-    if (!value) {
-      this.props.dispatch(loadRecentListings());
-    } else {
-      this.props.dispatch(searchListings(value));
+
+    // if we are not in search URL
+    if (!/\/listings\/search\/.*/.test(this.props.location.pathname)) {
+      this.props.history.push('/listings/search/');
     }
+
+    this.props.dispatch(searchListings(value));
   }
 
   handleTouchTap = (event) => {
@@ -103,6 +111,7 @@ class SearchBar extends Component {
           hintText={<span className="hint-text">What do you want to buy?</span>}
           dataSource={this.state.dataSource}
           onUpdateInput={this.handleUpdateInput}
+          openOnFocus
           onClose={this.handleRequestClose}
           onFocus={this.handleOnFocus}
           onBlur={this.handleOnBlur}

@@ -19,28 +19,39 @@ class Listings extends PureComponent {
   static propTypes = {
     listings: PropTypes.arrayOf(PropTypes.shape({
       keyId: PropTypes.number,
-      creationDate: PropTypes.string,
-      lastModificationDate: PropTypes.string,
-      title: PropTypes.string,
-      description: PropTypes.string,
-      userId: PropTypes.number,
-      price: PropTypes.number,
-      status: PropTypes.string,
-      expirationDate: PropTypes.number,
-      thumbnail: PropTypes.string,
     })).isRequired,
   };
 
-  render() {
-    const listings = this.props.listings.map(listing => <ListingCard listing={listing} />);
+  state = {
+    openCardId: -1,
+  };
 
+  isExpanded = keyId => this.state.openCardId === keyId;
+
+  handleExpandChange = (expanded, keyId) => {
+    console.log('handleExpandChange', this);
+    if (!expanded) {
+      this.setState({ openCardId: -1 });
+    } else {
+      this.setState({ openCardId: keyId });
+    }
+  }
+
+  render() {
     return (
       <div>
         <Container className="Listings">
           <Row>
-            <Col xs={12}>
+            <Col xs={1} />
+            <Col xs={10}>
               <div className="cardsContainer">
-                {listings}
+                {this.props.listings.map(listing =>
+                  <ListingCard
+                    key={listing.keyId}
+                    expanded={this.isExpanded(listing.keyId)}
+                    listing={listing}
+                    onExpandChange={this.handleExpandChange}
+                  />)}
               </div>
             </Col>
           </Row>
