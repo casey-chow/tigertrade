@@ -8,6 +8,7 @@ import (
 	"github.com/getsentry/raven-go"
 	"io/ioutil"
 	"net/http"
+	"strings"
 )
 
 // Maximum number of characters in a truncated description of a datum

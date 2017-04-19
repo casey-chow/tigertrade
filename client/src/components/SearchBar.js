@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { withRouter } from 'react-router-dom';
 
 import AutoComplete from 'material-ui/AutoComplete';
 import Paper from 'material-ui/Paper';
 
-import { searchListings, loadRecentListings } from './../actions/listings';
+import { searchListings } from './../actions/listings';
 
 
 import './SearchBar.css';
@@ -15,15 +16,27 @@ class SearchBar extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     style: PropTypes.object,
+    query: PropTypes.string,
+    location: PropTypes.shape({
+      pathname: PropTypes.string.isRequired,
+    }).isRequired,
+    history: PropTypes.shape({
+      push: PropTypes.func.isRequired,
+    }).isRequired,
   }
 
   static defaultProps = {
     style: {},
+    query: '',
   }
 
   state = {
     dataSource: [],
     open: false,
+    focus: false,
+     // submitIntent is true when the user last expressed some
+     // intent of submission, in this case a "request"
+    submitIntent: true,
   }
 
   handleUpdateInput = (value) => {
@@ -37,11 +50,13 @@ class SearchBar extends Component {
         'clothes',
       ],
     });
-    if (!value) {
-      this.props.dispatch(loadRecentListings());
-    } else {
-      this.props.dispatch(searchListings(value));
+
+    // if we are not in search URL
+    if (!/\/listings\/search\/.*/.test(this.props.location.pathname)) {
+      this.props.history.push('/listings/search/');
     }
+
+    this.props.dispatch(searchListings(value));
   }
 
   handleTouchTap = (event) => {
@@ -62,6 +77,20 @@ class SearchBar extends Component {
 
   handleNewRequest = (chosenRequest, index) => {
     this.props.dispatch(searchListings(chosenRequest));
+
+    this.props.history.push(`/listings/search/${encodeURIComponent(chosenRequest)}`);
+  }
+
+  handleOnFocus = () => {
+    this.setState({
+      focus: true,
+    });
+  }
+
+  handleOnBlur = () => {
+    this.setState({
+      focus: false,
+    });
   }
 
   render() {
@@ -75,14 +104,19 @@ class SearchBar extends Component {
     };
 
     return (
-      <Paper style={style}>
+      <Paper style={style} className={this.state.focus ? 'focus' : 'blur'} zDepth={2}>
         <AutoComplete
           className="SearchBar"
           fullWidth
-          hintText={<span style={{ color: 'white', opacity: 0.7 }}>What do you want to buy?</span>}
+          hintText={<span className="hint-text">What do you want to buy?</span>}
           dataSource={this.state.dataSource}
           onUpdateInput={this.handleUpdateInput}
+          openOnFocus
+          onClose={this.handleRequestClose}
+          onFocus={this.handleOnFocus}
+          onBlur={this.handleOnBlur}
           inputStyle={{ color: 'white' }}
+          searchText={this.props.query}
           onNewRequest={this.handleNewRequest}
         />
       </Paper>
@@ -90,4 +124,8 @@ class SearchBar extends Component {
   }
 }
 
-export default connect()(SearchBar);
+const mapStateToProps = state => ({
+  query: state.currentQuery,
+});
+
+export default withRouter(connect(mapStateToProps)(SearchBar));

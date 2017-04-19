@@ -4,20 +4,20 @@ import { client } from './common';
 export function loadRecentListings() {
   return function (dispatch, getState) {
     dispatch({
-      type: 'LOAD_LISTINGS_REQUEST',
+      type: 'RECENT_LISTINGS_REQUEST',
     });
 
     client.get('/listings')
       .then((res) => {
         dispatch({
           data: res.data,
-          type: 'LOAD_LISTINGS_SUCCESS',
+          type: 'RECENT_LISTINGS_SUCCESS',
         });
       })
       .catch((error) => {
         dispatch({
           error,
-          type: 'LOAD_LISTINGS_FAILURE',
+          type: 'RECENT_LISTINGS_FAILURE',
         });
       });
   };
@@ -41,6 +41,13 @@ export function searchListings(query) {
   };
 }
 
+export function setCurrentListingsQuery(query) {
+  return ({
+    type: 'SET_CURRENT_LISTINGS_QUERY',
+    query,
+  });
+}
+
 export function postListing(listing) {
   return function (dispatch, getState) {
     dispatch({
@@ -62,7 +69,7 @@ export function postListing(listing) {
     })
     .catch(error => dispatch({
       error,
-      type: 'POST_LISTING_SUCCESS',
+      type: 'POST_LISTING_FAILURE',
     }));
   };
 }
