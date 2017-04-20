@@ -18,12 +18,10 @@
 			"revisionTime": "2017-03-17T14:32:14Z"
 		},
 		{
-			"checksumSHA1": "jSUUz/39owlzxbRV3/lnDsbtFCQ=",
-			"path": "github.com/binjianwu/cas",
-			"revision": "06985ad899c2f6162b10ae64c5c0cb4775b28569",
-			"revisionTime": "2017-02-18T02:49:32Z",
-			"version": "logout-param",
-			"versionExact": "logout-param"
+			"checksumSHA1": "W8pk3fX1cuesf4jsL/UQPlaE8D0=",
+			"path": "github.com/TheGuyWithTheFace/cas",
+			"revision": "f6e470983e0b51e078d1b598baa7a1dc92884f22",
+			"revisionTime": "2017-04-20T04:46:58Z"
 		},
 		{
 			"checksumSHA1": "xTy1x4EoWRSsBlstJxFp0z321NQ=",
