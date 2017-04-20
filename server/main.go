@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"flag"
 	log "github.com/Sirupsen/logrus"
-	"github.com/binjianwu/cas" // NOTE: use this until https://github.com/go-cas/cas/pull/10 is merged
+	"github.com/TheGuyWithTheFace/cas" // NOTE: use this until https://github.com/go-cas/cas/pull/10 and pytimer's fork are merged
 	"github.com/getsentry/raven-go"
 	_ "github.com/lib/pq"
 	"github.com/meatballhat/negroni-logrus"

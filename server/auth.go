@@ -2,7 +2,7 @@ package server
 
 import (
 	log "github.com/Sirupsen/logrus"
-	"github.com/binjianwu/cas"
+	"github.com/TheGuyWithTheFace/cas"
 	"github.com/casey-chow/tigertrade/server/models"
 	"github.com/getsentry/raven-go"
 	"github.com/julienschmidt/httprouter"
