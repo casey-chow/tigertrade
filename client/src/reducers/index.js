@@ -23,7 +23,7 @@ const recentListings = (state = [], action) => {
     case 'RECENT_LISTINGS_FAILURE': // TODO: failure state
       return [];
     case 'RECENT_LISTINGS_SUCCESS':
-      return action.data;
+      return action.json;
     case 'RECENT_LISTINGS_REQUEST':
     default:
       return state;
@@ -35,7 +35,7 @@ const searchListings = (state = [], action) => {
     case 'SEARCH_LISTINGS_FAILURE': // TODO: failure state
       return [];
     case 'SEARCH_LISTINGS_SUCCESS':
-      return action.data;
+      return action.json;
     case 'SEARCH_LISTINGS_REQUEST':
     default:
       return state;
@@ -61,7 +61,7 @@ const currentUser = (state = { loggedIn: false }, action) => {
       return { loggedIn: false };
     case 'LOAD_CURRENT_USER_SUCCESS':
       return {
-        ...action.data,
+        ...action.json,
         loggedIn: true,
       };
     default:

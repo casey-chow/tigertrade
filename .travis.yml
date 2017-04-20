@@ -6,7 +6,7 @@ before_install:
 install: make install-server
 script:
   - make vet
-  - $HOME/gopath/bin/goveralls -service=travis-pro
+  - $HOME/gopath/bin/goveralls -service=travis-ci
 git:
   depth: 3
 notifications:
