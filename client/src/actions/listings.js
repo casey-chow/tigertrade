@@ -1,6 +1,5 @@
-import fetch from 'isomorphic-fetch';
 
-import { API_ROOT } from './common';
+import { client } from './common';
 
 export function loadRecentListings() {
   return function (dispatch, getState) {
@@ -8,16 +7,19 @@ export function loadRecentListings() {
       type: 'RECENT_LISTINGS_REQUEST',
     });
 
-    fetch(`${API_ROOT}/listings`)
-      .then(response => response.json())
-      .then(json => dispatch({
-        json,
-        type: 'RECENT_LISTINGS_SUCCESS',
-      }))
-      .catch(error => dispatch({
-        error,
-        type: 'RECENT_LISTINGS_FAILURE',
-      }));
+    client.get('/listings')
+      .then((res) => {
+        dispatch({
+          data: res.data,
+          type: 'RECENT_LISTINGS_SUCCESS',
+        });
+      })
+      .catch((error) => {
+        dispatch({
+          error,
+          type: 'RECENT_LISTINGS_FAILURE',
+        });
+      });
   };
 }
 
@@ -26,10 +28,10 @@ export function searchListings(query) {
     dispatch({
       type: 'SEARCH_LISTINGS_REQUEST',
     });
-    fetch(`${API_ROOT}/search/${encodeURIComponent(query)}`)
-      .then(response => response.json())
-      .then(json => dispatch({
-        json,
+
+    client.get(`/search/${encodeURIComponent(query)}`)
+      .then(res => dispatch({
+        data: res.data,
         type: 'SEARCH_LISTINGS_SUCCESS',
       }))
       .catch(error => dispatch({
@@ -52,17 +54,15 @@ export function postListing(listing) {
       type: 'POST_LISTING_REQUEST',
     });
 
-    fetch(`${API_ROOT}/listings`, {
-      credentials: 'include',
-      method: 'POST',
+    client.post('/listings', {
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(listing),
     })
-    .then((json) => {
+    .then((res) => {
       dispatch({
-        json,
+        data: res.data,
         type: 'POST_LISTING_SUCCESS',
       });
       dispatch(loadRecentListings());

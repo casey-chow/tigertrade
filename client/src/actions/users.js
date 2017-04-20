@@ -1,6 +1,4 @@
-import fetch from 'isomorphic-fetch';
-
-import { API_ROOT } from './common';
+import { client } from './common';
 
 export function loadCurrentUser() {
   return function (dispatch, getState) {
@@ -8,12 +6,9 @@ export function loadCurrentUser() {
       type: 'LOAD_CURRENT_USER_REQUEST',
     });
 
-    fetch(`${API_ROOT}/users/current`, {
-      credentials: 'include',
-    })
-      .then(response => response.json())
-      .then(json => dispatch({
-        json,
+    client.get('/users/current')
+      .then(res => dispatch({
+        data: res.data,
         type: 'LOAD_CURRENT_USER_SUCCESS',
       }))
       .catch(error => dispatch({
