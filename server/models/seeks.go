@@ -36,7 +36,7 @@ type Seek struct {
 
 // Returns the most recent count seeks, based on original date created. On error
 // returns an error and the HTTP code associated with that error.
-func GetRecentSeeks(db *sql.DB, maxDescriptionSize int, limit uint64) ([]*SeeksItem, error, int) {
+func ReadSeeks(db *sql.DB, maxDescriptionSize int, limit uint64) ([]*SeeksItem, error, int) {
 	// Create seeks query
 	query := psql.
 		Select("seeks.key_id", "seeks.creation_date", "seeks.last_modification_date",
@@ -75,7 +75,7 @@ func GetRecentSeeks(db *sql.DB, maxDescriptionSize int, limit uint64) ([]*SeeksI
 
 // Returns the most recent count seeks, based on original date created. On error
 // returns an error and the HTTP code associated with that error.
-func GetSeekById(db *sql.DB, id string) (Seek, error, int) {
+func ReadSeek(db *sql.DB, id string) (Seek, error, int) {
 	var seek Seek
 
 	// Create seek query
@@ -108,7 +108,7 @@ func GetSeekById(db *sql.DB, id string) (Seek, error, int) {
 
 // Inserts the given seek (belonging to userId) into the database. Returns
 // seek with its new KeyID added.
-func AddSeek(db *sql.DB, seek Seek, userId int) (Seek, error, int) {
+func CreateSeek(db *sql.DB, seek Seek, userId int) (Seek, error, int) {
 	seek.UserID = userId
 
 	// Insert seek

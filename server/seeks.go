@@ -10,7 +10,7 @@ import (
 )
 
 // Writes the most recent count seeks, based on original date created to w
-func ServeRecentSeeks(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func ReadSeeks(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	// Get limit from params
 	limitStr := r.URL.Query().Get("limit")
 	limit := defaultNumResults
@@ -25,7 +25,7 @@ func ServeRecentSeeks(w http.ResponseWriter, r *http.Request, ps httprouter.Para
 		limit = maxNumResults
 	}
 
-	seeks, err, code := models.GetRecentSeeks(db, truncationLength, uint64(limit))
+	seeks, err, code := models.ReadSeeks(db, truncationLength, uint64(limit))
 	if err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while getting recent seeks")
@@ -37,7 +37,7 @@ func ServeRecentSeeks(w http.ResponseWriter, r *http.Request, ps httprouter.Para
 }
 
 // Writes the most recent count seeks, based on original date created to w
-func ServeSeekById(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func ReadSeek(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	// Get ID from params
 	id := ps.ByName("id")
 	if id == "" {
@@ -46,7 +46,7 @@ func ServeSeekById(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 		return
 	}
 
-	seeks, err, code := models.GetSeekById(db, id)
+	seeks, err, code := models.ReadSeek(db, id)
 	if err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while getting seek by ID")
@@ -57,7 +57,7 @@ func ServeSeekById(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 	Serve(w, seeks)
 }
 
-func ServeAddSeek(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func CreateSeek(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	// Get seek to add from request body
 	seek := models.Seek{}
 	err := ParseJSONFromBody(r, &seek)
@@ -77,7 +77,7 @@ func ServeAddSeek(w http.ResponseWriter, r *http.Request, ps httprouter.Params) 
 		return
 	}
 
-	seek, err, code := models.AddSeek(db, seek, user.KeyID)
+	seek, err, code := models.CreateSeek(db, seek, user.KeyID)
 	if err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while adding new seek")

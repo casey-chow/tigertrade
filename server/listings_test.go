@@ -67,7 +67,7 @@ func TestSearch(t *testing.T) {
 		}
 
 		Convey("a search on a word in its title returns it", func() {
-			mock.ExpectQuery("SELECT DISTINCT .* FROM listings .* WHERE .* ").
+			mock.ExpectQuery("SELECT .* FROM listings .* WHERE .* ").
 				WillReturnRows(sqlmock.NewRows([]string{
 					"listings.key_id", "listings.creation_date", "listings.last_modification_date",
 					"title", "description", "user_id",
@@ -100,7 +100,7 @@ func TestSearch(t *testing.T) {
 		})
 
 		Convey("is case insensitive", func() {
-			mock.ExpectQuery("SELECT DISTINCT .* FROM listings .* WHERE .* ").
+			mock.ExpectQuery("SELECT .* FROM listings .* WHERE .* ").
 				WillReturnRows(sqlmock.NewRows([]string{
 					"listings.key_id", "listings.creation_date", "listings.last_modification_date",
 					"title", "description", "user_id",
