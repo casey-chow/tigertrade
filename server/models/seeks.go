@@ -188,7 +188,7 @@ func UpdateSeek(db *sql.DB, id string, seek Seek, userId int) (Seek, error, int)
 func DeleteSeek(db *sql.DB, id string, userId int) (error, int) {
 
 	// Update seek
-	stmt := psql.Delete("seeks"). // looks scary, really DELETE FROM seeks
+	stmt := psql.Delete("seeks").
 		Where(sq.Eq{"seeks.key_id": id,
 			"seeks.user_id": userId})
 

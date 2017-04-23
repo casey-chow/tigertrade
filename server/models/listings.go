@@ -204,7 +204,7 @@ func UpdateListing(db *sql.DB, id string, listing Listing, userId int) (Listing,
 func DeleteListing(db *sql.DB, id string, userId int) (error, int) {
 
 	// Update listing
-	stmt := psql.Delete("listings"). // looks scary, really DELETE FROM listings
+	stmt := psql.Delete("listings").
 		Where(sq.Eq{"listings.key_id": id,
 			"listings.user_id": userId})
 
