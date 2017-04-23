@@ -2,6 +2,7 @@ package models
 
 import (
 	"database/sql"
+	"errors"
 	sq "github.com/Masterminds/squirrel"
 	"github.com/guregu/null"
 )
@@ -18,13 +19,15 @@ type SavedSearch struct {
 	SearchExpirationDate  null.Time   `json:"searchExpirationDate"`
 }
 
-// Returns the most recent count saved searches, based on original date created. On error
-// returns an error and the HTTP code associated with that error.
+// Returns the most recent count saved searches, based on original date created.
+// If queryStr is nonempty, filters that every returned item must have every word in either title or description
+// On error, returns an error and the HTTP code associated with that error.
 func ReadSavedSearches(db *sql.DB, userId int, limit uint64) ([]*SavedSearch, error, int) {
 	// Create saved searches query
 	query := psql.
-		Select("saved_searches.key_id", "saved_searches.creation_date", "saved_searches.last_modification_date",
-			"query", "min_price", "max_price", "listing_expiration_date", "search_expiration_date").
+		Select("saved_searches.key_id", "saved_searches.creation_date",
+			"saved_searches.last_modification_date", "query", "min_price",
+			"max_price", "listing_expiration_date", "search_expiration_date").
 		From("saved_searches").
 		Where(sq.Eq{"saved_searches.user_id": userId,
 			"saved_searches.is_active": true}).
@@ -64,8 +67,9 @@ func ReadSavedSearch(db *sql.DB, id string, userId int) (SavedSearch, error, int
 
 	// Create saved search query
 	query := psql.
-		Select("saved_searches.key_id", "saved_searches.creation_date", "saved_searches.last_modification_date",
-			"query", "min_price", "max_price", "listing_expiration_date", "search_expiration_date").
+		Select("saved_searches.key_id", "saved_searches.creation_date",
+			"saved_searches.last_modification_date", "query", "min_price",
+			"max_price", "listing_expiration_date", "search_expiration_date").
 		From("saved_searches").
 		Where(sq.Eq{"saved_searches.is_active": true,
 			"saved_searches.key_id":  id,
@@ -80,10 +84,13 @@ func ReadSavedSearch(db *sql.DB, id string, userId int) (SavedSearch, error, int
 
 	// Populate savedSearch struct
 	rows.Next()
-	err = rows.Scan(&savedSearch.KeyID, &savedSearch.CreationDate, &savedSearch.LastModificationDate,
-		&savedSearch.Query, &savedSearch.MinPrice, &savedSearch.MaxPrice,
+	err = rows.Scan(&savedSearch.KeyID, &savedSearch.CreationDate,
+		&savedSearch.LastModificationDate, &savedSearch.Query,
+		&savedSearch.MinPrice, &savedSearch.MaxPrice,
 		&savedSearch.ListingExpirationDate, &savedSearch.SearchExpirationDate)
-	if err != nil {
+	if err == sql.ErrNoRows {
+		return savedSearch, err, 404
+	} else if err != nil {
 		return savedSearch, err, 500
 	}
 
@@ -95,9 +102,12 @@ func ReadSavedSearch(db *sql.DB, id string, userId int) (SavedSearch, error, int
 func CreateSavedSearch(db *sql.DB, savedSearch SavedSearch, userId int) (SavedSearch, error, int) {
 	// Insert saved search
 	stmt := psql.Insert("saved_searches").
-		Columns("user_id", "query", "min_price", "max_price", "listing_expiration_date", "search_expiration_date").
-		Values(userId, savedSearch.Query, savedSearch.MinPrice, savedSearch.MaxPrice, savedSearch.ListingExpirationDate, savedSearch.SearchExpirationDate).
-		Suffix("RETURNING key_id")
+		Columns("user_id", "query", "min_price", "max_price",
+			"listing_expiration_date", "search_expiration_date").
+		Values(userId, savedSearch.Query, savedSearch.MinPrice,
+			savedSearch.MaxPrice, savedSearch.ListingExpirationDate,
+			savedSearch.SearchExpirationDate).
+		Suffix("RETURNING key_id, creation_date")
 
 	// Query db for saved search
 	rows, err := stmt.RunWith(db).Query()
@@ -108,10 +118,75 @@ func CreateSavedSearch(db *sql.DB, savedSearch SavedSearch, userId int) (SavedSe
 
 	// Populate saved search struct
 	rows.Next()
-	err = rows.Scan(&savedSearch.KeyID)
+	err = rows.Scan(&savedSearch.KeyID, &savedSearch.CreationDate)
 	if err != nil {
 		return savedSearch, err, 500
 	}
 
 	return savedSearch, nil, 0
+}
+
+// Overwrites the saved search in the database with the given id with the given saved search
+// (belonging to userId). Returns the updated saved search.
+func UpdateSavedSearch(db *sql.DB, id string, savedSearch SavedSearch, userId int) (SavedSearch, error, int) {
+
+	// Update savedSearch
+	stmt := psql.Update("saved_searches").
+		SetMap(map[string]interface{}{
+			"user_id":                 userId,
+			"query":                   savedSearch.Query,
+			"min_price":               savedSearch.MinPrice,
+			"max_price":               savedSearch.MaxPrice,
+			"listing_expiration_date": savedSearch.ListingExpirationDate,
+			"search_expiration_date":  savedSearch.SearchExpirationDate}).
+		Where(sq.Eq{"saved_searches.key_id": id,
+			"saved_searches.user_id": userId})
+
+	// Query db for savedSearch
+	result, err := stmt.RunWith(db).Exec()
+	if err != nil {
+		return savedSearch, err, 500
+	}
+
+	numRows, err := result.RowsAffected()
+	if err != nil {
+		return savedSearch, err, 500
+	}
+	if numRows == 0 {
+		return savedSearch, sql.ErrNoRows, 404
+	}
+	if numRows != 1 {
+		return savedSearch, errors.New("Multiple rows affected by UpdateSavedSearch"), 500
+	}
+
+	return ReadSavedSearch(db, id, userId)
+}
+
+// Deletes the saved search in the database with the given id with the given saved search
+// (belonging to userId).
+func DeleteSavedSearch(db *sql.DB, id string, userId int) (error, int) {
+
+	// Update savedSearch
+	stmt := psql.Delete("saved_searches").
+		Where(sq.Eq{"saved_searches.key_id": id,
+			"saved_searches.user_id": userId})
+
+	// Query db for savedSearch
+	result, err := stmt.RunWith(db).Exec()
+	if err != nil {
+		return err, 500
+	}
+
+	numRows, err := result.RowsAffected()
+	if err != nil {
+		return err, 500
+	}
+	if numRows == 0 {
+		return sql.ErrNoRows, 404
+	}
+	if numRows != 1 {
+		return errors.New("Multiple rows affected by DeleteSavedSearch"), 500
+	}
+
+	return nil, 0
 }
