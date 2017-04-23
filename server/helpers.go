@@ -3,7 +3,6 @@ package server
 import (
 	"encoding/json"
 	"fmt"
-	sq "github.com/Masterminds/squirrel"
 	log "github.com/Sirupsen/logrus"
 	"github.com/getsentry/raven-go"
 	"io/ioutil"
@@ -19,9 +18,6 @@ const truncationLength = 1024
 // Used when obtaining and displaying many datum of a given structure
 const defaultNumResults = 30
 const maxNumResults = 100
-
-// Postgres Statement Builder instance
-var psql = sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
 
 // Serve converts v to a JSON string and writes to w. Writes an
 // HTTP 500 error on error.
