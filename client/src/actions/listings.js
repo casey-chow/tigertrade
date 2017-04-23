@@ -26,7 +26,7 @@ export function searchListings(query) {
     dispatch({
       type: 'SEARCH_LISTINGS_REQUEST',
     });
-    fetch(`${API_ROOT}/listings?q=${encodeURIComponent(query)}`)
+    fetch(`${API_ROOT}/listings?query=${encodeURIComponent(query)}`)
       .then(response => response.json())
       .then(json => dispatch({
         json,
@@ -36,6 +36,18 @@ export function searchListings(query) {
         error,
         type: 'SEARCH_LISTINGS_FAILURE',
       }));
+    /*
+    fetch(`${API_ROOT}/search/${encodeURIComponent(query)}`)
+      .then(response => response.json())
+      .then(json => dispatch({
+        json,
+        type: 'SEARCH_LISTINGS_SUCCESS',
+      }))
+      .catch(error => dispatch({
+        error,
+        type: 'SEARCH_LISTINGS_FAILURE',
+      }));
+      */
   };
 }
 
