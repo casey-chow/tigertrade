@@ -37,13 +37,8 @@ class ListingCard extends React.Component {
     onExpandChange: () => {},
   };
 
-  state = {
-    expanded: false,
-  }
-
   handleExpandChange = (expanded) => {
     this.props.onExpandChange(expanded, this.props.listing.keyId);
-    this.setState({ expanded });
   }
 
   render() {
@@ -53,7 +48,7 @@ class ListingCard extends React.Component {
       margin: '1.5em -3em',
     } : {};
 
-    const onShowStyles = { maxHeight: '2000px', transition: 'max-height 0.8s ease-in', overflow: 'hidden' };
+    const onShowStyles = { maxHeight: '4000px', transition: 'max-height 0.5s ease-in', overflow: 'hidden' };
     const onHideStyles = { maxHeight: '0', transition: 'max-height 0.15s ease-out', overflow: 'hidden' };
 
     return (
@@ -64,9 +59,9 @@ class ListingCard extends React.Component {
           actAsExpander
         />
 
-        <div style={this.state.expanded ? onShowStyles : onHideStyles}>
+        <div style={expanded ? onShowStyles : onHideStyles}>
 
-          <CardMedia>
+          <CardMedia expandable>
             <img alt={listing.title} src={listing.thumbnail} style={{ minWidth: undefined, maxHeight: '300px', width: 'auto' }} />
           </CardMedia>
 
