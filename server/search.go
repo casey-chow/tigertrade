@@ -33,6 +33,7 @@ func ServeSearch(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while searching")
 		http.Error(w, http.StatusText(code), code)
+		return
 	}
 
 	Serve(w, listings)

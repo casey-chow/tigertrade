@@ -30,6 +30,7 @@ func ServeRecentListings(w http.ResponseWriter, r *http.Request, ps httprouter.P
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while getting recent listings")
 		http.Error(w, http.StatusText(code), code)
+		return
 	}
 
 	Serve(w, listings)
@@ -50,6 +51,7 @@ func ServeListingById(w http.ResponseWriter, r *http.Request, ps httprouter.Para
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while getting listing by ID")
 		http.Error(w, http.StatusText(code), code)
+		return
 	}
 
 	Serve(w, listings)
@@ -80,6 +82,7 @@ func ServeAddListing(w http.ResponseWriter, r *http.Request, ps httprouter.Param
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while adding new listing")
 		http.Error(w, http.StatusText(code), code)
+		return
 	}
 
 	Serve(w, listing)
@@ -118,6 +121,7 @@ func ServeUpdateListingById(w http.ResponseWriter, r *http.Request, ps httproute
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while updating listing by ID")
 		http.Error(w, http.StatusText(code), code)
+		return
 	}
 
 	Serve(w, listing)

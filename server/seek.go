@@ -30,6 +30,7 @@ func ServeRecentSeeks(w http.ResponseWriter, r *http.Request, ps httprouter.Para
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while getting recent seeks")
 		http.Error(w, http.StatusText(code), code)
+		return
 	}
 
 	Serve(w, seeks)
@@ -50,6 +51,7 @@ func ServeSeekById(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while getting seek by ID")
 		http.Error(w, http.StatusText(code), code)
+		return
 	}
 
 	Serve(w, seeks)
@@ -80,6 +82,7 @@ func ServeAddSeek(w http.ResponseWriter, r *http.Request, ps httprouter.Params) 
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while adding new seek")
 		http.Error(w, http.StatusText(code), code)
+		return
 	}
 
 	Serve(w, seek)
