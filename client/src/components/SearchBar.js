@@ -17,9 +17,6 @@ class SearchBar extends Component {
     dispatch: PropTypes.func.isRequired,
     style: PropTypes.object,
     query: PropTypes.string,
-    location: PropTypes.shape({
-      pathname: PropTypes.string.isRequired,
-    }).isRequired,
     history: PropTypes.shape({
       push: PropTypes.func.isRequired,
     }).isRequired,
@@ -51,11 +48,6 @@ class SearchBar extends Component {
       ],
     });
 
-    // if we are not in search URL
-    if (!/\/listings\/search\/.*/.test(this.props.location.pathname)) {
-      this.props.history.push('/listings/search/');
-    }
-
     this.props.dispatch(searchListings(value));
   }
 
@@ -78,7 +70,7 @@ class SearchBar extends Component {
   handleNewRequest = (chosenRequest, index) => {
     this.props.dispatch(searchListings(chosenRequest));
 
-    this.props.history.push(`/listings/search/${encodeURIComponent(chosenRequest)}`);
+    this.props.history.push(`/listings?query=${encodeURIComponent(chosenRequest)}`);
   }
 
   handleOnFocus = () => {
