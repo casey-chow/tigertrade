@@ -13,8 +13,7 @@ func ReadListingPhotos(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 	// Get listing ID from params
 	id := ps.ByName("id")
 	if id == "" {
-		// Return 404 error with empty body if not found
-		Error(w, 404)
+		Error(w, http.StatusNotFound)
 		return
 	}
 

@@ -30,7 +30,7 @@ func TestAuthentication(t *testing.T) {
 			t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
 		}
 
-		Convey("returns a 401 if not found", func() {
+		Convey("returns Unauthorized if not found", func() {
 			getUsername = func(_ *http.Request) string { return "" }
 
 			req, _ := http.NewRequest("GET", "/api/users/current", nil)

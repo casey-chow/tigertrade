@@ -33,7 +33,7 @@ func GetCurrentUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params
 			"err":   err,
 			"netID": netID,
 		}).Error("encountered error while retrieving user")
-		Error(w, 500)
+		Error(w, http.StatusInternalServerError)
 		return
 	}
 

@@ -7,6 +7,7 @@ import (
 	sq "github.com/Masterminds/squirrel"
 	"github.com/guregu/null"
 	"strings"
+	"net/http"
 )
 
 // This is the "JSON" struct that appears in the array returned by getRecentSeeks
@@ -59,7 +60,7 @@ func ReadSeeks(db *sql.DB, queryStr string, maxDescriptionSize int, limit uint64
 	// Query db
 	rows, err := query.RunWith(db).Query()
 	if err != nil {
-		return nil, err, 500
+		return nil, err, http.StatusInternalServerError
 	}
 	defer rows.Close()
 
@@ -71,15 +72,15 @@ func ReadSeeks(db *sql.DB, queryStr string, maxDescriptionSize int, limit uint64
 			&l.Title, &l.Description, &l.UserID, &l.SavedSearchID,
 			&l.NotifyEnabled, &l.Status)
 		if err != nil {
-			return nil, err, 500
+			return nil, err, http.StatusInternalServerError
 		}
 		seeks = append(seeks, l)
 	}
 	if err = rows.Err(); err != nil {
-		return nil, err, 500
+		return nil, err, http.StatusInternalServerError
 	}
 
-	return seeks, nil, 0
+	return seeks, nil, http.StatusOK
 }
 
 // Returns the most recent count seeks, based on original date created. On error
@@ -99,7 +100,7 @@ func ReadSeek(db *sql.DB, id string) (Seek, error, int) {
 	// Query db for seek
 	rows, err := query.RunWith(db).Query()
 	if err != nil {
-		return seek, err, 500
+		return seek, err, http.StatusInternalServerError
 	}
 	defer rows.Close()
 
@@ -109,12 +110,12 @@ func ReadSeek(db *sql.DB, id string) (Seek, error, int) {
 		&seek.Title, &seek.Description, &seek.UserID, &seek.SavedSearchID,
 		&seek.NotifyEnabled, &seek.Status)
 	if err == sql.ErrNoRows {
-		return seek, err, 404
+		return seek, err, http.StatusNotFound
 	} else if err != nil {
-		return seek, err, 500
+		return seek, err, http.StatusInternalServerError
 	}
 
-	return seek, nil, 0
+	return seek, nil, http.StatusOK
 }
 
 // Inserts the given seek (belonging to userId) into the database. Returns
@@ -133,7 +134,7 @@ func CreateSeek(db *sql.DB, seek Seek, userId int) (Seek, error, int) {
 	// Query db for seek
 	rows, err := stmt.RunWith(db).Query()
 	if err != nil {
-		return seek, err, 500
+		return seek, err, http.StatusInternalServerError
 	}
 	defer rows.Close()
 
@@ -141,10 +142,10 @@ func CreateSeek(db *sql.DB, seek Seek, userId int) (Seek, error, int) {
 	rows.Next()
 	err = rows.Scan(&seek.KeyID, &seek.CreationDate)
 	if err != nil {
-		return seek, err, 500
+		return seek, err, http.StatusInternalServerError
 	}
 
-	return seek, nil, 0
+	return seek, nil, http.StatusOK
 }
 
 // Overwrites the seek in the database with the given id with the given seek
@@ -166,18 +167,18 @@ func UpdateSeek(db *sql.DB, id string, seek Seek, userId int) (Seek, error, int)
 	// Query db for seek
 	result, err := stmt.RunWith(db).Exec()
 	if err != nil {
-		return seek, err, 500
+		return seek, err, http.StatusInternalServerError
 	}
 
 	numRows, err := result.RowsAffected()
 	if err != nil {
-		return seek, err, 500
+		return seek, err, http.StatusInternalServerError
 	}
 	if numRows == 0 {
-		return seek, sql.ErrNoRows, 404
+		return seek, sql.ErrNoRows, http.StatusNotFound
 	}
 	if numRows != 1 {
-		return seek, errors.New("Multiple rows affected by UpdateSeek"), 500
+		return seek, errors.New("Multiple rows affected by UpdateSeek"), http.StatusInternalServerError
 	}
 
 	return ReadSeek(db, id)
@@ -195,19 +196,19 @@ func DeleteSeek(db *sql.DB, id string, userId int) (error, int) {
 	// Query db for seek
 	result, err := stmt.RunWith(db).Exec()
 	if err != nil {
-		return err, 500
+		return err, http.StatusInternalServerError
 	}
 
 	numRows, err := result.RowsAffected()
 	if err != nil {
-		return err, 500
+		return err, http.StatusInternalServerError
 	}
 	if numRows == 0 {
-		return sql.ErrNoRows, 404
+		return sql.ErrNoRows, http.StatusNotFound
 	}
 	if numRows != 1 {
-		return errors.New("Multiple rows affected by DeleteSeek"), 500
+		return errors.New("Multiple rows affected by DeleteSeek"), http.StatusInternalServerError
 	}
 
-	return nil, 0
+	return nil, http.StatusOK
 }

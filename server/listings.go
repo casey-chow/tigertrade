@@ -45,8 +45,7 @@ func ReadListing(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	// Get ID from params
 	id := ps.ByName("id")
 	if id == "" {
-		// Return 404 error with empty body if not found
-		Error(w, 404)
+		Error(w, http.StatusNotFound)
 		return
 	}
 
@@ -68,16 +67,16 @@ func CreateListing(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 	if err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("error while parsing JSON file")
-		Error(w, 500)
+		Error(w, http.StatusInternalServerError)
 		return
 	}
 
 	// Retrieve UserID
 	user, err := models.GetUser(db, getUsername(r))
-	if err != nil { // Not authorized
+	if err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while authenticating user: not authorized")
-		Error(w, 401)
+		Error(w, http.StatusUnauthorized)
 		return
 	}
 
@@ -96,8 +95,7 @@ func UpdateListing(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 	// Get ID from params
 	id := ps.ByName("id")
 	if id == "" {
-		// Return 404 error with empty body if not found
-		Error(w, 404)
+		Error(w, http.StatusNotFound)
 		return
 	}
 
@@ -107,7 +105,7 @@ func UpdateListing(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 	if err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("error while parsing JSON file")
-		Error(w, 500)
+		Error(w, http.StatusInternalServerError)
 		return
 	}
 
@@ -116,7 +114,7 @@ func UpdateListing(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 	if err != nil { // Not authorized
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while authenticating user: not authorized")
-		Error(w, 401)
+		Error(w, http.StatusUnauthorized)
 		return
 	}
 
@@ -135,17 +133,16 @@ func DeleteListing(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 	// Get ID from params
 	id := ps.ByName("id")
 	if id == "" {
-		// Return 404 error with empty body if not found
-		Error(w, 404)
+		Error(w, http.StatusNotFound)
 		return
 	}
 
 	// Retrieve UserID
 	user, err := models.GetUser(db, getUsername(r))
-	if err != nil { // Not authorized
+	if err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while authenticating user: not authorized")
-		Error(w, 401)
+		Error(w, http.StatusUnauthorized)
 		return
 	}
 

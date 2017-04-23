@@ -5,6 +5,7 @@ import (
 	"errors"
 	sq "github.com/Masterminds/squirrel"
 	"github.com/guregu/null"
+	"net/http"
 )
 
 // Returned by functions returning one or more saved searches
@@ -37,7 +38,7 @@ func ReadSavedSearches(db *sql.DB, userId int, limit uint64) ([]*SavedSearch, er
 	// Query db
 	rows, err := query.RunWith(db).Query()
 	if err != nil {
-		return nil, err, 500
+		return nil, err, http.StatusInternalServerError
 	}
 	defer rows.Close()
 
@@ -49,15 +50,15 @@ func ReadSavedSearches(db *sql.DB, userId int, limit uint64) ([]*SavedSearch, er
 			&ss.Query, &ss.MinPrice, &ss.MaxPrice,
 			&ss.ListingExpirationDate, &ss.SearchExpirationDate)
 		if err != nil {
-			return nil, err, 500
+			return nil, err, http.StatusInternalServerError
 		}
 		savedSearches = append(savedSearches, ss)
 	}
 	if err = rows.Err(); err != nil {
-		return nil, err, 500
+		return nil, err, http.StatusInternalServerError
 	}
 
-	return savedSearches, nil, 0
+	return savedSearches, nil, http.StatusOK
 }
 
 // Returns the most recent count saved searches, based on original date created. On error
@@ -78,7 +79,7 @@ func ReadSavedSearch(db *sql.DB, id string, userId int) (SavedSearch, error, int
 	// Query db for savedSearch
 	rows, err := query.RunWith(db).Query()
 	if err != nil {
-		return savedSearch, err, 500
+		return savedSearch, err, http.StatusInternalServerError
 	}
 	defer rows.Close()
 
@@ -89,12 +90,12 @@ func ReadSavedSearch(db *sql.DB, id string, userId int) (SavedSearch, error, int
 		&savedSearch.MinPrice, &savedSearch.MaxPrice,
 		&savedSearch.ListingExpirationDate, &savedSearch.SearchExpirationDate)
 	if err == sql.ErrNoRows {
-		return savedSearch, err, 404
+		return savedSearch, err, http.StatusNotFound
 	} else if err != nil {
-		return savedSearch, err, 500
+		return savedSearch, err, http.StatusInternalServerError
 	}
 
-	return savedSearch, nil, 0
+	return savedSearch, nil, http.StatusOK
 }
 
 // Inserts the given saved search (belonging to userId) into the database. Returns
@@ -112,7 +113,7 @@ func CreateSavedSearch(db *sql.DB, savedSearch SavedSearch, userId int) (SavedSe
 	// Query db for saved search
 	rows, err := stmt.RunWith(db).Query()
 	if err != nil {
-		return savedSearch, err, 500
+		return savedSearch, err, http.StatusInternalServerError
 	}
 	defer rows.Close()
 
@@ -120,10 +121,10 @@ func CreateSavedSearch(db *sql.DB, savedSearch SavedSearch, userId int) (SavedSe
 	rows.Next()
 	err = rows.Scan(&savedSearch.KeyID, &savedSearch.CreationDate)
 	if err != nil {
-		return savedSearch, err, 500
+		return savedSearch, err, http.StatusInternalServerError
 	}
 
-	return savedSearch, nil, 0
+	return savedSearch, nil, http.StatusOK
 }
 
 // Overwrites the saved search in the database with the given id with the given saved search
@@ -145,18 +146,18 @@ func UpdateSavedSearch(db *sql.DB, id string, savedSearch SavedSearch, userId in
 	// Query db for savedSearch
 	result, err := stmt.RunWith(db).Exec()
 	if err != nil {
-		return savedSearch, err, 500
+		return savedSearch, err, http.StatusInternalServerError
 	}
 
 	numRows, err := result.RowsAffected()
 	if err != nil {
-		return savedSearch, err, 500
+		return savedSearch, err, http.StatusInternalServerError
 	}
 	if numRows == 0 {
-		return savedSearch, sql.ErrNoRows, 404
+		return savedSearch, sql.ErrNoRows, http.StatusNotFound
 	}
 	if numRows != 1 {
-		return savedSearch, errors.New("Multiple rows affected by UpdateSavedSearch"), 500
+		return savedSearch, errors.New("Multiple rows affected by UpdateSavedSearch"), http.StatusInternalServerError
 	}
 
 	return ReadSavedSearch(db, id, userId)
@@ -174,19 +175,19 @@ func DeleteSavedSearch(db *sql.DB, id string, userId int) (error, int) {
 	// Query db for savedSearch
 	result, err := stmt.RunWith(db).Exec()
 	if err != nil {
-		return err, 500
+		return err, http.StatusInternalServerError
 	}
 
 	numRows, err := result.RowsAffected()
 	if err != nil {
-		return err, 500
+		return err, http.StatusInternalServerError
 	}
 	if numRows == 0 {
-		return sql.ErrNoRows, 404
+		return sql.ErrNoRows, http.StatusNotFound
 	}
 	if numRows != 1 {
-		return errors.New("Multiple rows affected by DeleteSavedSearch"), 500
+		return errors.New("Multiple rows affected by DeleteSavedSearch"), http.StatusInternalServerError
 	}
 
-	return nil, 0
+	return nil, http.StatusOK
 }

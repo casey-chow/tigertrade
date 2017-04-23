@@ -20,7 +20,7 @@ const defaultNumResults = 30
 const maxNumResults = 100
 
 // Serve converts v to a JSON string and writes to w.
-// Writes an HTTP 500 error on error.
+// Writes an InternalServerError on error.
 func Serve(w http.ResponseWriter, v interface{}) {
 	var marshaled []byte
 	if v == nil {
@@ -31,7 +31,7 @@ func Serve(w http.ResponseWriter, v interface{}) {
 		if err != nil {
 			log.WithField("err", err).Error("Error while marshalling to JSON")
 			raven.CaptureError(err, nil)
-			Error(w, 500)
+			Error(w, http.StatusInternalServerError)
 			return
 		}
 	}
