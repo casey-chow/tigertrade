@@ -19,8 +19,8 @@ const truncationLength = 1024
 const defaultNumResults = 30
 const maxNumResults = 100
 
-// Serve converts v to a JSON string and writes to w. Writes an
-// HTTP 500 error on error.
+// Serve converts v to a JSON string and writes to w.
+// Writes an HTTP 500 error on error.
 func Serve(w http.ResponseWriter, v interface{}) {
 	var marshaled []byte
 	if v == nil {
@@ -31,7 +31,7 @@ func Serve(w http.ResponseWriter, v interface{}) {
 		if err != nil {
 			log.WithField("err", err).Error("Error while marshalling to JSON")
 			raven.CaptureError(err, nil)
-			http.Error(w, http.StatusText(500), 500)
+			Error(w, 500)
 			return
 		}
 	}
@@ -40,9 +40,9 @@ func Serve(w http.ResponseWriter, v interface{}) {
 	fmt.Fprint(w, string(marshaled))
 }
 
-// Serve404 returns a 404 code to w. It does not end the stream.
-func Serve404(w http.ResponseWriter) {
-	http.Error(w, http.StatusText(404), 404)
+// Error writes an HTTP error with default status text. It does not end the stream.
+func Error(w http.ResponseWriter, code int) {
+	http.Error(w, http.StatusText(code), code)
 }
 
 func ParseJSONFromBody(r *http.Request, v interface{}) error {

@@ -6,7 +6,7 @@ import (
 	"github.com/guregu/null"
 )
 
-// Returned by a getById function and by getSavedSearches
+// Returned by functions returning one or more saved searches
 type SavedSearch struct {
 	KeyID                 int         `json:"keyId"`
 	CreationDate          null.Time   `json:"creationDate"`

@@ -26,7 +26,7 @@ func Router() http.Handler {
 	router.POST("/api/listings", CreateListing)
 	router.GET("/api/listings/:id", ReadListing)
 	router.POST("/api/listings/:id", UpdateListing)
-	//	router.DELETE("/api/listings/:id", DeleteListing)
+	router.DELETE("/api/listings/:id", DeleteListing)
 
 	// photos.go
 	router.GET("/api/listings/:id/photos", ReadListingPhotos)
@@ -39,8 +39,8 @@ func Router() http.Handler {
 	router.GET("/api/seeks", ReadSeeks)
 	router.POST("/api/seeks", CreateSeek)
 	router.GET("/api/seeks/:id", ReadSeek)
-	//	router.POST("/api/seeks/:id", UpdateSeek)
-	//	router.POST("/api/seeks/:id", DeleteSeek)
+	router.POST("/api/seeks/:id", UpdateSeek)
+	router.POST("/api/seeks/:id", DeleteSeek)
 
 	// savedsearches.go
 	router.GET("/api/savedsearches", ReadSavedSearches)

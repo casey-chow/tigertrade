@@ -23,7 +23,7 @@ type ListingsItem struct {
 	Thumbnail            null.String `json:"thumbnail"`
 }
 
-// Returned by a getById function
+// Returned by a function returning only one listing (usually by ID)
 type Listing struct {
 	KeyID                int         `json:"keyId"`
 	CreationDate         null.Time   `json:"creationDate"`
@@ -193,15 +193,37 @@ func UpdateListing(db *sql.DB, id string, listing Listing, userId int) (Listing,
 		return listing, sql.ErrNoRows, 404
 	}
 	if numRows != 1 {
-		return listing, errors.New("Multiple rows affected by UpdateListingById"), 500
-	}
-	keyId, err := result.LastInsertId()
-	if err != nil {
-		return listing, err, 500
-	}
-	if string(keyId) != id {
-		return listing, errors.New("Wrong row affected by UpdateListingById"), 500
+		return listing, errors.New("Multiple rows affected by UpdateListing"), 500
 	}
 
 	return ReadListing(db, id)
+}
+
+// Deletes the listing in the database with the given id with the given listing
+// (belonging to userId).
+func DeleteListing(db *sql.DB, id string, userId int) (error, int) {
+
+	// Update listing
+	stmt := psql.Delete("listings"). // looks scary, really DELETE FROM listings
+		Where(sq.Eq{"listings.key_id": id,
+			"listings.user_id": userId})
+
+	// Query db for listing
+	result, err := stmt.RunWith(db).Exec()
+	if err != nil {
+		return err, 500
+	}
+
+	numRows, err := result.RowsAffected()
+	if err != nil {
+		return err, 500
+	}
+	if numRows == 0 {
+		return sql.ErrNoRows, 404
+	}
+	if numRows != 1 {
+		return errors.New("Multiple rows affected by DeleteListing"), 500
+	}
+
+	return nil, 0
 }

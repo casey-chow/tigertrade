@@ -30,7 +30,7 @@ func ReadSavedSearches(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 	if err != nil { // Not authorized
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while authenticating user: not authorized")
-		http.Error(w, http.StatusText(401), 401)
+		Error(w, 401)
 		return
 	}
 
@@ -38,7 +38,7 @@ func ReadSavedSearches(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 	if err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while getting recent saved searches")
-		http.Error(w, http.StatusText(code), code)
+		Error(w, code)
 		return
 	}
 
@@ -51,7 +51,7 @@ func ReadSavedSearch(w http.ResponseWriter, r *http.Request, ps httprouter.Param
 	id := ps.ByName("id")
 	if id == "" {
 		// Return 404 error with empty body if not found
-		http.Error(w, "", 404)
+		Error(w, 404)
 		return
 	}
 
@@ -60,7 +60,7 @@ func ReadSavedSearch(w http.ResponseWriter, r *http.Request, ps httprouter.Param
 	if err != nil { // Not authorized
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while authenticating user: not authorized")
-		http.Error(w, http.StatusText(401), 401)
+		Error(w, 401)
 		return
 	}
 
@@ -68,7 +68,7 @@ func ReadSavedSearch(w http.ResponseWriter, r *http.Request, ps httprouter.Param
 	if err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while getting saved search by ID")
-		http.Error(w, http.StatusText(code), code)
+		Error(w, code)
 		return
 	}
 
@@ -82,7 +82,7 @@ func CreateSavedSearch(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 	if err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("error while parsing JSON file")
-		http.Error(w, http.StatusText(500), 500)
+		Error(w, 500)
 		return
 	}
 
@@ -91,7 +91,7 @@ func CreateSavedSearch(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 	if err != nil { // Not authorized
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while authenticating user: not authorized")
-		http.Error(w, http.StatusText(401), 401)
+		Error(w, 401)
 		return
 	}
 
@@ -99,7 +99,7 @@ func CreateSavedSearch(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 	if err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while getting adding saved search")
-		http.Error(w, http.StatusText(code), code)
+		Error(w, code)
 		return
 	}
 
