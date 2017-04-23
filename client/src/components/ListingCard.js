@@ -37,8 +37,13 @@ class ListingCard extends React.Component {
     onExpandChange: () => {},
   };
 
+  state = {
+    expanded: false,
+  }
+
   handleExpandChange = (expanded) => {
     this.props.onExpandChange(expanded, this.props.listing.keyId);
+    this.setState({ expanded });
   }
 
   render() {
@@ -48,11 +53,11 @@ class ListingCard extends React.Component {
       margin: '1.5em -3em',
     } : {};
 
-    const onShowStyles = { maxHeight: '4000px', transition: 'max-height 0.5s ease-in', overflow: 'hidden' };
+    const onShowStyles = { maxHeight: '1000px', transition: 'max-height 0.5s ease-in', overflow: 'hidden' };
     const onHideStyles = { maxHeight: '0', transition: 'max-height 0.15s ease-out', overflow: 'hidden' };
 
     return (
-      <Card style={cardStyles} onExpandChange={this.handleExpandChange}>
+      <Card style={cardStyles} onExpandChange={this.handleExpandChange} expanded={expanded}>
         <CardHeader
           title={listing.title}
           subtitle={`$${listing.price / 100}`}
@@ -61,20 +66,19 @@ class ListingCard extends React.Component {
 
         <div style={expanded ? onShowStyles : onHideStyles}>
 
-          <CardMedia expandable>
+          <CardMedia>
             <img alt={listing.title} src={listing.thumbnail} style={{ minWidth: undefined, maxHeight: '300px', width: 'auto' }} />
           </CardMedia>
 
           <CardTitle
             title={listing.title}
-            expandable
           />
 
-          <CardText expandable>
+          <CardText>
             {listing.description}
           </CardText>
 
-          <CardActions expandable>
+          <CardActions>
             <FlatButton primary icon={<EmailIcon />} label="Contact Seller" />
             <FlatButton secondary icon={<FavoriteIcon />} label="Save" />
           </CardActions>
