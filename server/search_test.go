@@ -39,7 +39,7 @@ func TestSearch(t *testing.T) {
 					1, 1001, "For Sale", time.Now(), "http://example.com/asf.gif",
 				))
 
-			req, _ := http.NewRequest("GET", "/api/search/SampleValue", nil)
+			req, _ := http.NewRequest("GET", "/api/listings?query=SampleValue", nil)
 			res := executeRequest(app, req)
 
 			So(res.Code, ShouldEqual, http.StatusOK)
@@ -72,7 +72,7 @@ func TestSearch(t *testing.T) {
 					1, 1001, "For Sale", time.Now(), "http://example.com/asf.gif",
 				))
 
-			req, _ := http.NewRequest("GET", "/api/search/sAmPleVaLue", nil)
+			req, _ := http.NewRequest("GET", "/api/listings?query=sAmPleVaLue", nil)
 			res := executeRequest(app, req)
 
 			So(res.Code, ShouldEqual, http.StatusOK)

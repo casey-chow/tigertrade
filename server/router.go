@@ -27,7 +27,7 @@ func Router() http.Handler {
 	router.GET("/api/users/current", ServeCurrentUser)
 
 	// API Routes
-	router.GET("/api/listings", ServeRecentListings)
+	router.GET("/api/listings", ServeListings)
 	router.POST("/api/listings", ServeAddListing)
 	router.GET("/api/listings/:id", ServeListingById)
 	router.POST("/api/listings/:id", ServeUpdateListingById)
@@ -46,8 +46,6 @@ func Router() http.Handler {
 	router.POST("/api/savedsearches", ServeAddSavedSearch)
 	router.GET("/api/savedsearches/:id", ServeSavedSearchById)
 	//	router.POST("/api/savedsearches/:id", ServeUpdateSavedSearchById)
-
-	router.GET("/api/search/:query", ServeSearch)
 
 	return router
 }
