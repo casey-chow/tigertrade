@@ -37,13 +37,8 @@ class ListingCard extends React.Component {
     onExpandChange: () => {},
   };
 
-  state = {
-    expanded: false,
-  }
-
   handleExpandChange = (expanded) => {
     this.props.onExpandChange(expanded, this.props.listing.keyId);
-    this.setState({ expanded });
   }
 
   render() {
