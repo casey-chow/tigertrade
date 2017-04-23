@@ -40,7 +40,7 @@ func Router() http.Handler {
 	router.POST("/api/seeks", CreateSeek)
 	router.GET("/api/seeks/:id", ReadSeek)
 	router.POST("/api/seeks/:id", UpdateSeek)
-	router.POST("/api/seeks/:id", DeleteSeek)
+	router.DELETE("/api/seeks/:id", DeleteSeek)
 
 	// savedsearches.go
 	router.GET("/api/savedsearches", ReadSavedSearches)

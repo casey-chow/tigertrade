@@ -109,7 +109,7 @@ func ReadSeek(db *sql.DB, id string) (Seek, error, int) {
 		&seek.Title, &seek.Description, &seek.UserID, &seek.SavedSearchID,
 		&seek.NotifyEnabled, &seek.Status)
 	if err == sql.ErrNoRows {
-		return listing, err, 404
+		return seek, err, 404
 	} else if err != nil {
 		return seek, err, 500
 	}
