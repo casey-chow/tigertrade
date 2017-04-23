@@ -24,6 +24,7 @@ func ServePhotosByListingId(w http.ResponseWriter, r *http.Request, ps httproute
 		log.WithField("err", err).Error("Error while getting photo by ID")
 		raven.CaptureError(err, nil)
 		http.Error(w, http.StatusText(code), code)
+		return
 	}
 
 	// Write photos object to output

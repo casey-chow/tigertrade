@@ -39,6 +39,7 @@ func ServeRecentSavedSearches(w http.ResponseWriter, r *http.Request, ps httprou
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while getting recent saved searches")
 		http.Error(w, http.StatusText(code), code)
+		return
 	}
 
 	Serve(w, savedSearches)
@@ -68,6 +69,7 @@ func ServeSavedSearchById(w http.ResponseWriter, r *http.Request, ps httprouter.
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while getting saved search by ID")
 		http.Error(w, http.StatusText(code), code)
+		return
 	}
 
 	Serve(w, savedSearches)
@@ -98,6 +100,7 @@ func ServeAddSavedSearch(w http.ResponseWriter, r *http.Request, ps httprouter.P
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while getting adding saved search")
 		http.Error(w, http.StatusText(code), code)
+		return
 	}
 
 	Serve(w, savedSearch)

@@ -10,14 +10,15 @@ import (
 )
 
 // Writes the most recent count listings, based on original date created to w
-func ServeRecentListings(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func ServeListings(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	// Get limit from params
 	limitStr := r.URL.Query().Get("limit")
 	limit := defaultNumResults
-	var e error
+
+	var err error
 	if limitStr != "" {
-		limit, e = strconv.Atoi(limitStr)
-		if e != nil || limit == 0 {
+		limit, err = strconv.Atoi(limitStr)
+		if err != nil || limit == 0 {
 			limit = defaultNumResults
 		}
 	}
@@ -25,11 +26,22 @@ func ServeRecentListings(w http.ResponseWriter, r *http.Request, ps httprouter.P
 		limit = maxNumResults
 	}
 
-	listings, err, code := models.GetRecentListings(db, truncationLength, uint64(limit))
+	// Get optional search query from params
+	queryStr := r.URL.Query().Get("query")
+
+	var listings []*models.ListingsItem
+	var code int
+	if queryStr == "" {
+		listings, err, code = models.GetRecentListings(db, truncationLength, uint64(limit))
+	} else {
+		listings, err, code = models.GetSearchListings(db, queryStr, truncationLength, uint64(limit))
+	}
+
 	if err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while getting recent listings")
 		http.Error(w, http.StatusText(code), code)
+		return
 	}
 
 	Serve(w, listings)
@@ -50,6 +62,7 @@ func ServeListingById(w http.ResponseWriter, r *http.Request, ps httprouter.Para
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while getting listing by ID")
 		http.Error(w, http.StatusText(code), code)
+		return
 	}
 
 	Serve(w, listings)
@@ -80,6 +93,7 @@ func ServeAddListing(w http.ResponseWriter, r *http.Request, ps httprouter.Param
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while adding new listing")
 		http.Error(w, http.StatusText(code), code)
+		return
 	}
 
 	Serve(w, listing)
@@ -118,6 +132,7 @@ func ServeUpdateListingById(w http.ResponseWriter, r *http.Request, ps httproute
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while updating listing by ID")
 		http.Error(w, http.StatusText(code), code)
+		return
 	}
 
 	Serve(w, listing)
