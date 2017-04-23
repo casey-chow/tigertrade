@@ -43,6 +43,7 @@ class ListingCard extends React.Component {
 
   handleExpandChange = (expanded) => {
     this.props.onExpandChange(expanded, this.props.listing.keyId);
+    this.setState({ expanded });
   }
 
   render() {
@@ -52,28 +53,37 @@ class ListingCard extends React.Component {
       margin: '1.5em -3em',
     } : {};
 
+    const onShowStyles = { maxHeight: '1000px', transition: 'max-height 0.5s ease-in', overflow: 'hidden' };
+    const onHideStyles = { maxHeight: '0', transition: 'max-height 0.15s ease-out', overflow: 'hidden' };
+
     return (
-      <Card expanded={expanded} style={cardStyles} onExpandChange={this.handleExpandChange}>
+      <Card style={cardStyles} onExpandChange={this.handleExpandChange} expanded={expanded}>
         <CardHeader
           title={listing.title}
           subtitle={`$${listing.price / 100}`}
           actAsExpander
         />
 
-        <CardMedia expandable>
-          <img alt={listing.title} src={listing.thumbnail} style={{ minWidth: undefined, maxHeight: '300px', width: 'auto' }} />
-        </CardMedia>
+        <div style={expanded ? onShowStyles : onHideStyles}>
 
-        <CardTitle title={listing.title} expandable />
+          <CardMedia>
+            <img alt={listing.title} src={listing.thumbnail} style={{ minWidth: undefined, maxHeight: '300px', width: 'auto' }} />
+          </CardMedia>
 
-        <CardText expandable>
-          {listing.description}
-        </CardText>
+          <CardTitle
+            title={listing.title}
+          />
 
-        <CardActions expandable>
-          <FlatButton primary icon={<EmailIcon />} label="Contact Seller" />
-          <FlatButton secondary icon={<FavoriteIcon />} label="Save" />
-        </CardActions>
+          <CardText>
+            {listing.description}
+          </CardText>
+
+          <CardActions>
+            <FlatButton primary icon={<EmailIcon />} label="Contact Seller" />
+            <FlatButton secondary icon={<FavoriteIcon />} label="Save" />
+          </CardActions>
+
+        </div>
       </Card>
     );
   }
