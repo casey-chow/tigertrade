@@ -26,7 +26,7 @@ export function searchListings(query) {
     dispatch({
       type: 'SEARCH_LISTINGS_REQUEST',
     });
-    fetch(`${API_ROOT}/search/${encodeURIComponent(query)}`)
+    fetch(`${API_ROOT}/listings?q=${encodeURIComponent(query)}`)
       .then(response => response.json())
       .then(json => dispatch({
         json,
