@@ -12,7 +12,7 @@ import (
 func TestListings(t *testing.T) {
 	app := App()
 
-	Convey("ServeRecentListings", t, func() {
+	Convey("ReadListings", t, func() {
 
 		Convey("should return a list of listings", func() {
 			req, _ := http.NewRequest("GET", "/api/listings", nil)
@@ -25,7 +25,7 @@ func TestListings(t *testing.T) {
 
 	})
 
-	Convey("ServeListingById", t, func() {
+	Convey("ReadListing", t, func() {
 
 		Convey("returns valid JSON", func() {
 			req, _ := http.NewRequest("GET", "/api/listings", nil)
@@ -40,7 +40,7 @@ func TestListings(t *testing.T) {
 
 	})
 
-	Convey("ServeAddSeek", t, func() {
+	Convey("CreateSeek", t, func() {
 
 		Convey("works given invalid JSON", nil)
 

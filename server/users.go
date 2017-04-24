@@ -22,7 +22,7 @@ func GetCurrentUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params
 	netID := getUsername(r)
 	log.WithField("netID", netID).Info("getting username")
 	if netID == "" {
-		http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
+		Error(w, http.StatusUnauthorized)
 		return
 	}
 
@@ -33,7 +33,7 @@ func GetCurrentUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params
 			"err":   err,
 			"netID": netID,
 		}).Error("encountered error while retrieving user")
-		http.Error(w, http.StatusText(500), 500)
+		Error(w, http.StatusInternalServerError)
 		return
 	}
 

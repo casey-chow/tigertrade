@@ -15,10 +15,10 @@ func ReadListings(w http.ResponseWriter, r *http.Request, ps httprouter.Params) 
 	limitStr := r.URL.Query().Get("limit")
 	limit := defaultNumResults
 
-	var err error
+	var e error
 	if limitStr != "" {
-		limit, err = strconv.Atoi(limitStr)
-		if err != nil || limit == 0 {
+		limit, e = strconv.Atoi(limitStr)
+		if e != nil || limit == 0 {
 			limit = defaultNumResults
 		}
 	}
@@ -30,11 +30,10 @@ func ReadListings(w http.ResponseWriter, r *http.Request, ps httprouter.Params) 
 	queryStr := r.URL.Query().Get("query")
 
 	listings, err, code := models.ReadListings(db, queryStr, truncationLength, uint64(limit))
-
 	if err != nil {
 		raven.CaptureError(err, nil)
-		log.WithField("err", err).Error("Error while getting recent listings")
-		http.Error(w, http.StatusText(code), code)
+		log.WithField("err", err).Error("Error while reading recent or queried listings")
+		Error(w, code)
 		return
 	}
 
@@ -46,8 +45,7 @@ func ReadListing(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	// Get ID from params
 	id := ps.ByName("id")
 	if id == "" {
-		// Return 404 error with empty body if not found
-		http.Error(w, "", 404)
+		Error(w, http.StatusNotFound)
 		return
 	}
 
@@ -55,7 +53,7 @@ func ReadListing(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	if err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while getting listing by ID")
-		http.Error(w, http.StatusText(code), code)
+		Error(w, code)
 		return
 	}
 
@@ -69,16 +67,16 @@ func CreateListing(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 	if err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("error while parsing JSON file")
-		http.Error(w, http.StatusText(500), 500)
+		Error(w, http.StatusInternalServerError)
 		return
 	}
 
 	// Retrieve UserID
 	user, err := models.GetUser(db, getUsername(r))
-	if err != nil { // Not authorized
+	if err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while authenticating user: not authorized")
-		http.Error(w, http.StatusText(401), 401)
+		Error(w, http.StatusUnauthorized)
 		return
 	}
 
@@ -86,7 +84,7 @@ func CreateListing(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 	if err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while adding new listing")
-		http.Error(w, http.StatusText(code), code)
+		Error(w, code)
 		return
 	}
 
@@ -97,8 +95,7 @@ func UpdateListing(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 	// Get ID from params
 	id := ps.ByName("id")
 	if id == "" {
-		// Return 404 error with empty body if not found
-		http.Error(w, "", 404)
+		Error(w, http.StatusNotFound)
 		return
 	}
 
@@ -108,7 +105,7 @@ func UpdateListing(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 	if err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("error while parsing JSON file")
-		http.Error(w, http.StatusText(500), 500)
+		Error(w, http.StatusInternalServerError)
 		return
 	}
 
@@ -117,7 +114,7 @@ func UpdateListing(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 	if err != nil { // Not authorized
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while authenticating user: not authorized")
-		http.Error(w, http.StatusText(401), 401)
+		Error(w, http.StatusUnauthorized)
 		return
 	}
 
@@ -125,9 +122,35 @@ func UpdateListing(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 	if err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while updating listing by ID")
-		http.Error(w, http.StatusText(code), code)
+		Error(w, code)
 		return
 	}
 
 	Serve(w, listing)
+}
+
+func DeleteListing(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	// Get ID from params
+	id := ps.ByName("id")
+	if id == "" {
+		Error(w, http.StatusNotFound)
+		return
+	}
+
+	// Retrieve UserID
+	user, err := models.GetUser(db, getUsername(r))
+	if err != nil {
+		raven.CaptureError(err, nil)
+		log.WithField("err", err).Error("Error while authenticating user: not authorized")
+		Error(w, http.StatusUnauthorized)
+		return
+	}
+
+	err, code := models.DeleteListing(db, id, user.KeyID)
+	if err != nil {
+		raven.CaptureError(err, nil)
+		log.WithField("err", err).Error("Error while deleting listing by ID")
+		Error(w, code)
+		return
+	}
 }
