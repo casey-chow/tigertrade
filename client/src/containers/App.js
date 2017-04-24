@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 
 import ActionBar from '../components/ActionBar';
 
-import RecentListings from './RecentListings';
 import Compose from './Compose';
 import SearchListings from './SearchListings';
 
@@ -33,8 +32,7 @@ class App extends Component {
             <Route exact path="/">
               <Redirect push to="/listings/" />
             </Route>
-            <Route exact path="/listings" component={RecentListings} />
-            <Route path="/listings/search/:query" component={SearchListings} />
+            <Route path="/listings" component={SearchListings} />
             <Route path="/compose" component={Compose} />
           </Switch>
         </div>
