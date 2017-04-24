@@ -51,6 +51,30 @@ const seeks = (state = [], action) => {
   }
 };
 
+const savedSearchesLoading = (state = false, action) => {
+  switch (action.type) {
+    case 'LOAD_SAVEDSEARCHES_REQUEST':
+      return true;
+    case 'LOAD_SAVEDSEARCHES_SUCCESS':
+    case 'LOAD_SAVEDSEARCHES_FAILURE':
+      return false;
+    default:
+      return state;
+  }
+};
+
+const savedSearches = (state = [], action) => {
+  switch (action.type) {
+    case 'LOAD_SAVEDSEARCHES_FAILURE': // TODO: failure state
+      return [];
+    case 'LOAD_SAVEDSEARCHES_SUCCESS':
+      return action.json;
+    case 'LOAD_SAVEDSEARCHES_REQUEST':
+    default:
+      return state;
+  }
+};
+
 const currentUserLoading = (state = false, action) => {
   switch (action.type) {
     case 'LOAD_CURRENT_USER_REQUEST':
@@ -92,6 +116,8 @@ const rootReducer = combineReducers({
   listings,
   seeksLoading,
   seeks,
+  savedSearchesLoading,
+  savedSearches,
   currentUserLoading,
   currentUser,
   currentQuery,
