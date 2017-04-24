@@ -5,18 +5,18 @@ import { API_ROOT } from './common';
 export function loadRecentListings() {
   return function (dispatch, getState) {
     dispatch({
-      type: 'RECENT_LISTINGS_REQUEST',
+      type: 'SEARCH_LISTINGS_REQUEST',
     });
 
     fetch(`${API_ROOT}/listings`)
       .then(response => response.json())
       .then(json => dispatch({
         json,
-        type: 'RECENT_LISTINGS_SUCCESS',
+        type: 'SEARCH_LISTINGS_SUCCESS',
       }))
       .catch(error => dispatch({
         error,
-        type: 'RECENT_LISTINGS_FAILURE',
+        type: 'SEARCH_LISTINGS_FAILURE',
       }));
   };
 }
