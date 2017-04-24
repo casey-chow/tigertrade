@@ -6,8 +6,8 @@ import (
 	"fmt"
 	sq "github.com/Masterminds/squirrel"
 	"github.com/guregu/null"
-	"strings"
 	"net/http"
+	"strings"
 )
 
 // This is the "JSON" struct that appears in the array returned by getRecentSeeks
