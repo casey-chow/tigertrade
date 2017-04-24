@@ -25,6 +25,7 @@ func casMiddleware() negroni.Handler {
 	casClient := cas.NewClient(&cas.Options{
 		URL:         casUrl,
 		SendService: true,
+		Secure:      os.Getenv("DEBUG") != "true",
 	})
 
 	// Thin wrapper on go-cas's middleware

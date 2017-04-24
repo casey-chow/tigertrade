@@ -18,10 +18,10 @@
 			"revisionTime": "2017-03-17T14:32:14Z"
 		},
 		{
-			"checksumSHA1": "W8pk3fX1cuesf4jsL/UQPlaE8D0=",
+			"checksumSHA1": "cZua2AtUkT59qlwwo219DRwCP7E=",
 			"path": "github.com/TheGuyWithTheFace/cas",
-			"revision": "f6e470983e0b51e078d1b598baa7a1dc92884f22",
-			"revisionTime": "2017-04-20T04:46:58Z"
+			"revision": "55845aefac6beb8b015f17d95555434d533317a9",
+			"revisionTime": "2017-04-24T02:02:02Z"
 		},
 		{
 			"checksumSHA1": "xTy1x4EoWRSsBlstJxFp0z321NQ=",
@@ -342,6 +342,12 @@
 			"path": "gopkg.in/DATA-DOG/go-sqlmock.v1",
 			"revision": "b983233bc0bbea4dc6e8ec8c8c923d935765ffec",
 			"revisionTime": "2017-02-21T15:59:18Z"
+		},
+		{
+			"checksumSHA1": "R1OhNlEyryHz56bGRz3Me1tLhqM=",
+			"path": "gopkg.in/cas.v1",
+			"revision": "fd85b5ae8a14a3e4a3989833499caecb4542fdf0",
+			"revisionTime": "2016-07-14T08:02:20Z"
 		},
 		{
 			"checksumSHA1": "538I8ghUdvZa25NxgMUDpq14Qic=",
