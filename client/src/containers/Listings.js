@@ -5,11 +5,11 @@ import { withRouter } from 'react-router-dom';
 
 import CircularProgress from 'material-ui/CircularProgress';
 
-import Listings from '../components/Listings';
+import ListingsList from '../components/ListingsList';
 
-import { setCurrentListingsQuery, searchListings } from './../actions/listings';
+import { setCurrentListingsQuery, loadListings } from './../actions/listings';
 
-class SearchListings extends Component {
+class Listings extends Component {
   static propTypes = {
     listingsLoading: PropTypes.bool.isRequired,
     listings: PropTypes.arrayOf(PropTypes.object).isRequired,
@@ -27,7 +27,7 @@ class SearchListings extends Component {
 
   componentWillMount() {
     const query = this.props.match.params.query;
-    this.props.dispatch(searchListings(query || ''));
+    this.props.dispatch(loadListings(query || ''));
     this.props.dispatch(setCurrentListingsQuery(query || ''));
   }
 
@@ -65,14 +65,14 @@ class SearchListings extends Component {
     }
 
     return (
-      <Listings listings={this.props.listings} />
+      <ListingsList listings={this.props.listings} />
     );
   }
 }
 
 const mapStateToProps = state => ({
   listingsLoading: state.listingsLoading,
-  listings: state.searchListings,
+  listings: state.listings,
 });
 
-export default withRouter(connect(mapStateToProps)(SearchListings));
+export default withRouter(connect(mapStateToProps)(Listings));

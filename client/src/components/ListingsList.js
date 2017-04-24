@@ -15,7 +15,7 @@ const fabStyle = {
   right: '35px',
 };
 
-class Listings extends PureComponent {
+class ListingsList extends PureComponent {
   static propTypes = {
     listings: PropTypes.arrayOf(PropTypes.shape({
       keyId: PropTypes.number,
@@ -40,7 +40,7 @@ class Listings extends PureComponent {
   render() {
     return (
       <div>
-        <Container className="Listings">
+        <Container className="ListingsList">
           <Row>
             <Col xs={1} />
             <Col xs={10}>
@@ -66,4 +66,4 @@ class Listings extends PureComponent {
   }
 }
 
-export default Listings;
+export default ListingsList;

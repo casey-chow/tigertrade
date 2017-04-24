@@ -5,38 +5,23 @@ import { combineReducers } from 'redux';
 
 const listingsLoading = (state = false, action) => {
   switch (action.type) {
-    case 'RECENT_LISTINGS_REQUEST':
-    case 'SEARCH_LISTINGS_REQUEST':
+    case 'LOAD_LISTINGS_REQUEST':
       return true;
-    case 'RECENT_LISTINGS_FAILURE':
-    case 'SEARCH_LISTINGS_FAILURE':
-    case 'RECENT_LISTINGS_SUCCESS':
-    case 'SEARCH_LISTINGS_SUCCESS':
+    case 'LOAD_LISTINGS_SUCCESS':
+    case 'LOAD_LISTINGS_FAILURE':
       return false;
     default:
       return state;
   }
 };
 
-const recentListings = (state = [], action) => {
+const listings = (state = [], action) => {
   switch (action.type) {
-    case 'RECENT_LISTINGS_FAILURE': // TODO: failure state
+    case 'LOAD_LISTINGS_FAILURE': // TODO: failure state
       return [];
-    case 'RECENT_LISTINGS_SUCCESS':
+    case 'LOAD_LISTINGS_SUCCESS':
       return action.json;
-    case 'RECENT_LISTINGS_REQUEST':
-    default:
-      return state;
-  }
-};
-
-const searchListings = (state = [], action) => {
-  switch (action.type) {
-    case 'SEARCH_LISTINGS_FAILURE': // TODO: failure state
-      return [];
-    case 'SEARCH_LISTINGS_SUCCESS':
-      return action.json;
-    case 'SEARCH_LISTINGS_REQUEST':
+    case 'LOAD_LISTINGS_REQUEST':
     default:
       return state;
   }
@@ -79,9 +64,8 @@ const currentQuery = (state = '', action) => {
 };
 
 const rootReducer = combineReducers({
-  recentListings,
   listingsLoading,
-  searchListings,
+  listings,
   currentUserLoading,
   currentUser,
   currentQuery,
