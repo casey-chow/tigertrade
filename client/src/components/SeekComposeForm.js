@@ -8,7 +8,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 
 const titleField = field => (
   <TextField
-    hintText="What are you selling?" value={field.input.value}
+    hintText="What are you buying?" value={field.input.value}
     onChange={field.input.onChange} maxlength="160" fullWidth
   />
 );
@@ -17,7 +17,7 @@ const priceField = field => (
   <div>
     {field.input.value ? '$' : ''}
     <TextField
-      hintText="How much are you charging?" value={field.input.value}
+      hintText="How much are you willing to pay?" value={field.input.value}
       onChange={field.input.onChange} type="number" prefix="$" min="0" step="0.01"
     />
   </div>
@@ -25,13 +25,13 @@ const priceField = field => (
 
 const descriptionField = field => (
   <TextField
-    hintText="Describe what's for sale. For best results, keep to 100 words or fewer."
+    hintText="Describe what you're looking to buy. For best results, keep to 100 words or fewer."
     value={field.input.value} onChange={field.input.onChange} multiLine
     fullWidth
   />
 );
 
-class ComposeForm extends PureComponent {
+class SeekComposeForm extends PureComponent {
   static propTypes = {
     ...propTypes,
   }
@@ -68,4 +68,4 @@ class ComposeForm extends PureComponent {
   }
 }
 
-export default reduxForm({ form: 'compose' })(ComposeForm);
+export default reduxForm({ form: 'compose' })(SeekComposeForm);
