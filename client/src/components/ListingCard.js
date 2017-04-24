@@ -13,6 +13,7 @@ import FlatButton from 'material-ui/FlatButton';
 import EmailIcon from 'material-ui/svg-icons/communication/email';
 import FavoriteIcon from 'material-ui/svg-icons/action/favorite';
 import Dialog from 'material-ui/Dialog';
+import TextField from 'material-ui/TextField';
 
 class ListingCard extends React.Component {
 
@@ -67,9 +68,8 @@ class ListingCard extends React.Component {
 
     const actions = [
       <FlatButton
-        label="Ok"
+        label="Send"
         primary
-        keyboardFocused
         onTouchTap={this.handleClose}
       />,
     ];
@@ -105,13 +105,17 @@ class ListingCard extends React.Component {
           </div>
         </Card>
         <Dialog
-          title="Dialog With Date Picker"
+          title="Let the seller know you're interested"
           actions={actions}
           modal={false}
           open={this.state.contactOpen}
           onRequestClose={this.handleContactClose}
         >
-          Send the seller a message.
+          <TextField
+            hintText="Hi! I'm interested in buying your item."
+            multiLine
+            fullWidth
+          />
         </Dialog>
       </div>
     );
