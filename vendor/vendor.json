@@ -198,6 +198,24 @@
 			"revisionTime": "2016-06-18T19:32:21Z"
 		},
 		{
+			"checksumSHA1": "s2FANQPRytWzBSwlCGcjuBZGyIg=",
+			"path": "github.com/sendgrid/rest",
+			"revision": "14de1ac72d9ae5c3c0d7c02164c52ebd3b951a4e",
+			"revisionTime": "2017-04-11T01:08:25Z"
+		},
+		{
+			"checksumSHA1": "YiX3JOF6TNQAbccCpef4EYkvn6U=",
+			"path": "github.com/sendgrid/sendgrid-go",
+			"revision": "22e570ec3adefad019c6c8ffbead6c515ca84062",
+			"revisionTime": "2017-04-06T22:13:24Z"
+		},
+		{
+			"checksumSHA1": "ypNcZninDrOFJ2MistpD71jq8OI=",
+			"path": "github.com/sendgrid/sendgrid-go/helpers/mail",
+			"revision": "22e570ec3adefad019c6c8ffbead6c515ca84062",
+			"revisionTime": "2017-04-06T22:13:24Z"
+		},
+		{
 			"checksumSHA1": "BpFbfnxs4jrjGldU6aMIMcrDmXM=",
 			"path": "github.com/smartystreets/assertions",
 			"revision": "c9ee7d9e9a2aeec0bee7c4a516f3e0ad7cb7e558",
