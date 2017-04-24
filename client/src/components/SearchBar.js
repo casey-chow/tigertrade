@@ -6,7 +6,7 @@ import { withRouter } from 'react-router-dom';
 import AutoComplete from 'material-ui/AutoComplete';
 import Paper from 'material-ui/Paper';
 
-import { searchListings } from './../actions/listings';
+import { loadListings } from './../actions/listings';
 
 
 import './SearchBar.css';
@@ -31,6 +31,7 @@ class SearchBar extends Component {
     dataSource: [],
     open: false,
     focus: false,
+    query: '',
      // submitIntent is true when the user last expressed some
      // intent of submission, in this case a "request"
     submitIntent: true,
@@ -48,7 +49,10 @@ class SearchBar extends Component {
       ],
     });
 
-    this.props.dispatch(searchListings(value));
+    this.setState({
+      query: value,
+    });
+    this.props.dispatch(loadListings(value));
   }
 
   handleTouchTap = (event) => {
@@ -68,9 +72,7 @@ class SearchBar extends Component {
   };
 
   handleNewRequest = (chosenRequest, index) => {
-    this.props.dispatch(searchListings(chosenRequest));
-
-    this.props.history.push(`/listings?query=${encodeURIComponent(chosenRequest)}`);
+    this.props.history.push(`/listings/${encodeURIComponent(chosenRequest)}`);
   }
 
   handleOnFocus = () => {
@@ -83,6 +85,7 @@ class SearchBar extends Component {
     this.setState({
       focus: false,
     });
+    this.props.history.push(`/listings/${encodeURIComponent(this.state.query)}`);
   }
 
   render() {
