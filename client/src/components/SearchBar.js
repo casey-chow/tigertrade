@@ -7,7 +7,7 @@ import AutoComplete from 'material-ui/AutoComplete';
 import Paper from 'material-ui/Paper';
 
 import { loadListings } from './../actions/listings';
-
+import { loadSeeks } from './../actions/seeks';
 
 import './SearchBar.css';
 
@@ -16,7 +16,9 @@ class SearchBar extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     style: PropTypes.object,
-    query: PropTypes.string,
+    location: PropTypes.shape({
+      pathname: PropTypes.string.isRequired,
+    }).isRequired,
     history: PropTypes.shape({
       push: PropTypes.func.isRequired,
     }).isRequired,
@@ -50,9 +52,18 @@ class SearchBar extends Component {
     });
 
     this.setState({
+      component: this.props.location.pathname.split('/')[1],
       query: value,
     });
-    this.props.dispatch(loadListings(value));
+    switch (this.state.component) {
+      case 'seeks':
+        this.props.dispatch(loadSeeks(value));
+        break;
+      case 'listings':
+      default:
+        this.props.dispatch(loadListings(value));
+        break;
+    }
   }
 
   handleTouchTap = (event) => {
@@ -72,20 +83,30 @@ class SearchBar extends Component {
   };
 
   handleNewRequest = (chosenRequest, index) => {
-    this.props.history.push(`/listings/${encodeURIComponent(chosenRequest)}`);
+    this.setState({
+      component: this.props.location.pathname.split('/')[1],
+      query: chosenRequest,
+    });
+    this.props.history.push(`/${encodeURIComponent(this.state.component)}` +
+                            `/${encodeURIComponent(this.state.query)}`);
   }
 
   handleOnFocus = () => {
     this.setState({
+      component: this.props.location.pathname.split('/')[1],
       focus: true,
+      query: this.state.query,
     });
   }
 
   handleOnBlur = () => {
     this.setState({
+      component: this.props.location.pathname.split('/')[1],
       focus: false,
+      query: this.state.query,
     });
-    this.props.history.push(`/listings/${encodeURIComponent(this.state.query)}`);
+    this.props.history.push(`/${encodeURIComponent(this.state.component)}` +
+                            `/${encodeURIComponent(this.state.query)}`);
   }
 
   render() {
@@ -111,7 +132,7 @@ class SearchBar extends Component {
           onFocus={this.handleOnFocus}
           onBlur={this.handleOnBlur}
           inputStyle={{ color: 'white' }}
-          searchText={this.props.query}
+          searchText={this.state.query}
           onNewRequest={this.handleNewRequest}
         />
       </Paper>
