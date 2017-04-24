@@ -10,6 +10,7 @@ export default class LoginButton extends PureComponent {
   style = {
     color: 'white',
     float: 'right',
+    height: '48px',
     marginTop: '8px',
     marginBottom: '8px',
   }

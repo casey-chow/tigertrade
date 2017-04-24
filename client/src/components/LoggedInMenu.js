@@ -44,8 +44,8 @@ export default class LoggedInMenu extends PureComponent {
             style={{
               color: 'white',
               float: 'right',
+              height: '48px',
               marginTop: '0',
-              padding: '8px',
             }}
             labelPosition="before"
             label={this.props.user.netId}

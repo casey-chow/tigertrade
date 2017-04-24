@@ -2,56 +2,25 @@ import fetch from 'isomorphic-fetch';
 
 import { API_ROOT } from './common';
 
-export function loadRecentListings() {
+export function loadListings(query = '') {
   return function (dispatch, getState) {
     dispatch({
-      type: 'SEARCH_LISTINGS_REQUEST',
-    });
-
-    fetch(`${API_ROOT}/listings`)
-      .then(response => response.json())
-      .then(json => dispatch({
-        json,
-        type: 'SEARCH_LISTINGS_SUCCESS',
-      }))
-      .catch(error => dispatch({
-        error,
-        type: 'SEARCH_LISTINGS_FAILURE',
-      }));
-  };
-}
-
-export function searchListings(query) {
-  return function (dispatch, getState) {
-    dispatch({
-      type: 'SEARCH_LISTINGS_REQUEST',
+      type: 'LOAD_LISTINGS_REQUEST',
     });
     fetch(`${API_ROOT}/listings?query=${encodeURIComponent(query)}`)
       .then(response => response.json())
       .then(json => dispatch({
         json,
-        type: 'SEARCH_LISTINGS_SUCCESS',
+        type: 'LOAD_LISTINGS_SUCCESS',
       }))
       .catch(error => dispatch({
         error,
-        type: 'SEARCH_LISTINGS_FAILURE',
+        type: 'LOAD_LISTINGS_FAILURE',
       }));
-    /*
-    fetch(`${API_ROOT}/search/${encodeURIComponent(query)}`)
-      .then(response => response.json())
-      .then(json => dispatch({
-        json,
-        type: 'SEARCH_LISTINGS_SUCCESS',
-      }))
-      .catch(error => dispatch({
-        error,
-        type: 'SEARCH_LISTINGS_FAILURE',
-      }));
-      */
   };
 }
 
-export function setCurrentListingsQuery(query) {
+export function setCurrentListingsQuery(query = '') {
   return ({
     type: 'SET_CURRENT_LISTINGS_QUERY',
     query,
@@ -77,7 +46,7 @@ export function postListing(listing) {
         json,
         type: 'POST_LISTING_SUCCESS',
       });
-      dispatch(loadRecentListings());
+      dispatch(loadListings());
     })
     .catch(error => dispatch({
       error,

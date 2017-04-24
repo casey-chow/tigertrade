@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import { postListing, loadRecentListings } from '../actions/listings';
+import { postListing, loadListings } from '../actions/listings';
 import ComposeForm from '../components/ComposeForm';
 import RedirectToCas from '../components/RedirectToCas';
 
@@ -28,7 +28,7 @@ class Compose extends Component {
       ...data,
       price: data.price ? Math.round(parseFloat(data.price) * 100) : 0,
     }));
-    this.props.dispatch(loadRecentListings());
+    this.props.dispatch(loadListings());
     this.props.history.push('/');
   };
 
