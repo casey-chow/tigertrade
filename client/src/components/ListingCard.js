@@ -12,6 +12,7 @@ import {
 import FlatButton from 'material-ui/FlatButton';
 import EmailIcon from 'material-ui/svg-icons/communication/email';
 import FavoriteIcon from 'material-ui/svg-icons/action/favorite';
+import Dialog from 'material-ui/Dialog';
 
 class ListingCard extends React.Component {
 
@@ -37,6 +38,19 @@ class ListingCard extends React.Component {
     onExpandChange: () => {},
   };
 
+  state = {
+    contactOpen: false,
+  }
+
+  handleContactOpen = () => {
+    this.setState({ contactOpen: true });
+  };
+
+  handleContactClose = () => {
+    this.setState({ contactOpen: false });
+  };
+
+
   handleExpandChange = (expanded) => {
     this.props.onExpandChange(expanded, this.props.listing.keyId);
   }
@@ -51,35 +65,55 @@ class ListingCard extends React.Component {
     const onShowStyles = { maxHeight: '1000px', transition: 'max-height 0.5s ease-in', overflow: 'hidden' };
     const onHideStyles = { maxHeight: '0', transition: 'max-height 0.15s ease-out', overflow: 'hidden' };
 
+    const actions = [
+      <FlatButton
+        label="Ok"
+        primary
+        keyboardFocused
+        onTouchTap={this.handleClose}
+      />,
+    ];
+
     return (
-      <Card style={cardStyles} onExpandChange={this.handleExpandChange} expanded={expanded}>
-        <CardHeader
-          title={listing.title}
-          subtitle={`$${listing.price / 100}`}
-          actAsExpander
-        />
-
-        <div style={expanded ? onShowStyles : onHideStyles}>
-
-          <CardMedia>
-            <img alt={listing.title} src={listing.thumbnail} style={{ minWidth: undefined, maxHeight: '300px', width: 'auto' }} />
-          </CardMedia>
-
-          <CardTitle
+      <div>
+        <Card style={cardStyles} onExpandChange={this.handleExpandChange} expanded={expanded}>
+          <CardHeader
             title={listing.title}
+            subtitle={`$${listing.price / 100}`}
+            actAsExpander
           />
 
-          <CardText>
-            {listing.description}
-          </CardText>
+          <div style={expanded ? onShowStyles : onHideStyles}>
 
-          <CardActions>
-            <FlatButton primary icon={<EmailIcon />} label="Contact Seller" />
-            <FlatButton secondary icon={<FavoriteIcon />} label="Save" />
-          </CardActions>
+            <CardMedia>
+              <img alt={listing.title} src={listing.thumbnail} style={{ minWidth: undefined, maxHeight: '300px', width: 'auto' }} />
+            </CardMedia>
 
-        </div>
-      </Card>
+            <CardTitle
+              title={listing.title}
+            />
+
+            <CardText>
+              {listing.description}
+            </CardText>
+
+            <CardActions>
+              <FlatButton primary icon={<EmailIcon />} label="Contact Seller" onTouchTap={this.handleContactOpen} />
+              <FlatButton secondary icon={<FavoriteIcon />} label="Save" />
+            </CardActions>
+
+          </div>
+        </Card>
+        <Dialog
+          title="Dialog With Date Picker"
+          actions={actions}
+          modal={false}
+          open={this.state.contactOpen}
+          onRequestClose={this.handleContactClose}
+        >
+          Send the seller a message.
+        </Dialog>
+      </div>
     );
   }
 }
