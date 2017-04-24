@@ -20,7 +20,7 @@ type SavedSearch struct {
 
 // Returns the most recent count saved searches, based on original date created. On error
 // returns an error and the HTTP code associated with that error.
-func GetRecentSavedSearches(db *sql.DB, userId int, limit uint64) ([]*SavedSearch, error, int) {
+func ReadSavedSearches(db *sql.DB, userId int, limit uint64) ([]*SavedSearch, error, int) {
 	// Create saved searches query
 	query := psql.
 		Select("saved_searches.key_id", "saved_searches.creation_date", "saved_searches.last_modification_date",
@@ -59,7 +59,7 @@ func GetRecentSavedSearches(db *sql.DB, userId int, limit uint64) ([]*SavedSearc
 
 // Returns the most recent count saved searches, based on original date created. On error
 // returns an error and the HTTP code associated with that error.
-func GetSavedSearchById(db *sql.DB, id string, userId int) (SavedSearch, error, int) {
+func ReadSavedSearch(db *sql.DB, id string, userId int) (SavedSearch, error, int) {
 	var savedSearch SavedSearch
 
 	// Create saved search query
@@ -92,7 +92,7 @@ func GetSavedSearchById(db *sql.DB, id string, userId int) (SavedSearch, error, 
 
 // Inserts the given saved search (belonging to userId) into the database. Returns
 // saved search with its new KeyID added.
-func AddSavedSearch(db *sql.DB, savedSearch SavedSearch, userId int) (SavedSearch, error, int) {
+func CreateSavedSearch(db *sql.DB, savedSearch SavedSearch, userId int) (SavedSearch, error, int) {
 	// Insert saved search
 	stmt := psql.Insert("saved_searches").
 		Columns("user_id", "query", "min_price", "max_price", "listing_expiration_date", "search_expiration_date").

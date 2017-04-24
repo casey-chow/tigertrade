@@ -16,7 +16,7 @@ type Photo struct {
 
 // Returns all photos associated with a given listing's key id. On error
 // returns an error and the HTTP code associated with that error
-func GetPhotosByListingId(db *sql.DB, id string) ([]*Photo, error, int) {
+func ReadListingPhotos(db *sql.DB, id string) ([]*Photo, error, int) {
 	// Build query for photos
 	query := psql.
 		Select("key_id", "creation_date", "listing_id", "url", "\"order\" ").

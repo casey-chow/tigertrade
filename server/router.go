@@ -10,42 +10,44 @@ func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	fmt.Fprint(w, "Welcome!")
 }
 
-func Hello(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	fmt.Fprintf(w, "hello, %s!\n", ps.ByName("name"))
-}
-
 // Router returns the router http handler for the package.
 func Router() http.Handler {
 	router := httprouter.New()
 
 	router.GET("/", Index)
-	router.GET("/hello/:name", Hello)
 
-	// Authentication Routes
+	// users.go
 	router.GET("/api/users/redirect", RedirectUser)
 	router.GET("/api/users/logout", LogoutUser)
-	router.GET("/api/users/current", ServeCurrentUser)
+	router.GET("/api/users/current", GetCurrentUser)
 
-	// API Routes
-	router.GET("/api/listings", ServeListings)
-	router.POST("/api/listings", ServeAddListing)
-	router.GET("/api/listings/:id", ServeListingById)
-	router.POST("/api/listings/:id", ServeUpdateListingById)
+	// listings.go
+	router.GET("/api/listings", ReadListings)
+	router.POST("/api/listings", CreateListing)
+	router.GET("/api/listings/:id", ReadListing)
+	router.POST("/api/listings/:id", UpdateListing)
+	//	router.DELETE("/api/listings/:id", DeleteListing)
 
-	router.GET("/api/listings/:id/photos", ServePhotosByListingId)
-	//	router.POST("/api/listings/:id/photos", ServeAddPhoto)
-	//	router.GET("/api/listings/:lid/photos/:pid", ServePhotoById)
-	//	router.POST("/api/listings/:lid/photos/:pid", ServeUpdatePhotoById)
+	// photos.go
+	router.GET("/api/listings/:id/photos", ReadListingPhotos)
+	//	router.POST("/api/listings/:id/photos", CreateListingPhoto)
+	//	router.GET("/api/listings/:id/photos/:pid", ReadListingPhoto)
+	//	router.POST("/api/listings/:id/photos/:pid", UpdateListingPhoto)
+	//	router.DELETE("/api/listings/:id/photos/:pid", DeleteListingPhoto)
 
-	router.GET("/api/seeks", ServeRecentSeeks)
-	router.POST("/api/seeks", ServeAddSeek)
-	router.GET("/api/seeks/:id", ServeSeekById)
-	//	router.POST("/api/seeks/:id", ServeUpdateSeekById)
+	// seeks.go
+	router.GET("/api/seeks", ReadSeeks)
+	router.POST("/api/seeks", CreateSeek)
+	router.GET("/api/seeks/:id", ReadSeek)
+	//	router.POST("/api/seeks/:id", UpdateSeek)
+	//	router.POST("/api/seeks/:id", DeleteSeek)
 
-	router.GET("/api/savedsearches", ServeRecentSavedSearches)
-	router.POST("/api/savedsearches", ServeAddSavedSearch)
-	router.GET("/api/savedsearches/:id", ServeSavedSearchById)
-	//	router.POST("/api/savedsearches/:id", ServeUpdateSavedSearchById)
+	// savedsearches.go
+	router.GET("/api/savedsearches", ReadSavedSearches)
+	router.POST("/api/savedsearches", CreateSavedSearch)
+	router.GET("/api/savedsearches/:id", ReadSavedSearch)
+	//	router.POST("/api/savedsearches/:id", UpdateSavedSearch)
+	//	router.DELETE("/api/savedsearches/:id", DeleteSavedSearch)
 
 	return router
 }

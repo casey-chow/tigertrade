@@ -10,7 +10,7 @@ import (
 )
 
 // Writes the most recent count listings, based on original date created to w
-func ServeListings(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func ReadListings(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	// Get limit from params
 	limitStr := r.URL.Query().Get("limit")
 	limit := defaultNumResults
@@ -29,13 +29,7 @@ func ServeListings(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 	// Get optional search query from params
 	queryStr := r.URL.Query().Get("query")
 
-	var listings []*models.ListingsItem
-	var code int
-	if queryStr == "" {
-		listings, err, code = models.GetRecentListings(db, truncationLength, uint64(limit))
-	} else {
-		listings, err, code = models.GetSearchListings(db, queryStr, truncationLength, uint64(limit))
-	}
+	listings, err, code := models.ReadListings(db, queryStr, truncationLength, uint64(limit))
 
 	if err != nil {
 		raven.CaptureError(err, nil)
@@ -48,7 +42,7 @@ func ServeListings(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 }
 
 // Writes the most recent count listings, based on original date created to w
-func ServeListingById(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func ReadListing(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	// Get ID from params
 	id := ps.ByName("id")
 	if id == "" {
@@ -57,7 +51,7 @@ func ServeListingById(w http.ResponseWriter, r *http.Request, ps httprouter.Para
 		return
 	}
 
-	listings, err, code := models.GetListingById(db, id)
+	listings, err, code := models.ReadListing(db, id)
 	if err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while getting listing by ID")
@@ -68,7 +62,7 @@ func ServeListingById(w http.ResponseWriter, r *http.Request, ps httprouter.Para
 	Serve(w, listings)
 }
 
-func ServeAddListing(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func CreateListing(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	// Get listing to add from request body
 	listing := models.Listing{}
 	err := ParseJSONFromBody(r, &listing)
@@ -88,7 +82,7 @@ func ServeAddListing(w http.ResponseWriter, r *http.Request, ps httprouter.Param
 		return
 	}
 
-	listing, err, code := models.AddListing(db, listing, user.KeyID)
+	listing, err, code := models.CreateListing(db, listing, user.KeyID)
 	if err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while adding new listing")
@@ -99,7 +93,7 @@ func ServeAddListing(w http.ResponseWriter, r *http.Request, ps httprouter.Param
 	Serve(w, listing)
 }
 
-func ServeUpdateListingById(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func UpdateListing(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	// Get ID from params
 	id := ps.ByName("id")
 	if id == "" {
@@ -127,7 +121,7 @@ func ServeUpdateListingById(w http.ResponseWriter, r *http.Request, ps httproute
 		return
 	}
 
-	listing, err, code := models.UpdateListingById(db, id, listing, user.KeyID)
+	listing, err, code := models.UpdateListing(db, id, listing, user.KeyID)
 	if err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while updating listing by ID")

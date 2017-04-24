@@ -17,8 +17,8 @@ var redirectToLogin = cas.RedirectToLogin
 var redirectToLogout = cas.RedirectToLogout
 var getUsername = cas.Username
 
-// ServeCurrentUser returns the current user, or an empty JSON object if not logged in.
-func ServeCurrentUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+// GetCurrentUser returns the current user, or an empty JSON object if not logged in.
+func GetCurrentUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	netID := getUsername(r)
 	log.WithField("netID", netID).Info("getting username")
 	if netID == "" {

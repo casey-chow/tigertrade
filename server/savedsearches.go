@@ -10,7 +10,7 @@ import (
 )
 
 // Writes the most recent count saved searches, based on original date created to w
-func ServeRecentSavedSearches(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func ReadSavedSearches(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	// Get limit from params
 	limitStr := r.URL.Query().Get("limit")
 	limit := defaultNumResults
@@ -34,7 +34,7 @@ func ServeRecentSavedSearches(w http.ResponseWriter, r *http.Request, ps httprou
 		return
 	}
 
-	savedSearches, err, code := models.GetRecentSavedSearches(db, user.KeyID, uint64(limit))
+	savedSearches, err, code := models.ReadSavedSearches(db, user.KeyID, uint64(limit))
 	if err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while getting recent saved searches")
@@ -46,7 +46,7 @@ func ServeRecentSavedSearches(w http.ResponseWriter, r *http.Request, ps httprou
 }
 
 // Writes the most recent count saved searches, based on original date created to w
-func ServeSavedSearchById(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func ReadSavedSearch(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	// Get ID from params
 	id := ps.ByName("id")
 	if id == "" {
@@ -64,7 +64,7 @@ func ServeSavedSearchById(w http.ResponseWriter, r *http.Request, ps httprouter.
 		return
 	}
 
-	savedSearches, err, code := models.GetSavedSearchById(db, id, user.KeyID)
+	savedSearches, err, code := models.ReadSavedSearch(db, id, user.KeyID)
 	if err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while getting saved search by ID")
@@ -75,7 +75,7 @@ func ServeSavedSearchById(w http.ResponseWriter, r *http.Request, ps httprouter.
 	Serve(w, savedSearches)
 }
 
-func ServeAddSavedSearch(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func CreateSavedSearch(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	// Get saved search to add from request body
 	savedSearch := models.SavedSearch{}
 	err := ParseJSONFromBody(r, &savedSearch)
@@ -95,7 +95,7 @@ func ServeAddSavedSearch(w http.ResponseWriter, r *http.Request, ps httprouter.P
 		return
 	}
 
-	savedSearch, err, code := models.AddSavedSearch(db, savedSearch, user.KeyID)
+	savedSearch, err, code := models.CreateSavedSearch(db, savedSearch, user.KeyID)
 	if err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while getting adding saved search")

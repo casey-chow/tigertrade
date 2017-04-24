@@ -9,8 +9,8 @@ import (
 )
 
 // Writes all photos associated with a given listing's key id to w
-func ServePhotosByListingId(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	// Get ID from params
+func ReadListingPhotos(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	// Get listing ID from params
 	id := ps.ByName("id")
 	if id == "" {
 		// Return 404 error with empty body if not found
@@ -19,7 +19,7 @@ func ServePhotosByListingId(w http.ResponseWriter, r *http.Request, ps httproute
 	}
 
 	// Retrieve photos by listing id
-	photos, err, code := models.GetPhotosByListingId(db, id)
+	photos, err, code := models.ReadListingPhotos(db, id)
 	if err != nil {
 		log.WithField("err", err).Error("Error while getting photo by ID")
 		raven.CaptureError(err, nil)
