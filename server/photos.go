@@ -13,8 +13,7 @@ func ReadListingPhotos(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 	// Get listing ID from params
 	id := ps.ByName("id")
 	if id == "" {
-		// Return 404 error with empty body if not found
-		http.Error(w, "", 404)
+		Error(w, http.StatusNotFound)
 		return
 	}
 
@@ -23,7 +22,7 @@ func ReadListingPhotos(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 	if err != nil {
 		log.WithField("err", err).Error("Error while getting photo by ID")
 		raven.CaptureError(err, nil)
-		http.Error(w, http.StatusText(code), code)
+		Error(w, code)
 		return
 	}
 

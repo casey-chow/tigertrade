@@ -6,6 +6,7 @@ import (
 	"fmt"
 	sq "github.com/Masterminds/squirrel"
 	"github.com/guregu/null"
+	"net/http"
 	"strings"
 )
 
@@ -23,7 +24,7 @@ type ListingsItem struct {
 	Thumbnail            null.String `json:"thumbnail"`
 }
 
-// Returned by a getById function
+// Returned by a function returning only one listing (usually by ID)
 type Listing struct {
 	KeyID                int         `json:"keyId"`
 	CreationDate         null.Time   `json:"creationDate"`
@@ -62,7 +63,7 @@ func ReadListings(db *sql.DB, queryStr string, maxDescriptionSize int, limit uin
 	// Query db
 	rows, err := query.RunWith(db).Query()
 	if err != nil {
-		return nil, err, 500
+		return nil, err, http.StatusInternalServerError
 	}
 	defer rows.Close()
 
@@ -74,15 +75,15 @@ func ReadListings(db *sql.DB, queryStr string, maxDescriptionSize int, limit uin
 			&l.Title, &l.Description, &l.UserID, &l.Price, &l.Status,
 			&l.ExpirationDate, &l.Thumbnail)
 		if err != nil {
-			return nil, err, 500
+			return nil, err, http.StatusInternalServerError
 		}
 		listings = append(listings, l)
 	}
 	if err = rows.Err(); err != nil {
-		return nil, err, 500
+		return nil, err, http.StatusInternalServerError
 	}
 
-	return listings, nil, 0
+	return listings, nil, http.StatusOK
 }
 
 // Returns the most recent count listings, based on original date created. On error
@@ -103,7 +104,7 @@ func ReadListing(db *sql.DB, id string) (Listing, error, int) {
 	// Query db for listing
 	rows, err := query.RunWith(db).Query()
 	if err != nil {
-		return listing, err, 500
+		return listing, err, http.StatusInternalServerError
 	}
 	defer rows.Close()
 
@@ -114,9 +115,9 @@ func ReadListing(db *sql.DB, id string) (Listing, error, int) {
 		&listing.UserID, &listing.Price, &listing.Status,
 		&listing.ExpirationDate, &listing.Thumbnail)
 	if err == sql.ErrNoRows {
-		return listing, err, 404
+		return listing, err, http.StatusNotFound
 	} else if err != nil {
-		return listing, err, 500
+		return listing, err, http.StatusInternalServerError
 	}
 
 	// Add photos to struct
@@ -128,7 +129,7 @@ func ReadListing(db *sql.DB, id string) (Listing, error, int) {
 		listing.Photos = append(listing.Photos, *photos[i])
 	}
 
-	return listing, nil, 0
+	return listing, nil, http.StatusOK
 }
 
 // Inserts the given listing (belonging to userId) into the database. Returns
@@ -147,7 +148,7 @@ func CreateListing(db *sql.DB, listing Listing, userId int) (Listing, error, int
 	// Query db for listing
 	rows, err := stmt.RunWith(db).Query()
 	if err != nil {
-		return listing, err, 500
+		return listing, err, http.StatusInternalServerError
 	}
 	defer rows.Close()
 
@@ -155,10 +156,10 @@ func CreateListing(db *sql.DB, listing Listing, userId int) (Listing, error, int
 	rows.Next()
 	err = rows.Scan(&listing.KeyID, &listing.CreationDate)
 	if err != nil {
-		return listing, err, 500
+		return listing, err, http.StatusInternalServerError
 	}
 
-	return listing, nil, 0
+	return listing, nil, http.StatusOK
 }
 
 // Overwrites the listing in the database with the given id with the given listing
@@ -182,26 +183,48 @@ func UpdateListing(db *sql.DB, id string, listing Listing, userId int) (Listing,
 	// Query db for listing
 	result, err := stmt.RunWith(db).Exec()
 	if err != nil {
-		return listing, err, 500
+		return listing, err, http.StatusInternalServerError
 	}
 
 	numRows, err := result.RowsAffected()
 	if err != nil {
-		return listing, err, 500
+		return listing, err, http.StatusInternalServerError
 	}
 	if numRows == 0 {
-		return listing, sql.ErrNoRows, 404
+		return listing, sql.ErrNoRows, http.StatusNotFound
 	}
 	if numRows != 1 {
-		return listing, errors.New("Multiple rows affected by UpdateListingById"), 500
-	}
-	keyId, err := result.LastInsertId()
-	if err != nil {
-		return listing, err, 500
-	}
-	if string(keyId) != id {
-		return listing, errors.New("Wrong row affected by UpdateListingById"), 500
+		return listing, errors.New("Multiple rows affected by UpdateListing"), http.StatusInternalServerError
 	}
 
 	return ReadListing(db, id)
+}
+
+// Deletes the listing in the database with the given id with the given listing
+// (belonging to userId).
+func DeleteListing(db *sql.DB, id string, userId int) (error, int) {
+
+	// Update listing
+	stmt := psql.Delete("listings").
+		Where(sq.Eq{"listings.key_id": id,
+			"listings.user_id": userId})
+
+	// Query db for listing
+	result, err := stmt.RunWith(db).Exec()
+	if err != nil {
+		return err, http.StatusInternalServerError
+	}
+
+	numRows, err := result.RowsAffected()
+	if err != nil {
+		return err, http.StatusInternalServerError
+	}
+	if numRows == 0 {
+		return sql.ErrNoRows, http.StatusNotFound
+	}
+	if numRows != 1 {
+		return errors.New("Multiple rows affected by DeleteListing"), http.StatusInternalServerError
+	}
+
+	return nil, http.StatusOK
 }

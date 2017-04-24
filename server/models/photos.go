@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	sq "github.com/Masterminds/squirrel"
 	"github.com/guregu/null"
+	"net/http"
 )
 
 type Photo struct {
@@ -27,7 +28,7 @@ func ReadListingPhotos(db *sql.DB, id string) ([]*Photo, error, int) {
 	// Query db for photos
 	rows, err := query.RunWith(db).Query()
 	if err != nil {
-		return nil, err, 500
+		return nil, err, http.StatusInternalServerError
 	}
 	defer rows.Close()
 
@@ -38,13 +39,13 @@ func ReadListingPhotos(db *sql.DB, id string) ([]*Photo, error, int) {
 		err := rows.Scan(&p.KeyID, &p.CreationDate, &p.ListingID, &p.Url,
 			&p.Order)
 		if err != nil {
-			return nil, err, 500
+			return nil, err, http.StatusInternalServerError
 		}
 		photos = append(photos, p)
 	}
 	if err = rows.Err(); err != nil {
-		return nil, err, 500
+		return nil, err, http.StatusInternalServerError
 	}
 
-	return photos, nil, 0
+	return photos, nil, http.StatusOK
 }
