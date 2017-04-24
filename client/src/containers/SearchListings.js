@@ -27,8 +27,8 @@ class SearchListings extends Component {
 
   componentWillMount() {
     const query = this.props.match.params.query;
-    this.props.dispatch(searchListings(query));
-    this.props.dispatch(setCurrentListingsQuery(query));
+    this.props.dispatch(searchListings(query || ''));
+    this.props.dispatch(setCurrentListingsQuery(query || ''));
   }
 
   componentWillReceiveProps(nextProps) {
