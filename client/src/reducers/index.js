@@ -106,6 +106,8 @@ const currentQuery = (state = '', action) => {
   switch (action.type) {
     case 'SET_CURRENT_LISTINGS_QUERY':
       return decodeURIComponent(action.query);
+    case 'SET_CURRENT_SEEKS_QUERY':
+      return decodeURIComponent(action.query);
     default:
       return state;
   }

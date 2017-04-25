@@ -6,8 +6,8 @@ import { withRouter } from 'react-router-dom';
 import AutoComplete from 'material-ui/AutoComplete';
 import Paper from 'material-ui/Paper';
 
-import { loadListings } from './../actions/listings';
-import { loadSeeks } from './../actions/seeks';
+import { setCurrentListingsQuery, loadListings } from './../actions/listings';
+import { setCurrentSeeksQuery, loadSeeks } from './../actions/seeks';
 
 import './SearchBar.css';
 
@@ -15,25 +15,24 @@ class SearchBar extends Component {
 
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
-    style: PropTypes.object,
-    location: PropTypes.shape({
-      pathname: PropTypes.string.isRequired,
-    }).isRequired,
     history: PropTypes.shape({
       push: PropTypes.func.isRequired,
     }).isRequired,
+    location: PropTypes.shape({
+      pathname: PropTypes.string.isRequired,
+    }).isRequired,
+    query: PropTypes.string.isRequired,
+    style: PropTypes.object,
   }
 
   static defaultProps = {
     style: {},
-    query: '',
   }
 
   state = {
     dataSource: [],
     open: false,
     focus: false,
-    query: '',
      // submitIntent is true when the user last expressed some
      // intent of submission, in this case a "request"
     submitIntent: true,
@@ -51,17 +50,16 @@ class SearchBar extends Component {
       ],
     });
 
-    this.setState({
-      component: this.props.location.pathname.split('/')[1],
-      query: value,
-    });
-    switch (this.state.component) {
-      case 'seeks':
+    switch (this.props.location.pathname) {
+      case '/listings':
+        this.props.dispatch(setCurrentListingsQuery(value));
+        this.props.dispatch(loadListings(value));
+        break;
+      case '/seeks':
+        this.props.dispatch(setCurrentSeeksQuery(value));
         this.props.dispatch(loadSeeks(value));
         break;
-      case 'listings':
       default:
-        this.props.dispatch(loadListings(value));
         break;
     }
   }
@@ -82,32 +80,27 @@ class SearchBar extends Component {
     });
   };
 
-  handleNewRequest = (chosenRequest, index) => {
-    this.setState({
-      component: this.props.location.pathname.split('/')[1],
-      query: chosenRequest,
-    });
-    this.props.history.push(`/${encodeURIComponent(this.state.component)}` +
-                            `/${encodeURIComponent(this.state.query)}`);
-  }
-
   handleOnFocus = () => {
     this.setState({
-      component: this.props.location.pathname.split('/')[1],
       focus: true,
-      query: this.state.query,
     });
-  }
+    switch (this.props.location.pathname) {
+      case '/seeks':
+      case '/listings':
+        break;
+      default:
+        this.props.history.push('/listings');
+        break;
+    }
+  };
 
   handleOnBlur = () => {
     this.setState({
-      component: this.props.location.pathname.split('/')[1],
       focus: false,
-      query: this.state.query,
     });
-    this.props.history.push(`/${encodeURIComponent(this.state.component)}` +
-                            `/${encodeURIComponent(this.state.query)}`);
-  }
+    const queryStr = (this.props.query ? `?query=${encodeURIComponent(this.props.query)}` : '');
+    this.props.history.push(`${this.props.location.pathname}${queryStr}`);
+  };
 
   render() {
     const style = {
@@ -119,12 +112,16 @@ class SearchBar extends Component {
       paddingRight: '16px',
     };
 
+    const hintText = (this.props.location.pathname === '/seeks')
+          ? (<span className="hint-text">What do you want to sell?</span>)
+          : (<span className="hint-text">What do you want to buy?</span>);
+
     return (
       <Paper style={style} className={this.state.focus ? 'focus' : 'blur'} zDepth={2}>
         <AutoComplete
           className="SearchBar"
           fullWidth
-          hintText={<span className="hint-text">What do you want to buy?</span>}
+          hintText={hintText}
           dataSource={this.state.dataSource}
           onUpdateInput={this.handleUpdateInput}
           openOnFocus
@@ -132,8 +129,7 @@ class SearchBar extends Component {
           onFocus={this.handleOnFocus}
           onBlur={this.handleOnBlur}
           inputStyle={{ color: 'white' }}
-          searchText={this.state.query}
-          onNewRequest={this.handleNewRequest}
+          searchText={this.props.query}
         />
       </Paper>
     );

@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
 import CircularProgress from 'material-ui/CircularProgress';
+import { parse } from 'query-string';
 
 import ListingsList from '../components/ListingsList';
 
@@ -14,10 +15,8 @@ class Listings extends Component {
     listingsLoading: PropTypes.bool.isRequired,
     listings: PropTypes.arrayOf(PropTypes.object).isRequired,
     dispatch: PropTypes.func.isRequired,
-    match: PropTypes.shape({
-      params: PropTypes.shape({
-        query: PropTypes.string.isRequired,
-      }).isRequired,
+    location: PropTypes.shape({
+      search: PropTypes.string.isRequired,
     }).isRequired,
   };
 
@@ -26,9 +25,9 @@ class Listings extends Component {
   }
 
   componentWillMount() {
-    const query = this.props.match.params.query;
-    this.props.dispatch(loadListings(query || ''));
-    this.props.dispatch(setCurrentListingsQuery(query || ''));
+    const query = parse(this.props.location.search).query || '';
+    this.props.dispatch(setCurrentListingsQuery(query));
+    this.props.dispatch(loadListings(query));
   }
 
   componentWillReceiveProps(nextProps) {

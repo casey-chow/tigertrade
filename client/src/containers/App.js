@@ -34,10 +34,8 @@ class App extends Component {
             <Route exact path="/">
               <Redirect push to="/listings" />
             </Route>
-            <Route exact path="/listings" component={Listings} />
-            <Route path="/listings/:query" component={Listings} />
-            <Route exact path="/seeks" component={Seeks} />
-            <Route path="/seeks/:query" component={Seeks} />
+            <Route path="/listings" component={Listings} />
+            <Route path="/seeks" component={Seeks} />
             <Route path="/savedsearches" component={SavedSearches} />
             <Route path="/compose" component={Compose} />
           </Switch>

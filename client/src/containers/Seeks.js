@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
 import CircularProgress from 'material-ui/CircularProgress';
+import { parse } from 'query-string';
 
 import SeeksList from '../components/SeeksList';
 
@@ -14,10 +15,8 @@ class Seeks extends Component {
     seeksLoading: PropTypes.bool.isRequired,
     seeks: PropTypes.arrayOf(PropTypes.object).isRequired,
     dispatch: PropTypes.func.isRequired,
-    match: PropTypes.shape({
-      params: PropTypes.shape({
-        query: PropTypes.string.isRequired,
-      }).isRequired,
+    location: PropTypes.shape({
+      search: PropTypes.string.isRequired,
     }).isRequired,
   };
 
@@ -26,9 +25,9 @@ class Seeks extends Component {
   }
 
   componentWillMount() {
-    const query = this.props.match.params.query;
-    this.props.dispatch(loadSeeks(query || ''));
-    this.props.dispatch(setCurrentSeeksQuery(query || ''));
+    const query = parse(this.props.location.search).query || '';
+    this.props.dispatch(setCurrentSeeksQuery(query));
+    this.props.dispatch(loadSeeks(query));
   }
 
   componentWillReceiveProps(nextProps) {
