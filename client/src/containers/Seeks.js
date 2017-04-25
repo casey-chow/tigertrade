@@ -6,14 +6,14 @@ import { withRouter } from 'react-router-dom';
 import CircularProgress from 'material-ui/CircularProgress';
 import { parse } from 'query-string';
 
-import ListingsList from '../components/ListingsList';
+import SeeksList from '../components/SeeksList';
 
-import { loadListings } from './../actions/listings';
+import { loadSeeks } from './../actions/seeks';
 
-class Listings extends Component {
+class Seeks extends Component {
   static propTypes = {
-    listingsLoading: PropTypes.bool.isRequired,
-    listings: PropTypes.arrayOf(PropTypes.object).isRequired,
+    seeksLoading: PropTypes.bool.isRequired,
+    seeks: PropTypes.arrayOf(PropTypes.object).isRequired,
     dispatch: PropTypes.func.isRequired,
     location: PropTypes.shape({
       search: PropTypes.string.isRequired,
@@ -26,26 +26,26 @@ class Listings extends Component {
 
   componentWillMount() {
     const query = parse(this.props.location.search).query || '';
-    this.props.dispatch(loadListings(query));
+    this.props.dispatch(loadSeeks(query));
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!nextProps.listingsLoading) {
+    if (!nextProps.seeksLoading) {
       this.setState({ initialLoad: false });
     }
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (this.props.listingsLoading !== nextProps.listingsLoading) {
+    if (this.props.seeksLoading !== nextProps.seeksLoading) {
       return true;
     }
 
-    if (this.props.listings.length !== nextProps.listings.length) {
+    if (this.props.seeks.length !== nextProps.seeks.length) {
       return true;
     }
 
-    for (let i = 0; i < this.props.listings.length; i += 1) {
-      if (this.props.listings[i].keyId !== nextProps.listings[i].keyId) {
+    for (let i = 0; i < this.props.seeks.length; i += 1) {
+      if (this.props.seeks[i].keyId !== nextProps.seeks[i].keyId) {
         return true;
       }
     }
@@ -54,7 +54,7 @@ class Listings extends Component {
   }
 
   render() {
-    if (this.props.listingsLoading && this.state.initialLoad) {
+    if (this.props.seeksLoading && this.state.initialLoad) {
       return (
         <div style={{ alignItems: 'center', justifyContent: 'center', display: 'flex' }}>
           <CircularProgress size={80} thickness={8} />
@@ -63,14 +63,14 @@ class Listings extends Component {
     }
 
     return (
-      <ListingsList listings={this.props.listings} />
+      <SeeksList seeks={this.props.seeks} />
     );
   }
 }
 
 const mapStateToProps = state => ({
-  listingsLoading: state.listingsLoading,
-  listings: state.listings,
+  seeksLoading: state.seeksLoading,
+  seeks: state.seeks,
 });
 
-export default withRouter(connect(mapStateToProps)(Listings));
+export default withRouter(connect(mapStateToProps)(Seeks));
