@@ -22,7 +22,7 @@ export function loadSavedSearches() {
   };
 }
 
-export function postSavedSearch(savedsearch) {
+export function postSavedSearch(savedSearch) {
   return function (dispatch, getState) {
     dispatch({
       type: 'POST_SAVEDSEARCH_REQUEST',
@@ -34,7 +34,7 @@ export function postSavedSearch(savedsearch) {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(savedsearch),
+      body: JSON.stringify(savedSearch),
     })
     .then((json) => {
       dispatch({

@@ -7,7 +7,7 @@ import CircularProgress from 'material-ui/CircularProgress';
 
 import SavedSearchesList from '../components/SavedSearchesList';
 
-import { loadSavedSearches } from '../actions/savedsearches';
+import { loadSavedSearches } from '../actions/savedSearches';
 
 class SavedSearches extends Component {
   static propTypes = {
