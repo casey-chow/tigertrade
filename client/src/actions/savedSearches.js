@@ -5,7 +5,7 @@ import { API_ROOT } from './common';
 export function loadSavedSearches() {
   return function (dispatch, getState) {
     dispatch({
-      type: 'LOAD_SAVEDSEARCHES_REQUEST',
+      type: 'LOAD_SAVED_SEARCHES_REQUEST',
     });
     fetch(`${API_ROOT}/savedsearches`, {
       credentials: 'include',
@@ -13,11 +13,11 @@ export function loadSavedSearches() {
     .then(response => response.json())
     .then(json => dispatch({
       json,
-      type: 'LOAD_SAVEDSEARCHES_SUCCESS',
+      type: 'LOAD_SAVED_SEARCHES_SUCCESS',
     }))
     .catch(error => dispatch({
       error,
-      type: 'LOAD_SAVEDSEARCHES_FAILURE',
+      type: 'LOAD_SAVED_SEARCHES_FAILURE',
     }));
   };
 }
@@ -25,7 +25,7 @@ export function loadSavedSearches() {
 export function postSavedSearch(savedSearch) {
   return function (dispatch, getState) {
     dispatch({
-      type: 'POST_SAVEDSEARCH_REQUEST',
+      type: 'POST_SAVED_SEARCH_REQUEST',
     });
 
     fetch(`${API_ROOT}/savedsearches`, {
@@ -39,13 +39,13 @@ export function postSavedSearch(savedSearch) {
     .then((json) => {
       dispatch({
         json,
-        type: 'POST_SAVEDSEARCH_SUCCESS',
+        type: 'POST_SAVED_SEARCH_SUCCESS',
       });
       dispatch(loadSavedSearches());
     })
     .catch(error => dispatch({
       error,
-      type: 'POST_SAVEDSEARCH_FAILURE',
+      type: 'POST_SAVED_SEARCH_FAILURE',
     }));
   };
 }
