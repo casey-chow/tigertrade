@@ -21,7 +21,7 @@
     "redux-form": "^6.6.2",
     "redux-logger": "^3.0.1",
     "redux-thunk": "^2.2.0",
-    "redux-ui": "git://github.com/kurtfunai/redux-ui.git#react-15.5.0-with-prop-types"
+    "redux-ui": "^0.0.15"
   },
   "devDependencies": {
     "autoprefixer": "6.7.2",
