@@ -4599,7 +4599,7 @@ react-test-renderer@^15.5.4:
     fbjs "^0.8.9"
     object-assign "^4.1.0"
 
-"react@^0.14.3 || ^15.0.1", react@^15.4.2, react@^15.4.3:
+"react@^0.14.3 || ^15.0.1", "react@^0.14.9 || ^15.3.0", react@^15.4.2, react@^15.4.3:
   version "15.5.4"
   resolved "https://registry.yarnpkg.com/react/-/react-15.5.4.tgz#fa83eb01506ab237cdc1c8c3b1cea8de012bf047"
   dependencies:
@@ -4733,6 +4733,18 @@ redux-ui@^0.0.15:
     immutable "^3.7.5"
     invariant "^2.2.0"
     react "^0.14.3 || ^15.0.1"
+    react-redux "^4.0.0"
+    redux "^3.0.4"
+
+"redux-ui@git://github.com/kurtfunai/redux-ui.git#react-15.5.0-with-prop-types":
+  version "0.0.15"
+  resolved "git://github.com/kurtfunai/redux-ui.git#facb111b003d1c44b0ecaf446c765339509d0b2f"
+  dependencies:
+    babel-register "^6.6.0"
+    immutable "^3.7.5"
+    invariant "^2.2.0"
+    prop-types "^15.5.7"
+    react "^0.14.9 || ^15.3.0"
     react-redux "^4.0.0"
     redux "^3.0.4"
 
