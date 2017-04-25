@@ -9,7 +9,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 const titleField = field => (
   <TextField
     hintText="What are you buying?" value={field.input.value}
-    onChange={field.input.onChange} maxlength="160" fullWidth
+    onChange={field.input.onChange} maxLength="160" fullWidth
   />
 );
 
