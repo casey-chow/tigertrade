@@ -8,7 +8,7 @@ import { parse } from 'query-string';
 
 import SeeksList from '../components/SeeksList';
 
-import { setCurrentSeeksQuery, loadSeeks } from './../actions/seeks';
+import { loadSeeks } from './../actions/seeks';
 
 class Seeks extends Component {
   static propTypes = {
@@ -26,7 +26,6 @@ class Seeks extends Component {
 
   componentWillMount() {
     const query = parse(this.props.location.search).query || '';
-    this.props.dispatch(setCurrentSeeksQuery(query));
     this.props.dispatch(loadSeeks(query));
   }
 

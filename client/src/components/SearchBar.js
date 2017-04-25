@@ -6,8 +6,8 @@ import { withRouter } from 'react-router-dom';
 import AutoComplete from 'material-ui/AutoComplete';
 import Paper from 'material-ui/Paper';
 
-import { setCurrentListingsQuery, loadListings } from './../actions/listings';
-import { setCurrentSeeksQuery, loadSeeks } from './../actions/seeks';
+import { loadListings } from './../actions/listings';
+import { loadSeeks } from './../actions/seeks';
 
 import './SearchBar.css';
 
@@ -52,11 +52,9 @@ class SearchBar extends Component {
 
     switch (this.props.location.pathname) {
       case '/listings':
-        this.props.dispatch(setCurrentListingsQuery(value));
         this.props.dispatch(loadListings(value));
         break;
       case '/seeks':
-        this.props.dispatch(setCurrentSeeksQuery(value));
         this.props.dispatch(loadSeeks(value));
         break;
       default:

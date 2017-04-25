@@ -104,9 +104,10 @@ const currentUser = (state = { loggedIn: false }, action) => {
 
 const currentQuery = (state = '', action) => {
   switch (action.type) {
-    case 'SET_CURRENT_LISTINGS_QUERY':
-      return decodeURIComponent(action.query);
-    case 'SET_CURRENT_SEEKS_QUERY':
+    case 'LOAD_SAVEDSEARCHES_REQUEST':
+      return '';
+    case 'LOAD_LISTINGS_REQUEST':
+    case 'LOAD_SEEKS_REQUEST':
       return decodeURIComponent(action.query);
     default:
       return state;

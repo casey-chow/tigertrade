@@ -5,6 +5,7 @@ import { API_ROOT } from './common';
 export function loadSeeks(query = '') {
   return function (dispatch, getState) {
     dispatch({
+      query,
       type: 'LOAD_SEEKS_REQUEST',
     });
     fetch(`${API_ROOT}/seeks?query=${encodeURIComponent(query)}`)
@@ -18,13 +19,6 @@ export function loadSeeks(query = '') {
         type: 'LOAD_SEEKS_FAILURE',
       }));
   };
-}
-
-export function setCurrentSeeksQuery(query = '') {
-  return ({
-    type: 'SET_CURRENT_SEEKS_QUERY',
-    query,
-  });
 }
 
 export function postSeek(seek) {

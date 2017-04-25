@@ -8,7 +8,7 @@ import { parse } from 'query-string';
 
 import ListingsList from '../components/ListingsList';
 
-import { setCurrentListingsQuery, loadListings } from './../actions/listings';
+import { loadListings } from './../actions/listings';
 
 class Listings extends Component {
   static propTypes = {
@@ -26,7 +26,6 @@ class Listings extends Component {
 
   componentWillMount() {
     const query = parse(this.props.location.search).query || '';
-    this.props.dispatch(setCurrentListingsQuery(query));
     this.props.dispatch(loadListings(query));
   }
 

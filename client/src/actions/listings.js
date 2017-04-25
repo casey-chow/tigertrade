@@ -5,6 +5,7 @@ import { API_ROOT } from './common';
 export function loadListings(query = '') {
   return function (dispatch, getState) {
     dispatch({
+      query,
       type: 'LOAD_LISTINGS_REQUEST',
     });
     fetch(`${API_ROOT}/listings?query=${encodeURIComponent(query)}`)
@@ -18,13 +19,6 @@ export function loadListings(query = '') {
         type: 'LOAD_LISTINGS_FAILURE',
       }));
   };
-}
-
-export function setCurrentListingsQuery(query = '') {
-  return ({
-    type: 'SET_CURRENT_LISTINGS_QUERY',
-    query,
-  });
 }
 
 export function postListing(listing) {
