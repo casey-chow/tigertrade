@@ -11,6 +11,7 @@ export default class LoggedInMenu extends PureComponent {
   static muiName = 'FlatButton';
 
   static propTypes = {
+    // eslint-disable-next-line react/forbid-prop-types
     style: PropTypes.object.isRequired,
     user: PropTypes.shape({
       netId: PropTypes.string.isRequired,

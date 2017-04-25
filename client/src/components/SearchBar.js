@@ -23,6 +23,7 @@ class SearchBar extends Component {
       pathname: PropTypes.string.isRequired,
     }).isRequired,
     query: PropTypes.string.isRequired,
+    // eslint-disable-next-line react/forbid-prop-types
     style: PropTypes.object,
   }
 
