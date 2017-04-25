@@ -5,6 +5,7 @@ import { withRouter } from 'react-router-dom';
 
 import AutoComplete from 'material-ui/AutoComplete';
 import Paper from 'material-ui/Paper';
+import { stringify } from 'query-string';
 
 import { loadListings } from './../actions/listings';
 import { loadSeeks } from './../actions/seeks';
@@ -96,8 +97,13 @@ class SearchBar extends Component {
     this.setState({
       focus: false,
     });
-    const queryStr = (this.props.query ? `?query=${encodeURIComponent(this.props.query)}` : '');
-    this.props.history.push(`${this.props.location.pathname}${queryStr}`);
+
+    if (this.props.query) {
+      const queryStr = stringify({ query: this.props.query });
+      this.props.history.push(`${this.props.location.pathname}?${queryStr}`);
+    } else {
+      this.props.history.push(`${this.props.location.pathname}`);
+    }
   };
 
   render() {
