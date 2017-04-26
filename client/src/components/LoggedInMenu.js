@@ -35,13 +35,15 @@ export default class LoggedInMenu extends PureComponent {
   }
 
   render() {
+    // eslint-disable-next-line no-unused-vars
+    const { user, ...rest } = this.props;
     return (
       <IconMenu
-        {...this.props}
+        {...rest}
         style={this.style}
         iconButtonElement={
           <FlatButton
-            {...this.props}
+            {...rest}
             style={{
               color: 'white',
               float: 'right',
