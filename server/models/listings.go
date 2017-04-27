@@ -7,8 +7,8 @@ import (
 	sq "github.com/Masterminds/squirrel"
 	"github.com/guregu/null"
 	"net/http"
-	"strings"
 	"strconv"
+	"strings"
 )
 
 // This is the "JSON" struct that appears in the array returned by getRecentListings
@@ -43,12 +43,12 @@ type Listing struct {
 }
 
 type IsStarred struct {
-	IsStarred            bool        `json:"isStarred"`
+	IsStarred bool `json:"isStarred"`
 }
 
 // Returns the SQL query that returns true if a particular listing is starred
 // by the user with key_id id. This method exists because dealing with nested
-// SQL queries in squirrel is an ugly pain in the ass. 
+// SQL queries in squirrel is an ugly pain in the ass.
 func isStarredBy(id int) string {
 	// "But Perry!" you say,
 	// "concatenating strings and putting it directly in an SQL query is bad!"
@@ -61,9 +61,9 @@ func isStarredBy(id int) string {
 	// "But isn't this still annoying and ugly?"
 	// "Yeah."
 	return "exists(  SELECT 1 FROM starred_listings " +
-					"WHERE starred_listings.listing_id=listings.key_id " +
-					"AND starred_listings.user_id=" + strconv.Itoa(id) + " " +
-					"AND starred_listings.is_active)"
+		"WHERE starred_listings.listing_id=listings.key_id " +
+		"AND starred_listings.user_id=" + strconv.Itoa(id) + " " +
+		"AND starred_listings.is_active)"
 }
 
 // Returns the most recent count listings, based on original date created.
@@ -107,14 +107,12 @@ func ReadListings(db *sql.DB, queryStr string, onlyStarred bool, maxDescriptionS
 		listings = append(listings, l)
 	}
 
-
 	if err = rows.Err(); err != nil {
 		return nil, err, http.StatusInternalServerError
 	}
 
 	return listings, nil, http.StatusOK
 }
-
 
 // Returns the most recent count listings, based on original date created.
 // If queryStr is nonempty, filters that every returned item must have every word in either title or description
@@ -160,7 +158,6 @@ func ReadListingsWhileAuthed(db *sql.DB, queryStr string, onlyStarred bool, maxD
 		}
 		listings = append(listings, l)
 	}
-
 
 	if err = rows.Err(); err != nil {
 		return nil, err, http.StatusInternalServerError
@@ -312,14 +309,23 @@ func DeleteListing(db *sql.DB, id string, userId int) (error, int) {
 	return nil, http.StatusOK
 }
 
-func RemoveStar(db *sql.DB, listingId string, userId int) (error, int) {
-	stmt := psql.Update("starred_listings").
-		SetMap(map[string]interface{}{
-			"is_active":           false}).
-		Where(sq.Eq{"listing_id": listingId, "user_id": userId})
+// SetStar adds or removes a star, depending on whether add is set to true.
+func SetStar(db *sql.DB, add bool, listingId string, userId int) (error, int) {
+	if add {
+		return addStar(db, listingId, userId)
+	} else {
+		return removeStar(db, listingId, userId)
+	}
+}
+
+// addStar adds a star to the table for the given listingId and userId.
+func addStar(db *sql.DB, listingId string, userId int) (error, int) {
+	insertStarStmt := psql.Insert("starred_listings").
+		Columns("user_id", "listing_id").
+		Values(userId, listingId)
 
 	// Query db for listing
-	result, err := stmt.RunWith(db).Exec()
+	result, err := insertStarStmt.RunWith(db).Exec()
 	if err != nil {
 		return err, http.StatusInternalServerError
 	}
@@ -338,11 +344,13 @@ func RemoveStar(db *sql.DB, listingId string, userId int) (error, int) {
 	return nil, http.StatusOK
 }
 
-func AddStar(db *sql.DB, listingId string, userId int) (error, int) {
-
-	stmt := psql.Insert("starred_listings").
-		Columns("user_id", "listing_id").
-		Values(userId, listingId)
+// removeStar remvoes a star from the given listingId for a given userId.
+func removeStar(db *sql.DB, listingId string, userId int) (error, int) {
+	stmt := psql.Update("starred_listings").
+		SetMap(map[string]interface{}{
+			"is_active": false,
+		}).
+		Where(sq.Eq{"listing_id": listingId, "user_id": userId})
 
 	// Query db for listing
 	result, err := stmt.RunWith(db).Exec()

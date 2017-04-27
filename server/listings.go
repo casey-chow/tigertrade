@@ -43,7 +43,7 @@ func ReadListings(w http.ResponseWriter, r *http.Request, ps httprouter.Params) 
 
 	listings := make([]*models.ListingsItem, 0)
 	code := 0
-	if(userId >= 0) {
+	if userId >= 0 {
 		listings, err, code = models.ReadListingsWhileAuthed(db, queryStr, isStarred, truncationLength, uint64(limit), userId)
 	} else {
 		listings, err, code = models.ReadListings(db, queryStr, isStarred, truncationLength, uint64(limit))
@@ -203,12 +203,7 @@ func UpdateIsStarred(w http.ResponseWriter, r *http.Request, ps httprouter.Param
 	}
 
 	// Update Listing data
-	code := 0
-	if(input.IsStarred) {
-		err, code = models.AddStar(db, id, user.KeyID)
-	} else {
-		err, code = models.RemoveStar(db, id, user.KeyID)
-	}
+	err, code := models.SetStar(db, input.IsStarred, id, user.KeyID)
 	if err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while Removing star from listing")
