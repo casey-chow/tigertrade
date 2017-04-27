@@ -11,6 +11,7 @@ export default class LoggedInMenu extends PureComponent {
   static muiName = 'FlatButton';
 
   static propTypes = {
+    // eslint-disable-next-line react/forbid-prop-types
     style: PropTypes.object.isRequired,
     user: PropTypes.shape({
       netId: PropTypes.string.isRequired,
@@ -34,18 +35,20 @@ export default class LoggedInMenu extends PureComponent {
   }
 
   render() {
+    // eslint-disable-next-line no-unused-vars
+    const { user, ...rest } = this.props;
     return (
       <IconMenu
-        {...this.props}
+        {...rest}
         style={this.style}
         iconButtonElement={
           <FlatButton
-            {...this.props}
+            {...rest}
             style={{
               color: 'white',
               float: 'right',
+              height: '48px',
               marginTop: '0',
-              padding: '8px',
             }}
             labelPosition="before"
             label={this.props.user.netId}

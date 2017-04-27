@@ -4438,9 +4438,9 @@ qs@6.4.0, qs@~6.4.0:
   version "6.4.0"
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.4.0.tgz#13e26d28ad6b0ffaa91312cd3bf708ed351e7233"
 
-query-string@^4.1.0:
-  version "4.3.2"
-  resolved "https://registry.yarnpkg.com/query-string/-/query-string-4.3.2.tgz#ec0fd765f58a50031a3968c2431386f8947a5cdd"
+query-string@^4.1.0, query-string@^4.3.4:
+  version "4.3.4"
+  resolved "https://registry.yarnpkg.com/query-string/-/query-string-4.3.4.tgz#bbb693b9ca915c232515b228b1a02b609043dbeb"
   dependencies:
     object-assign "^4.1.0"
     strict-uri-encode "^1.0.0"
@@ -4599,7 +4599,7 @@ react-test-renderer@^15.5.4:
     fbjs "^0.8.9"
     object-assign "^4.1.0"
 
-"react@^0.14.3 || ^15.0.1", react@^15.4.2, react@^15.4.3:
+"react@^0.14.3 || ^15.0.1", "react@^0.14.9 || ^15.3.0", react@^15.4.2, react@^15.4.3:
   version "15.5.4"
   resolved "https://registry.yarnpkg.com/react/-/react-15.5.4.tgz#fa83eb01506ab237cdc1c8c3b1cea8de012bf047"
   dependencies:
@@ -4733,6 +4733,18 @@ redux-ui@^0.0.15:
     immutable "^3.7.5"
     invariant "^2.2.0"
     react "^0.14.3 || ^15.0.1"
+    react-redux "^4.0.0"
+    redux "^3.0.4"
+
+"redux-ui@git://github.com/kurtfunai/redux-ui.git#react-15.5.0-with-prop-types":
+  version "0.0.15"
+  resolved "git://github.com/kurtfunai/redux-ui.git#facb111b003d1c44b0ecaf446c765339509d0b2f"
+  dependencies:
+    babel-register "^6.6.0"
+    immutable "^3.7.5"
+    invariant "^2.2.0"
+    prop-types "^15.5.7"
+    react "^0.14.9 || ^15.3.0"
     react-redux "^4.0.0"
     redux "^3.0.4"
 

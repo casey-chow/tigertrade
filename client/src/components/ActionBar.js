@@ -24,6 +24,7 @@ class ActionBar extends Component {
   static pages = [
     { name: 'Listings', url: '/listings' },
     { name: 'Seeks', url: '/seeks' },
+    { name: 'Saved Searches', url: '/savedsearches' },
     { name: 'Compose', url: '/compose' },
   ];
 

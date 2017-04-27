@@ -5,9 +5,10 @@ import { withRouter } from 'react-router-dom';
 
 import AutoComplete from 'material-ui/AutoComplete';
 import Paper from 'material-ui/Paper';
+import { stringify } from 'query-string';
 
-import { searchListings } from './../actions/listings';
-
+import { loadListings } from './../actions/listings';
+import { loadSeeks } from './../actions/seeks';
 
 import './SearchBar.css';
 
@@ -15,16 +16,19 @@ class SearchBar extends Component {
 
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
-    style: PropTypes.object,
-    query: PropTypes.string,
     history: PropTypes.shape({
       push: PropTypes.func.isRequired,
     }).isRequired,
+    location: PropTypes.shape({
+      pathname: PropTypes.string.isRequired,
+    }).isRequired,
+    query: PropTypes.string.isRequired,
+    // eslint-disable-next-line react/forbid-prop-types
+    style: PropTypes.object,
   }
 
   static defaultProps = {
     style: {},
-    query: '',
   }
 
   state = {
@@ -48,7 +52,16 @@ class SearchBar extends Component {
       ],
     });
 
-    this.props.dispatch(searchListings(value));
+    switch (this.props.location.pathname) {
+      case '/listings':
+        this.props.dispatch(loadListings(value));
+        break;
+      case '/seeks':
+        this.props.dispatch(loadSeeks(value));
+        break;
+      default:
+        break;
+    }
   }
 
   handleTouchTap = (event) => {
@@ -67,23 +80,32 @@ class SearchBar extends Component {
     });
   };
 
-  handleNewRequest = (chosenRequest, index) => {
-    this.props.dispatch(searchListings(chosenRequest));
-
-    this.props.history.push(`/listings?query=${encodeURIComponent(chosenRequest)}`);
-  }
-
   handleOnFocus = () => {
     this.setState({
       focus: true,
     });
-  }
+    switch (this.props.location.pathname) {
+      case '/seeks':
+      case '/listings':
+        break;
+      default:
+        this.props.history.push('/listings');
+        break;
+    }
+  };
 
   handleOnBlur = () => {
     this.setState({
       focus: false,
     });
-  }
+
+    if (this.props.query) {
+      const queryStr = stringify({ query: this.props.query });
+      this.props.history.push(`${this.props.location.pathname}?${queryStr}`);
+    } else {
+      this.props.history.push(`${this.props.location.pathname}`);
+    }
+  };
 
   render() {
     const style = {
@@ -95,12 +117,16 @@ class SearchBar extends Component {
       paddingRight: '16px',
     };
 
+    const hintText = (this.props.location.pathname === '/seeks')
+          ? (<span className="hint-text">What do you want to sell?</span>)
+          : (<span className="hint-text">What do you want to buy?</span>);
+
     return (
       <Paper style={style} className={this.state.focus ? 'focus' : 'blur'} zDepth={2}>
         <AutoComplete
           className="SearchBar"
           fullWidth
-          hintText={<span className="hint-text">What do you want to buy?</span>}
+          hintText={hintText}
           dataSource={this.state.dataSource}
           onUpdateInput={this.handleUpdateInput}
           openOnFocus
@@ -109,7 +135,6 @@ class SearchBar extends Component {
           onBlur={this.handleOnBlur}
           inputStyle={{ color: 'white' }}
           searchText={this.props.query}
-          onNewRequest={this.handleNewRequest}
         />
       </Paper>
     );

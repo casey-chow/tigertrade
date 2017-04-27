@@ -4,20 +4,19 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
 import CircularProgress from 'material-ui/CircularProgress';
+import { parse } from 'query-string';
 
-import Listings from '../components/Listings';
+import ListingsList from '../components/ListingsList';
 
-import { setCurrentListingsQuery, searchListings } from './../actions/listings';
+import { loadListings } from './../actions/listings';
 
-class SearchListings extends Component {
+class Listings extends Component {
   static propTypes = {
     listingsLoading: PropTypes.bool.isRequired,
     listings: PropTypes.arrayOf(PropTypes.object).isRequired,
     dispatch: PropTypes.func.isRequired,
-    match: PropTypes.shape({
-      params: PropTypes.shape({
-        query: PropTypes.string.isRequired,
-      }).isRequired,
+    location: PropTypes.shape({
+      search: PropTypes.string.isRequired,
     }).isRequired,
   };
 
@@ -26,9 +25,8 @@ class SearchListings extends Component {
   }
 
   componentWillMount() {
-    const query = this.props.match.params.query;
-    this.props.dispatch(searchListings(query || ''));
-    this.props.dispatch(setCurrentListingsQuery(query || ''));
+    const query = parse(this.props.location.search).query || '';
+    this.props.dispatch(loadListings(query));
   }
 
   componentWillReceiveProps(nextProps) {
@@ -65,14 +63,14 @@ class SearchListings extends Component {
     }
 
     return (
-      <Listings listings={this.props.listings} />
+      <ListingsList listings={this.props.listings} />
     );
   }
 }
 
 const mapStateToProps = state => ({
   listingsLoading: state.listingsLoading,
-  listings: state.searchListings,
+  listings: state.listings,
 });
 
-export default withRouter(connect(mapStateToProps)(SearchListings));
+export default withRouter(connect(mapStateToProps)(Listings));

@@ -5,38 +5,71 @@ import { combineReducers } from 'redux';
 
 const listingsLoading = (state = false, action) => {
   switch (action.type) {
-    case 'RECENT_LISTINGS_REQUEST':
-    case 'SEARCH_LISTINGS_REQUEST':
+    case 'LOAD_LISTINGS_REQUEST':
       return true;
-    case 'RECENT_LISTINGS_FAILURE':
-    case 'SEARCH_LISTINGS_FAILURE':
-    case 'RECENT_LISTINGS_SUCCESS':
-    case 'SEARCH_LISTINGS_SUCCESS':
+    case 'LOAD_LISTINGS_SUCCESS':
+    case 'LOAD_LISTINGS_FAILURE':
       return false;
     default:
       return state;
   }
 };
 
-const recentListings = (state = [], action) => {
+const listings = (state = [], action) => {
   switch (action.type) {
-    case 'RECENT_LISTINGS_FAILURE': // TODO: failure state
+    case 'LOAD_LISTINGS_FAILURE': // TODO: failure state
       return [];
-    case 'RECENT_LISTINGS_SUCCESS':
+    case 'LOAD_LISTINGS_SUCCESS':
       return action.json;
-    case 'RECENT_LISTINGS_REQUEST':
+    case 'LOAD_LISTINGS_REQUEST':
     default:
       return state;
   }
 };
 
-const searchListings = (state = [], action) => {
+const seeksLoading = (state = false, action) => {
   switch (action.type) {
-    case 'SEARCH_LISTINGS_FAILURE': // TODO: failure state
+    case 'LOAD_SEEKS_REQUEST':
+      return true;
+    case 'LOAD_SEEKS_SUCCESS':
+    case 'LOAD_SEEKS_FAILURE':
+      return false;
+    default:
+      return state;
+  }
+};
+
+const seeks = (state = [], action) => {
+  switch (action.type) {
+    case 'LOAD_SEEKS_FAILURE': // TODO: failure state
       return [];
-    case 'SEARCH_LISTINGS_SUCCESS':
+    case 'LOAD_SEEKS_SUCCESS':
       return action.json;
-    case 'SEARCH_LISTINGS_REQUEST':
+    case 'LOAD_SEEKS_REQUEST':
+    default:
+      return state;
+  }
+};
+
+const savedSearchesLoading = (state = false, action) => {
+  switch (action.type) {
+    case 'LOAD_SAVED_SEARCHES_REQUEST':
+      return true;
+    case 'LOAD_SAVED_SEARCHES_SUCCESS':
+    case 'LOAD_SAVED_SEARCHES_FAILURE':
+      return false;
+    default:
+      return state;
+  }
+};
+
+const savedSearches = (state = [], action) => {
+  switch (action.type) {
+    case 'LOAD_SAVED_SEARCHES_FAILURE': // TODO: failure state
+      return [];
+    case 'LOAD_SAVED_SEARCHES_SUCCESS':
+      return action.json;
+    case 'LOAD_SAVED_SEARCHES_REQUEST':
     default:
       return state;
   }
@@ -71,7 +104,10 @@ const currentUser = (state = { loggedIn: false }, action) => {
 
 const currentQuery = (state = '', action) => {
   switch (action.type) {
-    case 'SET_CURRENT_LISTINGS_QUERY':
+    case 'LOAD_SAVED_SEARCHES_REQUEST':
+      return '';
+    case 'LOAD_LISTINGS_REQUEST':
+    case 'LOAD_SEEKS_REQUEST':
       return decodeURIComponent(action.query);
     default:
       return state;
@@ -79,9 +115,12 @@ const currentQuery = (state = '', action) => {
 };
 
 const rootReducer = combineReducers({
-  recentListings,
   listingsLoading,
-  searchListings,
+  listings,
+  seeksLoading,
+  seeks,
+  savedSearchesLoading,
+  savedSearches,
   currentUserLoading,
   currentUser,
   currentQuery,

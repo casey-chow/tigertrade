@@ -6,7 +6,9 @@ import PropTypes from 'prop-types';
 import ActionBar from '../components/ActionBar';
 
 import Compose from './Compose';
-import SearchListings from './SearchListings';
+import Listings from './Listings';
+import Seeks from './Seeks';
+import SavedSearches from './SavedSearches';
 
 import { loadCurrentUser } from '../actions/users';
 
@@ -30,9 +32,11 @@ class App extends Component {
         <div style={{ marginTop: '9em' }}>
           <Switch>
             <Route exact path="/">
-              <Redirect push to="/listings/" />
+              <Redirect push to="/listings" />
             </Route>
-            <Route path="/listings" component={SearchListings} />
+            <Route path="/listings" component={Listings} />
+            <Route path="/seeks" component={Seeks} />
+            <Route path="/savedsearches" component={SavedSearches} />
             <Route path="/compose" component={Compose} />
           </Switch>
         </div>
