@@ -15,6 +15,8 @@ import FavoriteIcon from 'material-ui/svg-icons/action/favorite';
 import Dialog from 'material-ui/Dialog';
 import TextField from 'material-ui/TextField';
 
+import ContactSellerForm from './ContactSellerForm';
+
 class ListingCard extends React.Component {
 
   static propTypes = {
@@ -116,6 +118,7 @@ class ListingCard extends React.Component {
             multiLine
             fullWidth
           />
+          <ContactSellerForm />
         </Dialog>
       </div>
     );
