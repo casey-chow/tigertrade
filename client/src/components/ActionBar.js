@@ -25,6 +25,7 @@ class ActionBar extends Component {
     { name: 'Listings', url: '/listings' },
     { name: 'Seeks', url: '/seeks' },
     { name: 'Saved Searches', url: '/savedsearches' },
+    { name: 'Profile', url: '/profile' },
     { name: 'Compose', url: '/compose' },
   ];
 

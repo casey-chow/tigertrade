@@ -29,6 +29,7 @@ class SeekCard extends React.Component {
       title: PropTypes.string.isRequired,
       description: PropTypes.string,
       userId: PropTypes.number.isRequired,
+      username: PropTypes.string.isRequired,
       savedSearchId: PropTypes.number,
       notifyEnabled: PropTypes.bool,
       status: PropTypes.string,
