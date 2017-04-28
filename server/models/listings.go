@@ -18,7 +18,6 @@ type ListingsItem struct {
 	LastModificationDate null.Time   `json:"lastModificationDate"`
 	Title                string      `json:"title"`
 	Description          null.String `json:"description"` // expect to be truncated
-	UserID               int         `json:"userId"`
 	Username             null.String `json:"username"`
 	Price                null.Int    `json:"price"`
 	Status               null.String `json:"status"`
@@ -34,7 +33,6 @@ type Listing struct {
 	LastModificationDate null.Time   `json:"lastModificationDate"`
 	Title                string      `json:"title"`
 	Description          null.String `json:"description"`
-	UserID               int         `json:"userId"`
 	Username             null.String `json:"username"`
 	Price                null.Int    `json:"price"`
 	Status               null.String `json:"status"`
@@ -92,7 +90,7 @@ func ReadListings(db *sql.DB, query *listingQuery) ([]*ListingsItem, error, int)
 	stmt := psql.
 		Select("listings.key_id", "listings.creation_date",
 			"listings.last_modification_date", "title",
-			fmt.Sprintf("left(description, %d)", query.TruncationLength), "user_id",
+			fmt.Sprintf("left(description, %d)", query.TruncationLength),
 			"users.net_id", "price", "status", "expiration_date", "thumbnails.url",
 			isStarredBy(query.UserID)).
 		From("listings").
@@ -135,7 +133,7 @@ func ReadListings(db *sql.DB, query *listingQuery) ([]*ListingsItem, error, int)
 	for rows.Next() {
 		l := new(ListingsItem)
 		err := rows.Scan(&l.KeyID, &l.CreationDate, &l.LastModificationDate,
-			&l.Title, &l.Description, &l.UserID, &l.Username, &l.Price, &l.Status,
+			&l.Title, &l.Description, &l.Username, &l.Price, &l.Status,
 			&l.ExpirationDate, &l.Thumbnail, &l.IsStarred)
 		if err != nil {
 			return nil, err, http.StatusInternalServerError
@@ -158,7 +156,7 @@ func ReadListing(db *sql.DB, id string) (Listing, error, int) {
 	// Create listing query
 	query := psql.
 		Select("listings.key_id", "listings.creation_date", "listings.last_modification_date",
-			"title", "description", "user_id", "users.net_id", "price", "status", "expiration_date",
+			"title", "description", "users.net_id", "price", "status", "expiration_date",
 			"thumbnails.url").
 		From("listings").
 		Where("listings.is_active=true").
@@ -177,7 +175,7 @@ func ReadListing(db *sql.DB, id string) (Listing, error, int) {
 	rows.Next()
 	err = rows.Scan(&listing.KeyID, &listing.CreationDate,
 		&listing.LastModificationDate, &listing.Title, &listing.Description,
-		&listing.UserID, &listing.Username, &listing.Price, &listing.Status,
+		&listing.Username, &listing.Price, &listing.Status,
 		&listing.ExpirationDate, &listing.Thumbnail)
 	if err == sql.ErrNoRows {
 		return listing, err, http.StatusNotFound
@@ -200,8 +198,6 @@ func ReadListing(db *sql.DB, id string) (Listing, error, int) {
 // Inserts the given listing (belonging to userId) into the database. Returns
 // listing with its new KeyID added.
 func CreateListing(db *sql.DB, listing Listing, userId int) (Listing, error, int) {
-	listing.UserID = userId
-
 	// Insert listing
 	stmt := psql.Insert("listings").
 		Columns("title", "description", "user_id", "price", "status",
@@ -230,14 +226,11 @@ func CreateListing(db *sql.DB, listing Listing, userId int) (Listing, error, int
 // Overwrites the listing in the database with the given id with the given listing
 // (belonging to userId). Returns the updated listing.
 func UpdateListing(db *sql.DB, id string, listing Listing, userId int) (Listing, error, int) {
-	listing.UserID = userId
-
 	// Update listing
 	stmt := psql.Update("listings").
 		SetMap(map[string]interface{}{
 			"title":           listing.Title,
 			"description":     listing.Description,
-			"user_id":         userId,
 			"price":           listing.Price,
 			"status":          listing.Status,
 			"expiration_date": listing.ExpirationDate,
@@ -259,7 +252,6 @@ func UpdateListing(db *sql.DB, id string, listing Listing, userId int) (Listing,
 // Deletes the listing in the database with the given id with the given listing
 // (belonging to userId).
 func DeleteListing(db *sql.DB, id string, userId int) (error, int) {
-
 	// Update listing
 	stmt := psql.Delete("listings").
 		Where(sq.Eq{"listings.key_id": id,
