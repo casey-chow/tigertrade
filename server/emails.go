@@ -6,7 +6,6 @@ import (
 	"github.com/getsentry/raven-go"
 	"github.com/julienschmidt/httprouter"
 	"net/http"
-	"strconv"
 )
 
 const (
@@ -92,5 +91,5 @@ func getOwner(id string, isSeek bool) (string, error, int) {
 
 	owner, _ := models.GetUserByID(db, ownerId)
 
-	return strconv.Itoa(owner.KeyID), err, code
+	return owner.NetID, err, code
 }

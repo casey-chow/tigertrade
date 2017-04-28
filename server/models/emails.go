@@ -24,6 +24,10 @@ func getEmail(netId string) *mail.Email {
 
 func SendEmail(netIdFrom string, netIdTo string, subject string, body string) error {
 
+	if(netIdFrom == netIdTo) {
+		return errors.New("To and From fields cannot be the same.")
+	}
+
 	// Get email addresses
 	from := getEmail(netIdFrom)
 	to := getEmail(netIdTo)
