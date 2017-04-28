@@ -31,6 +31,7 @@ func ContactPost(w http.ResponseWriter, r *http.Request, ps httprouter.Params, i
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("error while creating email struct")
 		Error(w, code)
+		return
 	}
 
 	// Get NetId of the user initiating the contact
