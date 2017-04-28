@@ -110,7 +110,7 @@ func ReadListings(db *sql.DB, query *listingQuery) ([]*ListingsItem, error, int)
 	}
 
 	if query.OnlyMine {
-		stmt = stmt.Where(sq.Eq{"listings.key_id": query.UserID})
+		stmt = stmt.Where(sq.Eq{"user_id": query.UserID})
 	}
 
 	stmt = stmt.OrderBy("listings.creation_date DESC")

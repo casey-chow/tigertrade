@@ -73,7 +73,7 @@ func ReadSeeks(db *sql.DB, query *seekQuery) ([]*SeeksItem, error, int) {
 	}
 
 	if query.OnlyMine {
-		stmt = stmt.Where(sq.Eq{"seeks.key_id": query.UserID})
+		stmt = stmt.Where(sq.Eq{"user_id": query.UserID})
 	}
 
 	stmt = stmt.OrderBy("seeks.creation_date DESC")
