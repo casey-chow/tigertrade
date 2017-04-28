@@ -30,7 +30,6 @@ class Compose extends Component {
   };
 
   state = {
-    submitted: false,
     composeMode: this.props.composeMode,
   }
 
