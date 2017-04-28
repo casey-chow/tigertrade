@@ -165,9 +165,9 @@ func UpdateSeek(db *sql.DB, id string, seek Seek, userId int) (Seek, error, int)
 
 	// Query db for seek
 	result, err := stmt.RunWith(db).Exec()
-	ok, err, code := wasSuccessfulUpdate(result, err)
+	code, err := getUpdateResultCode(result, err)
 
-	if !ok {
+	if err != nil {
 		return seek, err, code
 	}
 
@@ -185,7 +185,7 @@ func DeleteSeek(db *sql.DB, id string, userId int) (error, int) {
 
 	// Query db for seek
 	result, err := stmt.RunWith(db).Exec()
-	_, err, code := wasSuccessfulUpdate(result, err)
+	code, err := getUpdateResultCode(result, err)
 
 	return err, code
 }

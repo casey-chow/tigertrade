@@ -144,9 +144,9 @@ func UpdateSavedSearch(db *sql.DB, id string, savedSearch SavedSearch, userId in
 
 	// Query db for savedSearch
 	result, err := stmt.RunWith(db).Exec()
-	ok, err, code := wasSuccessfulUpdate(result, err)
+	code, err := getUpdateResultCode(result, err)
 
-	if !ok {
+	if err != nil {
 		return savedSearch, err, code
 	}
 
@@ -164,7 +164,7 @@ func DeleteSavedSearch(db *sql.DB, id string, userId int) (error, int) {
 
 	// Query db for savedSearch
 	result, err := stmt.RunWith(db).Exec()
-	_, err, code := wasSuccessfulUpdate(result, err)
+	code, err := getUpdateResultCode(result, err)
 
 	return err, code
 }

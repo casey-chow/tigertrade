@@ -261,9 +261,9 @@ func UpdateListing(db *sql.DB, id string, listing Listing, userId int) (Listing,
 
 	// Update listing
 	result, err := stmt.RunWith(db).Exec()
-	ok, err, code := wasSuccessfulUpdate(result, err)
+	code, err := getUpdateResultCode(result, err)
 
-	if !ok {
+	if err != nil {
 		return listing, err, code
 	}
 
@@ -281,7 +281,7 @@ func DeleteListing(db *sql.DB, id string, userId int) (error, int) {
 
 	// Query db for listing
 	result, err := stmt.RunWith(db).Exec()
-	_, err, code := wasSuccessfulUpdate(result, err)
+	code, err := getUpdateResultCode(result, err)
 
 	return err, code
 }
@@ -303,7 +303,7 @@ func addStar(db *sql.DB, listingId string, userId int) (error, int) {
 
 	// Query db for listing
 	result, err := insertStarStmt.RunWith(db).Exec()
-	_, err, code := wasSuccessfulUpdate(result, err)
+	code, err := getUpdateResultCode(result, err)
 
 	return err, code
 }
@@ -318,7 +318,7 @@ func removeStar(db *sql.DB, listingId string, userId int) (error, int) {
 
 	// Query db for listing
 	result, err := stmt.RunWith(db).Exec()
-	_, err, code := wasSuccessfulUpdate(result, err)
+	code, err := getUpdateResultCode(result, err)
 
 	return err, code
 }

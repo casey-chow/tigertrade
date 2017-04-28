@@ -2,26 +2,25 @@ package models
 
 import (
 	"database/sql"
-	"net/http"
 	"errors"
+	"net/http"
 )
 
-
-func wasSuccessfulUpdate(result sql.Result, err error) (bool, error, int) {
+func getUpdateResultCode(result sql.Result, err error) (int, error) {
 
 	if err != nil {
-		return false, err, http.StatusInternalServerError
+		return http.StatusInternalServerError, err
 	}
 	numRows, err := result.RowsAffected()
 	if err != nil {
-		return false, err, http.StatusInternalServerError
+		return http.StatusInternalServerError, err
 	}
 	if numRows == 0 {
-		return false, sql.ErrNoRows, http.StatusNotFound
+		return http.StatusNotFound, sql.ErrNoRows
 	}
 	if numRows != 1 {
-		return false, errors.New("Multiple rows affected!"), http.StatusInternalServerError
+		return http.StatusInternalServerError, errors.New("Multiple rows affected!")
 	}
 
-	return true, nil, http.StatusOK
+	return http.StatusOK, nil
 }
