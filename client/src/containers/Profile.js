@@ -7,13 +7,17 @@ import CircularProgress from 'material-ui/CircularProgress';
 import { parse } from 'query-string';
 
 import ListingsList from '../components/ListingsList';
+import SeeksList from '../components/SeeksList';
 
 import { loadListings } from './../actions/listings';
+import { loadSeeks } from './../actions/seeks';
 
 class Profile extends Component {
   static propTypes = {
     listingsLoading: PropTypes.bool.isRequired,
+    seeksLoading: PropTypes.bool.isRequired,
     listings: PropTypes.arrayOf(PropTypes.object).isRequired,
+    seeks: PropTypes.arrayOf(PropTypes.object).isRequired,
     dispatch: PropTypes.func.isRequired,
     location: PropTypes.shape({
       search: PropTypes.string.isRequired,
@@ -21,7 +25,9 @@ class Profile extends Component {
   };
 
   state = {
+    seeks: false,
     initialLoad: true,
+    initialSeekLoad: true,
   }
 
   componentWillMount() {
@@ -30,11 +36,15 @@ class Profile extends Component {
       isMine: true,
     };
     this.props.dispatch(loadListings(query));
+    this.props.dispatch(loadSeeks(query));
   }
 
   componentWillReceiveProps(nextProps) {
     if (!nextProps.listingsLoading) {
       this.setState({ initialLoad: false });
+    }
+    if (!nextProps.seeksLoading) {
+      this.setState({ initialSeekLoad: false });
     }
   }
 
@@ -53,11 +63,28 @@ class Profile extends Component {
       }
     }
 
+    if (this.props.seeksLoading !== nextProps.seeksLoading) {
+      return true;
+    }
+
+    if (this.props.seeks.length !== nextProps.seeks.length) {
+      return true;
+    }
+
+    for (let i = 0; i < this.props.seeks.length; i += 1) {
+      if (this.props.seeks[i].keyId !== nextProps.seeks[i].keyId) {
+        return true;
+      }
+    }
+    if (this.state.seeks !== nextState.seeks) {
+      return true;
+    }
+
     return false;
   }
 
   render() {
-    if (this.props.listingsLoading && this.state.initialLoad) {
+    if ((this.props.listingsLoading || this.props.seeksLoading) && this.state.initialLoad) {
       return (
         <div style={{ alignItems: 'center', justifyContent: 'center', display: 'flex' }}>
           <CircularProgress size={80} thickness={8} />
@@ -66,7 +93,12 @@ class Profile extends Component {
     }
 
     return (
-      <ListingsList listings={this.props.listings} />
+      <div>
+        { this.state.seeks ?
+          <ListingsList listings={this.props.listings} /> :
+          <SeeksList seeks={this.props.seeks} />
+        }
+      </div>
     );
   }
 }
@@ -74,6 +106,8 @@ class Profile extends Component {
 const mapStateToProps = state => ({
   listingsLoading: state.listingsLoading,
   listings: state.listings,
+  seeksLoading: state.seeksLoading,
+  seeks: state.seeks,
 });
 
 export default withRouter(connect(mapStateToProps)(Profile));

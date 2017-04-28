@@ -9,7 +9,9 @@ export function loadSeeks(query = { query: '' }) {
       query,
       type: 'LOAD_SEEKS_REQUEST',
     });
-    fetch(`${API_ROOT}/seeks?${stringify(query)}`)
+    fetch(`${API_ROOT}/seeks?${stringify(query)}`, {
+      credentials: 'include',
+    })
       .then(response => response.json())
       .then(json => dispatch({
         json,

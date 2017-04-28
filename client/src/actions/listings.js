@@ -7,7 +7,6 @@ export function loadListings(query = { query: '' }) {
   return function (dispatch, getState) {
     dispatch({
       query,
-      debugStr: stringify(query),
       type: 'LOAD_LISTINGS_REQUEST',
     });
     fetch(`${API_ROOT}/listings?${stringify(query)}`, {
