@@ -11,25 +11,28 @@ import (
 
 // Writes the most recent count listings, based on original date created to w
 func ReadListings(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	// Get limit from params
-	limitStr := r.URL.Query().Get("limit")
-	limit := defaultNumResults
+	query := models.NewListingQuery()
 
-	var e error
-	if limitStr != "" {
-		limit, e = strconv.Atoi(limitStr)
-		if e != nil || limit == 0 {
-			limit = defaultNumResults
+	// Get limit from params
+	if limitStr := r.URL.Query().Get("limit"); limitStr != "" {
+		if limit, err := strconv.Atoi(limitStr); err == nil && limit != 0 {
+			query.Limit = uint64(limit)
 		}
 	}
-	if limit > maxNumResults {
-		limit = maxNumResults
+
+	// ParseBool defaults to false
+	query.OnlyStarred, _ = strconv.ParseBool(r.URL.Query().Get("isStarred"))
+	query.OnlyMine, _ = strconv.ParseBool(r.URL.Query().Get("isMine"))
+
+	// Get User ID if we happen to be logged in
+	if user, err := models.GetUser(db, getUsername(r)); err == nil {
+		query.UserID = user.KeyID
 	}
 
 	// Get optional search query from params
-	queryStr := r.URL.Query().Get("query")
+	query.Query = r.URL.Query().Get("query")
 
-	listings, err, code := models.ReadListings(db, queryStr, truncationLength, uint64(limit))
+	listings, err, code := models.ReadListings(db, query)
 	if err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while reading recent or queried listings")
@@ -146,11 +149,51 @@ func DeleteListing(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 		return
 	}
 
-	err, code := models.DeleteListing(db, id, user.KeyID)
-	if err != nil {
+	if err, code := models.DeleteListing(db, id, user.KeyID); err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while deleting listing by ID")
 		Error(w, code)
 		return
 	}
+}
+
+func UpdateListingStar(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+
+	// Get ID from params
+	id := ps.ByName("id")
+	if id == "" {
+		// Return 404 error with empty body if not found
+		Error(w, http.StatusNotFound)
+		return
+	}
+
+	// Get isStarred status to change
+	input := models.IsStarred{}
+	err := ParseJSONFromBody(r, &input)
+	if err != nil {
+		raven.CaptureError(err, nil)
+		log.WithField("err", err).Error("error while parsing JSON")
+		Error(w, http.StatusInternalServerError)
+		return
+	}
+
+	// Retrieve UserID
+	user, err := models.GetUser(db, getUsername(r))
+	if err != nil { // Not authorized
+		raven.CaptureError(err, nil)
+		log.WithField("err", err).Error("Error while authenticating user: not authorized")
+		Error(w, http.StatusUnauthorized)
+		return
+	}
+
+	// Update Listing data
+	err, code := models.SetStar(db, input.IsStarred, id, user.KeyID)
+	if err != nil {
+		raven.CaptureError(err, nil)
+		log.WithField("err", err).Error("Error while Removing star from listing")
+		Error(w, code)
+		return
+	}
+
+	Serve(w, input)
 }

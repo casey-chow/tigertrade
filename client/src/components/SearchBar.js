@@ -52,12 +52,14 @@ class SearchBar extends Component {
       ],
     });
 
+    const query = { query: value };
+
     switch (this.props.location.pathname) {
       case '/listings':
-        this.props.dispatch(loadListings(value));
+        this.props.dispatch(loadListings(query));
         break;
       case '/seeks':
-        this.props.dispatch(loadSeeks(value));
+        this.props.dispatch(loadSeeks(query));
         break;
       default:
         break;
