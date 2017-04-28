@@ -51,6 +51,7 @@ type listingQuery struct {
 
 func NewListingQuery() *listingQuery {
 	q := new(listingQuery)
+	q.TruncationLength = defaultTruncationLength
 	q.Limit = defaultNumResults
 	return q
 }
@@ -87,7 +88,7 @@ func ReadListings(db *sql.DB, query *listingQuery) ([]*ListingsItem, error, int)
 	stmt := psql.
 		Select("listings.key_id", "listings.creation_date",
 			"listings.last_modification_date", "title",
-			fmt.Sprintf("left(description, %d)", truncationLength), "user_id",
+			fmt.Sprintf("left(description, %d)", query.TruncationLength), "user_id",
 			"price", "status", "expiration_date", "thumbnails.url",
 			isStarredBy(query.UserID)).
 		From("listings").

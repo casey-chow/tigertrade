@@ -37,12 +37,14 @@ type Seek struct {
 }
 
 type seekQuery struct {
-	Query string
-	Limit uint64
+	Query            string
+	TruncationLength int
+	Limit            uint64
 }
 
 func NewSeekQuery() *seekQuery {
 	q := new(seekQuery)
+	q.TruncationLength = defaultTruncationLength
 	q.Limit = defaultNumResults
 	return q
 }
@@ -54,7 +56,7 @@ func ReadSeeks(db *sql.DB, query *seekQuery) ([]*SeeksItem, error, int) {
 	// Create seeks statement
 	stmt := psql.
 		Select("seeks.key_id", "seeks.creation_date", "seeks.last_modification_date",
-			"title", fmt.Sprintf("left(description, %d)", truncationLength),
+			"title", fmt.Sprintf("left(description, %d)", query.TruncationLength),
 			"user_id", "saved_search_id", "notify_enabled", "status").
 		From("seeks").
 		Where("seeks.is_active=true")
