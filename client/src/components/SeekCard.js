@@ -16,6 +16,7 @@ import Dialog from 'material-ui/Dialog';
 
 import ContactBuyerForm from './ContactBuyerForm';
 import { mailBuyer } from './../actions/users';
+import { deleteSeek } from './../actions/seeks';
 
 class SeekCard extends React.Component {
 
@@ -63,6 +64,10 @@ class SeekCard extends React.Component {
   handleSubmit = (data) => {
     this.props.dispatch(mailBuyer(this.props.seek.keyId, data));
     this.handleContactClose();
+  }
+
+  handleDelete = () => {
+    this.props.dispatch(deleteSeek(this.props.seek.keyId));
   }
 
   render() {

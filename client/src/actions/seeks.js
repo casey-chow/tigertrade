@@ -51,3 +51,28 @@ export function postSeek(seek) {
     }));
   };
 }
+
+export function deleteSeek(seekId) {
+  return function (dispatch, getState) {
+    dispatch({
+      type: 'DELETE_LISTING_REQUEST',
+    });
+
+    fetch(`${API_ROOT}/seeks/${seekId}`, {
+      credentials: 'include',
+      method: 'DELETE',
+    })
+    .then((json) => {
+      dispatch({
+        json,
+        type: 'DELETE_LISTING_SUCCESS',
+      });
+      dispatch(loadSeeks());
+    })
+    .catch(error => dispatch({
+      error,
+      type: 'DELETE_LISTING_FAILURE',
+    }));
+  };
+}
+
