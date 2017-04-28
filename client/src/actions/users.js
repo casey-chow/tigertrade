@@ -32,6 +32,24 @@ export function mailSeller(listingId, data) {
 
     console.log(`Contacting owner of listing ${listingId} with message ${data.message}`);
     console.log(data);
+
+    fetch(`${API_ROOT}/listings/${listingId}/contact`, {
+      credentials: 'include',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ body: data.message }),
+    }).then((json) => {
+      dispatch({
+        json,
+        type: 'MAIL_SELLER_SUCCESS',
+      });
+    })
+    .catch(error => dispatch({
+      error,
+      type: 'MAIL_SELLER_FAILURE',
+    }));
   };
 }
 
