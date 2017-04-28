@@ -63,33 +63,3 @@ export function mailBuyer(seekId, data) {
     console.log(data);
   };
 }
-
-/*
-export function postListing(listing) {
-  return function (dispatch, getState) {
-    dispatch({
-      type: 'POST_LISTING_REQUEST',
-    });
-
-    fetch(`${API_ROOT}/listings`, {
-      credentials: 'include',
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(listing),
-    })
-    .then((json) => {
-      dispatch({
-        json,
-        type: 'POST_LISTING_SUCCESS',
-      });
-      dispatch(loadListings());
-    })
-    .catch(error => dispatch({
-      error,
-      type: 'POST_LISTING_FAILURE',
-    }));
-  };
-}
-*/

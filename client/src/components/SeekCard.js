@@ -71,14 +71,6 @@ class SeekCard extends React.Component {
     const onShowStyles = { maxHeight: '1000px', transition: 'max-height 0.5s ease-in', overflow: 'hidden' };
     const onHideStyles = { maxHeight: '0', transition: 'max-height 0.15s ease-out', overflow: 'hidden' };
 
-    const actions = [
-/*      <FlatButton
-        label="Send"
-        primary
-        onTouchTap={this.handleClose}
-      />,*/
-    ];
-
     return (
       <div>
         <Card style={cardStyles} onExpandChange={this.handleExpandChange} expanded={expanded}>
@@ -108,7 +100,6 @@ class SeekCard extends React.Component {
         </Card>
         <Dialog
           title="Let the seller know you're interested. We'll put you in touch via email:"
-          actions={actions}
           modal={false}
           open={this.state.contactOpen}
           onRequestClose={this.handleContactClose}
