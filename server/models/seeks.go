@@ -2,6 +2,7 @@ package models
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	sq "github.com/Masterminds/squirrel"
 	"github.com/guregu/null"
@@ -65,6 +66,10 @@ func ReadSeeks(db *sql.DB, query *seekQuery) ([]*SeeksItem, error, int) {
 
 	for i, word := range strings.Fields(query.Query) {
 		stmt = stmt.Where(fmt.Sprintf("(lower(seeks.title) LIKE lower($%d) OR lower(seeks.description) LIKE lower($%d))", i+1, i+1), fmt.Sprint("%", word, "%"))
+	}
+
+	if query.UserID == 0 && query.OnlyMine {
+		return nil, errors.New("Unauthenticated user attempted to view profile data"), http.StatusUnauthorized
 	}
 
 	if query.OnlyMine {
