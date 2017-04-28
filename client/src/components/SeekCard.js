@@ -107,7 +107,7 @@ class SeekCard extends React.Component {
           </div>
         </Card>
         <Dialog
-          title="Let the seller know you're interested"
+          title="Let the seller know you're interested. We'll put you in touch via email:"
           actions={actions}
           modal={false}
           open={this.state.contactOpen}
