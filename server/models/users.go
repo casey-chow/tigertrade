@@ -69,7 +69,7 @@ func GetUser(db *sql.DB, netID string) (*User, error) {
 	return user, nil
 }
 
-// GetUser gets the specified user. If user does not exist, returns an error.
+// GetUserByID gets the specified user. If user does not exist, returns an error.
 func GetUserByID(db *sql.DB, id int) (*User, error) {
 	query := psql.
 		Select("key_id", "net_id", "creation_date", "last_modification_date").
