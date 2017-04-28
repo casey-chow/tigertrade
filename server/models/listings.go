@@ -44,6 +44,7 @@ type Listing struct {
 type listingQuery struct {
 	Query            string
 	OnlyStarred      bool
+	OnlyMine         bool
 	TruncationLength int
 	Limit            uint64
 	UserID           int
@@ -99,8 +100,12 @@ func ReadListings(db *sql.DB, query *listingQuery) ([]*ListingsItem, error, int)
 		stmt = stmt.Where(fmt.Sprintf("(lower(listings.title) LIKE lower($%d) OR lower(listings.description) LIKE lower($%d))", i+1, i+1), fmt.Sprint("%", word, "%"))
 	}
 
-	if query.UserID != 0 && query.OnlyStarred {
+	if query.OnlyStarred {
 		stmt = stmt.Where(isStarredBy(query.UserID))
+	}
+
+	if query.OnlyMine {
+		stmt = stmt.Where(sq.Eq{"listings.key_id": query.UserID})
 	}
 
 	stmt = stmt.OrderBy("listings.creation_date DESC")
