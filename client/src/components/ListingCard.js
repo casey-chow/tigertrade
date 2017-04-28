@@ -11,15 +11,18 @@ import {
 } from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
 import EmailIcon from 'material-ui/svg-icons/communication/email';
+import Delete from 'material-ui/svg-icons/action/delete';
 import FavoriteIcon from 'material-ui/svg-icons/action/favorite';
 import Dialog from 'material-ui/Dialog';
 
 import ContactSellerForm from './ContactSellerForm';
 import { mailSeller } from './../actions/users';
+import { deleteListing } from './../actions/listings';
 
 class ListingCard extends React.Component {
 
   static propTypes = {
+    currentUserId: PropTypes.number,
     dispatch: PropTypes.func.isRequired,
     expanded: PropTypes.bool.isRequired,
     onExpandChange: PropTypes.func,
@@ -39,6 +42,7 @@ class ListingCard extends React.Component {
   };
 
   static defaultProps = {
+    currentUserId: -1,
     expanded: false,
     onExpandChange: () => {},
   };
@@ -63,6 +67,10 @@ class ListingCard extends React.Component {
   handleSubmit = (data) => {
     this.props.dispatch(mailSeller(this.props.listing.keyId, data));
     this.handleContactClose();
+  }
+
+  handleDelete = () => {
+    this.props.dispatch(deleteListing(this.props.listing.keyId));
   }
 
   render() {
@@ -103,7 +111,10 @@ class ListingCard extends React.Component {
             }
 
             <CardActions>
-              <FlatButton primary icon={<EmailIcon />} label="Contact Seller" onTouchTap={this.handleContactOpen} />
+              { this.props.currentUserId !== listing.userId ?
+                <FlatButton primary icon={<EmailIcon />} label="Contact Seller" onTouchTap={this.handleContactOpen} /> :
+                <FlatButton primary icon={<Delete />} label="Delete Listing" onTouchTap={this.handleDelete} />
+              }
               <FlatButton secondary icon={<FavoriteIcon />} label="Save" />
             </CardActions>
 
@@ -122,4 +133,8 @@ class ListingCard extends React.Component {
   }
 }
 
-export default connect()(ListingCard);
+const mapStateToProps = state => ({
+  currentUserId: state.currentUser.keyId,
+});
+
+export default connect(mapStateToProps)(ListingCard);

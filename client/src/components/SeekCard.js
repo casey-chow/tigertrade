@@ -10,6 +10,7 @@ import {
 } from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
 import EmailIcon from 'material-ui/svg-icons/communication/email';
+import Delete from 'material-ui/svg-icons/action/delete';
 import FavoriteIcon from 'material-ui/svg-icons/action/favorite';
 import Dialog from 'material-ui/Dialog';
 
@@ -19,6 +20,7 @@ import { mailBuyer } from './../actions/users';
 class SeekCard extends React.Component {
 
   static propTypes = {
+    currentUserId: PropTypes.number,
     dispatch: PropTypes.func.isRequired,
     expanded: PropTypes.bool.isRequired,
     onExpandChange: PropTypes.func,
@@ -37,6 +39,7 @@ class SeekCard extends React.Component {
   };
 
   static defaultProps = {
+    currentUserId: -1,
     expanded: false,
     onExpandChange: () => {},
   }
@@ -93,7 +96,10 @@ class SeekCard extends React.Component {
             }
 
             <CardActions>
-              <FlatButton primary icon={<EmailIcon />} label="Contact Buyer" onTouchTap={this.handleContactOpen} />
+              { this.props.currentUserId !== seek.userId ?
+                <FlatButton primary icon={<EmailIcon />} label="Contact Buyer" onTouchTap={this.handleContactOpen} /> :
+                <FlatButton primary icon={<Delete />} label="Delete" onTouchTap={this.handleDelete} />
+              }
               <FlatButton secondary icon={<FavoriteIcon />} label="Notify Me" />
             </CardActions>
 
