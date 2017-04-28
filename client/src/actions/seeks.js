@@ -1,4 +1,5 @@
 import fetch from 'isomorphic-fetch';
+import { stringify } from 'query-string';
 
 import { API_ROOT } from './common';
 
@@ -8,7 +9,7 @@ export function loadSeeks(query = { query: '' }) {
       query,
       type: 'LOAD_SEEKS_REQUEST',
     });
-    fetch(`${API_ROOT}/seeks?query=${encodeURIComponent(query.query)}`)
+    fetch(`${API_ROOT}/seeks?${stringify(query)}`)
       .then(response => response.json())
       .then(json => dispatch({
         json,

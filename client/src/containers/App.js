@@ -10,6 +10,7 @@ import Compose from './Compose';
 import Listings from './Listings';
 import Seeks from './Seeks';
 import SavedSearches from './SavedSearches';
+import Profile from './Profile';
 
 import { loadCurrentUser } from '../actions/users';
 
@@ -43,6 +44,7 @@ class App extends Component {
             <Route path="/seeks" component={Seeks} />
             <Route path="/savedsearches" component={SavedSearches} />
             <Route path="/compose" component={Compose} />
+            <Route path="/profile" component={Profile} />
           </Switch>
         </div>
       </div>

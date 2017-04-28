@@ -1,4 +1,5 @@
 import fetch from 'isomorphic-fetch';
+import { stringify } from 'query-string';
 
 import { API_ROOT } from './common';
 
@@ -6,9 +7,10 @@ export function loadListings(query = { query: '' }) {
   return function (dispatch, getState) {
     dispatch({
       query,
+      debugStr: stringify(query),
       type: 'LOAD_LISTINGS_REQUEST',
     });
-    fetch(`${API_ROOT}/listings?query=${encodeURIComponent(query.query)}`)
+    fetch(`${API_ROOT}/listings?${stringify(query)}`)
       .then(response => response.json())
       .then(json => dispatch({
         json,
