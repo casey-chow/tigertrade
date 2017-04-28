@@ -172,7 +172,6 @@ func UpdateSavedSearch(db *sql.DB, id string, savedSearch SavedSearch, userId in
 // Deletes the saved search in the database with the given id with the given saved search
 // (belonging to userId).
 func DeleteSavedSearch(db *sql.DB, id string, userId int) (error, int) {
-
 	// Update savedSearch
 	stmt := psql.Delete("saved_searches").
 		Where(sq.Eq{"saved_searches.key_id": id,
