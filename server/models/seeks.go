@@ -63,7 +63,7 @@ func ReadSeeks(db *sql.DB, query *seekQuery) ([]*SeeksItem, error, int) {
 			"users.net_id", "saved_search_id", "notify_enabled", "status").
 		From("seeks").
 		Where("seeks.is_active=true").
-		LeftJoin("users ON listings.user_id = users.key_id")
+		LeftJoin("users ON seeks.user_id = users.key_id")
 
 	for i, word := range strings.Fields(query.Query) {
 		stmt = stmt.Where(fmt.Sprintf("(lower(seeks.title) LIKE lower($%d) OR lower(seeks.description) LIKE lower($%d))", i+1, i+1), fmt.Sprint("%", word, "%"))
@@ -123,7 +123,7 @@ func ReadSeek(db *sql.DB, id string) (Seek, error, int) {
 			"users.net_id", "saved_search_id", "notify_enabled", "status").
 		From("seeks").
 		Where("seeks.is_active=true").
-		LeftJoin("users ON listings.user_id = users.key_id").
+		LeftJoin("users ON seeks.user_id = users.key_id").
 		Where(sq.Eq{"seeks.key_id": id})
 
 	// Query db for seek
