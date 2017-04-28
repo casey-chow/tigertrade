@@ -2,11 +2,11 @@ package models
 
 import (
 	"database/sql"
-	"errors"
 	"fmt"
 	sq "github.com/Masterminds/squirrel"
 	"github.com/guregu/null"
 	"net/http"
+	"strconv"
 	"strings"
 )
 
@@ -22,6 +22,7 @@ type ListingsItem struct {
 	Status               null.String `json:"status"`
 	ExpirationDate       null.Time   `json:"expirationDate"`
 	Thumbnail            null.String `json:"thumbnail"`
+	IsStarred            bool        `json:"isStarred"`
 }
 
 // Returned by a function returning only one listing (usually by ID)
@@ -37,31 +38,80 @@ type Listing struct {
 	ExpirationDate       null.Time   `json:"expirationDate"`
 	Thumbnail            null.String `json:"thumbnail"`
 	Photos               []Photo     `json:"photos"`
+	IsStarred            bool        `json:"isStarred"`
+}
+
+type listingQuery struct {
+	Query            string
+	OnlyStarred      bool
+	TruncationLength int
+	Limit            uint64
+	UserID           int
+}
+
+func NewListingQuery() *listingQuery {
+	q := new(listingQuery)
+	q.TruncationLength = defaultTruncationLength
+	q.Limit = defaultNumResults
+	return q
+}
+
+type IsStarred struct {
+	IsStarred bool `json:"isStarred"`
+}
+
+// Returns the SQL query that returns true if a particular listing is starred
+// by the user with key_id id. This method exists because dealing with nested
+// SQL queries in squirrel is an ugly pain in the ass.
+func isStarredBy(id int) string {
+	// "But Perry!" you say,
+	// "concatenating strings and putting it directly in an SQL query is bad!"
+	// you say.
+	// "You're exactly correct, of course. Unfortunately we need a nested sql
+	// query here and I couldn't find any documentation for nested queries
+	// using squirrel. (Or any other documentation on squirrel other than the
+	// godocs). On the bright side, we're not actually opening ourselves to an
+	// injection attack since id is guaranteed to be an int."
+	// "But isn't this still annoying and ugly?"
+	// "Yeah."
+	return "exists(  SELECT 1 FROM starred_listings " +
+		"WHERE starred_listings.listing_id=listings.key_id " +
+		"AND starred_listings.user_id=" + strconv.Itoa(id) + " " +
+		"AND starred_listings.is_active)"
 }
 
 // Returns the most recent count listings, based on original date created.
 // If queryStr is nonempty, filters that every returned item must have every word in either title or description
 // On error, returns an error and the HTTP code associated with that error.
-func ReadListings(db *sql.DB, queryStr string, maxDescriptionSize int, limit uint64) ([]*ListingsItem, error, int) {
-	// Create listings query
-	query := psql.
-		Select("listings.key_id", "listings.creation_date", "listings.last_modification_date",
-			"title", fmt.Sprintf("left(description, %d)", maxDescriptionSize),
-			"user_id", "price", "status", "expiration_date", "thumbnails.url").
+func ReadListings(db *sql.DB, query *listingQuery) ([]*ListingsItem, error, int) {
+	// Create listings statement
+	stmt := psql.
+		Select("listings.key_id", "listings.creation_date",
+			"listings.last_modification_date", "title",
+			fmt.Sprintf("left(description, %d)", query.TruncationLength), "user_id",
+			"price", "status", "expiration_date", "thumbnails.url",
+			isStarredBy(query.UserID)).
 		From("listings").
 		Where("listings.is_active=true").
 		LeftJoin("thumbnails ON listings.thumbnail_id = thumbnails.key_id")
 
-	for i, word := range strings.Fields(queryStr) {
-		query = query.Where(fmt.Sprintf("(lower(listings.title) LIKE lower($%d) OR lower(listings.description) LIKE lower($%d))", i+1, i+1), fmt.Sprint("%", word, "%"))
+	for i, word := range strings.Fields(query.Query) {
+		stmt = stmt.Where(fmt.Sprintf("(lower(listings.title) LIKE lower($%d) OR lower(listings.description) LIKE lower($%d))", i+1, i+1), fmt.Sprint("%", word, "%"))
 	}
 
-	query = query.
-		OrderBy("listings.creation_date DESC").
-		Limit(limit)
+	if query.UserID != 0 && query.OnlyStarred {
+		stmt = stmt.Where(isStarredBy(query.UserID))
+	}
+
+	stmt = stmt.OrderBy("listings.creation_date DESC")
+	if query.Limit <= maxNumResults {
+		stmt = stmt.Limit(query.Limit)
+	} else {
+		stmt = stmt.Limit(maxNumResults)
+	}
 
 	// Query db
-	rows, err := query.RunWith(db).Query()
+	rows, err := stmt.RunWith(db).Query()
 	if err != nil {
 		return nil, err, http.StatusInternalServerError
 	}
@@ -73,12 +123,13 @@ func ReadListings(db *sql.DB, queryStr string, maxDescriptionSize int, limit uin
 		l := new(ListingsItem)
 		err := rows.Scan(&l.KeyID, &l.CreationDate, &l.LastModificationDate,
 			&l.Title, &l.Description, &l.UserID, &l.Price, &l.Status,
-			&l.ExpirationDate, &l.Thumbnail)
+			&l.ExpirationDate, &l.Thumbnail, &l.IsStarred)
 		if err != nil {
 			return nil, err, http.StatusInternalServerError
 		}
 		listings = append(listings, l)
 	}
+
 	if err = rows.Err(); err != nil {
 		return nil, err, http.StatusInternalServerError
 	}
@@ -145,7 +196,7 @@ func CreateListing(db *sql.DB, listing Listing, userId int) (Listing, error, int
 			listing.Status, listing.ExpirationDate, listing.Thumbnail).
 		Suffix("RETURNING key_id, creation_date")
 
-	// Query db for listing
+	// Add listing to database, retrieve the one we just added (now with a key_id)
 	rows, err := stmt.RunWith(db).Query()
 	if err != nil {
 		return listing, err, http.StatusInternalServerError
@@ -180,21 +231,12 @@ func UpdateListing(db *sql.DB, id string, listing Listing, userId int) (Listing,
 		Where(sq.Eq{"listings.key_id": id,
 			"listings.user_id": userId})
 
-	// Query db for listing
+	// Update listing
 	result, err := stmt.RunWith(db).Exec()
-	if err != nil {
-		return listing, err, http.StatusInternalServerError
-	}
+	code, err := getUpdateResultCode(result, err)
 
-	numRows, err := result.RowsAffected()
 	if err != nil {
-		return listing, err, http.StatusInternalServerError
-	}
-	if numRows == 0 {
-		return listing, sql.ErrNoRows, http.StatusNotFound
-	}
-	if numRows != 1 {
-		return listing, errors.New("Multiple rows affected by UpdateListing"), http.StatusInternalServerError
+		return listing, err, code
 	}
 
 	return ReadListing(db, id)
@@ -211,20 +253,44 @@ func DeleteListing(db *sql.DB, id string, userId int) (error, int) {
 
 	// Query db for listing
 	result, err := stmt.RunWith(db).Exec()
-	if err != nil {
-		return err, http.StatusInternalServerError
-	}
+	code, err := getUpdateResultCode(result, err)
 
-	numRows, err := result.RowsAffected()
-	if err != nil {
-		return err, http.StatusInternalServerError
-	}
-	if numRows == 0 {
-		return sql.ErrNoRows, http.StatusNotFound
-	}
-	if numRows != 1 {
-		return errors.New("Multiple rows affected by DeleteListing"), http.StatusInternalServerError
-	}
+	return err, code
+}
 
-	return nil, http.StatusOK
+// SetStar adds or removes a star, depending on whether add is set to true.
+func SetStar(db *sql.DB, add bool, listingId string, userId int) (error, int) {
+	if add {
+		return addStar(db, listingId, userId)
+	} else {
+		return removeStar(db, listingId, userId)
+	}
+}
+
+// addStar adds a star to the table for the given listingId and userId.
+func addStar(db *sql.DB, listingId string, userId int) (error, int) {
+	insertStarStmt := psql.Insert("starred_listings").
+		Columns("user_id", "listing_id").
+		Values(userId, listingId)
+
+	// Query db for listing
+	result, err := insertStarStmt.RunWith(db).Exec()
+	code, err := getUpdateResultCode(result, err)
+
+	return err, code
+}
+
+// removeStar remvoes a star from the given listingId for a given userId.
+func removeStar(db *sql.DB, listingId string, userId int) (error, int) {
+	stmt := psql.Update("starred_listings").
+		SetMap(map[string]interface{}{
+			"is_active": false,
+		}).
+		Where(sq.Eq{"listing_id": listingId, "user_id": userId})
+
+	// Query db for listing
+	result, err := stmt.RunWith(db).Exec()
+	code, err := getUpdateResultCode(result, err)
+
+	return err, code
 }

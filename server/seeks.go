@@ -11,25 +11,19 @@ import (
 
 // Writes the most recent count seeks, based on original date created to w
 func ReadSeeks(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	// Get limit from params
-	limitStr := r.URL.Query().Get("limit")
-	limit := defaultNumResults
+	query := models.NewSeekQuery()
 
-	var e error
-	if limitStr != "" {
-		limit, e = strconv.Atoi(limitStr)
-		if e != nil || limit == 0 {
-			limit = defaultNumResults
+	// Get limit from params
+	if limitStr := r.URL.Query().Get("limit"); limitStr != "" {
+		if limit, err := strconv.Atoi(limitStr); err == nil && limit != 0 {
+			query.Limit = uint64(limit)
 		}
-	}
-	if limit > maxNumResults {
-		limit = maxNumResults
 	}
 
 	// Get optional search query from params
-	queryStr := r.URL.Query().Get("query")
+	query.Query = r.URL.Query().Get("query")
 
-	seeks, err, code := models.ReadSeeks(db, queryStr, truncationLength, uint64(limit))
+	seeks, err, code := models.ReadSeeks(db, query)
 	if err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while reading recent or queried seeks")

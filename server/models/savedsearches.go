@@ -2,7 +2,6 @@ package models
 
 import (
 	"database/sql"
-	"errors"
 	sq "github.com/Masterminds/squirrel"
 	"github.com/guregu/null"
 	"net/http"
@@ -20,23 +19,39 @@ type SavedSearch struct {
 	SearchExpirationDate  null.Time   `json:"searchExpirationDate"`
 }
 
+type savedSearchQuery struct {
+	Limit  uint64
+	UserID int
+}
+
+func NewSavedSearchQuery() *savedSearchQuery {
+	q := new(savedSearchQuery)
+	q.Limit = defaultNumResults
+	return q
+}
+
 // Returns the most recent count saved searches, based on original date created.
 // If queryStr is nonempty, filters that every returned item must have every word in either title or description
 // On error, returns an error and the HTTP code associated with that error.
-func ReadSavedSearches(db *sql.DB, userId int, limit uint64) ([]*SavedSearch, error, int) {
-	// Create saved searches query
-	query := psql.
+func ReadSavedSearches(db *sql.DB, query *savedSearchQuery) ([]*SavedSearch, error, int) {
+	// Create saved searches statement
+	stmt := psql.
 		Select("saved_searches.key_id", "saved_searches.creation_date",
 			"saved_searches.last_modification_date", "query", "min_price",
 			"max_price", "listing_expiration_date", "search_expiration_date").
 		From("saved_searches").
-		Where(sq.Eq{"saved_searches.user_id": userId,
+		Where(sq.Eq{"saved_searches.user_id": query.UserID,
 			"saved_searches.is_active": true}).
-		OrderBy("saved_searches.creation_date DESC").
-		Limit(limit)
+		OrderBy("saved_searches.creation_date DESC")
+
+	if query.Limit <= maxNumResults {
+		stmt = stmt.Limit(query.Limit)
+	} else {
+		stmt = stmt.Limit(maxNumResults)
+	}
 
 	// Query db
-	rows, err := query.RunWith(db).Query()
+	rows, err := stmt.RunWith(db).Query()
 	if err != nil {
 		return nil, err, http.StatusInternalServerError
 	}
@@ -145,19 +160,10 @@ func UpdateSavedSearch(db *sql.DB, id string, savedSearch SavedSearch, userId in
 
 	// Query db for savedSearch
 	result, err := stmt.RunWith(db).Exec()
-	if err != nil {
-		return savedSearch, err, http.StatusInternalServerError
-	}
+	code, err := getUpdateResultCode(result, err)
 
-	numRows, err := result.RowsAffected()
 	if err != nil {
-		return savedSearch, err, http.StatusInternalServerError
-	}
-	if numRows == 0 {
-		return savedSearch, sql.ErrNoRows, http.StatusNotFound
-	}
-	if numRows != 1 {
-		return savedSearch, errors.New("Multiple rows affected by UpdateSavedSearch"), http.StatusInternalServerError
+		return savedSearch, err, code
 	}
 
 	return ReadSavedSearch(db, id, userId)
@@ -174,20 +180,7 @@ func DeleteSavedSearch(db *sql.DB, id string, userId int) (error, int) {
 
 	// Query db for savedSearch
 	result, err := stmt.RunWith(db).Exec()
-	if err != nil {
-		return err, http.StatusInternalServerError
-	}
+	code, err := getUpdateResultCode(result, err)
 
-	numRows, err := result.RowsAffected()
-	if err != nil {
-		return err, http.StatusInternalServerError
-	}
-	if numRows == 0 {
-		return sql.ErrNoRows, http.StatusNotFound
-	}
-	if numRows != 1 {
-		return errors.New("Multiple rows affected by DeleteSavedSearch"), http.StatusInternalServerError
-	}
-
-	return nil, http.StatusOK
+	return err, code
 }
