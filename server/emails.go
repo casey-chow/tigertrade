@@ -8,11 +8,6 @@ import (
 	"net/http"
 )
 
-const (
-	// yeah I know it sounds weird, we can change it later.
-	DEFAULT_SUBJECT = "I am interested in buying an item from you."
-)
-
 // (•_•) ( •_•)>⌐■-■ (⌐■_■)
 func ContactListing(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	ContactPost(w, r, ps, false)
@@ -31,65 +26,32 @@ func ContactPost(w http.ResponseWriter, r *http.Request, ps httprouter.Params, i
 		return
 	}
 
-	// Get Body from request
-	email := models.EmailInput{}
-	err := ParseJSONFromBody(r, &email)
+	email, err, code := models.NewEmailInput(db, id, isSeek)
 	if err != nil {
+		raven.CaptureError(err, nil)
+		log.WithField("err", err).Error("error while creating email struct")
+		Error(w, code)
+	}
+
+	// Get NetId of the user initiating the contact
+	if email.Sender = getUsername(r); email.Sender == "" {
+		Error(w, http.StatusUnauthorized)
+		return
+	}
+
+	// Get Body from request
+	if err := ParseJSONFromBody(r, &email); err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("error while parsing JSON file")
 		Error(w, http.StatusInternalServerError)
 		return
 	}
-	body := email.Body
 
-	// Get NetId of the user initiating the contact
-	sender := getUsername(r)
-	if sender == "" {
-		Error(w, http.StatusUnauthorized)
-		return
-	}
-
-	// Get NetId of the user that created this post
-	postOwner, err, code := getOwner(id, isSeek)
-	if err != nil {
+	// Send email
+	if err, code := models.SendEmail(email); err != nil {
 		raven.CaptureError(err, nil)
-		log.WithField("err", err).Error("Error while getting the owner of the post")
+		log.WithField("err", err).Error("Error while attempting to send email")
 		Error(w, code)
 		return
 	}
-
-	// Send email
-	err = models.SendEmail(sender, postOwner, DEFAULT_SUBJECT, body)
-	if err != nil {
-		raven.CaptureError(err, nil)
-		log.WithField("err", err).Error("Error while attempting to send email")
-		Error(w, http.StatusInternalServerError)
-		return
-	}
-}
-
-// Returns the netId of the owner of a post with the given id
-func getOwner(id string, isSeek bool) (string, error, int) {
-
-	var err error
-	var code int
-	var ownerId int
-	var seek models.Seek
-	var listing models.Listing
-
-	if isSeek {
-		seek, err, code = models.ReadSeek(db, id)
-		ownerId = seek.UserID
-	} else {
-		listing, err, code = models.ReadListing(db, id)
-		ownerId = listing.UserID
-	}
-
-	if err != nil {
-		return "", err, code
-	}
-
-	owner, _ := models.GetUserByID(db, ownerId)
-
-	return owner.NetID, err, code
 }

@@ -1,20 +1,57 @@
 package models
 
 import (
+	"database/sql"
 	"errors"
+	"fmt"
 	"github.com/sendgrid/sendgrid-go"
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
+	"net/http"
 	"os"
 	"strconv"
 )
 
-// This isn't actually used here at all, nor should it. I'm putting it here
-// for consistency with other models.
-// This is the json struct we expect to get from the user when the request to
-// send an email is sent. We should _not_ accept anything other than the body.
-// (Ok _maybe_ the subject if we decide to, but never the netIds)
-type EmailInput struct {
-	Body string `json:"body"`
+const (
+	DEFAULT_SUBJECT = "I am interested in buying an item from you: %s"
+)
+
+type emailInput struct {
+	Sender    string
+	Recepient string
+	Subject   string
+	Body      string `json:"body"`
+}
+
+func NewEmailInput(db *sql.DB, id string, isSeek bool) (*emailInput, error, int) {
+	i := new(emailInput)
+
+	var title string
+	var ownerId int
+	if isSeek {
+		seek, err, code := ReadSeek(db, id)
+		if err != nil {
+			return nil, err, code
+		}
+		title = seek.Title
+		ownerId = seek.UserID
+	} else {
+		listing, err, code := ReadListing(db, id)
+		if err != nil {
+			return nil, err, code
+		}
+		title = listing.Title
+		ownerId = listing.UserID
+	}
+
+	i.Subject = fmt.Sprintf(DEFAULT_SUBJECT, title)
+
+	if owner, err := GetUserByID(db, ownerId); err != nil {
+		return nil, err, http.StatusInternalServerError
+	} else {
+		i.Recepient = owner.NetID
+	}
+
+	return i, nil, http.StatusOK
 }
 
 func getEmail(netId string) *mail.Email {
@@ -22,16 +59,16 @@ func getEmail(netId string) *mail.Email {
 	return mail.NewEmail(netId, addr)
 }
 
-func SendEmail(netIdFrom string, netIdTo string, subject string, body string) error {
+func SendEmail(input *emailInput) (error, int) {
 
-	if netIdFrom == netIdTo {
-		return errors.New("To and From fields cannot be the same.")
+	if input.Sender == input.Recepient {
+		return errors.New("To and From fields cannot be the same."), http.StatusBadRequest
 	}
 
 	// Get email addresses
-	from := getEmail(netIdFrom)
-	to := getEmail(netIdTo)
-	content := mail.NewContent("text/plain", body)
+	from := getEmail(input.Sender)
+	to := getEmail(input.Recepient)
+	content := mail.NewContent("text/plain", input.Body)
 
 	// Create email
 	m := mail.NewV3Mail()
@@ -39,7 +76,7 @@ func SendEmail(netIdFrom string, netIdTo string, subject string, body string) er
 	p := mail.NewPersonalization()
 	p.AddTos(to)
 	p.AddCCs(from) // So that the sender still gets a copy in their inbox.
-	p.Subject = subject
+	p.Subject = input.Subject
 	m.AddPersonalizations(p)
 	m.AddContent(content)
 
@@ -48,10 +85,13 @@ func SendEmail(netIdFrom string, netIdTo string, subject string, body string) er
 	request.Method = "POST"
 	request.Body = mail.GetRequestBody(m)
 	response, err := sendgrid.API(request)
+	if err != nil {
+		return err, http.StatusInternalServerError
+	}
 
-	if err == nil && response.StatusCode != 202 {
+	if response.StatusCode != 202 {
 		err = errors.New("Response not queued for sending. Status code: " + strconv.Itoa(response.StatusCode))
 	}
 
-	return err
+	return err, response.StatusCode
 }
