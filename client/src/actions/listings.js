@@ -2,13 +2,13 @@ import fetch from 'isomorphic-fetch';
 
 import { API_ROOT } from './common';
 
-export function loadListings(query = '') {
+export function loadListings(query = { query: '' }) {
   return function (dispatch, getState) {
     dispatch({
       query,
       type: 'LOAD_LISTINGS_REQUEST',
     });
-    fetch(`${API_ROOT}/listings?query=${encodeURIComponent(query)}`)
+    fetch(`${API_ROOT}/listings?query=${encodeURIComponent(query.query)}`)
       .then(response => response.json())
       .then(json => dispatch({
         json,

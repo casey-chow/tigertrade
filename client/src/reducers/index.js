@@ -108,7 +108,7 @@ const currentQuery = (state = '', action) => {
       return '';
     case 'LOAD_LISTINGS_REQUEST':
     case 'LOAD_SEEKS_REQUEST':
-      return decodeURIComponent(action.query);
+      return decodeURIComponent(action.query.query);
     default:
       return state;
   }
