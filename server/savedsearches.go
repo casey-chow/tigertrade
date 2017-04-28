@@ -11,31 +11,26 @@ import (
 
 // Writes the most recent count saved searches, based on original date created to w
 func ReadSavedSearches(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	// Get limit from params
-	limitStr := r.URL.Query().Get("limit")
-	limit := defaultNumResults
+	query := models.NewSavedSearchQuery()
 
-	var e error
-	if limitStr != "" {
-		limit, e = strconv.Atoi(limitStr)
-		if e != nil || limit == 0 {
-			limit = defaultNumResults
+	// Get limit from params
+	if limitStr := r.URL.Query().Get("limit"); limitStr != "" {
+		if limit, err := strconv.Atoi(limitStr); err == nil && limit != 0 {
+			query.Limit = uint64(limit)
 		}
-	}
-	if limit > maxNumResults {
-		limit = maxNumResults
 	}
 
 	// Retrieve UserID
-	user, err := models.GetUser(db, getUsername(r))
-	if err != nil { // Not authorized
+	if user, err := models.GetUser(db, getUsername(r)); err != nil { // Not authorized
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while authenticating user: not authorized")
 		Error(w, http.StatusUnauthorized)
 		return
+	} else {
+		query.UserID = user.KeyID
 	}
 
-	savedSearches, err, code := models.ReadSavedSearches(db, user.KeyID, uint64(limit))
+	savedSearches, err, code := models.ReadSavedSearches(db, query)
 	if err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while reading recent or queried saved searches")
