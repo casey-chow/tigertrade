@@ -10,7 +10,9 @@ export function loadListings(query = { query: '' }) {
       debugStr: stringify(query),
       type: 'LOAD_LISTINGS_REQUEST',
     });
-    fetch(`${API_ROOT}/listings?${stringify(query)}`)
+    fetch(`${API_ROOT}/listings?${stringify(query)}`, {
+      credentials: 'include',
+    })
       .then(response => response.json())
       .then(json => dispatch({
         json,
