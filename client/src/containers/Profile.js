@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-
+import { Container, Row, Col } from 'react-grid-system';
 import CircularProgress from 'material-ui/CircularProgress';
+import Toggle from 'material-ui/Toggle';
 import { parse } from 'query-string';
 
 import ListingsList from '../components/ListingsList';
@@ -83,6 +84,12 @@ class Profile extends Component {
     return false;
   }
 
+  handleToggle = (event, isInputChecked) => {
+    this.setState({
+      seeks: isInputChecked,
+    });
+  }
+
   render() {
     if ((this.props.listingsLoading || this.props.seeksLoading) && this.state.initialLoad) {
       return (
@@ -94,7 +101,20 @@ class Profile extends Component {
 
     return (
       <div>
-        { this.state.seeks ?
+        <Container>
+          <Row>
+            <Col xs={12}>
+              <Toggle
+                label="Listing / Seek"
+                labelPosition="right"
+                toggled={this.state.seeks}
+                onToggle={this.handleToggle}
+                style={{ float: 'right' }}
+              />
+            </Col>
+          </Row>
+        </Container>
+        { !this.state.seeks ?
           <ListingsList listings={this.props.listings} /> :
           <SeeksList seeks={this.props.seeks} />
         }
