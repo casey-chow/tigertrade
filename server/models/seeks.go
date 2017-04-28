@@ -17,7 +17,7 @@ type SeeksItem struct {
 	LastModificationDate null.Time   `json:"lastModificationDate"`
 	Title                string      `json:"title"`
 	Description          null.String `json:"description"` // expect to be truncated
-	UserID               int         `json:"userId"`
+	Username             null.String `json:"username"`
 	SavedSearchID        null.Int    `json:"savedSearchId"`
 	NotifyEnabled        null.Bool   `json:"notifyEnabled"`
 	Status               null.String `json:"status"`
@@ -31,7 +31,7 @@ type Seek struct {
 	LastModificationDate null.Time   `json:"lastModificationDate"`
 	Title                string      `json:"title"`
 	Description          null.String `json:"description"`
-	UserID               int         `json:"userId"`
+	Username             null.String `json:"username"`
 	SavedSearchID        null.Int    `json:"savedSearchId"`
 	NotifyEnabled        null.Bool   `json:"notifyEnabled"`
 	Status               null.String `json:"status"`
@@ -60,9 +60,10 @@ func ReadSeeks(db *sql.DB, query *seekQuery) ([]*SeeksItem, error, int) {
 	stmt := psql.
 		Select("seeks.key_id", "seeks.creation_date", "seeks.last_modification_date",
 			"title", fmt.Sprintf("left(description, %d)", query.TruncationLength),
-			"user_id", "saved_search_id", "notify_enabled", "status").
+			"users.net_id", "saved_search_id", "notify_enabled", "status").
 		From("seeks").
-		Where("seeks.is_active=true")
+		Where("seeks.is_active=true").
+		LeftJoin("users ON listings.user_id = users.key_id")
 
 	for i, word := range strings.Fields(query.Query) {
 		stmt = stmt.Where(fmt.Sprintf("(lower(seeks.title) LIKE lower($%d) OR lower(seeks.description) LIKE lower($%d))", i+1, i+1), fmt.Sprint("%", word, "%"))
@@ -94,14 +95,14 @@ func ReadSeeks(db *sql.DB, query *seekQuery) ([]*SeeksItem, error, int) {
 	// Populate seek structs
 	seeks := make([]*SeeksItem, 0)
 	for rows.Next() {
-		l := new(SeeksItem)
-		err := rows.Scan(&l.KeyID, &l.CreationDate, &l.LastModificationDate,
-			&l.Title, &l.Description, &l.UserID, &l.SavedSearchID,
-			&l.NotifyEnabled, &l.Status)
+		s := new(SeeksItem)
+		err := rows.Scan(&s.KeyID, &s.CreationDate, &s.LastModificationDate,
+			&s.Title, &s.Description, &s.Username, &s.SavedSearchID,
+			&s.NotifyEnabled, &s.Status)
 		if err != nil {
 			return nil, err, http.StatusInternalServerError
 		}
-		seeks = append(seeks, l)
+		seeks = append(seeks, s)
 	}
 	if err = rows.Err(); err != nil {
 		return nil, err, http.StatusInternalServerError
@@ -118,10 +119,11 @@ func ReadSeek(db *sql.DB, id string) (Seek, error, int) {
 	// Create seek query
 	query := psql.
 		Select("seeks.key_id", "seeks.creation_date",
-			"seeks.last_modification_date", "title", "description", "user_id",
-			"saved_search_id", "notify_enabled", "status").
+			"seeks.last_modification_date", "title", "description",
+			"users.net_id", "saved_search_id", "notify_enabled", "status").
 		From("seeks").
 		Where("seeks.is_active=true").
+		LeftJoin("users ON listings.user_id = users.key_id").
 		Where(sq.Eq{"seeks.key_id": id})
 
 	// Query db for seek
@@ -134,7 +136,7 @@ func ReadSeek(db *sql.DB, id string) (Seek, error, int) {
 	// Populate seek struct
 	rows.Next()
 	err = rows.Scan(&seek.KeyID, &seek.CreationDate, &seek.LastModificationDate,
-		&seek.Title, &seek.Description, &seek.UserID, &seek.SavedSearchID,
+		&seek.Title, &seek.Description, &seek.Username, &seek.SavedSearchID,
 		&seek.NotifyEnabled, &seek.Status)
 	if err == sql.ErrNoRows {
 		return seek, err, http.StatusNotFound
@@ -148,8 +150,6 @@ func ReadSeek(db *sql.DB, id string) (Seek, error, int) {
 // Inserts the given seek (belonging to userId) into the database. Returns
 // seek with its new KeyID added.
 func CreateSeek(db *sql.DB, seek Seek, userId int) (Seek, error, int) {
-	seek.UserID = userId
-
 	// Insert seek
 	stmt := psql.Insert("seeks").
 		Columns("title", "description", "user_id", "saved_search_id",
@@ -178,14 +178,11 @@ func CreateSeek(db *sql.DB, seek Seek, userId int) (Seek, error, int) {
 // Overwrites the seek in the database with the given id with the given seek
 // (belonging to userId). Returns the updated seek.
 func UpdateSeek(db *sql.DB, id string, seek Seek, userId int) (Seek, error, int) {
-	seek.UserID = userId
-
 	// Update seek
 	stmt := psql.Update("seeks").
 		SetMap(map[string]interface{}{
 			"title":           seek.Title,
 			"description":     seek.Description,
-			"user_id":         userId,
 			"saved_search_id": seek.SavedSearchID,
 			"notify_enabled":  seek.NotifyEnabled}).
 		Where(sq.Eq{"seeks.key_id": id,
@@ -205,7 +202,6 @@ func UpdateSeek(db *sql.DB, id string, seek Seek, userId int) (Seek, error, int)
 // Deletes the seek in the database with the given id with the given seek
 // (belonging to userId).
 func DeleteSeek(db *sql.DB, id string, userId int) (error, int) {
-
 	// Update seek
 	stmt := psql.Delete("seeks").
 		Where(sq.Eq{"seeks.key_id": id,

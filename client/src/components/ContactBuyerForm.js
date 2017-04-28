@@ -1,5 +1,4 @@
 import React, { PureComponent } from 'react';
-// import PropTypes from 'prop-types';
 import { Field, reduxForm, propTypes } from 'redux-form';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
