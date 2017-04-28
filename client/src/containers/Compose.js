@@ -65,7 +65,6 @@ class Compose extends Component {
 
     return (
       <div>
-        {this.state.submitted ? <h1>Submitted!</h1> : ''}
         <Container>
           <Row>
             <Col xs={12}>
