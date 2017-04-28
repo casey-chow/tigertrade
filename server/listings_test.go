@@ -71,11 +71,11 @@ func TestSearch(t *testing.T) {
 				WillReturnRows(sqlmock.NewRows([]string{
 					"listings.key_id", "listings.creation_date", "listings.last_modification_date",
 					"title", "description", "user_id",
-					"price", "status", "expiration_date", "thumbnails.url",
+					"price", "status", "expiration_date", "thumbnails.url", "starred_listings.is_starred",
 				}).AddRow(
 					1, time.Now(), time.Now(),
 					"SampleValue", "Sampleish Value!",
-					1, 1001, "For Sale", time.Now(), "http://example.com/asf.gif",
+					1, 1001, "For Sale", time.Now(), "http://example.com/asf.gif", false,
 				))
 
 			req, _ := http.NewRequest("GET", "/api/listings?query=SampleValue", nil)
@@ -104,11 +104,11 @@ func TestSearch(t *testing.T) {
 				WillReturnRows(sqlmock.NewRows([]string{
 					"listings.key_id", "listings.creation_date", "listings.last_modification_date",
 					"title", "description", "user_id",
-					"price", "status", "expiration_date", "thumbnails.url",
+					"price", "status", "expiration_date", "thumbnails.url", "starred_listings.is_starred",
 				}).AddRow(
 					1, time.Now(), time.Now(),
 					"SampleValue", "Sampleish Value!",
-					1, 1001, "For Sale", time.Now(), "http://example.com/asf.gif",
+					1, 1001, "For Sale", time.Now(), "http://example.com/asf.gif", false,
 				))
 
 			req, _ := http.NewRequest("GET", "/api/listings?query=sAmPleVaLue", nil)
