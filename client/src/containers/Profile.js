@@ -103,9 +103,10 @@ class Profile extends Component {
       <div>
         <Container>
           <Row>
-            <Col xs={12}>
+            <Col xs={1} />
+            <Col xs={10}>
               <Toggle
-                label="Listing / Seek"
+                label="Listings / Seeks"
                 labelPosition="right"
                 toggled={this.state.seeks}
                 onToggle={this.handleToggle}
@@ -114,10 +115,12 @@ class Profile extends Component {
             </Col>
           </Row>
         </Container>
-        { !this.state.seeks ?
-          <ListingsList listings={this.props.listings} /> :
-          <SeeksList seeks={this.props.seeks} />
-        }
+        <div style={{ marginTop: '10px' }}>
+          { !this.state.seeks ?
+            <ListingsList listings={this.props.listings} /> :
+            <SeeksList seeks={this.props.seeks} />
+          }
+        </div>
       </div>
     );
   }
