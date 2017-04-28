@@ -87,17 +87,21 @@ class ListingCard extends React.Component {
 
           <div style={expanded ? onShowStyles : onHideStyles}>
 
-            <CardMedia>
-              <img alt={listing.title} src={listing.thumbnail} style={{ minWidth: undefined, maxHeight: '300px', width: 'auto' }} />
-            </CardMedia>
+            { listing.thumbnail &&
+              <CardMedia>
+                <img alt={listing.title} src={listing.thumbnail} style={{ minWidth: undefined, maxHeight: '300px', width: 'auto' }} />
+              </CardMedia>
+            }
 
             <CardTitle
               title={listing.title}
             />
 
-            <CardText>
-              {listing.description}
-            </CardText>
+            { listing.description &&
+              <CardText>
+                {listing.description}
+              </CardText>
+            }
 
             <CardActions>
               <FlatButton primary icon={<EmailIcon />} label="Contact Seller" onTouchTap={this.handleContactOpen} />
