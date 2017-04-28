@@ -113,7 +113,7 @@ class SeekCard extends React.Component {
           open={this.state.contactOpen}
           onRequestClose={this.handleContactClose}
         >
-          <ContactBuyerForm onSubmit={this.handleSubmit} />
+          <ContactBuyerForm onSubmit={this.handleSubmit} title={seek.title} initialValues={{ message: `Hi! I'm interested in selling "${seek.title}".` }} />
         </Dialog>
       </div>
     );

@@ -123,7 +123,7 @@ class ListingCard extends React.Component {
           open={this.state.contactOpen}
           onRequestClose={this.handleContactClose}
         >
-          <ContactSellerForm onSubmit={this.handleSubmit} />
+          <ContactSellerForm onSubmit={this.handleSubmit} initialValues={{ message: `Hi! I'm interested in buying "${listing.title}".` }} />
         </Dialog>
       </div>
     );

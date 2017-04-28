@@ -7,11 +7,14 @@ import RaisedButton from 'material-ui/RaisedButton';
 // https://stackoverflow.com/questions/33138370/how-to-wire-up-redux-form-bindings-to-the-forms-inputs
 
 const messageField = field => (
-  <TextField
-    hintText="Hi! You might be interested in buying my..."
-    value={field.input.value} onChange={field.input.onChange} multiLine
-    fullWidth
-  />
+  <div style={{ backgroundColor: 'rgba(0,0,0,0.05)', padding: '5px', marginLeft: '-5px' }}>
+    <TextField
+      name="contactBuyer"
+      hint="Write your message to the prospective buyer here."
+      value={field.input.value} onChange={field.input.onChange} multiLine
+      fullWidth
+    />
+  </div>
 );
 
 class ContactBuyerForm extends PureComponent {
@@ -20,7 +23,7 @@ class ContactBuyerForm extends PureComponent {
   }
 
   render() {
-    const { handleSubmit, pristine, reset, submitting } = this.props;
+    const { handleSubmit, submitting } = this.props;
 
     return (
       <form onSubmit={handleSubmit}>
@@ -29,9 +32,8 @@ class ContactBuyerForm extends PureComponent {
             <Field name="message" id="message" component={messageField} />
           </div>
         </div>
-        <div>
-          <RaisedButton type="submit" disabled={pristine || submitting} style={{ margin: 8, padding: 1 }}>Submit</RaisedButton>
-          <RaisedButton type="button" disabled={pristine || submitting} style={{ margin: 8, padding: 1 }} onClick={reset}>Clear</RaisedButton>
+        <div style={{ width: '100%' }}>
+          <RaisedButton type="submit" disabled={submitting} style={{ margin: 8, padding: 1, float: 'right' }}>Send</RaisedButton>
         </div>
       </form>
     );
