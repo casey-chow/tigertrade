@@ -36,28 +36,43 @@ type Seek struct {
 	Status               null.String `json:"status"`
 }
 
+type seekQuery struct {
+	Query string
+	Limit uint64
+}
+
+func NewSeekQuery() *seekQuery {
+	q := new(seekQuery)
+	q.Limit = defaultNumResults
+	return q
+}
+
 // Returns the most recent count seeks, based on original date created.
 // If queryStr is nonempty, filters that every returned item must have every word in either title or description
 // On error, returns an error and the HTTP code associated with that error.
-func ReadSeeks(db *sql.DB, queryStr string, maxDescriptionSize int, limit uint64) ([]*SeeksItem, error, int) {
-	// Create seeks query
-	query := psql.
+func ReadSeeks(db *sql.DB, query *seekQuery) ([]*SeeksItem, error, int) {
+	// Create seeks statement
+	stmt := psql.
 		Select("seeks.key_id", "seeks.creation_date", "seeks.last_modification_date",
-			"title", fmt.Sprintf("left(description, %d)", maxDescriptionSize),
+			"title", fmt.Sprintf("left(description, %d)", truncationLength),
 			"user_id", "saved_search_id", "notify_enabled", "status").
 		From("seeks").
 		Where("seeks.is_active=true")
 
-	for i, word := range strings.Fields(queryStr) {
-		query = query.Where(fmt.Sprintf("(lower(seeks.title) LIKE lower($%d) OR lower(seeks.description) LIKE lower($%d))", i+1, i+1), fmt.Sprint("%", word, "%"))
+	for i, word := range strings.Fields(query.Query) {
+		stmt = stmt.Where(fmt.Sprintf("(lower(seeks.title) LIKE lower($%d) OR lower(seeks.description) LIKE lower($%d))", i+1, i+1), fmt.Sprint("%", word, "%"))
 	}
 
-	query = query.
-		OrderBy("seeks.creation_date DESC").
-		Limit(limit)
+	stmt = stmt.OrderBy("seeks.creation_date DESC")
+
+	if query.Limit <= maxNumResults {
+		stmt = stmt.Limit(query.Limit)
+	} else {
+		stmt = stmt.Limit(maxNumResults)
+	}
 
 	// Query db
-	rows, err := query.RunWith(db).Query()
+	rows, err := stmt.RunWith(db).Query()
 	if err != nil {
 		return nil, err, http.StatusInternalServerError
 	}

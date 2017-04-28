@@ -41,6 +41,20 @@ type Listing struct {
 	IsStarred            bool        `json:"isStarred"`
 }
 
+type listingQuery struct {
+	Query            string
+	OnlyStarred      bool
+	TruncationLength int
+	Limit            uint64
+	UserID           int
+}
+
+func NewListingQuery() *listingQuery {
+	q := new(listingQuery)
+	q.Limit = defaultNumResults
+	return q
+}
+
 type IsStarred struct {
 	IsStarred bool `json:"isStarred"`
 }
@@ -68,78 +82,35 @@ func isStarredBy(id int) string {
 // Returns the most recent count listings, based on original date created.
 // If queryStr is nonempty, filters that every returned item must have every word in either title or description
 // On error, returns an error and the HTTP code associated with that error.
-func ReadListings(db *sql.DB, queryStr string, onlyStarred bool, maxDescriptionSize int, limit uint64) ([]*ListingsItem, error, int) {
-	// Create listings query
-	query := psql.
-		Select("listings.key_id", "listings.creation_date", "listings.last_modification_date",
-			"title", fmt.Sprintf("left(description, %d)", maxDescriptionSize),
-			"user_id", "price", "status", "expiration_date", "thumbnails.url").
+func ReadListings(db *sql.DB, query *listingQuery) ([]*ListingsItem, error, int) {
+	// Create listings statement
+	stmt := psql.
+		Select("listings.key_id", "listings.creation_date",
+			"listings.last_modification_date", "title",
+			fmt.Sprintf("left(description, %d)", truncationLength), "user_id",
+			"price", "status", "expiration_date", "thumbnails.url",
+			isStarredBy(query.UserID)).
 		From("listings").
 		Where("listings.is_active=true").
 		LeftJoin("thumbnails ON listings.thumbnail_id = thumbnails.key_id")
 
-	for i, word := range strings.Fields(queryStr) {
-		query = query.Where(fmt.Sprintf("(lower(listings.title) LIKE lower($%d) OR lower(listings.description) LIKE lower($%d))", i+1, i+1), fmt.Sprint("%", word, "%"))
+	for i, word := range strings.Fields(query.Query) {
+		stmt = stmt.Where(fmt.Sprintf("(lower(listings.title) LIKE lower($%d) OR lower(listings.description) LIKE lower($%d))", i+1, i+1), fmt.Sprint("%", word, "%"))
 	}
 
-	query = query.
-		OrderBy("listings.creation_date DESC").
-		Limit(limit)
+	if query.UserID != 0 && query.OnlyStarred {
+		stmt = stmt.Where(isStarredBy(query.UserID))
+	}
+
+	stmt = stmt.OrderBy("listings.creation_date DESC")
+	if query.Limit <= maxNumResults {
+		stmt = stmt.Limit(query.Limit)
+	} else {
+		stmt = stmt.Limit(maxNumResults)
+	}
 
 	// Query db
-	rows, err := query.RunWith(db).Query()
-	if err != nil {
-		return nil, err, http.StatusInternalServerError
-	}
-	defer rows.Close()
-
-	// Populate listing structs
-	listings := make([]*ListingsItem, 0)
-	for rows.Next() {
-		l := new(ListingsItem)
-		err := rows.Scan(&l.KeyID, &l.CreationDate, &l.LastModificationDate,
-			&l.Title, &l.Description, &l.UserID, &l.Price, &l.Status,
-			&l.ExpirationDate, &l.Thumbnail)
-		if err != nil {
-			return nil, err, http.StatusInternalServerError
-		}
-		listings = append(listings, l)
-	}
-
-	if err = rows.Err(); err != nil {
-		return nil, err, http.StatusInternalServerError
-	}
-
-	return listings, nil, http.StatusOK
-}
-
-// Returns the most recent count listings, based on original date created.
-// If queryStr is nonempty, filters that every returned item must have every word in either title or description
-// On error, returns an error and the HTTP code associated with that error.
-func ReadListingsWhileAuthed(db *sql.DB, queryStr string, onlyStarred bool, maxDescriptionSize int, limit uint64, userId int) ([]*ListingsItem, error, int) {
-	// Create listings query
-	query := psql.
-		Select("listings.key_id", "listings.creation_date", "listings.last_modification_date",
-			"title", fmt.Sprintf("left(description, %d)", maxDescriptionSize),
-			"user_id", "price", "status", "expiration_date", "thumbnails.url", isStarredBy(userId)).
-		From("listings").
-		Where("listings.is_active=true").
-		LeftJoin("thumbnails ON listings.thumbnail_id = thumbnails.key_id")
-
-	for i, word := range strings.Fields(queryStr) {
-		query = query.Where(fmt.Sprintf("(lower(listings.title) LIKE lower($%d) OR lower(listings.description) LIKE lower($%d))", i+1, i+1), fmt.Sprint("%", word, "%"))
-	}
-
-	if onlyStarred {
-		query = query.Where(isStarredBy(userId))
-	}
-
-	query = query.
-		OrderBy("listings.creation_date DESC").
-		Limit(limit)
-
-	// Query db
-	rows, err := query.RunWith(db).Query()
+	rows, err := stmt.RunWith(db).Query()
 	if err != nil {
 		return nil, err, http.StatusInternalServerError
 	}

@@ -11,43 +11,27 @@ import (
 
 // Writes the most recent count listings, based on original date created to w
 func ReadListings(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	// Get limit from params
-	limitStr := r.URL.Query().Get("limit")
-	limit := defaultNumResults
+	query := models.NewListingQuery()
 
-	var e error
-	if limitStr != "" {
-		limit, e = strconv.Atoi(limitStr)
-		if e != nil || limit == 0 {
-			limit = defaultNumResults
+	// Get limit from params
+	if limitStr := r.URL.Query().Get("limit"); limitStr != "" {
+		if limit, err := strconv.Atoi(limitStr); err == nil && limit != 0 {
+			query.Limit = uint64(limit)
 		}
 	}
-	if limit > maxNumResults {
-		limit = maxNumResults
-	}
 
-	isStarred, err := strconv.ParseBool(r.URL.Query().Get("isStarred"))
-	if err != nil {
-		isStarred = false
-	}
+	// ParseBool defaults to false
+	query.OnlyStarred, _ = strconv.ParseBool(r.URL.Query().Get("isStarred"))
 
 	// Get User ID if we happen to be logged in
-	userId := -1
-	user, err := models.GetUser(db, getUsername(r))
-	if err == nil { // User IS authenticated
-		userId = user.KeyID
+	if user, err := models.GetUser(db, getUsername(r)); err == nil {
+		query.UserID = user.KeyID
 	}
 
 	// Get optional search query from params
-	queryStr := r.URL.Query().Get("query")
+	query.Query = r.URL.Query().Get("query")
 
-	listings := make([]*models.ListingsItem, 0)
-	code := 0
-	if userId >= 0 {
-		listings, err, code = models.ReadListingsWhileAuthed(db, queryStr, isStarred, truncationLength, uint64(limit), userId)
-	} else {
-		listings, err, code = models.ReadListings(db, queryStr, isStarred, truncationLength, uint64(limit))
-	}
+	listings, err, code := models.ReadListings(db, query)
 	if err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while reading recent or queried listings")
@@ -164,16 +148,15 @@ func DeleteListing(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 		return
 	}
 
-	err, code := models.DeleteListing(db, id, user.KeyID)
-	if err != nil {
+	if err, code := models.DeleteListing(db, id, user.KeyID); err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while deleting listing by ID")
 		Error(w, code)
 		return
 	}
-
 }
-func UpdateIsStarred(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+
+func UpdateListingStar(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 
 	// Get ID from params
 	id := ps.ByName("id")
