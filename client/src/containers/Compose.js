@@ -40,7 +40,7 @@ class Compose extends Component {
     }));
     this.props.dispatch(loadListings());
     this.props.history.push('/');
-  };
+  }
 
   handleSubmitSeek = (data) => {
     this.props.dispatch(postSeek({

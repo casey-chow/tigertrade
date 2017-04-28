@@ -8,13 +8,13 @@ import RaisedButton from 'material-ui/RaisedButton';
 
 const messageField = field => (
   <TextField
-    hintText="Hi! I'm interested in buying your item."
+    hintText="Hi! You might be interested in buying my..."
     value={field.input.value} onChange={field.input.onChange} multiLine
     fullWidth
   />
 );
 
-class ContactSellerForm extends PureComponent {
+class ContactBuyerForm extends PureComponent {
   static propTypes = {
     ...propTypes,
   }
@@ -38,4 +38,4 @@ class ContactSellerForm extends PureComponent {
   }
 }
 
-export default reduxForm({ form: 'contactSeller' })(ContactSellerForm);
+export default reduxForm({ form: 'contactBuyer' })(ContactBuyerForm);

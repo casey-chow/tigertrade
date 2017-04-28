@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
+import { connect } from 'react-redux';
 import {
   Card,
   CardActions,
@@ -13,13 +13,14 @@ import FlatButton from 'material-ui/FlatButton';
 import EmailIcon from 'material-ui/svg-icons/communication/email';
 import FavoriteIcon from 'material-ui/svg-icons/action/favorite';
 import Dialog from 'material-ui/Dialog';
-import TextField from 'material-ui/TextField';
 
 import ContactSellerForm from './ContactSellerForm';
+import { mailSeller } from './../actions/users';
 
 class ListingCard extends React.Component {
 
   static propTypes = {
+    dispatch: PropTypes.func.isRequired,
     expanded: PropTypes.bool.isRequired,
     onExpandChange: PropTypes.func,
     listing: PropTypes.shape({
@@ -47,15 +48,20 @@ class ListingCard extends React.Component {
 
   handleContactOpen = () => {
     this.setState({ contactOpen: true });
-  };
+  }
 
   handleContactClose = () => {
     this.setState({ contactOpen: false });
-  };
+  }
 
 
   handleExpandChange = (expanded) => {
     this.props.onExpandChange(expanded, this.props.listing.keyId);
+  }
+
+  handleSubmit = (data) => {
+    this.props.dispatch(mailSeller(this.props.listing.keyId, data));
+    this.handleContactClose();
   }
 
   render() {
@@ -69,11 +75,11 @@ class ListingCard extends React.Component {
     const onHideStyles = { maxHeight: '0', transition: 'max-height 0.15s ease-out', overflow: 'hidden' };
 
     const actions = [
-      <FlatButton
+/*      <FlatButton
         label="Send"
         primary
         onTouchTap={this.handleClose}
-      />,
+      />,*/
     ];
 
     return (
@@ -117,16 +123,11 @@ class ListingCard extends React.Component {
           open={this.state.contactOpen}
           onRequestClose={this.handleContactClose}
         >
-          <TextField
-            hintText="Hi! I'm interested in buying your item."
-            multiLine
-            fullWidth
-          />
-          <ContactSellerForm />
+          <ContactSellerForm onSubmit={this.handleSubmit} />
         </Dialog>
       </div>
     );
   }
 }
 
-export default ListingCard;
+export default connect()(ListingCard);
