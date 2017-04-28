@@ -4,9 +4,12 @@ import { Switch, Route, Redirect, withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import ActionBar from '../components/ActionBar';
+import Welcome from '../components/Welcome';
 
 import Compose from './Compose';
 import Listings from './Listings';
+import Seeks from './Seeks';
+import SavedSearches from './SavedSearches';
 
 import { loadCurrentUser } from '../actions/users';
 
@@ -28,12 +31,17 @@ class App extends Component {
       <div className="App">
         <ActionBar user={this.props.user} loading={this.props.loading} />
         <div style={{ marginTop: '9em' }}>
+          { (!this.props.loading && !this.props.user.loggedIn) &&
+            <Welcome />
+          }
+
           <Switch>
             <Route exact path="/">
               <Redirect push to="/listings" />
             </Route>
-            <Route exact path="/listings" component={Listings} />
-            <Route path="/listings/:query" component={Listings} />
+            <Route path="/listings" component={Listings} />
+            <Route path="/seeks" component={Seeks} />
+            <Route path="/savedsearches" component={SavedSearches} />
             <Route path="/compose" component={Compose} />
           </Switch>
         </div>

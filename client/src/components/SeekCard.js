@@ -5,7 +5,6 @@ import {
   Card,
   CardActions,
   CardHeader,
-  CardMedia,
   CardTitle,
   CardText,
 } from 'material-ui/Card';
@@ -13,22 +12,21 @@ import FlatButton from 'material-ui/FlatButton';
 import EmailIcon from 'material-ui/svg-icons/communication/email';
 import FavoriteIcon from 'material-ui/svg-icons/action/favorite';
 
-class ListingCard extends React.Component {
+class SeekCard extends React.Component {
 
   static propTypes = {
     expanded: PropTypes.bool.isRequired,
     onExpandChange: PropTypes.func,
-    listing: PropTypes.shape({
+    seek: PropTypes.shape({
       keyId: PropTypes.number,
       creationDate: PropTypes.string,
       lastModificationDate: PropTypes.string,
       title: PropTypes.string.isRequired,
       description: PropTypes.string,
       userId: PropTypes.number.isRequired,
-      price: PropTypes.number,
+      savedSearchId: PropTypes.number,
+      notifyEnabled: PropTypes.bool,
       status: PropTypes.string,
-      expirationDate: PropTypes.number,
-      thumbnail: PropTypes.string,
     }).isRequired,
   };
 
@@ -38,11 +36,11 @@ class ListingCard extends React.Component {
   };
 
   handleExpandChange = (expanded) => {
-    this.props.onExpandChange(expanded, this.props.listing.keyId);
+    this.props.onExpandChange(expanded, this.props.seek.keyId);
   }
 
   render() {
-    const { listing, expanded } = this.props;
+    const { seek, expanded } = this.props;
 
     const cardStyles = expanded ? {
       margin: '1.5em -3em',
@@ -54,32 +52,23 @@ class ListingCard extends React.Component {
     return (
       <Card style={cardStyles} onExpandChange={this.handleExpandChange} expanded={expanded}>
         <CardHeader
-          title={listing.title}
-          subtitle={`$${listing.price / 100}`}
+          title={seek.title}
           actAsExpander
         />
 
         <div style={expanded ? onShowStyles : onHideStyles}>
 
-          { listing.thumbnail &&
-            <CardMedia>
-              <img alt={listing.title} src={listing.thumbnail} style={{ minWidth: undefined, maxHeight: '300px', width: 'auto' }} />
-            </CardMedia>
-          }
-
           <CardTitle
-            title={listing.title}
+            title={seek.title}
           />
 
-          { listing.description &&
-            <CardText>
-              {listing.description}
-            </CardText>
-          }
+          <CardText>
+            {seek.description}
+          </CardText>
 
           <CardActions>
-            <FlatButton primary icon={<EmailIcon />} label="Contact Seller" />
-            <FlatButton secondary icon={<FavoriteIcon />} label="Save" />
+            <FlatButton primary icon={<EmailIcon />} label="Contact Buyer" />
+            <FlatButton secondary icon={<FavoriteIcon />} label="Notify Me" />
           </CardActions>
 
         </div>
@@ -88,4 +77,4 @@ class ListingCard extends React.Component {
   }
 }
 
-export default ListingCard;
+export default SeekCard;

@@ -2,49 +2,49 @@ import fetch from 'isomorphic-fetch';
 
 import { API_ROOT } from './common';
 
-export function loadListings(query = { query: '' }) {
+export function loadSeeks(query = { query: '' }) {
   return function (dispatch, getState) {
     dispatch({
       query,
-      type: 'LOAD_LISTINGS_REQUEST',
+      type: 'LOAD_SEEKS_REQUEST',
     });
-    fetch(`${API_ROOT}/listings?query=${encodeURIComponent(query.query)}`)
+    fetch(`${API_ROOT}/seeks?query=${encodeURIComponent(query.query)}`)
       .then(response => response.json())
       .then(json => dispatch({
         json,
-        type: 'LOAD_LISTINGS_SUCCESS',
+        type: 'LOAD_SEEKS_SUCCESS',
       }))
       .catch(error => dispatch({
         error,
-        type: 'LOAD_LISTINGS_FAILURE',
+        type: 'LOAD_SEEKS_FAILURE',
       }));
   };
 }
 
-export function postListing(listing) {
+export function postSeek(seek) {
   return function (dispatch, getState) {
     dispatch({
-      type: 'POST_LISTING_REQUEST',
+      type: 'POST_SEEK_REQUEST',
     });
 
-    fetch(`${API_ROOT}/listings`, {
+    fetch(`${API_ROOT}/seeks`, {
       credentials: 'include',
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(listing),
+      body: JSON.stringify(seek),
     })
     .then((json) => {
       dispatch({
         json,
-        type: 'POST_LISTING_SUCCESS',
+        type: 'POST_SEEK_SUCCESS',
       });
-      dispatch(loadListings());
+      dispatch(loadSeeks());
     })
     .catch(error => dispatch({
       error,
-      type: 'POST_LISTING_FAILURE',
+      type: 'POST_SEEK_FAILURE',
     }));
   };
 }

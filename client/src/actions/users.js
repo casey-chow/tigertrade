@@ -2,6 +2,7 @@ import fetch from 'isomorphic-fetch';
 
 import { API_ROOT } from './common';
 
+// eslint-disable-next-line import/prefer-default-export
 export function loadCurrentUser() {
   return function (dispatch, getState) {
     dispatch({
