@@ -27,7 +27,7 @@ class Profile extends Component {
   componentWillMount() {
     const query = {
       query: parse(this.props.location.search).query || '',
-      isMine: 1,
+      isMine: true,
     };
     this.props.dispatch(loadListings(query));
   }
