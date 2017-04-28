@@ -30,7 +30,6 @@ class Compose extends Component {
   };
 
   state = {
-    submitted: false,
     composeMode: this.props.composeMode,
   }
 
@@ -41,7 +40,7 @@ class Compose extends Component {
     }));
     this.props.dispatch(loadListings());
     this.props.history.push('/');
-  };
+  }
 
   handleSubmitSeek = (data) => {
     this.props.dispatch(postSeek({
@@ -65,7 +64,6 @@ class Compose extends Component {
 
     return (
       <div>
-        {this.state.submitted ? <h1>Submitted!</h1> : ''}
         <Container>
           <Row>
             <Col xs={12}>
