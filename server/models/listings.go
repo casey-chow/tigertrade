@@ -2,7 +2,6 @@ package models
 
 import (
 	"database/sql"
-	"errors"
 	"fmt"
 	sq "github.com/Masterminds/squirrel"
 	"github.com/guregu/null"
@@ -262,19 +261,10 @@ func UpdateListing(db *sql.DB, id string, listing Listing, userId int) (Listing,
 
 	// Update listing
 	result, err := stmt.RunWith(db).Exec()
-	if err != nil {
-		return listing, err, http.StatusInternalServerError
-	}
+	code, err := getUpdateResultCode(result, err)
 
-	numRows, err := result.RowsAffected()
 	if err != nil {
-		return listing, err, http.StatusInternalServerError
-	}
-	if numRows == 0 {
-		return listing, sql.ErrNoRows, http.StatusNotFound
-	}
-	if numRows != 1 {
-		return listing, errors.New("Multiple rows affected by UpdateListing"), http.StatusInternalServerError
+		return listing, err, code
 	}
 
 	return ReadListing(db, id)
@@ -291,22 +281,9 @@ func DeleteListing(db *sql.DB, id string, userId int) (error, int) {
 
 	// Query db for listing
 	result, err := stmt.RunWith(db).Exec()
-	if err != nil {
-		return err, http.StatusInternalServerError
-	}
+	code, err := getUpdateResultCode(result, err)
 
-	numRows, err := result.RowsAffected()
-	if err != nil {
-		return err, http.StatusInternalServerError
-	}
-	if numRows == 0 {
-		return sql.ErrNoRows, http.StatusNotFound
-	}
-	if numRows != 1 {
-		return errors.New("Multiple rows affected by DeleteListing"), http.StatusInternalServerError
-	}
-
-	return nil, http.StatusOK
+	return err, code
 }
 
 // SetStar adds or removes a star, depending on whether add is set to true.
@@ -326,22 +303,9 @@ func addStar(db *sql.DB, listingId string, userId int) (error, int) {
 
 	// Query db for listing
 	result, err := insertStarStmt.RunWith(db).Exec()
-	if err != nil {
-		return err, http.StatusInternalServerError
-	}
+	code, err := getUpdateResultCode(result, err)
 
-	numRows, err := result.RowsAffected()
-	if err != nil {
-		return err, http.StatusInternalServerError
-	}
-	if numRows == 0 {
-		return sql.ErrNoRows, http.StatusNotFound
-	}
-	if numRows != 1 {
-		return errors.New("Multiple rows affected by UpdateListingById"), http.StatusInternalServerError
-	}
-
-	return nil, http.StatusOK
+	return err, code
 }
 
 // removeStar remvoes a star from the given listingId for a given userId.
@@ -354,20 +318,7 @@ func removeStar(db *sql.DB, listingId string, userId int) (error, int) {
 
 	// Query db for listing
 	result, err := stmt.RunWith(db).Exec()
-	if err != nil {
-		return err, http.StatusInternalServerError
-	}
+	code, err := getUpdateResultCode(result, err)
 
-	numRows, err := result.RowsAffected()
-	if err != nil {
-		return err, http.StatusInternalServerError
-	}
-	if numRows == 0 {
-		return sql.ErrNoRows, http.StatusNotFound
-	}
-	if numRows != 1 {
-		return errors.New("Multiple rows affected by UpdateListingById"), http.StatusInternalServerError
-	}
-
-	return nil, http.StatusOK
+	return err, code
 }

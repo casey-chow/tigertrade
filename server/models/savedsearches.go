@@ -2,7 +2,6 @@ package models
 
 import (
 	"database/sql"
-	"errors"
 	sq "github.com/Masterminds/squirrel"
 	"github.com/guregu/null"
 	"net/http"
@@ -145,19 +144,10 @@ func UpdateSavedSearch(db *sql.DB, id string, savedSearch SavedSearch, userId in
 
 	// Query db for savedSearch
 	result, err := stmt.RunWith(db).Exec()
-	if err != nil {
-		return savedSearch, err, http.StatusInternalServerError
-	}
+	code, err := getUpdateResultCode(result, err)
 
-	numRows, err := result.RowsAffected()
 	if err != nil {
-		return savedSearch, err, http.StatusInternalServerError
-	}
-	if numRows == 0 {
-		return savedSearch, sql.ErrNoRows, http.StatusNotFound
-	}
-	if numRows != 1 {
-		return savedSearch, errors.New("Multiple rows affected by UpdateSavedSearch"), http.StatusInternalServerError
+		return savedSearch, err, code
 	}
 
 	return ReadSavedSearch(db, id, userId)
@@ -174,20 +164,7 @@ func DeleteSavedSearch(db *sql.DB, id string, userId int) (error, int) {
 
 	// Query db for savedSearch
 	result, err := stmt.RunWith(db).Exec()
-	if err != nil {
-		return err, http.StatusInternalServerError
-	}
+	code, err := getUpdateResultCode(result, err)
 
-	numRows, err := result.RowsAffected()
-	if err != nil {
-		return err, http.StatusInternalServerError
-	}
-	if numRows == 0 {
-		return sql.ErrNoRows, http.StatusNotFound
-	}
-	if numRows != 1 {
-		return errors.New("Multiple rows affected by DeleteSavedSearch"), http.StatusInternalServerError
-	}
-
-	return nil, http.StatusOK
+	return err, code
 }

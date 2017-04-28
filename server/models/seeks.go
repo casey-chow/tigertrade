@@ -2,7 +2,6 @@ package models
 
 import (
 	"database/sql"
-	"errors"
 	"fmt"
 	sq "github.com/Masterminds/squirrel"
 	"github.com/guregu/null"
@@ -166,19 +165,10 @@ func UpdateSeek(db *sql.DB, id string, seek Seek, userId int) (Seek, error, int)
 
 	// Query db for seek
 	result, err := stmt.RunWith(db).Exec()
-	if err != nil {
-		return seek, err, http.StatusInternalServerError
-	}
+	code, err := getUpdateResultCode(result, err)
 
-	numRows, err := result.RowsAffected()
 	if err != nil {
-		return seek, err, http.StatusInternalServerError
-	}
-	if numRows == 0 {
-		return seek, sql.ErrNoRows, http.StatusNotFound
-	}
-	if numRows != 1 {
-		return seek, errors.New("Multiple rows affected by UpdateSeek"), http.StatusInternalServerError
+		return seek, err, code
 	}
 
 	return ReadSeek(db, id)
@@ -195,20 +185,7 @@ func DeleteSeek(db *sql.DB, id string, userId int) (error, int) {
 
 	// Query db for seek
 	result, err := stmt.RunWith(db).Exec()
-	if err != nil {
-		return err, http.StatusInternalServerError
-	}
+	code, err := getUpdateResultCode(result, err)
 
-	numRows, err := result.RowsAffected()
-	if err != nil {
-		return err, http.StatusInternalServerError
-	}
-	if numRows == 0 {
-		return sql.ErrNoRows, http.StatusNotFound
-	}
-	if numRows != 1 {
-		return errors.New("Multiple rows affected by DeleteSeek"), http.StatusInternalServerError
-	}
-
-	return nil, http.StatusOK
+	return err, code
 }
