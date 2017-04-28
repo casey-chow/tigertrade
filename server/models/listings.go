@@ -19,6 +19,7 @@ type ListingsItem struct {
 	Title                string      `json:"title"`
 	Description          null.String `json:"description"` // expect to be truncated
 	UserID               int         `json:"userId"`
+	Username             null.String `json:"username"`
 	Price                null.Int    `json:"price"`
 	Status               null.String `json:"status"`
 	ExpirationDate       null.Time   `json:"expirationDate"`
@@ -34,6 +35,7 @@ type Listing struct {
 	Title                string      `json:"title"`
 	Description          null.String `json:"description"`
 	UserID               int         `json:"userId"`
+	Username             null.String `json:"username"`
 	Price                null.Int    `json:"price"`
 	Status               null.String `json:"status"`
 	ExpirationDate       null.Time   `json:"expirationDate"`
@@ -91,10 +93,11 @@ func ReadListings(db *sql.DB, query *listingQuery) ([]*ListingsItem, error, int)
 		Select("listings.key_id", "listings.creation_date",
 			"listings.last_modification_date", "title",
 			fmt.Sprintf("left(description, %d)", query.TruncationLength), "user_id",
-			"price", "status", "expiration_date", "thumbnails.url",
+			"users.net_id", "price", "status", "expiration_date", "thumbnails.url",
 			isStarredBy(query.UserID)).
 		From("listings").
 		Where("listings.is_active=true").
+		LeftJoin("users ON listings.user_id = users.key_id").
 		LeftJoin("thumbnails ON listings.thumbnail_id = thumbnails.key_id")
 
 	for i, word := range strings.Fields(query.Query) {
@@ -132,7 +135,7 @@ func ReadListings(db *sql.DB, query *listingQuery) ([]*ListingsItem, error, int)
 	for rows.Next() {
 		l := new(ListingsItem)
 		err := rows.Scan(&l.KeyID, &l.CreationDate, &l.LastModificationDate,
-			&l.Title, &l.Description, &l.UserID, &l.Price, &l.Status,
+			&l.Title, &l.Description, &l.UserID, &l.Username, &l.Price, &l.Status,
 			&l.ExpirationDate, &l.Thumbnail, &l.IsStarred)
 		if err != nil {
 			return nil, err, http.StatusInternalServerError
@@ -155,10 +158,11 @@ func ReadListing(db *sql.DB, id string) (Listing, error, int) {
 	// Create listing query
 	query := psql.
 		Select("listings.key_id", "listings.creation_date", "listings.last_modification_date",
-			"title", "description", "user_id", "price", "status", "expiration_date",
+			"title", "description", "user_id", "users.net_id", "price", "status", "expiration_date",
 			"thumbnails.url").
 		From("listings").
 		Where("listings.is_active=true").
+		LeftJoin("users ON listings.user_id = users.key_id").
 		LeftJoin("thumbnails ON listings.thumbnail_id = thumbnails.key_id").
 		Where(sq.Eq{"listings.key_id": id})
 
@@ -173,7 +177,7 @@ func ReadListing(db *sql.DB, id string) (Listing, error, int) {
 	rows.Next()
 	err = rows.Scan(&listing.KeyID, &listing.CreationDate,
 		&listing.LastModificationDate, &listing.Title, &listing.Description,
-		&listing.UserID, &listing.Price, &listing.Status,
+		&listing.UserID, &listing.Username, &listing.Price, &listing.Status,
 		&listing.ExpirationDate, &listing.Thumbnail)
 	if err == sql.ErrNoRows {
 		return listing, err, http.StatusNotFound
