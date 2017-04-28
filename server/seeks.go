@@ -20,6 +20,13 @@ func ReadSeeks(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		}
 	}
 
+	query.OnlyMine, _ = strconv.ParseBool(r.URL.Query().Get("isMine"))
+
+	// Get User ID if we happen to be logged in
+	if user, err := models.GetUser(db, getUsername(r)); err == nil {
+		query.UserID = user.KeyID
+	}
+
 	// Get optional search query from params
 	query.Query = r.URL.Query().Get("query")
 

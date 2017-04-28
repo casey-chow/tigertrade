@@ -22,6 +22,7 @@ func ReadListings(w http.ResponseWriter, r *http.Request, ps httprouter.Params) 
 
 	// ParseBool defaults to false
 	query.OnlyStarred, _ = strconv.ParseBool(r.URL.Query().Get("isStarred"))
+	query.OnlyMine, _ = strconv.ParseBool(r.URL.Query().Get("isMine"))
 
 	// Get User ID if we happen to be logged in
 	if user, err := models.GetUser(db, getUsername(r)); err == nil {

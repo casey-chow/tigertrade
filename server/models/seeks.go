@@ -2,6 +2,7 @@ package models
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	sq "github.com/Masterminds/squirrel"
 	"github.com/guregu/null"
@@ -38,8 +39,10 @@ type Seek struct {
 
 type seekQuery struct {
 	Query            string
+	OnlyMine         bool
 	TruncationLength int
 	Limit            uint64
+	UserID           int
 }
 
 func NewSeekQuery() *seekQuery {
@@ -63,6 +66,14 @@ func ReadSeeks(db *sql.DB, query *seekQuery) ([]*SeeksItem, error, int) {
 
 	for i, word := range strings.Fields(query.Query) {
 		stmt = stmt.Where(fmt.Sprintf("(lower(seeks.title) LIKE lower($%d) OR lower(seeks.description) LIKE lower($%d))", i+1, i+1), fmt.Sprint("%", word, "%"))
+	}
+
+	if query.UserID == 0 && query.OnlyMine {
+		return nil, errors.New("Unauthenticated user attempted to view profile data"), http.StatusUnauthorized
+	}
+
+	if query.OnlyMine {
+		stmt = stmt.Where(sq.Eq{"seeks.key_id": query.UserID})
 	}
 
 	stmt = stmt.OrderBy("seeks.creation_date DESC")
