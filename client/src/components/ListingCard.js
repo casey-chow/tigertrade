@@ -30,6 +30,7 @@ class ListingCard extends React.Component {
       title: PropTypes.string.isRequired,
       description: PropTypes.string,
       userId: PropTypes.number.isRequired,
+      username: PropTypes.string.isRequired,
       price: PropTypes.number,
       status: PropTypes.string,
       expirationDate: PropTypes.number,
