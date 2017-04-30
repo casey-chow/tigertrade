@@ -113,7 +113,7 @@ class ListingCard extends React.Component {
             <CardActions>
               { this.props.currentUserId !== listing.userId ?
                 <FlatButton primary icon={<EmailIcon />} label="Contact Seller" onTouchTap={this.handleContactOpen} /> :
-                <FlatButton primary icon={<Delete />} label="Delete Listing" onTouchTap={this.handleDelete} />
+                <FlatButton primary icon={<Delete />} label="Delete" onTouchTap={this.handleDelete} />
               }
               <FlatButton secondary icon={<FavoriteIcon />} label="Save" />
             </CardActions>

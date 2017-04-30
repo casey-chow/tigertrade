@@ -123,4 +123,8 @@ class SeekCard extends React.Component {
   }
 }
 
-export default connect()(SeekCard);
+const mapStateToProps = state => ({
+  currentUserId: state.currentUser.keyId,
+});
+
+export default connect(mapStateToProps)(SeekCard);
