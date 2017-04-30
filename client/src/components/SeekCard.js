@@ -21,6 +21,7 @@ import { deleteSeek } from './../actions/seeks';
 class SeekCard extends React.Component {
 
   static propTypes = {
+    query: PropTypes.object,
     currentUserId: PropTypes.number,
     dispatch: PropTypes.func.isRequired,
     expanded: PropTypes.bool.isRequired,
@@ -43,6 +44,7 @@ class SeekCard extends React.Component {
     currentUserId: -1,
     expanded: false,
     onExpandChange: () => {},
+    query: { query: '' },
   }
 
   state = {
@@ -66,8 +68,8 @@ class SeekCard extends React.Component {
     this.handleContactClose();
   }
 
-  handleDelete = () => {
-    this.props.dispatch(deleteSeek(this.props.seek.keyId));
+  handleDelete = () => { // second arg for refreshing
+    this.props.dispatch(deleteSeek(this.props.seek.keyId, this.props.query));
   }
 
   render() {
@@ -125,6 +127,7 @@ class SeekCard extends React.Component {
 
 const mapStateToProps = state => ({
   currentUserId: state.currentUser.keyId,
+  query: state.currentQuery,
 });
 
 export default connect(mapStateToProps)(SeekCard);

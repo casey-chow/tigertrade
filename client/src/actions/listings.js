@@ -52,7 +52,7 @@ export function postListing(listing) {
   };
 }
 
-export function deleteListing(listingId) {
+export function deleteListing(listingId, refreshQuery) {
   return function (dispatch, getState) {
     dispatch({
       type: 'DELETE_LISTING_REQUEST',
@@ -67,7 +67,7 @@ export function deleteListing(listingId) {
         json,
         type: 'DELETE_LISTING_SUCCESS',
       });
-      dispatch(loadListings());
+      dispatch(loadListings(refreshQuery));
     })
     .catch(error => dispatch({
       error,

@@ -52,7 +52,7 @@ export function postSeek(seek) {
   };
 }
 
-export function deleteSeek(seekId) {
+export function deleteSeek(seekId, refreshQuery) {
   return function (dispatch, getState) {
     dispatch({
       type: 'DELETE_LISTING_REQUEST',
@@ -67,7 +67,7 @@ export function deleteSeek(seekId) {
         json,
         type: 'DELETE_LISTING_SUCCESS',
       });
-      dispatch(loadSeeks());
+      dispatch(loadSeeks(refreshQuery));
     })
     .catch(error => dispatch({
       error,
