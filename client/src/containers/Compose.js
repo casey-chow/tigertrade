@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { propTypes as routerPropTypes, withRouter } from 'react-router-dom';
+
 import { Container, Row, Col } from 'react-grid-system';
 import Paper from 'material-ui/Paper';
-import Toggle from 'material-ui/Toggle';
+import { Tabs, Tab } from 'material-ui/Tabs';
 
 import { postListing, loadListings } from '../actions/listings';
 import { postSeek, loadSeeks } from '../actions/seeks';
@@ -14,10 +16,8 @@ import RedirectToCas from '../components/RedirectToCas';
 class Compose extends Component {
 
   static propTypes = {
+    ...routerPropTypes,
     dispatch: PropTypes.func.isRequired,
-    history: PropTypes.shape({
-      push: PropTypes.func.isRequired,
-    }).isRequired,
     user: PropTypes.shape({
       loggedIn: PropTypes.bool.isRequired,
     }).isRequired,
@@ -26,7 +26,7 @@ class Compose extends Component {
   };
 
   static defaultProps = {
-    composeMode: 'Listing',
+    composeMode: 'listing',
   };
 
   state = {
@@ -51,10 +51,8 @@ class Compose extends Component {
     this.props.history.push('/seeks');
   }
 
-  handleToggle = (event, isInputChecked) => {
-    this.setState({
-      composeMode: isInputChecked ? 'Seek' : 'Listing',
-    });
+  handleChange = (composeMode) => {
+    this.setState({ composeMode });
   }
 
   render() {
@@ -67,19 +65,21 @@ class Compose extends Component {
         <Container>
           <Row>
             <Col xs={12}>
-              <Paper style={{ padding: '1em' }}>
-                <div style={{ float: 'right' }}>
-                  <Toggle
-                    label="Listing / Seek"
-                    labelPosition="right"
-                    toggled={this.state.composeMode !== 'Listing'}
-                    onToggle={this.handleToggle}
-                  />
-                </div>
-                { this.state.composeMode === 'Listing' ?
-                  <ComposeForm onSubmit={this.handleSubmit} /> :
-                  <SeekComposeForm onSubmit={this.handleSubmitSeek} />
-                }
+              <Paper style={{ padding: '0' }}>
+                <Tabs onChange={this.handleChange} value={this.state.composeMode}>
+                  <Tab label="Listing" value="listing" >
+                    <ComposeForm
+                      onSubmit={this.handleSubmit}
+                      style={{ padding: '2em', paddingTop: '0.5em', paddingBottom: '1em' }}
+                    />
+                  </Tab>
+                  <Tab label="Seek" value="seek">
+                    <SeekComposeForm
+                      onSubmit={this.handleSubmitSeek}
+                      style={{ padding: '2em', paddingTop: '0.5em', paddingBottom: '1em' }}
+                    />
+                  </Tab>
+                </Tabs>
               </Paper>
             </Col>
           </Row>
@@ -95,4 +95,4 @@ const mapStateToProps = state => ({
   currentUserLoading: state.currentUserLoading,
 });
 
-export default connect(mapStateToProps)(Compose);
+export default withRouter(connect(mapStateToProps)(Compose));
