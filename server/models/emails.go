@@ -13,7 +13,7 @@ import (
 
 const (
 	DEFAULT_SUBJECT = "I am interested in buying an item from you: %s"
-	SEEK_SUBJECT = "I am interested in selling an item to you: %s"
+	SEEK_SUBJECT    = "I am interested in selling an item to you: %s"
 )
 
 type emailInput struct {
