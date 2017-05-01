@@ -12,8 +12,8 @@ import (
 )
 
 const (
-	DEFAULT_SUBJECT = "I am interested in buying an item from you: %s"
-	SEEK_SUBJECT    = "I am interested in selling an item to you: %s"
+	DEFAULT_LISTING_SUBJECT = "I am interested in buying an item from you: %s"
+	DEFAULT_SEEK_SUBJECT    = "I am interested in selling an item to you: %s"
 )
 
 type emailInput struct {
@@ -45,9 +45,9 @@ func NewEmailInput(db *sql.DB, id string, isSeek bool) (*emailInput, error, int)
 	}
 
 	if isSeek {
-		i.Subject = fmt.Sprintf(SEEK_SUBJECT, title)
+		i.Subject = fmt.Sprintf(DEFAULT_SEEK_SUBJECT, title)
 	} else {
-		i.Subject = fmt.Sprintf(DEFAULT_SUBJECT, title)
+		i.Subject = fmt.Sprintf(DEFAULT_LISTING_SUBJECT, title)
 	}
 
 	if owner, err := GetUserByID(db, ownerId); err != nil {
