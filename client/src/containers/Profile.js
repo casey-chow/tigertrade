@@ -1,11 +1,19 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
-import { Container, Row, Col } from 'react-grid-system';
-import CircularProgress from 'material-ui/CircularProgress';
-import Toggle from 'material-ui/Toggle';
+import {
+  withRouter,
+  propTypes as routerPropTypes,
+  Switch,
+  Route,
+  Redirect,
+} from 'react-router-dom';
 import { parse } from 'query-string';
+
+import CircularProgress from 'material-ui/CircularProgress';
+import Paper from 'material-ui/Paper';
+import { Tabs, Tab } from 'material-ui/Tabs';
+import { Container, Row, Col } from 'react-grid-system';
 
 import ListingsList from '../components/ListingsList';
 import SeeksList from '../components/SeeksList';
@@ -15,6 +23,7 @@ import { loadSeeks } from './../actions/seeks';
 
 class Profile extends Component {
   static propTypes = {
+    ...routerPropTypes,
     listingsLoading: PropTypes.bool.isRequired,
     seeksLoading: PropTypes.bool.isRequired,
     listings: PropTypes.arrayOf(PropTypes.object).isRequired,
@@ -26,7 +35,6 @@ class Profile extends Component {
   };
 
   state = {
-    seeks: false,
     initialLoad: true,
     initialSeekLoad: true,
   }
@@ -38,6 +46,13 @@ class Profile extends Component {
     };
     this.props.dispatch(loadListings(query));
     this.props.dispatch(loadSeeks(query));
+
+    const path = this.props.location.pathname.split('/');
+    let viewMode = path[path.length - 1];
+    if (viewMode !== 'listings' && viewMode !== 'seeks') {
+      viewMode = 'listings';
+    }
+    this.setState({ viewMode });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -77,6 +92,11 @@ class Profile extends Component {
         return true;
       }
     }
+
+    if (this.state.viewMode !== nextState.viewMode) {
+      return true;
+    }
+
     if (this.state.seeks !== nextState.seeks) {
       return true;
     }
@@ -84,10 +104,9 @@ class Profile extends Component {
     return false;
   }
 
-  handleToggle = (event, isInputChecked) => {
-    this.setState({
-      seeks: isInputChecked,
-    });
+  handleChange = (viewMode) => {
+    this.setState({ viewMode });
+    this.props.history.push(`/profile/${viewMode}`);
   }
 
   render() {
@@ -99,28 +118,41 @@ class Profile extends Component {
       );
     }
 
+    console.log('rendering with state', this.state);
+
     return (
       <div>
         <Container>
           <Row>
             <Col xs={1} />
             <Col xs={10}>
-              <Toggle
-                label="Listings / Seeks"
-                labelPosition="right"
-                toggled={this.state.seeks}
-                onToggle={this.handleToggle}
-                style={{ float: 'right' }}
-              />
+              <Paper>
+                <Tabs onChange={this.handleChange} value={this.state.viewMode}>
+                  <Tab
+                    label="Listings"
+                    value="listings"
+                  />
+                  <Tab
+                    label="Seeks"
+                    value="seeks"
+                  />
+                </Tabs>
+              </Paper>
             </Col>
           </Row>
         </Container>
-        <div style={{ marginTop: '10px' }}>
-          { !this.state.seeks ?
-            <ListingsList listings={this.props.listings} /> :
+
+        <Switch style={{ marginTop: '10px' }}>
+          <Route exact path="/profile">
+            <Redirect to="/profile/listings" />
+          </Route>
+          <Route path="/profile/listings">
+            <ListingsList listings={this.props.listings} />
+          </Route>
+          <Route path="/profile/seeks">
             <SeeksList seeks={this.props.seeks} />
-          }
-        </div>
+          </Route>
+        </Switch>
       </div>
     );
   }
