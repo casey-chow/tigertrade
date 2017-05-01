@@ -9,7 +9,7 @@ const messageField = field => (
   <div style={{ backgroundColor: 'rgba(0,0,0,0.05)', padding: '5px', marginLeft: '-5px' }}>
     <TextField
       name="contactSeller"
-      hintText="Write your message to the seller here."
+      hint="Write your message to the seller here."
       value={field.input.value} onChange={field.input.onChange} multiLine
       fullWidth
     />
