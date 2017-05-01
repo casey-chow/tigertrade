@@ -39,7 +39,7 @@ class Compose extends Component {
       price: data.price ? Math.round(parseFloat(data.price) * 100) : 0,
     }));
     this.props.dispatch(loadListings());
-    this.props.history.push('/');
+    this.props.history.push('/listings');
   }
 
   handleSubmitSeek = (data) => {
@@ -48,7 +48,7 @@ class Compose extends Component {
       price: data.price ? Math.round(parseFloat(data.price) * 100) : 0,
     }));
     this.props.dispatch(loadSeeks());
-    this.props.history.push('/');
+    this.props.history.push('/seeks');
   }
 
   handleToggle = (event, isInputChecked) => {
