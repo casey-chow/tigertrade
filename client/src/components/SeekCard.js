@@ -21,7 +21,6 @@ import { deleteSeek } from './../actions/seeks';
 class SeekCard extends React.Component {
 
   static propTypes = {
-    query: PropTypes.object,
     currentUserId: PropTypes.number,
     dispatch: PropTypes.func.isRequired,
     expanded: PropTypes.bool.isRequired,
@@ -38,6 +37,8 @@ class SeekCard extends React.Component {
       notifyEnabled: PropTypes.bool,
       status: PropTypes.string,
     }).isRequired,
+    // eslint-disable-next-line react/forbid-prop-types
+    query: PropTypes.object,
   };
 
   static defaultProps = {
