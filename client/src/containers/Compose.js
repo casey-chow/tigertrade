@@ -1,7 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { propTypes as routerPropTypes, withRouter } from 'react-router-dom';
+import {
+  propTypes as routerPropTypes,
+  withRouter,
+  Link,
+  Switch,
+  Redirect,
+  Route,
+} from 'react-router-dom';
 
 import { Container, Row, Col } from 'react-grid-system';
 import Paper from 'material-ui/Paper';
@@ -22,15 +29,12 @@ class Compose extends Component {
       loggedIn: PropTypes.bool.isRequired,
     }).isRequired,
     currentUserLoading: PropTypes.bool.isRequired,
-    composeMode: PropTypes.string,
   };
 
-  static defaultProps = {
-    composeMode: 'listing',
-  };
-
-  state = {
-    composeMode: this.props.composeMode,
+  componentWillMount() {
+    this.setState({
+      composeMode: this.props.location.pathname.split('/')[-1],
+    });
   }
 
   handleSubmit = (data) => {
@@ -52,7 +56,7 @@ class Compose extends Component {
   }
 
   handleChange = (composeMode) => {
-    this.setState({ composeMode });
+    this.props.history.push(`/compose/${composeMode}`);
   }
 
   render() {
@@ -61,30 +65,46 @@ class Compose extends Component {
     }
 
     return (
-      <div>
-        <Container>
-          <Row>
-            <Col xs={12}>
-              <Paper style={{ padding: '0' }}>
-                <Tabs onChange={this.handleChange} value={this.state.composeMode}>
-                  <Tab label="Listing" value="listing" >
-                    <ComposeForm
-                      onSubmit={this.handleSubmit}
-                      style={{ padding: '2em', paddingTop: '0.5em', paddingBottom: '1em' }}
-                    />
-                  </Tab>
-                  <Tab label="Seek" value="seek">
-                    <SeekComposeForm
-                      onSubmit={this.handleSubmitSeek}
-                      style={{ padding: '2em', paddingTop: '0.5em', paddingBottom: '1em' }}
-                    />
-                  </Tab>
-                </Tabs>
-              </Paper>
-            </Col>
-          </Row>
-        </Container>
-      </div>
+      <Container>
+        <Row>
+          <Col xs={12}>
+            <Paper style={{ padding: '0' }}>
+              <Tabs onChange={this.handleChange} value={this.state.composeMode}>
+                <Tab
+                  label="Listing"
+                  value="listing"
+                  containerElement={<Link to="/compose/listing" />}
+                  onMouseDown={() => this.setState({ composeMode: 'listing' })}
+                />
+                <Tab
+                  label="Seek"
+                  value="seek"
+                  containerElement={<Link to="/compose/seek" />}
+                  onMouseDown={() => this.setState({ composeMode: 'seek' })}
+                />
+              </Tabs>
+
+              <Switch>
+                <Route exact path="/compose/">
+                  <Redirect to="/compose/listing" />
+                </Route>
+                <Route path="/compose/listing">
+                  <ComposeForm
+                    onSubmit={this.handleSubmit}
+                    style={{ padding: '2em', paddingTop: '0.5em', paddingBottom: '1em' }}
+                  />
+                </Route>
+                <Route path="/compose/seek">
+                  <SeekComposeForm
+                    onSubmit={this.handleSubmitSeek}
+                    style={{ padding: '2em', paddingTop: '0.5em', paddingBottom: '1em' }}
+                  />
+                </Route>
+              </Switch>
+            </Paper>
+          </Col>
+        </Row>
+      </Container>
     );
   }
 }
