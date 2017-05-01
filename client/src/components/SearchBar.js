@@ -22,7 +22,9 @@ class SearchBar extends Component {
     location: PropTypes.shape({
       pathname: PropTypes.string.isRequired,
     }).isRequired,
-    query: PropTypes.string.isRequired,
+    mode: PropTypes.bool.isRequired,
+    // eslint-disable-next-line react/forbid-prop-types
+    query: PropTypes.object.isRequired,
     // eslint-disable-next-line react/forbid-prop-types
     style: PropTypes.object,
   }
@@ -52,17 +54,13 @@ class SearchBar extends Component {
       ],
     });
 
-    const query = { query: value };
+    const query = this.props.query;
+    query.query = value;
 
-    switch (this.props.location.pathname) {
-      case '/listings':
-        this.props.dispatch(loadListings(query));
-        break;
-      case '/seeks':
-        this.props.dispatch(loadSeeks(query));
-        break;
-      default:
-        break;
+    if (this.props.mode) {
+      this.props.dispatch(loadSeeks(query));
+    } else {
+      this.props.dispatch(loadListings(query));
     }
   }
 
@@ -89,9 +87,10 @@ class SearchBar extends Component {
     switch (this.props.location.pathname) {
       case '/seeks':
       case '/listings':
+      case '/profile':
         break;
       default:
-        this.props.history.push('/listings');
+        this.props.history.push(this.props.mode ? '/seeks' : '/listings');
         break;
     }
   };
@@ -102,7 +101,7 @@ class SearchBar extends Component {
     });
 
     if (this.props.query) {
-      const queryStr = stringify({ query: this.props.query });
+      const queryStr = stringify(this.props.query);
       this.props.history.push(`${this.props.location.pathname}?${queryStr}`);
     } else {
       this.props.history.push(`${this.props.location.pathname}`);
@@ -119,7 +118,7 @@ class SearchBar extends Component {
       paddingRight: '16px',
     };
 
-    const hintText = (this.props.location.pathname === '/seeks')
+    const hintText = (this.props.mode)
           ? (<span className="hint-text">What do you want to sell?</span>)
           : (<span className="hint-text">What do you want to buy?</span>);
 
@@ -136,7 +135,7 @@ class SearchBar extends Component {
           onFocus={this.handleOnFocus}
           onBlur={this.handleOnBlur}
           inputStyle={{ color: 'white' }}
-          searchText={this.props.query}
+          searchText={this.props.query.query || ''}
         />
       </Paper>
     );
@@ -144,7 +143,8 @@ class SearchBar extends Component {
 }
 
 const mapStateToProps = state => ({
-  query: decodeURIComponent(state.currentQuery.query) || '',
+  mode: state.searchMode,
+  query: state.currentQuery,
 });
 
 export default withRouter(connect(mapStateToProps)(SearchBar));

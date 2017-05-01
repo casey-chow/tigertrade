@@ -114,6 +114,19 @@ const currentQuery = (state = { query: '' }, action) => {
   }
 };
 
+const searchMode = (state = false, action) => {
+  switch (action.type) {
+    case 'LOAD_LISTINGS_REQUEST':
+    case 'CONTAINER_LISTINGS_MODE':
+      return false;
+    case 'LOAD_SEEKS_REQUEST':
+    case 'CONTAINER_SEEKS_MODE':
+      return true;
+    default:
+      return state;
+  }
+};
+
 const rootReducer = combineReducers({
   listingsLoading,
   listings,
@@ -124,6 +137,7 @@ const rootReducer = combineReducers({
   currentUserLoading,
   currentUser,
   currentQuery,
+  searchMode,
   ui: uiReducer,
   form: formReducer,
 });
