@@ -8,7 +8,6 @@ import (
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
 	"net/http"
 	"os"
-	"strconv"
 )
 
 const (
@@ -95,7 +94,7 @@ func SendEmail(input *emailInput) (error, int) {
 	}
 
 	if response.StatusCode != 202 {
-		err = errors.New("Response not queued for sending. Status code: " + strconv.Itoa(response.StatusCode))
+		err = errors.New(fmt.Sprint("Response not queued for sending. Status code: ", response.StatusCode))
 	}
 
 	return err, response.StatusCode
