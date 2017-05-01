@@ -44,11 +44,7 @@ func NewEmailInput(db *sql.DB, id string, isSeek bool) (*emailInput, error, int)
 		ownerId = listing.UserID
 	}
 
-	if isSeek {
-		i.Subject = fmt.Sprintf(SEEK_SUBJECT, title)
-	} else {
-		i.Subject = fmt.Sprintf(DEFAULT_SUBJECT, title)
-	}
+	i.Subject = fmt.Sprintf(DEFAULT_SUBJECT, title)
 
 	if owner, err := GetUserByID(db, ownerId); err != nil {
 		return nil, err, http.StatusInternalServerError
