@@ -144,7 +144,7 @@ class SearchBar extends Component {
 }
 
 const mapStateToProps = state => ({
-  query: state.currentQuery,
+  query: decodeURIComponent(state.currentQuery.query) || '',
 });
 
 export default withRouter(connect(mapStateToProps)(SearchBar));

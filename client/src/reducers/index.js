@@ -102,13 +102,13 @@ const currentUser = (state = { loggedIn: false }, action) => {
   }
 };
 
-const currentQuery = (state = '', action) => {
+const currentQuery = (state = { query: '' }, action) => {
   switch (action.type) {
     case 'LOAD_SAVED_SEARCHES_REQUEST':
-      return '';
+      return { query: '' };
     case 'LOAD_LISTINGS_REQUEST':
     case 'LOAD_SEEKS_REQUEST':
-      return decodeURIComponent(action.query.query);
+      return action.query;
     default:
       return state;
   }

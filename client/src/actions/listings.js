@@ -51,3 +51,27 @@ export function postListing(listing) {
     }));
   };
 }
+
+export function deleteListing(listingId, refreshQuery) {
+  return function (dispatch, getState) {
+    dispatch({
+      type: 'DELETE_LISTING_REQUEST',
+    });
+
+    fetch(`${API_ROOT}/listings/${listingId}`, {
+      credentials: 'include',
+      method: 'DELETE',
+    })
+    .then((json) => {
+      dispatch({
+        json,
+        type: 'DELETE_LISTING_SUCCESS',
+      });
+      dispatch(loadListings(refreshQuery));
+    })
+    .catch(error => dispatch({
+      error,
+      type: 'DELETE_LISTING_FAILURE',
+    }));
+  };
+}

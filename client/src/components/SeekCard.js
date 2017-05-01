@@ -10,15 +10,18 @@ import {
 } from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
 import EmailIcon from 'material-ui/svg-icons/communication/email';
+import Delete from 'material-ui/svg-icons/action/delete';
 import FavoriteIcon from 'material-ui/svg-icons/action/favorite';
 import Dialog from 'material-ui/Dialog';
 
 import ContactBuyerForm from './ContactBuyerForm';
 import { mailBuyer } from './../actions/users';
+import { deleteSeek } from './../actions/seeks';
 
 class SeekCard extends React.Component {
 
   static propTypes = {
+    currentUserId: PropTypes.number,
     dispatch: PropTypes.func.isRequired,
     expanded: PropTypes.bool.isRequired,
     onExpandChange: PropTypes.func,
@@ -34,11 +37,15 @@ class SeekCard extends React.Component {
       notifyEnabled: PropTypes.bool,
       status: PropTypes.string,
     }).isRequired,
+    // eslint-disable-next-line react/forbid-prop-types
+    query: PropTypes.object,
   };
 
   static defaultProps = {
+    currentUserId: -1,
     expanded: false,
     onExpandChange: () => {},
+    query: { query: '' },
   }
 
   state = {
@@ -60,6 +67,10 @@ class SeekCard extends React.Component {
   handleSubmit = (data) => {
     this.props.dispatch(mailBuyer(this.props.seek.keyId, data));
     this.handleContactClose();
+  }
+
+  handleDelete = () => { // second arg for refreshing
+    this.props.dispatch(deleteSeek(this.props.seek.keyId, this.props.query));
   }
 
   render() {
@@ -93,7 +104,10 @@ class SeekCard extends React.Component {
             }
 
             <CardActions>
-              <FlatButton primary icon={<EmailIcon />} label="Contact Buyer" onTouchTap={this.handleContactOpen} />
+              { this.props.currentUserId !== seek.userId ?
+                <FlatButton primary icon={<EmailIcon />} label="Contact Buyer" onTouchTap={this.handleContactOpen} /> :
+                <FlatButton primary icon={<Delete />} label="Delete" onTouchTap={this.handleDelete} />
+              }
               <FlatButton secondary icon={<FavoriteIcon />} label="Notify Me" />
             </CardActions>
 
@@ -112,4 +126,9 @@ class SeekCard extends React.Component {
   }
 }
 
-export default connect()(SeekCard);
+const mapStateToProps = state => ({
+  currentUserId: state.currentUser.keyId,
+  query: state.currentQuery,
+});
+
+export default connect(mapStateToProps)(SeekCard);
