@@ -61,5 +61,23 @@ export function mailBuyer(seekId, data) {
 
     console.log(`Contacting owner of seek ${seekId} with message ${data.message}`);
     console.log(data);
+
+    fetch(`${API_ROOT}/seeks/${seekId}/contact`, {
+      credentials: 'include',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ body: data.message }),
+    }).then((json) => {
+      dispatch({
+        json,
+        type: 'MAIL_BUYER_SUCCESS',
+      });
+    })
+    .catch(error => dispatch({
+      error,
+      type: 'MAIL_BUYER_FAILURE',
+    }));
   };
 }
