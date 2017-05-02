@@ -12,6 +12,10 @@ import {
   ListItem,
   makeSelectable,
 } from 'material-ui/List';
+import ViewList from 'material-ui/svg-icons/action/view-list';
+import ShoppingCart from 'material-ui/svg-icons/action/shopping-cart';
+import Search from 'material-ui/svg-icons/action/search';
+import ModeEdit from 'material-ui/svg-icons/editor/mode-edit';
 
 const SelectableList = makeSelectable(List);
 
@@ -35,11 +39,12 @@ class NavigationDrawer extends Component {
       top: '4rem',
     },
     sidebar: {
-      width: '17vw',
+      width: '20vw',
       backgroundColor: 'white',
     },
     content: {
       paddingTop: '2rem',
+      paddingBottom: '2rem',
     },
   };
 
@@ -52,21 +57,44 @@ class NavigationDrawer extends Component {
   ];
 
   handleMenuChange = (event, value) => {
-    this.props.history.push(`/${value}`);
+    this.props.history.push(value);
   }
 
   render() {
-    const currentMajorPath = this.props.location.pathname.split('/')[1];
+    const currentMajorPath = this.props.location.pathname;
 
     const SidebarItems = (
       <SelectableList value={currentMajorPath} onChange={this.handleMenuChange}>
-        {NavigationDrawer.pages.map(page => (
-          <ListItem
-            key={page.name}
-            primaryText={page.name}
-            value={page.url.split('/')[1]}
-          />
-        ))}
+        <ListItem
+          key="listings"
+          primaryText="Listings"
+          value="/listings"
+          leftIcon={<ViewList />}
+        />
+        <ListItem
+          key="seeks"
+          primaryText="Seeks"
+          value="/seeks"
+          leftIcon={<ShoppingCart />}
+        />
+        <ListItem
+          key="savedsearches"
+          primaryText="Saved Searches"
+          value="/savedsearches"
+          leftIcon={<Search />}
+        />
+        <ListItem
+          key="compose"
+          primaryText="Compose"
+          value="/compose"
+          leftIcon={<ModeEdit />}
+          initiallyOpen
+          primaryTogglesNestedList
+          nestedItems={[
+            <ListItem key="listings" primaryText="Listing" value="/compose/listings" />,
+            <ListItem key="seeks" primaryText="Seek" value="/compose/seeks" />,
+          ]}
+        />
       </SelectableList>
     );
 

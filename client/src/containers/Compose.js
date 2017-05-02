@@ -10,7 +10,6 @@ import {
 } from 'react-router-dom';
 
 import Paper from 'material-ui/Paper';
-import { Tabs, Tab } from 'material-ui/Tabs';
 
 import { setDisplayMode } from '../actions/ui';
 import { postListing, loadListings } from '../actions/listings';
@@ -65,11 +64,6 @@ class Compose extends Component {
     this.props.history.push('/seeks');
   }
 
-  handleChange = (displayMode) => {
-    this.props.history.push(`/compose/${displayMode}`);
-    this.props.dispatch(setDisplayMode(displayMode));
-  }
-
   render() {
     if (!this.props.currentUserLoading && !this.props.user.loggedIn) {
       return <RedirectToCas />;
@@ -78,11 +72,6 @@ class Compose extends Component {
     return (
       <MaxRowContainer>
         <Paper style={{ padding: '0' }}>
-          <Tabs onChange={this.handleChange} value={this.props.displayMode}>
-            <Tab label="Listing" value="listings" />
-            <Tab label="Seek" value="seeks" />
-          </Tabs>
-
           <Switch>
             <Route exact path="/compose/">
               <Redirect to={`/compose/${this.props.displayMode}`} />
