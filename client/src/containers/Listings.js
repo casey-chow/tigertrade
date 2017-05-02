@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
+import {
+  withRouter,
+  propTypes as routerPropTypes,
+} from 'react-router-dom';
 
 import CircularProgress from 'material-ui/CircularProgress';
 import { parse } from 'query-string';
@@ -12,28 +15,21 @@ import { loadListings } from './../actions/listings';
 
 class Listings extends Component {
   static propTypes = {
+    ...routerPropTypes,
     listingsLoading: PropTypes.bool.isRequired,
     listings: PropTypes.arrayOf(PropTypes.object).isRequired,
     dispatch: PropTypes.func.isRequired,
-    location: PropTypes.shape({
-      search: PropTypes.string.isRequired,
-    }).isRequired,
   };
 
-  state = {
-    initialLoad: true,
-  }
-
   componentWillMount() {
-    const query = {
-      query: parse(this.props.location.search).query || '',
-    };
+    const query = this.getQuery(this.props);
     this.props.dispatch(loadListings(query));
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!nextProps.listingsLoading) {
-      this.setState({ initialLoad: false });
+    if (this.props.match.params.type !== nextProps.match.params.type) {
+      const query = this.getQuery(nextProps);
+      this.props.dispatch(loadListings(query));
     }
   }
 
@@ -55,17 +51,28 @@ class Listings extends Component {
     return false;
   }
 
-  render() {
-    if (this.props.listingsLoading && this.state.initialLoad) {
-      return (
-        <div style={{ alignItems: 'center', justifyContent: 'center', display: 'flex' }}>
-          <CircularProgress size={80} thickness={8} />
-        </div>
-      );
+  getQuery = (props) => {
+    const query = {
+      query: parse(props.location.search).query || '',
+    };
+
+    if (props.match.params.type === 'mine') {
+      query.isMine = true;
     }
 
+    return query;
+  }
+
+  render() {
     return (
-      <ListingsList listings={this.props.listings} />
+      <div>
+        <ListingsList listings={this.props.listings} />
+        { this.props.listingsLoading &&
+          <div style={{ alignItems: 'center', justifyContent: 'center', display: 'flex' }}>
+            <CircularProgress size={80} thickness={8} />
+          </div>
+        }
+      </div>
     );
   }
 }

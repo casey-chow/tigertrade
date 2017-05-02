@@ -90,7 +90,7 @@ class ComposeOverlay extends Component {
 const mapStateToProps = state => ({
   user: state.currentUser,
   form: state.form,
-  mode: state.searchMode,
+  mode: state.displayMode,
   currentUserLoading: state.currentUserLoading,
   show: state.showCompose,
 });

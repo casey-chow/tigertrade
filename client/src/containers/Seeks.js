@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
+import {
+  withRouter,
+  propTypes as routerPropTypes,
+} from 'react-router-dom';
 
 import CircularProgress from 'material-ui/CircularProgress';
 import { parse } from 'query-string';
@@ -12,17 +15,11 @@ import { loadSeeks } from './../actions/seeks';
 
 class Seeks extends Component {
   static propTypes = {
+    ...routerPropTypes,
+    dispatch: PropTypes.func.isRequired,
     seeksLoading: PropTypes.bool.isRequired,
     seeks: PropTypes.arrayOf(PropTypes.object).isRequired,
-    dispatch: PropTypes.func.isRequired,
-    location: PropTypes.shape({
-      search: PropTypes.string.isRequired,
-    }).isRequired,
   };
-
-  state = {
-    initialLoad: true,
-  }
 
   componentWillMount() {
     const query = {
@@ -32,8 +29,9 @@ class Seeks extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!nextProps.seeksLoading) {
-      this.setState({ initialLoad: false });
+    if (this.props.match.params.type !== nextProps.match.params.type) {
+      const query = this.getQuery(nextProps);
+      this.props.dispatch(loadSeeks(query));
     }
   }
 
@@ -55,17 +53,28 @@ class Seeks extends Component {
     return false;
   }
 
-  render() {
-    if (this.props.seeksLoading && this.state.initialLoad) {
-      return (
-        <div style={{ alignItems: 'center', justifyContent: 'center', display: 'flex' }}>
-          <CircularProgress size={80} thickness={8} />
-        </div>
-      );
+  getQuery = (props) => {
+    const query = {
+      query: parse(props.location.search).query || '',
+    };
+
+    if (props.match.params.type === 'mine') {
+      query.isMine = true;
     }
 
+    return query;
+  }
+
+  render() {
     return (
-      <SeeksList seeks={this.props.seeks} />
+      <div>
+        <SeeksList seeks={this.props.seeks} />
+        { this.props.seeksLoading &&
+          <div style={{ alignItems: 'center', justifyContent: 'center', display: 'flex' }}>
+            <CircularProgress size={80} thickness={8} />
+          </div>
+        }
+      </div>
     );
   }
 }
