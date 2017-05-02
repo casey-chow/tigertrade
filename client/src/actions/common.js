@@ -1,9 +1,9 @@
 export const API_ROOT = `${process.env.REACT_APP_SERVER_ROOT}/api`;
 
-export function setSearchMode(mode = 'listings') {
+export function setDisplayMode(mode = 'listings') {
   return function (dispatch, getState) {
     dispatch({
-      type: 'SET_SEARCH_MODE',
+      type: 'SET_DISPLAY_MODE',
       mode,
     });
   };

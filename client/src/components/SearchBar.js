@@ -22,7 +22,7 @@ class SearchBar extends Component {
     location: PropTypes.shape({
       pathname: PropTypes.string.isRequired,
     }).isRequired,
-    mode: PropTypes.string.isRequired,
+    displayMode: PropTypes.string.isRequired,
     // eslint-disable-next-line react/forbid-prop-types
     query: PropTypes.object.isRequired,
     // eslint-disable-next-line react/forbid-prop-types
@@ -57,7 +57,7 @@ class SearchBar extends Component {
     const query = this.props.query;
     query.query = value;
 
-    switch (this.props.mode) {
+    switch (this.props.displayMode) {
       case 'seeks':
         this.props.dispatch(loadSeeks(query));
         break;
@@ -95,7 +95,7 @@ class SearchBar extends Component {
       case '/profile':
         break;
       default:
-        this.props.history.push(`/${this.props.mode}`);
+        this.props.history.push(`/${this.props.displayMode}`);
         break;
     }
   };
@@ -123,7 +123,7 @@ class SearchBar extends Component {
       paddingRight: '16px',
     };
 
-    const hintText = (this.props.mode === 'seeks')
+    const hintText = (this.props.displayMode === 'seeks')
           ? (<span className="hint-text">What do you want to sell?</span>)
           : (<span className="hint-text">What do you want to buy?</span>);
 
@@ -148,7 +148,7 @@ class SearchBar extends Component {
 }
 
 const mapStateToProps = state => ({
-  mode: state.searchMode,
+  displayMode: state.displayMode,
   query: state.currentQuery,
 });
 
