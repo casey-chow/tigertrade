@@ -91,8 +91,8 @@ func CreateListing(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 		return
 	}
 
-	Serve(w, listing)
 	w.WriteHeader(http.StatusCreated)
+	Serve(w, listing)
 }
 
 func UpdateListing(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {

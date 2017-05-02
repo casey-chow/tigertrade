@@ -98,8 +98,8 @@ func CreateSavedSearch(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 		return
 	}
 
-	Serve(w, savedSearch)
 	w.WriteHeader(http.StatusCreated)
+	Serve(w, savedSearch)
 }
 
 func UpdateSavedSearch(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {

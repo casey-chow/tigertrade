@@ -89,8 +89,8 @@ func CreateSeek(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		return
 	}
 
-	Serve(w, seek)
 	w.WriteHeader(http.StatusCreated)
+	Serve(w, seek)
 }
 
 func UpdateSeek(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
