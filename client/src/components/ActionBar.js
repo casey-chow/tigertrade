@@ -56,7 +56,7 @@ class ActionBar extends Component {
           position: 'fixed',
           top: '0px',
           width: '100%',
-          zIndex: '100',
+          zIndex: '1400',
         }}
       >
         <AppBar

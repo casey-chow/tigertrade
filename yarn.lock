@@ -4586,6 +4586,10 @@ react-router@^4.0.0, react-router@^4.1.1:
     prop-types "^15.5.4"
     warning "^3.0.0"
 
+react-sidebar@^2.3.2:
+  version "2.3.2"
+  resolved "https://registry.yarnpkg.com/react-sidebar/-/react-sidebar-2.3.2.tgz#ec140bea8a6f5fa3d8ea7a56479665b44cf4f9cf"
+
 react-tap-event-plugin@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/react-tap-event-plugin/-/react-tap-event-plugin-2.0.1.tgz#316beb3bc6556e29ec869a7293e89c826a9074d2"
@@ -4599,7 +4603,7 @@ react-test-renderer@^15.5.4:
     fbjs "^0.8.9"
     object-assign "^4.1.0"
 
-"react@^0.14.3 || ^15.0.1", "react@^0.14.9 || ^15.3.0", react@^15.4.2, react@^15.4.3:
+"react@^0.14.3 || ^15.0.1", react@^15.4.2, react@^15.4.3:
   version "15.5.4"
   resolved "https://registry.yarnpkg.com/react/-/react-15.5.4.tgz#fa83eb01506ab237cdc1c8c3b1cea8de012bf047"
   dependencies:
@@ -4733,18 +4737,6 @@ redux-ui@^0.0.15:
     immutable "^3.7.5"
     invariant "^2.2.0"
     react "^0.14.3 || ^15.0.1"
-    react-redux "^4.0.0"
-    redux "^3.0.4"
-
-"redux-ui@git://github.com/kurtfunai/redux-ui.git#react-15.5.0-with-prop-types":
-  version "0.0.15"
-  resolved "git://github.com/kurtfunai/redux-ui.git#facb111b003d1c44b0ecaf446c765339509d0b2f"
-  dependencies:
-    babel-register "^6.6.0"
-    immutable "^3.7.5"
-    invariant "^2.2.0"
-    prop-types "^15.5.7"
-    react "^0.14.9 || ^15.3.0"
     react-redux "^4.0.0"
     redux "^3.0.4"
 
