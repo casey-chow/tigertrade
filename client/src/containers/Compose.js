@@ -12,7 +12,7 @@ import {
 import Paper from 'material-ui/Paper';
 import { Tabs, Tab } from 'material-ui/Tabs';
 
-import { setDisplayMode } from '../actions/common';
+import { setDisplayMode } from '../actions/ui';
 import { postListing, loadListings } from '../actions/listings';
 import { postSeek, loadSeeks } from '../actions/seeks';
 

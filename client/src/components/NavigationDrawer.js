@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import {
   withRouter,
   propTypes as routerPropTypes,
@@ -21,6 +22,7 @@ class NavigationDrawer extends Component {
       PropTypes.arrayOf(PropTypes.node),
       PropTypes.node,
     ]).isRequired,
+    visible: PropTypes.bool.isRequired,
     style: PropTypes.object, // eslint-disable-line react/forbid-prop-types
   };
 
@@ -30,11 +32,11 @@ class NavigationDrawer extends Component {
 
   static sidebarStyles = {
     root: {
-      top: '7rem',
+      top: '4rem',
     },
     sidebar: {
-      backgroundColor: 'white',
       width: '17vw',
+      backgroundColor: 'white',
     },
     content: {
       paddingTop: '2rem',
@@ -69,13 +71,19 @@ class NavigationDrawer extends Component {
     );
 
     return (
-      <div style={this.props.style}>
-        <Sidebar docked sidebar={SidebarItems} styles={NavigationDrawer.sidebarStyles}>
-          {this.props.children}
-        </Sidebar>
-      </div>
+      <Sidebar
+        docked={this.props.visible}
+        sidebar={SidebarItems}
+        styles={NavigationDrawer.sidebarStyles}
+      >
+        {this.props.children}
+      </Sidebar>
     );
   }
 }
 
-export default withRouter(NavigationDrawer);
+const mapStateToProps = state => ({
+  visible: state.leftDrawerVisible,
+});
+
+export default withRouter(connect(mapStateToProps)(NavigationDrawer));

@@ -32,7 +32,7 @@ class App extends Component {
     return (
       <div className="App">
         <ActionBar user={this.props.user} loading={this.props.loading} />
-        <NavigationDrawer style={{ marginTop: '7rem', paddingTop: '2rem' }}>
+        <NavigationDrawer>
           { (!this.props.loading && !this.props.user.loggedIn) &&
             <Welcome />
           }

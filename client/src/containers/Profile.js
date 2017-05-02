@@ -18,7 +18,7 @@ import { Container, Row, Col } from 'react-grid-system';
 import ListingsList from '../components/ListingsList';
 import SeeksList from '../components/SeeksList';
 
-import { setDisplayMode } from './../actions/common';
+import { setDisplayMode } from '../actions/ui';
 import { loadListings } from './../actions/listings';
 import { loadSeeks } from './../actions/seeks';
 
