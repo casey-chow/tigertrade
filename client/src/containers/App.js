@@ -59,7 +59,8 @@ class App extends Component {
           </Switch>
         </div>
         <ComposeOverlay />
-        { this.props.showFAB && <FloatingActionButton
+        { this.props.showFAB &&
+        <FloatingActionButton
           style={fabStyle}
           onTouchTap={() => this.props.dispatch(showCompose())}
         >
