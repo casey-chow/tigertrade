@@ -20,21 +20,11 @@ class Seeks extends Component {
     }).isRequired,
   };
 
-  state = {
-    initialLoad: true,
-  }
-
   componentWillMount() {
     const query = {
       query: parse(this.props.location.search).query || '',
     };
     this.props.dispatch(loadSeeks(query));
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (!nextProps.seeksLoading) {
-      this.setState({ initialLoad: false });
-    }
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -56,16 +46,15 @@ class Seeks extends Component {
   }
 
   render() {
-    if (this.props.seeksLoading && this.state.initialLoad) {
-      return (
-        <div style={{ alignItems: 'center', justifyContent: 'center', display: 'flex' }}>
-          <CircularProgress size={80} thickness={8} />
-        </div>
-      );
-    }
-
     return (
-      <SeeksList seeks={this.props.seeks} />
+      <div>
+        <SeeksList seeks={this.props.seeks} />
+        { this.props.seeksLoading &&
+          <div style={{ alignItems: 'center', justifyContent: 'center', display: 'flex' }}>
+            <CircularProgress size={80} thickness={8} />
+          </div>
+        }
+      </div>
     );
   }
 }
