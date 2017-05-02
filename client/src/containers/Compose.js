@@ -23,7 +23,7 @@ class Compose extends Component {
       loggedIn: PropTypes.bool.isRequired,
     }).isRequired,
     currentUserLoading: PropTypes.bool.isRequired,
-    mode: PropTypes.bool.isRequired,
+    mode: PropTypes.string.isRequired,
   };
 
   handleSubmit = (data) => {
@@ -45,7 +45,7 @@ class Compose extends Component {
   }
 
   handleToggle = (event, isInputChecked) => {
-    this.props.dispatch(setSearchMode(!isInputChecked));
+    this.props.dispatch(setSearchMode(isInputChecked ? 'seeks' : 'listings'));
   }
 
   render() {
@@ -63,11 +63,11 @@ class Compose extends Component {
                   <Toggle
                     label="Listing / Seek"
                     labelPosition="right"
-                    toggled={this.props.mode}
+                    toggled={this.props.mode === 'seeks'}
                     onToggle={this.handleToggle}
                   />
                 </div>
-                { !this.props.mode ?
+                { (this.props.mode === 'listings') ?
                   <ComposeForm onSubmit={this.handleSubmit} /> :
                   <SeekComposeForm onSubmit={this.handleSubmitSeek} />
                 }
@@ -83,7 +83,7 @@ class Compose extends Component {
 const mapStateToProps = state => ({
   user: state.currentUser,
   form: state.form,
-  mode: !state.searchMode,
+  mode: state.searchMode,
   currentUserLoading: state.currentUserLoading,
 });
 

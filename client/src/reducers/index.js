@@ -114,14 +114,14 @@ const currentQuery = (state = { query: '' }, action) => {
   }
 };
 
-const searchMode = (state = false, action) => {
+const searchMode = (state = 'listings', action) => {
   switch (action.type) {
     case 'LOAD_LISTINGS_REQUEST':
-    case 'CONTAINER_LISTINGS_MODE':
-      return false;
+      return 'listings';
     case 'LOAD_SEEKS_REQUEST':
-    case 'CONTAINER_SEEKS_MODE':
-      return true;
+      return 'seeks';
+    case 'SET_SEARCH_MODE':
+      return action.mode;
     default:
       return state;
   }

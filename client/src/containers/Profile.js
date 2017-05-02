@@ -24,7 +24,7 @@ class Profile extends Component {
     location: PropTypes.shape({
       search: PropTypes.string.isRequired,
     }).isRequired,
-    mode: PropTypes.bool.isRequired,
+    mode: PropTypes.string.isRequired,
   };
 
   state = {
@@ -88,7 +88,7 @@ class Profile extends Component {
   }
 
   handleToggle = (event, isInputChecked) => {
-    this.props.dispatch(setSearchMode(isInputChecked));
+    this.props.dispatch(setSearchMode(isInputChecked ? 'seeks' : 'listings'));
   }
 
   render() {
@@ -109,7 +109,7 @@ class Profile extends Component {
               <Toggle
                 label="Listings / Seeks"
                 labelPosition="right"
-                toggled={this.props.mode}
+                toggled={this.props.mode === 'seeks'}
                 onToggle={this.handleToggle}
                 style={{ float: 'right' }}
               />
@@ -117,7 +117,7 @@ class Profile extends Component {
           </Row>
         </Container>
         <div style={{ marginTop: '10px' }}>
-          { !this.props.mode ?
+          { (this.props.mode === 'listings') ?
             <ListingsList listings={this.props.listings} /> :
             <SeeksList seeks={this.props.seeks} />
           }
