@@ -27,6 +27,7 @@ const descriptionField = field => (
   <TextField
     hintText="Describe what's for sale. For best results, keep to 100 words or fewer."
     value={field.input.value} onChange={field.input.onChange} multiLine
+    rowsMax={8}
     fullWidth
   />
 );

@@ -8,3 +8,20 @@ export function setSearchMode(mode = 'listings') {
     });
   };
 }
+
+export function showCompose() {
+  return function (dispatch, getState) {
+    dispatch({
+      type: 'SHOW_COMPOSE',
+    });
+  };
+}
+
+export function hideCompose() {
+  return function (dispatch, getState) {
+    dispatch({
+      type: 'HIDE_COMPOSE',
+    });
+  };
+}
+

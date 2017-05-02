@@ -127,6 +127,17 @@ const searchMode = (state = 'listings', action) => {
   }
 };
 
+const showCompose = (state = false, action) => {
+  switch (action.type) {
+    case 'SHOW_COMPOSE':
+      return true;
+    case 'HIDE_COMPOSE':
+      return false;
+    default:
+      return state;
+  }
+};
+
 const rootReducer = combineReducers({
   listingsLoading,
   listings,
@@ -138,6 +149,7 @@ const rootReducer = combineReducers({
   currentUser,
   currentQuery,
   searchMode,
+  showCompose,
   ui: uiReducer,
   form: formReducer,
 });
