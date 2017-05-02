@@ -89,6 +89,7 @@ func CreateSeek(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		return
 	}
 
+	w.WriteHeader(http.StatusCreated)
 	Serve(w, seek)
 }
 
@@ -119,15 +120,14 @@ func UpdateSeek(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		return
 	}
 
-	seek, err, code := models.UpdateSeek(db, id, seek, user.KeyID)
-	if err != nil {
+	if err, code := models.UpdateSeek(db, id, seek, user.KeyID); err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while updating seek by ID")
 		Error(w, code)
 		return
 	}
 
-	Serve(w, seek)
+	w.WriteHeader(http.StatusNoContent)
 }
 
 func DeleteSeek(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -147,11 +147,12 @@ func DeleteSeek(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		return
 	}
 
-	err, code := models.DeleteSeek(db, id, user.KeyID)
-	if err != nil {
+	if err, code := models.DeleteSeek(db, id, user.KeyID); err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while deleting seek by ID")
 		Error(w, code)
 		return
 	}
+
+	w.WriteHeader(http.StatusNoContent)
 }

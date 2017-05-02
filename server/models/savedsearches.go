@@ -139,12 +139,12 @@ func CreateSavedSearch(db *sql.DB, savedSearch SavedSearch, userId int) (SavedSe
 		return savedSearch, err, http.StatusInternalServerError
 	}
 
-	return savedSearch, nil, http.StatusOK
+	return savedSearch, nil, http.StatusCreated
 }
 
 // Overwrites the saved search in the database with the given id with the given saved search
 // (belonging to userId). Returns the updated saved search.
-func UpdateSavedSearch(db *sql.DB, id string, savedSearch SavedSearch, userId int) (SavedSearch, error, int) {
+func UpdateSavedSearch(db *sql.DB, id string, savedSearch SavedSearch, userId int) (error, int) {
 	// Update savedSearch
 	stmt := psql.Update("saved_searches").
 		SetMap(map[string]interface{}{
@@ -159,13 +159,7 @@ func UpdateSavedSearch(db *sql.DB, id string, savedSearch SavedSearch, userId in
 
 	// Query db for savedSearch
 	result, err := stmt.RunWith(db).Exec()
-	code, err := getUpdateResultCode(result, err)
-
-	if err != nil {
-		return savedSearch, err, code
-	}
-
-	return ReadSavedSearch(db, id, userId)
+	return getUpdateResultCode(result, err)
 }
 
 // Deletes the saved search in the database with the given id with the given saved search
@@ -178,7 +172,5 @@ func DeleteSavedSearch(db *sql.DB, id string, userId int) (error, int) {
 
 	// Query db for savedSearch
 	result, err := stmt.RunWith(db).Exec()
-	code, err := getUpdateResultCode(result, err)
-
-	return err, code
+	return getUpdateResultCode(result, err)
 }

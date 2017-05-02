@@ -42,12 +42,7 @@ func ParseJSONFromBody(r *http.Request, v interface{}) error {
 		return err
 	}
 
-	err = json.Unmarshal(body, v)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return json.Unmarshal(body, v)
 }
 
 // formatRequest generates ascii representation of a request

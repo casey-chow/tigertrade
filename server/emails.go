@@ -55,4 +55,6 @@ func ContactPost(w http.ResponseWriter, r *http.Request, ps httprouter.Params, i
 		Error(w, code)
 		return
 	}
+
+	w.WriteHeader(http.StatusNoContent)
 }

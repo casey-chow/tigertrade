@@ -15,21 +15,21 @@ const defaultTruncationLength = 1024
 const defaultNumResults uint64 = 30
 const maxNumResults uint64 = 100
 
-func getUpdateResultCode(result sql.Result, err error) (int, error) {
+func getUpdateResultCode(result sql.Result, err error) (error, int) {
 
 	if err != nil {
-		return http.StatusInternalServerError, err
+		return err, http.StatusInternalServerError
 	}
 	numRows, err := result.RowsAffected()
 	if err != nil {
-		return http.StatusInternalServerError, err
+		return err, http.StatusInternalServerError
 	}
 	if numRows == 0 {
-		return http.StatusNotFound, sql.ErrNoRows
+		return sql.ErrNoRows, http.StatusNotFound
 	}
 	if numRows != 1 {
-		return http.StatusInternalServerError, errors.New("Multiple rows affected!")
+		return errors.New("Multiple rows affected!"), http.StatusInternalServerError
 	}
 
-	return http.StatusOK, nil
+	return nil, http.StatusNoContent
 }

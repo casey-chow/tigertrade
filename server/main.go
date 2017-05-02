@@ -51,7 +51,7 @@ func logMiddleware() negroni.Handler {
 func corsMiddleware() negroni.Handler {
 	log.WithField("CLIENT_ROOT", os.Getenv("CLIENT_ROOT")).Print("activating CORS header")
 	return cors.New(cors.Options{
-		AllowedMethods:   []string{"GET", "POST", "PUT", "UPDATE", "DELETE"},
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE"},
 		AllowedOrigins:   []string{os.Getenv("CLIENT_ROOT")},
 		AllowCredentials: true,
 	})

@@ -223,12 +223,12 @@ func CreateListing(db *sql.DB, listing Listing, userId int) (Listing, error, int
 		return listing, err, http.StatusInternalServerError
 	}
 
-	return listing, nil, http.StatusOK
+	return listing, nil, http.StatusCreated
 }
 
 // Overwrites the listing in the database with the given id with the given listing
 // (belonging to userId). Returns the updated listing.
-func UpdateListing(db *sql.DB, id string, listing Listing, userId int) (Listing, error, int) {
+func UpdateListing(db *sql.DB, id string, listing Listing, userId int) (error, int) {
 	listing.UserID = userId
 
 	// Update listing
@@ -245,13 +245,7 @@ func UpdateListing(db *sql.DB, id string, listing Listing, userId int) (Listing,
 
 	// Update listing
 	result, err := stmt.RunWith(db).Exec()
-	code, err := getUpdateResultCode(result, err)
-
-	if err != nil {
-		return listing, err, code
-	}
-
-	return ReadListing(db, id)
+	return getUpdateResultCode(result, err)
 }
 
 // Deletes the listing in the database with the given id with the given listing
@@ -264,9 +258,7 @@ func DeleteListing(db *sql.DB, id string, userId int) (error, int) {
 
 	// Query db for listing
 	result, err := stmt.RunWith(db).Exec()
-	code, err := getUpdateResultCode(result, err)
-
-	return err, code
+	return getUpdateResultCode(result, err)
 }
 
 // SetStar adds or removes a star, depending on whether add is set to true.
@@ -286,9 +278,7 @@ func addStar(db *sql.DB, listingId string, userId int) (error, int) {
 
 	// Query db for listing
 	result, err := insertStarStmt.RunWith(db).Exec()
-	code, err := getUpdateResultCode(result, err)
-
-	return err, code
+	return getUpdateResultCode(result, err)
 }
 
 // removeStar remvoes a star from the given listingId for a given userId.
@@ -301,7 +291,5 @@ func removeStar(db *sql.DB, listingId string, userId int) (error, int) {
 
 	// Query db for listing
 	result, err := stmt.RunWith(db).Exec()
-	code, err := getUpdateResultCode(result, err)
-
-	return err, code
+	return getUpdateResultCode(result, err)
 }
