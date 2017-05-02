@@ -7,7 +7,6 @@ import (
 	sq "github.com/Masterminds/squirrel"
 	"github.com/guregu/null"
 	"net/http"
-	"strconv"
 	"strings"
 )
 
@@ -78,10 +77,10 @@ func isStarredBy(id int) string {
 	// injection attack since id is guaranteed to be an int."
 	// "But isn't this still annoying and ugly?"
 	// "Yeah."
-	return "exists(  SELECT 1 FROM starred_listings " +
-		"WHERE starred_listings.listing_id=listings.key_id " +
-		"AND starred_listings.user_id=" + strconv.Itoa(id) + " " +
-		"AND starred_listings.is_active)"
+	return fmt.Sprint("exists( SELECT 1 FROM starred_listings",
+		" WHERE starred_listings.listing_id=listings.key_id",
+		" AND starred_listings.user_id=", id,
+		" AND starred_listings.is_active)")
 }
 
 // Returns the most recent count listings, based on original date created.
@@ -100,8 +99,8 @@ func ReadListings(db *sql.DB, query *listingQuery) ([]*ListingsItem, error, int)
 		LeftJoin("users ON listings.user_id = users.key_id").
 		LeftJoin("thumbnails ON listings.thumbnail_id = thumbnails.key_id")
 
-	for i, word := range strings.Fields(query.Query) {
-		stmt = stmt.Where(fmt.Sprintf("(lower(listings.title) LIKE lower($%d) OR lower(listings.description) LIKE lower($%d))", i+1, i+1), fmt.Sprint("%", word, "%"))
+	for _, word := range strings.Fields(query.Query) {
+		stmt = stmt.Where("(lower(listings.title) LIKE lower(?) OR lower(listings.description) LIKE lower(?))", fmt.Sprint("%", word, "%"), fmt.Sprint("%", word, "%"))
 	}
 
 	if query.UserID == 0 && (query.OnlyStarred || query.OnlyMine) {

@@ -10,6 +10,7 @@ import { parse } from 'query-string';
 import ListingsList from '../components/ListingsList';
 import SeeksList from '../components/SeeksList';
 
+import { setSearchMode } from './../actions/common';
 import { loadListings } from './../actions/listings';
 import { loadSeeks } from './../actions/seeks';
 
@@ -23,10 +24,10 @@ class Profile extends Component {
     location: PropTypes.shape({
       search: PropTypes.string.isRequired,
     }).isRequired,
+    mode: PropTypes.string.isRequired,
   };
 
   state = {
-    seeks: false,
     initialLoad: true,
     initialSeekLoad: true,
   }
@@ -36,8 +37,10 @@ class Profile extends Component {
       query: parse(this.props.location.search).query || '',
       isMine: true,
     };
+    const mode = this.props.mode;
     this.props.dispatch(loadListings(query));
     this.props.dispatch(loadSeeks(query));
+    this.props.dispatch(setSearchMode(mode));
   }
 
   componentWillReceiveProps(nextProps) {
@@ -77,7 +80,7 @@ class Profile extends Component {
         return true;
       }
     }
-    if (this.state.seeks !== nextState.seeks) {
+    if (this.props.mode !== nextProps.mode) {
       return true;
     }
 
@@ -85,9 +88,7 @@ class Profile extends Component {
   }
 
   handleToggle = (event, isInputChecked) => {
-    this.setState({
-      seeks: isInputChecked,
-    });
+    this.props.dispatch(setSearchMode(isInputChecked ? 'seeks' : 'listings'));
   }
 
   render() {
@@ -108,7 +109,7 @@ class Profile extends Component {
               <Toggle
                 label="Listings / Seeks"
                 labelPosition="right"
-                toggled={this.state.seeks}
+                toggled={this.props.mode === 'seeks'}
                 onToggle={this.handleToggle}
                 style={{ float: 'right' }}
               />
@@ -116,7 +117,7 @@ class Profile extends Component {
           </Row>
         </Container>
         <div style={{ marginTop: '10px' }}>
-          { !this.state.seeks ?
+          { (this.props.mode === 'listings') ?
             <ListingsList listings={this.props.listings} /> :
             <SeeksList seeks={this.props.seeks} />
           }
@@ -129,6 +130,7 @@ class Profile extends Component {
 const mapStateToProps = state => ({
   listingsLoading: state.listingsLoading,
   listings: state.listings,
+  mode: state.searchMode,
   seeksLoading: state.seeksLoading,
   seeks: state.seeks,
 });
