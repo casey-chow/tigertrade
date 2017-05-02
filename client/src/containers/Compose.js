@@ -5,6 +5,7 @@ import { Container, Row, Col } from 'react-grid-system';
 import Paper from 'material-ui/Paper';
 import Toggle from 'material-ui/Toggle';
 
+import { setSearchMode } from '../actions/common';
 import { postListing, loadListings } from '../actions/listings';
 import { postSeek, loadSeeks } from '../actions/seeks';
 import ComposeForm from '../components/ComposeForm';
@@ -22,16 +23,8 @@ class Compose extends Component {
       loggedIn: PropTypes.bool.isRequired,
     }).isRequired,
     currentUserLoading: PropTypes.bool.isRequired,
-    composeMode: PropTypes.string,
+    mode: PropTypes.string.isRequired,
   };
-
-  static defaultProps = {
-    composeMode: 'Listing',
-  };
-
-  state = {
-    composeMode: this.props.composeMode,
-  }
 
   handleSubmit = (data) => {
     this.props.dispatch(postListing({
@@ -52,9 +45,7 @@ class Compose extends Component {
   }
 
   handleToggle = (event, isInputChecked) => {
-    this.setState({
-      composeMode: isInputChecked ? 'Seek' : 'Listing',
-    });
+    this.props.dispatch(setSearchMode(isInputChecked ? 'seeks' : 'listings'));
   }
 
   render() {
@@ -72,11 +63,11 @@ class Compose extends Component {
                   <Toggle
                     label="Listing / Seek"
                     labelPosition="right"
-                    toggled={this.state.composeMode !== 'Listing'}
+                    toggled={this.props.mode === 'seeks'}
                     onToggle={this.handleToggle}
                   />
                 </div>
-                { this.state.composeMode === 'Listing' ?
+                { (this.props.mode === 'listings') ?
                   <ComposeForm onSubmit={this.handleSubmit} /> :
                   <SeekComposeForm onSubmit={this.handleSubmitSeek} />
                 }
@@ -92,6 +83,7 @@ class Compose extends Component {
 const mapStateToProps = state => ({
   user: state.currentUser,
   form: state.form,
+  mode: state.searchMode,
   currentUserLoading: state.currentUserLoading,
 });
 
