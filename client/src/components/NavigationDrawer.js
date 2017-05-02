@@ -16,6 +16,8 @@ import ViewList from 'material-ui/svg-icons/action/view-list';
 import ShoppingCart from 'material-ui/svg-icons/action/shopping-cart';
 import Search from 'material-ui/svg-icons/action/search';
 import ModeEdit from 'material-ui/svg-icons/editor/mode-edit';
+import Restore from 'material-ui/svg-icons/action/restore';
+import Person from 'material-ui/svg-icons/social/person';
 
 const SelectableList = makeSelectable(List);
 
@@ -73,8 +75,18 @@ class NavigationDrawer extends Component {
           initiallyOpen
           primaryTogglesNestedList
           nestedItems={[
-            <ListItem key="recent" primaryText="Recent Listings" value="/listings" />,
-            <ListItem key="mine" primaryText="My Listings" value="/listings/mine" />,
+            <ListItem
+              key="recent"
+              primaryText="Recent Listings"
+              leftIcon={<Restore />}
+              value="/listings"
+            />,
+            <ListItem
+              key="mine"
+              primaryText="My Listings"
+              leftIcon={<Person />}
+              value="/listings/mine"
+            />,
           ]}
         />
         <ListItem
@@ -82,11 +94,20 @@ class NavigationDrawer extends Component {
           primaryText="Seeks"
           // value="/seeks"
           leftIcon={<ShoppingCart />}
-          initiallyOpen
           primaryTogglesNestedList
           nestedItems={[
-            <ListItem key="recent" primaryText="Recent Seeks" value="/seeks" />,
-            <ListItem key="mine" primaryText="My Seeks" value="/seeks/mine" />,
+            <ListItem
+              key="recent"
+              primaryText="Recent Seeks"
+              leftIcon={<Restore />}
+              value="/seeks"
+            />,
+            <ListItem
+              key="mine"
+              primaryText="My Seeks"
+              leftIcon={<Person />}
+              value="/seeks/mine"
+            />,
           ]}
         />
         <ListItem
@@ -103,8 +124,16 @@ class NavigationDrawer extends Component {
           initiallyOpen
           primaryTogglesNestedList
           nestedItems={[
-            <ListItem key="listings" primaryText="Listing" value="/compose/listings" />,
-            <ListItem key="seeks" primaryText="Seek" value="/compose/seeks" />,
+            <ListItem
+              key="listings"
+              primaryText="Listing"
+              value="/compose/listings"
+            />,
+            <ListItem
+              key="seeks"
+              primaryText="Seek"
+              value="/compose/seeks"
+            />,
           ]}
         />
       </SelectableList>

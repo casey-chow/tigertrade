@@ -10,12 +10,12 @@ import {
 } from 'react-router-dom';
 
 import Paper from 'material-ui/Paper';
+import { Container, Row, Col } from 'react-grid-system';
 
 import { setDisplayMode } from '../actions/ui';
 import { postListing, loadListings } from '../actions/listings';
 import { postSeek, loadSeeks } from '../actions/seeks';
 
-import MaxRowContainer from '../components/MaxRowContainer';
 import ComposeForm from '../components/ComposeForm';
 import SeekComposeForm from '../components/SeekComposeForm';
 import RedirectToCas from '../components/RedirectToCas';
@@ -70,27 +70,32 @@ class Compose extends Component {
     }
 
     return (
-      <MaxRowContainer>
-        <Paper style={{ padding: '0' }}>
-          <Switch>
-            <Route exact path="/compose/">
-              <Redirect to={`/compose/${this.props.displayMode}`} />
-            </Route>
-            <Route path="/compose/listings">
-              <ComposeForm
-                onSubmit={this.handleSubmit}
-                style={{ padding: '2em', paddingTop: '0.5em', paddingBottom: '1em' }}
-              />
-            </Route>
-            <Route path="/compose/seeks">
-              <SeekComposeForm
-                onSubmit={this.handleSubmitSeek}
-                style={{ padding: '2em', paddingTop: '0.5em', paddingBottom: '1em' }}
-              />
-            </Route>
-          </Switch>
-        </Paper>
-      </MaxRowContainer>
+      <Container className="Compose">
+        <Row>
+          <Col xs={1} />
+          <Col xs={10}>
+            <Paper style={{ padding: '0' }}>
+              <Switch>
+                <Route exact path="/compose/">
+                  <Redirect to={`/compose/${this.props.displayMode}`} />
+                </Route>
+                <Route path="/compose/listings">
+                  <ComposeForm
+                    onSubmit={this.handleSubmit}
+                    style={{ padding: '2em', paddingTop: '0.5em', paddingBottom: '1em' }}
+                  />
+                </Route>
+                <Route path="/compose/seeks">
+                  <SeekComposeForm
+                    onSubmit={this.handleSubmitSeek}
+                    style={{ padding: '2em', paddingTop: '0.5em', paddingBottom: '1em' }}
+                  />
+                </Route>
+              </Switch>
+            </Paper>
+          </Col>
+        </Row>
+      </Container>
     );
   }
 }
