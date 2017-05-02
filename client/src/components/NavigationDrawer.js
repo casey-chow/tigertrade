@@ -80,8 +80,14 @@ class NavigationDrawer extends Component {
         <ListItem
           key="seeks"
           primaryText="Seeks"
-          value="/seeks"
+          // value="/seeks"
           leftIcon={<ShoppingCart />}
+          initiallyOpen
+          primaryTogglesNestedList
+          nestedItems={[
+            <ListItem key="recent" primaryText="Recent Seeks" value="/seeks" />,
+            <ListItem key="mine" primaryText="My Seeks" value="/seeks/mine" />,
+          ]}
         />
         <ListItem
           key="savedsearches"
@@ -92,7 +98,7 @@ class NavigationDrawer extends Component {
         <ListItem
           key="compose"
           primaryText="Compose"
-          value="/compose"
+          // value="/compose"
           leftIcon={<ModeEdit />}
           initiallyOpen
           primaryTogglesNestedList
