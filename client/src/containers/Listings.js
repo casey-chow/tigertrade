@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
+import {
+  withRouter,
+  propTypes as routerPropTypes,
+} from 'react-router-dom';
 
 import CircularProgress from 'material-ui/CircularProgress';
 import { parse } from 'query-string';
@@ -12,19 +15,22 @@ import { loadListings } from './../actions/listings';
 
 class Listings extends Component {
   static propTypes = {
+    ...routerPropTypes,
     listingsLoading: PropTypes.bool.isRequired,
     listings: PropTypes.arrayOf(PropTypes.object).isRequired,
     dispatch: PropTypes.func.isRequired,
-    location: PropTypes.shape({
-      search: PropTypes.string.isRequired,
-    }).isRequired,
   };
 
   componentWillMount() {
-    const query = {
-      query: parse(this.props.location.search).query || '',
-    };
+    const query = this.getQuery(this.props);
     this.props.dispatch(loadListings(query));
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.match.params.type !== nextProps.match.params.type) {
+      const query = this.getQuery(nextProps);
+      this.props.dispatch(loadListings(query));
+    }
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -43,6 +49,18 @@ class Listings extends Component {
     }
 
     return false;
+  }
+
+  getQuery = (props) => {
+    const query = {
+      query: parse(props.location.search).query || '',
+    };
+
+    if (props.match.params.type === 'mine') {
+      query.isMine = true;
+    }
+
+    return query;
   }
 
   render() {

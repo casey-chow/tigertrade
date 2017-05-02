@@ -68,8 +68,14 @@ class NavigationDrawer extends Component {
         <ListItem
           key="listings"
           primaryText="Listings"
-          value="/listings"
+          // value="/listings"
           leftIcon={<ViewList />}
+          initiallyOpen
+          primaryTogglesNestedList
+          nestedItems={[
+            <ListItem key="recent" primaryText="Recent Listings" value="/listings" />,
+            <ListItem key="mine" primaryText="My Listings" value="/listings/mine" />,
+          ]}
         />
         <ListItem
           key="seeks"
