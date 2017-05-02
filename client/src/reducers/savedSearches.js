@@ -1,4 +1,4 @@
-const savedSearchesLoading = (state = false, action) => {
+export const savedSearchesLoading = (state = false, action) => {
   switch (action.type) {
     case 'LOAD_SAVED_SEARCHES_REQUEST':
       return true;
@@ -10,7 +10,7 @@ const savedSearchesLoading = (state = false, action) => {
   }
 };
 
-const savedSearches = (state = [], action) => {
+export const savedSearches = (state = [], action) => {
   switch (action.type) {
     case 'LOAD_SAVED_SEARCHES_FAILURE': // TODO: failure state
       return [];
@@ -20,9 +20,4 @@ const savedSearches = (state = [], action) => {
     default:
       return state;
   }
-};
-
-export default {
-  savedSearchesLoading,
-  savedSearches,
 };
