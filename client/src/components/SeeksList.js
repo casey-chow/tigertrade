@@ -26,6 +26,15 @@ class SeeksList extends PureComponent {
     openCardId: -1,
   };
 
+  // Reset the open card when new seeks are inserted.
+  componentWillReceiveProps(nextProps) {
+    if (this.props !== nextProps) {
+      this.setState({
+        openCardId: -1,
+      });
+    }
+  }
+
   isExpanded = keyId => this.state.openCardId === keyId;
 
   handleExpandChange = (expanded, keyId) => {

@@ -15,7 +15,7 @@ export default class Welcome extends PureComponent {
           <Col xs={1} />
           <Col xs={10}>
             <Paper className="container">
-              <h1>Welcome to Tigertrade!</h1>
+              <h1>Welcome to TigerTrade!</h1>
               <p>
                 TigerTrade is a place for the Princeton community to buy and share items.
                 Please log in to get started!
