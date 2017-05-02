@@ -99,6 +99,7 @@ func CreateSavedSearch(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 	}
 
 	Serve(w, savedSearch)
+	w.WriteHeader(http.StatusCreated)
 }
 
 func UpdateSavedSearch(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -128,15 +129,14 @@ func UpdateSavedSearch(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 		return
 	}
 
-	savedSearch, err, code := models.UpdateSavedSearch(db, id, savedSearch, user.KeyID)
-	if err != nil {
+	if err, code := models.UpdateSavedSearch(db, id, savedSearch, user.KeyID); err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while updating savedSearch by ID")
 		Error(w, code)
 		return
 	}
 
-	Serve(w, savedSearch)
+	w.WriteHeader(http.StatusNoContent)
 }
 
 func DeleteSavedSearch(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -156,11 +156,12 @@ func DeleteSavedSearch(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 		return
 	}
 
-	err, code := models.DeleteSavedSearch(db, id, user.KeyID)
-	if err != nil {
+	if err, code := models.DeleteSavedSearch(db, id, user.KeyID); err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while deleting savedSearch by ID")
 		Error(w, code)
 		return
 	}
+
+	w.WriteHeader(http.StatusNoContent)
 }

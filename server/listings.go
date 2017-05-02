@@ -92,6 +92,7 @@ func CreateListing(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 	}
 
 	Serve(w, listing)
+	w.WriteHeader(http.StatusCreated)
 }
 
 func UpdateListing(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -121,15 +122,14 @@ func UpdateListing(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 		return
 	}
 
-	listing, err, code := models.UpdateListing(db, id, listing, user.KeyID)
-	if err != nil {
+	if err, code := models.UpdateListing(db, id, listing, user.KeyID); err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while updating listing by ID")
 		Error(w, code)
 		return
 	}
 
-	Serve(w, listing)
+	w.WriteHeader(http.StatusNoContent)
 }
 
 func DeleteListing(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -155,6 +155,8 @@ func DeleteListing(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 		Error(w, code)
 		return
 	}
+
+	w.WriteHeader(http.StatusNoContent)
 }
 
 func UpdateListingStar(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -187,13 +189,12 @@ func UpdateListingStar(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 	}
 
 	// Update Listing data
-	err, code := models.SetStar(db, input.IsStarred, id, user.KeyID)
-	if err != nil {
+	if err, code := models.SetStar(db, input.IsStarred, id, user.KeyID); err != nil {
 		raven.CaptureError(err, nil)
-		log.WithField("err", err).Error("Error while Removing star from listing")
+		log.WithField("err", err).Error("Error while removing star from listing")
 		Error(w, code)
 		return
 	}
 
-	Serve(w, input)
+	w.WriteHeader(http.StatusNoContent)
 }

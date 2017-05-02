@@ -176,12 +176,12 @@ func CreateSeek(db *sql.DB, seek Seek, userId int) (Seek, error, int) {
 		return seek, err, http.StatusInternalServerError
 	}
 
-	return seek, nil, http.StatusOK
+	return seek, nil, http.StatusCreated
 }
 
 // Overwrites the seek in the database with the given id with the given seek
 // (belonging to userId). Returns the updated seek.
-func UpdateSeek(db *sql.DB, id string, seek Seek, userId int) (Seek, error, int) {
+func UpdateSeek(db *sql.DB, id string, seek Seek, userId int) (error, int) {
 	seek.UserID = userId
 
 	// Update seek
@@ -196,13 +196,7 @@ func UpdateSeek(db *sql.DB, id string, seek Seek, userId int) (Seek, error, int)
 
 	// Query db for seek
 	result, err := stmt.RunWith(db).Exec()
-	code, err := getUpdateResultCode(result, err)
-
-	if err != nil {
-		return seek, err, code
-	}
-
-	return ReadSeek(db, id)
+	return getUpdateResultCode(result, err)
 }
 
 // Deletes the seek in the database with the given id with the given seek
@@ -215,7 +209,5 @@ func DeleteSeek(db *sql.DB, id string, userId int) (error, int) {
 
 	// Query db for seek
 	result, err := stmt.RunWith(db).Exec()
-	code, err := getUpdateResultCode(result, err)
-
-	return err, code
+	return getUpdateResultCode(result, err)
 }
