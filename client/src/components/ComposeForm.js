@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
-// import PropTypes from 'prop-types';
-import { Field, reduxForm, propTypes } from 'redux-form';
+import PropTypes from 'prop-types';
+import { Field, reduxForm, propTypes as reduxFormPropTypes } from 'redux-form';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 
@@ -33,14 +33,20 @@ const descriptionField = field => (
 
 class ComposeForm extends PureComponent {
   static propTypes = {
-    ...propTypes,
+    ...reduxFormPropTypes,
+    style: PropTypes.object, // eslint-disable-line react/forbid-prop-types
+  }
+
+  defaultProps = {
+    style: {},
   }
 
   render() {
     const { handleSubmit, pristine, reset, submitting } = this.props;
 
     return (
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} style={this.props.style}>
+        <h1>New Listing</h1>
         <div>
           <label htmlFor="title">Title</label>
           <div>

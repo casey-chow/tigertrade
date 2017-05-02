@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
+import {
+  withRouter,
+  propTypes as routerPropTypes,
+} from 'react-router-dom';
 
 import CircularProgress from 'material-ui/CircularProgress';
 import { parse } from 'query-string';
@@ -12,12 +15,10 @@ import { loadSeeks } from './../actions/seeks';
 
 class Seeks extends Component {
   static propTypes = {
+    ...routerPropTypes,
+    dispatch: PropTypes.func.isRequired,
     seeksLoading: PropTypes.bool.isRequired,
     seeks: PropTypes.arrayOf(PropTypes.object).isRequired,
-    dispatch: PropTypes.func.isRequired,
-    location: PropTypes.shape({
-      search: PropTypes.string.isRequired,
-    }).isRequired,
   };
 
   componentWillMount() {
@@ -25,6 +26,13 @@ class Seeks extends Component {
       query: parse(this.props.location.search).query || '',
     };
     this.props.dispatch(loadSeeks(query));
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.match.params.type !== nextProps.match.params.type) {
+      const query = this.getQuery(nextProps);
+      this.props.dispatch(loadSeeks(query));
+    }
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -43,6 +51,18 @@ class Seeks extends Component {
     }
 
     return false;
+  }
+
+  getQuery = (props) => {
+    const query = {
+      query: parse(props.location.search).query || '',
+    };
+
+    if (props.match.params.type === 'mine') {
+      query.isMine = true;
+    }
+
+    return query;
   }
 
   render() {

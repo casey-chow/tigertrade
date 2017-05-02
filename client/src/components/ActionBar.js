@@ -1,10 +1,16 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { withRouter, propTypes, Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import {
+  withRouter,
+  propTypes as routerPropTypes,
+  Link,
+} from 'react-router-dom';
 
 import AppBar from 'material-ui/AppBar';
-import { Tabs, Tab } from 'material-ui/Tabs';
 import Paper from 'material-ui/Paper';
+
+import { toggleLeftDrawer } from '../actions/ui';
 
 import SearchBar from './SearchBar';
 import LoginButton from './LoginButton';
@@ -14,8 +20,9 @@ class ActionBar extends Component {
   static muiName = 'AppBar';
 
   static propTypes = {
-    ...propTypes,
+    ...routerPropTypes,
     loading: PropTypes.bool.isRequired,
+    dispatch: PropTypes.func.isRequired,
     user: PropTypes.shape({
       loggedIn: PropTypes.bool.isRequired,
     }).isRequired,
@@ -28,6 +35,10 @@ class ActionBar extends Component {
     { name: 'Profile', url: '/profile' },
     { name: 'Compose', url: '/compose' },
   ];
+
+  handleAppBarMenuTap = () => {
+    this.props.dispatch(toggleLeftDrawer());
+  }
 
   render() {
     const Title = () => (
@@ -48,38 +59,27 @@ class ActionBar extends Component {
         <LoginButton {...props} />
     );
 
-    const currentMajorPath = this.props.location.pathname.split('/')[1];
-
     return (
       <Paper
         style={{
           position: 'fixed',
           top: '0px',
           width: '100%',
-          zIndex: '100',
+          zIndex: '1400',
         }}
       >
         <AppBar
-          showMenuIconButton={false}
+          // showMenuIconButton={false}
+          onLeftIconButtonTouchTap={this.handleAppBarMenuTap}
           title={<Title />}
           zDepth={0}
         >
           <SearchBar style={{ flex: '2 2 0%' }} />
           <RightElement style={{ flex: '1 1 0%' }} />
         </AppBar>
-        <Tabs onChange={this.changeTab} value={currentMajorPath}>
-          {ActionBar.pages.map(page => (
-            <Tab
-              key={page.name}
-              label={page.name}
-              value={page.url.split('/')[1]}
-              containerElement={<Link to={page.url} />}
-            />
-          ))}
-        </Tabs>
       </Paper>
     );
   }
 }
 
-export default withRouter(ActionBar);
+export default withRouter(connect()(ActionBar));

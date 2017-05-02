@@ -1,21 +1,30 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
-import { Container, Row, Col } from 'react-grid-system';
-import CircularProgress from 'material-ui/CircularProgress';
-import Toggle from 'material-ui/Toggle';
+import {
+  withRouter,
+  propTypes as routerPropTypes,
+  Switch,
+  Route,
+  Redirect,
+} from 'react-router-dom';
 import { parse } from 'query-string';
+
+import CircularProgress from 'material-ui/CircularProgress';
+import Paper from 'material-ui/Paper';
+import { Tabs, Tab } from 'material-ui/Tabs';
+import { Container, Row, Col } from 'react-grid-system';
 
 import ListingsList from '../components/ListingsList';
 import SeeksList from '../components/SeeksList';
 
-import { setSearchMode } from './../actions/common';
+import { setDisplayMode } from '../actions/ui';
 import { loadListings } from './../actions/listings';
 import { loadSeeks } from './../actions/seeks';
 
 class Profile extends Component {
   static propTypes = {
+    ...routerPropTypes,
     listingsLoading: PropTypes.bool.isRequired,
     seeksLoading: PropTypes.bool.isRequired,
     listings: PropTypes.arrayOf(PropTypes.object).isRequired,
@@ -24,7 +33,7 @@ class Profile extends Component {
     location: PropTypes.shape({
       search: PropTypes.string.isRequired,
     }).isRequired,
-    mode: PropTypes.string.isRequired,
+    displayMode: PropTypes.string.isRequired,
   };
 
   state = {
@@ -37,10 +46,11 @@ class Profile extends Component {
       query: parse(this.props.location.search).query || '',
       isMine: true,
     };
-    const mode = this.props.mode;
     this.props.dispatch(loadListings(query));
     this.props.dispatch(loadSeeks(query));
-    this.props.dispatch(setSearchMode(mode));
+
+    const mode = this.getDisplayMode();
+    this.props.dispatch(setDisplayMode(mode));
   }
 
   componentWillReceiveProps(nextProps) {
@@ -80,15 +90,30 @@ class Profile extends Component {
         return true;
       }
     }
-    if (this.props.mode !== nextProps.mode) {
+
+    if (this.state.seeks !== nextState.seeks) {
+      return true;
+    }
+
+    if (this.props.displayMode !== nextProps.displayMode) {
       return true;
     }
 
     return false;
   }
 
-  handleToggle = (event, isInputChecked) => {
-    this.props.dispatch(setSearchMode(isInputChecked ? 'seeks' : 'listings'));
+  getDisplayMode = () => {
+    const path = this.props.location.pathname.split('/');
+    const mode = path[path.length - 1];
+    if (mode !== 'listings' && mode !== 'seeks') {
+      return this.props.displayMode;
+    }
+    return mode;
+  }
+
+  handleChange = (mode) => {
+    this.props.dispatch(setDisplayMode(mode));
+    this.props.history.push(`/profile/${mode}`);
   }
 
   render() {
@@ -106,22 +131,33 @@ class Profile extends Component {
           <Row>
             <Col xs={1} />
             <Col xs={10}>
-              <Toggle
-                label="Listings / Seeks"
-                labelPosition="right"
-                toggled={this.props.mode === 'seeks'}
-                onToggle={this.handleToggle}
-                style={{ float: 'right' }}
-              />
+              <Paper>
+                <Tabs onChange={this.handleChange} value={this.props.displayMode}>
+                  <Tab
+                    label="Listings"
+                    value="listings"
+                  />
+                  <Tab
+                    label="Seeks"
+                    value="seeks"
+                  />
+                </Tabs>
+              </Paper>
             </Col>
           </Row>
         </Container>
-        <div style={{ marginTop: '10px' }}>
-          { (this.props.mode === 'listings') ?
-            <ListingsList listings={this.props.listings} /> :
+
+        <Switch style={{ marginTop: '10px' }}>
+          <Route exact path="/profile">
+            <Redirect to={`/profile/${this.props.displayMode}`} />
+          </Route>
+          <Route path="/profile/listings">
+            <ListingsList listings={this.props.listings} />
+          </Route>
+          <Route path="/profile/seeks">
             <SeeksList seeks={this.props.seeks} />
-          }
-        </div>
+          </Route>
+        </Switch>
       </div>
     );
   }
@@ -130,7 +166,7 @@ class Profile extends Component {
 const mapStateToProps = state => ({
   listingsLoading: state.listingsLoading,
   listings: state.listings,
-  mode: state.searchMode,
+  displayMode: state.displayMode,
   seeksLoading: state.seeksLoading,
   seeks: state.seeks,
 });

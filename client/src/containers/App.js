@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 
 import ActionBar from '../components/ActionBar';
 import Welcome from '../components/Welcome';
+import NavigationDrawer from '../components/NavigationDrawer';
 
 import Compose from './Compose';
 import Listings from './Listings';
@@ -31,7 +32,7 @@ class App extends Component {
     return (
       <div className="App">
         <ActionBar user={this.props.user} loading={this.props.loading} />
-        <div style={{ marginTop: '9em' }}>
+        <NavigationDrawer>
           { (!this.props.loading && !this.props.user.loggedIn) &&
             <Welcome />
           }
@@ -40,13 +41,13 @@ class App extends Component {
             <Route exact path="/">
               <Redirect push to="/listings" />
             </Route>
-            <Route path="/listings" component={Listings} />
-            <Route path="/seeks" component={Seeks} />
+            <Route path="/listings/:type?" component={Listings} />
+            <Route path="/seeks/:type?" component={Seeks} />
             <Route path="/savedsearches" component={SavedSearches} />
             <Route path="/compose" component={Compose} />
             <Route path="/profile" component={Profile} />
           </Switch>
-        </div>
+        </NavigationDrawer>
       </div>
     );
   }
