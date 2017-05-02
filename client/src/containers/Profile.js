@@ -18,6 +18,7 @@ import { Container, Row, Col } from 'react-grid-system';
 import ListingsList from '../components/ListingsList';
 import SeeksList from '../components/SeeksList';
 
+import { setDisplayMode } from './../actions/common';
 import { loadListings } from './../actions/listings';
 import { loadSeeks } from './../actions/seeks';
 
@@ -32,6 +33,7 @@ class Profile extends Component {
     location: PropTypes.shape({
       search: PropTypes.string.isRequired,
     }).isRequired,
+    displayMode: PropTypes.string.isRequired,
   };
 
   state = {
@@ -47,12 +49,8 @@ class Profile extends Component {
     this.props.dispatch(loadListings(query));
     this.props.dispatch(loadSeeks(query));
 
-    const path = this.props.location.pathname.split('/');
-    let viewMode = path[path.length - 1];
-    if (viewMode !== 'listings' && viewMode !== 'seeks') {
-      viewMode = 'listings';
-    }
-    this.setState({ viewMode });
+    const mode = this.getDisplayMode();
+    this.props.dispatch(setDisplayMode(mode));
   }
 
   componentWillReceiveProps(nextProps) {
@@ -93,20 +91,29 @@ class Profile extends Component {
       }
     }
 
-    if (this.state.viewMode !== nextState.viewMode) {
+    if (this.state.seeks !== nextState.seeks) {
       return true;
     }
 
-    if (this.state.seeks !== nextState.seeks) {
+    if (this.props.displayMode !== nextProps.displayMode) {
       return true;
     }
 
     return false;
   }
 
-  handleChange = (viewMode) => {
-    this.setState({ viewMode });
-    this.props.history.push(`/profile/${viewMode}`);
+  getDisplayMode = () => {
+    const path = this.props.location.pathname.split('/');
+    const mode = path[path.length - 1];
+    if (mode !== 'listings' && mode !== 'seeks') {
+      return this.props.displayMode;
+    }
+    return mode;
+  }
+
+  handleChange = (mode) => {
+    this.props.dispatch(setDisplayMode(mode));
+    this.props.history.push(`/profile/${mode}`);
   }
 
   render() {
@@ -118,8 +125,6 @@ class Profile extends Component {
       );
     }
 
-    console.log('rendering with state', this.state);
-
     return (
       <div>
         <Container>
@@ -127,7 +132,7 @@ class Profile extends Component {
             <Col xs={1} />
             <Col xs={10}>
               <Paper>
-                <Tabs onChange={this.handleChange} value={this.state.viewMode}>
+                <Tabs onChange={this.handleChange} value={this.props.displayMode}>
                   <Tab
                     label="Listings"
                     value="listings"
@@ -144,7 +149,7 @@ class Profile extends Component {
 
         <Switch style={{ marginTop: '10px' }}>
           <Route exact path="/profile">
-            <Redirect to="/profile/listings" />
+            <Redirect to={`/profile/${this.props.displayMode}`} />
           </Route>
           <Route path="/profile/listings">
             <ListingsList listings={this.props.listings} />
@@ -161,6 +166,7 @@ class Profile extends Component {
 const mapStateToProps = state => ({
   listingsLoading: state.listingsLoading,
   listings: state.listings,
+  displayMode: state.displayMode,
   seeksLoading: state.seeksLoading,
   seeks: state.seeks,
 });

@@ -12,6 +12,7 @@ import {
 import Paper from 'material-ui/Paper';
 import { Tabs, Tab } from 'material-ui/Tabs';
 
+import { setDisplayMode } from '../actions/common';
 import { postListing, loadListings } from '../actions/listings';
 import { postSeek, loadSeeks } from '../actions/seeks';
 
@@ -29,15 +30,21 @@ class Compose extends Component {
       loggedIn: PropTypes.bool.isRequired,
     }).isRequired,
     currentUserLoading: PropTypes.bool.isRequired,
+    displayMode: PropTypes.string.isRequired,
   };
 
   componentWillMount() {
+    const mode = this.getDisplayMode();
+    this.props.dispatch(setDisplayMode(mode));
+  }
+
+  getDisplayMode = () => {
     const path = this.props.location.pathname.split('/');
-    let composeMode = path[path.length - 1];
-    if (composeMode !== 'listing' && composeMode !== 'seek') {
-      composeMode = 'listing';
+    const mode = path[path.length - 1];
+    if (mode !== 'listings' && mode !== 'seeks') {
+      return this.props.displayMode;
     }
-    this.setState({ composeMode });
+    return mode;
   }
 
   handleSubmit = (data) => {
@@ -58,9 +65,9 @@ class Compose extends Component {
     this.props.history.push('/seeks');
   }
 
-  handleChange = (composeMode) => {
-    this.setState({ composeMode });
-    this.props.history.push(`/compose/${composeMode}`);
+  handleChange = (displayMode) => {
+    this.props.history.push(`/compose/${displayMode}`);
+    this.props.dispatch(setDisplayMode(displayMode));
   }
 
   render() {
@@ -71,22 +78,22 @@ class Compose extends Component {
     return (
       <MaxRowContainer>
         <Paper style={{ padding: '0' }}>
-          <Tabs onChange={this.handleChange} value={this.state.composeMode}>
-            <Tab label="Listing" value="listing" />
-            <Tab label="Seek" value="seek" />
+          <Tabs onChange={this.handleChange} value={this.props.displayMode}>
+            <Tab label="Listing" value="listings" />
+            <Tab label="Seek" value="seeks" />
           </Tabs>
 
           <Switch>
             <Route exact path="/compose/">
-              <Redirect to="/compose/listing" />
+              <Redirect to={`/compose/${this.props.displayMode}`} />
             </Route>
-            <Route path="/compose/listing">
+            <Route path="/compose/listings">
               <ComposeForm
                 onSubmit={this.handleSubmit}
                 style={{ padding: '2em', paddingTop: '0.5em', paddingBottom: '1em' }}
               />
             </Route>
-            <Route path="/compose/seek">
+            <Route path="/compose/seeks">
               <SeekComposeForm
                 onSubmit={this.handleSubmitSeek}
                 style={{ padding: '2em', paddingTop: '0.5em', paddingBottom: '1em' }}
@@ -102,6 +109,7 @@ class Compose extends Component {
 const mapStateToProps = state => ({
   user: state.currentUser,
   form: state.form,
+  displayMode: state.displayMode,
   currentUserLoading: state.currentUserLoading,
 });
 

@@ -114,6 +114,19 @@ const currentQuery = (state = { query: '' }, action) => {
   }
 };
 
+const displayMode = (state = 'listings', action) => {
+  switch (action.type) {
+    case 'LOAD_LISTINGS_REQUEST':
+      return 'listings';
+    case 'LOAD_SEEKS_REQUEST':
+      return 'seeks';
+    case 'SET_DISPLAY_MODE':
+      return action.mode;
+    default:
+      return state;
+  }
+};
+
 const rootReducer = combineReducers({
   listingsLoading,
   listings,
@@ -124,6 +137,7 @@ const rootReducer = combineReducers({
   currentUserLoading,
   currentUser,
   currentQuery,
+  displayMode,
   ui: uiReducer,
   form: formReducer,
 });
