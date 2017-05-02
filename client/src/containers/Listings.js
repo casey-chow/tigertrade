@@ -20,21 +20,11 @@ class Listings extends Component {
     }).isRequired,
   };
 
-  state = {
-    initialLoad: true,
-  }
-
   componentWillMount() {
     const query = {
       query: parse(this.props.location.search).query || '',
     };
     this.props.dispatch(loadListings(query));
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (!nextProps.listingsLoading) {
-      this.setState({ initialLoad: false });
-    }
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -56,16 +46,15 @@ class Listings extends Component {
   }
 
   render() {
-    if (this.props.listingsLoading && this.state.initialLoad) {
-      return (
-        <div style={{ alignItems: 'center', justifyContent: 'center', display: 'flex' }}>
-          <CircularProgress size={80} thickness={8} />
-        </div>
-      );
-    }
-
     return (
-      <ListingsList listings={this.props.listings} />
+      <div>
+        <ListingsList listings={this.props.listings} />
+        { this.props.listingsLoading &&
+          <div style={{ alignItems: 'center', justifyContent: 'center', display: 'flex' }}>
+            <CircularProgress size={80} thickness={8} />
+          </div>
+        }
+      </div>
     );
   }
 }
