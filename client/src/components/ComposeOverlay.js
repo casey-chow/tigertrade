@@ -5,7 +5,10 @@ import { Card, CardHeader, CardText } from 'material-ui/Card';
 import IconButton from 'material-ui/IconButton';
 import Clear from 'material-ui/svg-icons/content/clear';
 
-import { setSearchMode, hideCompose } from '../actions/common';
+import {
+  setDisplayMode,
+  setComposeShown,
+} from '../actions/ui';
 import { postListing, loadListings } from '../actions/listings';
 import { postSeek, loadSeeks } from '../actions/seeks';
 import ComposeForm from '../components/ComposeForm';
@@ -54,7 +57,7 @@ class ComposeOverlay extends Component {
   }
 
   handleToggle = (event, isInputChecked) => {
-    this.props.dispatch(setSearchMode(isInputChecked ? 'seeks' : 'listings'));
+    this.props.dispatch(setDisplayMode(isInputChecked ? 'seeks' : 'listings'));
   }
 
   render() {
@@ -68,7 +71,7 @@ class ComposeOverlay extends Component {
           <Card expandable initiallyExpanded>
             <CardHeader title="Compose" actAsExpander>
               <IconButton
-                onTouchTap={event => this.props.dispatch(hideCompose())}
+                onTouchTap={event => this.props.dispatch(setComposeShown(false))}
                 style={{ float: 'right', marginTop: '-15px', marginRight: '-15px' }}
               >
                 <Clear />
@@ -92,7 +95,7 @@ const mapStateToProps = state => ({
   form: state.form,
   mode: state.displayMode,
   currentUserLoading: state.currentUserLoading,
-  show: state.showCompose,
+  show: state.composeShown,
 });
 
 export default connect(mapStateToProps)(ComposeOverlay);
