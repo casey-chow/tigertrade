@@ -14,6 +14,7 @@ import EmailIcon from 'material-ui/svg-icons/communication/email';
 import Delete from 'material-ui/svg-icons/action/delete';
 import FavoriteIcon from 'material-ui/svg-icons/action/favorite';
 import Dialog from 'material-ui/Dialog';
+import Chip from 'material-ui/Chip';
 
 import ContactSellerForm from './ContactSellerForm';
 import { mailSeller } from './../actions/users';
@@ -129,6 +130,10 @@ class ListingCard extends React.Component {
           open={this.state.contactOpen}
           onRequestClose={this.handleContactClose}
         >
+          <div style={{ display: 'flex', flexWrap: 'wrap', marginTop: -5, marginBottom: 10 }}>
+            <div style={{ margin: 10 }}>To:</div>
+            <Chip style={{ margin: 4 }}>{this.props.listing.username}@princeton.edu</Chip>
+          </div>
           <ContactSellerForm onSubmit={this.handleSubmit} initialValues={{ message: `Hi! I'm interested in buying "${listing.title}".` }} />
         </Dialog>
       </div>

@@ -13,6 +13,7 @@ import EmailIcon from 'material-ui/svg-icons/communication/email';
 import Delete from 'material-ui/svg-icons/action/delete';
 import FavoriteIcon from 'material-ui/svg-icons/action/favorite';
 import Dialog from 'material-ui/Dialog';
+import Chip from 'material-ui/Chip';
 
 import ContactBuyerForm from './ContactBuyerForm';
 import { mailBuyer } from './../actions/users';
@@ -119,6 +120,10 @@ class SeekCard extends React.Component {
           open={this.state.contactOpen}
           onRequestClose={this.handleContactClose}
         >
+          <div style={{ display: 'flex', flexWrap: 'wrap', marginTop: -5, marginBottom: 10 }}>
+            <div style={{ margin: 10 }}>To:</div>
+            <Chip style={{ margin: 4 }}>{this.props.seek.username}@princeton.edu</Chip>
+          </div>
           <ContactBuyerForm onSubmit={this.handleSubmit} title={seek.title} initialValues={{ message: `Hi! I'm interested in selling "${seek.title}".` }} />
         </Dialog>
       </div>
