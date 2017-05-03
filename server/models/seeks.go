@@ -10,21 +10,6 @@ import (
 	"strings"
 )
 
-// This is the "JSON" struct that appears in the array returned by getRecentSeeks
-type SeeksItem struct {
-	KeyID                int         `json:"keyId"`
-	CreationDate         null.Time   `json:"creationDate"`
-	LastModificationDate null.Time   `json:"lastModificationDate"`
-	Title                string      `json:"title"`
-	Description          null.String `json:"description"` // expect to be truncated
-	UserID               int         `json:"userId"`
-	Username             null.String `json:"username"`
-	SavedSearchID        null.Int    `json:"savedSearchId"`
-	NotifyEnabled        null.Bool   `json:"notifyEnabled"`
-	Status               null.String `json:"status"`
-}
-
-// TODO Maybe use the same struct for both of these? The only difference is truncation of the descrip
 // Returned by a function returning only one seek (usually by ID)
 type Seek struct {
 	KeyID                int         `json:"keyId"`
@@ -57,7 +42,7 @@ func NewSeekQuery() *seekQuery {
 // Returns the most recent count seeks, based on original date created.
 // If queryStr is nonempty, filters that every returned item must have every word in either title or description
 // On error, returns an error and the HTTP code associated with that error.
-func ReadSeeks(db *sql.DB, query *seekQuery) ([]*SeeksItem, error, int) {
+func ReadSeeks(db *sql.DB, query *seekQuery) ([]*Seek, error, int) {
 	// Create seeks statement
 	stmt := psql.
 		Select("seeks.key_id", "seeks.creation_date", "seeks.last_modification_date",
@@ -95,9 +80,9 @@ func ReadSeeks(db *sql.DB, query *seekQuery) ([]*SeeksItem, error, int) {
 	defer rows.Close()
 
 	// Populate seek structs
-	seeks := make([]*SeeksItem, 0)
+	seeks := make([]*Seek, 0)
 	for rows.Next() {
-		s := new(SeeksItem)
+		s := new(Seek)
 		err := rows.Scan(&s.KeyID, &s.CreationDate, &s.LastModificationDate,
 			&s.Title, &s.Description, &s.UserID, &s.Username, &s.SavedSearchID,
 			&s.NotifyEnabled, &s.Status)
