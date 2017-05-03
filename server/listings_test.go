@@ -69,13 +69,33 @@ func TestSearch(t *testing.T) {
 		Convey("a search on a word in its title returns it", func() {
 			mock.ExpectQuery("SELECT .* FROM listings .* WHERE .* ").
 				WillReturnRows(sqlmock.NewRows([]string{
-					"listings.key_id", "listings.creation_date", "listings.last_modification_date",
-					"title", "description", "user_id", "users.net_id",
-					"price", "status", "expiration_date", "thumbnails.url", "starred_listings.is_starred",
+					"listings.key_id",
+					"listings.creation_date",
+					"listings.last_modification_date",
+					"title",
+					"description",
+					"user_id",
+					"users.net_id",
+					"price",
+					"status",
+					"expiration_date",
+					"thumbnails.url",
+					"starred_listings.is_starred",
+					"photos",
 				}).AddRow(
-					1, time.Now(), time.Now(),
-					"SampleValue", "Sampleish Value!",
-					1, "Sam", 1001, "For Sale", time.Now(), "http://example.com/asf.gif", false,
+					1,
+					time.Now(),
+					time.Now(),
+					"SampleValue",
+					"Sampleish Value!",
+					1,
+					"Sam",
+					1001,
+					"For Sale",
+					time.Now(),
+					"http://example.com/asf.gif",
+					false,
+					"{photo.png}",
 				))
 
 			req, _ := http.NewRequest("GET", "/api/listings?query=SampleValue", nil)
@@ -103,13 +123,33 @@ func TestSearch(t *testing.T) {
 		Convey("is case insensitive", func() {
 			mock.ExpectQuery("SELECT .* FROM listings .* WHERE .* ").
 				WillReturnRows(sqlmock.NewRows([]string{
-					"listings.key_id", "listings.creation_date", "listings.last_modification_date",
-					"title", "description", "user_id", "users.net_id",
-					"price", "status", "expiration_date", "thumbnails.url", "starred_listings.is_starred",
+					"listings.key_id",
+					"listings.creation_date",
+					"listings.last_modification_date",
+					"title",
+					"description",
+					"user_id",
+					"users.net_id",
+					"price",
+					"status",
+					"expiration_date",
+					"thumbnails.url",
+					"starred_listings.is_starred",
+					"photos",
 				}).AddRow(
-					1, time.Now(), time.Now(),
-					"SampleValue", "Sampleish Value!",
-					1, "Sam", 1001, "For Sale", time.Now(), "http://example.com/asf.gif", false,
+					1,
+					time.Now(),
+					time.Now(),
+					"SampleValue",
+					"Sampleish Value!",
+					1,
+					"Sam",
+					1001,
+					"For Sale",
+					time.Now(),
+					"http://example.com/asf.gif",
+					false,
+					"{photo.png}",
 				))
 
 			req, _ := http.NewRequest("GET", "/api/listings?query=sAmPleVaLue", nil)
