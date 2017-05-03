@@ -83,6 +83,7 @@ func SendEmail(input *emailInput) (error, int) {
 	p.Subject = input.Subject
 	m.AddPersonalizations(p)
 	m.AddContent(content)
+	m.SetTemplateID("f74e9873-ae64-4dde-b61b-20861f9fd645")
 
 	// Send email, hope for the best
 	request := sendgrid.GetRequest(os.Getenv("SENDGRID_API_KEY"), "/v3/mail/send", "https://api.sendgrid.com")
