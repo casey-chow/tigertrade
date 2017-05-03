@@ -30,13 +30,6 @@ func Router() http.Handler {
 	router.DELETE("/api/listings/:id", DeleteListing)
 	router.POST("/api/listings/:id/contact", ContactListing)
 
-	// photos.go
-	router.GET("/api/listings/:id/photos", ReadListingPhotos)
-	//	router.POST("/api/listings/:id/photos", CreateListingPhoto)
-	//	router.GET("/api/listings/:id/photos/:pid", ReadListingPhoto)
-	//	router.PUT("/api/listings/:id/photos/:pid", UpdateListingPhoto)
-	//	router.DELETE("/api/listings/:id/photos/:pid", DeleteListingPhoto)
-
 	// seeks.go
 	router.GET("/api/seeks", ReadSeeks)
 	router.POST("/api/seeks", CreateSeek)
