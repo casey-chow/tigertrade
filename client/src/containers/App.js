@@ -9,7 +9,6 @@ import ActionBar from '../components/ActionBar';
 import Welcome from '../components/Welcome';
 import NavigationDrawer from '../components/NavigationDrawer';
 
-import Compose from './Compose';
 import Listings from './Listings';
 import Seeks from './Seeks';
 import SavedSearches from './SavedSearches';
@@ -55,7 +54,6 @@ class App extends Component {
             <Route path="/listings/:type?" component={Listings} />
             <Route path="/seeks/:type?" component={Seeks} />
             <Route path="/savedsearches" component={SavedSearches} />
-            <Route path="/compose" component={Compose} />
             <Route path="/profile" component={Profile} />
           </Switch>
         </NavigationDrawer>
