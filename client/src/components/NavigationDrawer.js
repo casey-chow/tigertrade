@@ -16,8 +16,6 @@ import ViewList from 'material-ui/svg-icons/action/view-list';
 import ShoppingCart from 'material-ui/svg-icons/action/shopping-cart';
 import Search from 'material-ui/svg-icons/action/search';
 import ModeEdit from 'material-ui/svg-icons/editor/mode-edit';
-import Restore from 'material-ui/svg-icons/action/restore';
-import Person from 'material-ui/svg-icons/social/person';
 
 const SelectableList = makeSelectable(List);
 
@@ -50,13 +48,9 @@ class NavigationDrawer extends Component {
     },
   };
 
-  static pages = [
-    { name: 'Listings', url: '/listings' },
-    { name: 'Seeks', url: '/seeks' },
-    { name: 'Saved Searches', url: '/savedsearches' },
-    { name: 'Profile', url: '/profile' },
-    { name: 'Compose', url: '/compose' },
-  ];
+  static menuChildStyle = {
+    paddingLeft: '16px',
+  };
 
   handleMenuChange = (event, value) => {
     this.props.history.push(value);
@@ -73,18 +67,21 @@ class NavigationDrawer extends Component {
           leftIcon={<ViewList />}
           initiallyOpen
           primaryTogglesNestedList
+          nestedListStyle={{
+
+          }}
           nestedItems={[
             <ListItem
               key="recent"
               primaryText="Recent Listings"
-              leftIcon={<Restore />}
               value="/listings"
+              style={NavigationDrawer.menuChildStyle}
             />,
             <ListItem
               key="mine"
               primaryText="My Listings"
-              leftIcon={<Person />}
               value="/listings/mine"
+              style={NavigationDrawer.menuChildStyle}
             />,
           ]}
         />
@@ -97,14 +94,14 @@ class NavigationDrawer extends Component {
             <ListItem
               key="recent"
               primaryText="Recent Seeks"
-              leftIcon={<Restore />}
               value="/seeks"
+              style={NavigationDrawer.menuChildStyle}
             />,
             <ListItem
               key="mine"
               primaryText="My Seeks"
-              leftIcon={<Person />}
               value="/seeks/mine"
+              style={NavigationDrawer.menuChildStyle}
             />,
           ]}
         />
@@ -125,13 +122,13 @@ class NavigationDrawer extends Component {
               key="listings"
               primaryText="Listing"
               value="/compose/listings"
-              leftIcon={<ViewList />}
+              style={NavigationDrawer.menuChildStyle}
             />,
             <ListItem
               key="seeks"
               primaryText="Seek"
               value="/compose/seeks"
-              leftIcon={<ShoppingCart />}
+              style={NavigationDrawer.menuChildStyle}
             />,
           ]}
         />
