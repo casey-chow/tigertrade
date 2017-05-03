@@ -27,6 +27,7 @@ const descriptionField = field => (
   <TextField
     hintText="Describe what's for sale. For best results, keep to 100 words or fewer."
     value={field.input.value} onChange={field.input.onChange} multiLine
+    rowsMax={8}
     fullWidth
   />
 );
@@ -46,7 +47,6 @@ class ComposeForm extends PureComponent {
 
     return (
       <form onSubmit={handleSubmit} style={this.props.style}>
-        <h1>New Listing</h1>
         <div>
           <label htmlFor="title">Title</label>
           <div>

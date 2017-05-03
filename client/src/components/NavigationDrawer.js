@@ -15,7 +15,7 @@ import {
 import ViewList from 'material-ui/svg-icons/action/view-list';
 import ShoppingCart from 'material-ui/svg-icons/action/shopping-cart';
 import Search from 'material-ui/svg-icons/action/search';
-import ModeEdit from 'material-ui/svg-icons/editor/mode-edit';
+import Feedback from 'material-ui/svg-icons/action/feedback';
 
 const SelectableList = makeSelectable(List);
 
@@ -54,6 +54,11 @@ class NavigationDrawer extends Component {
 
   handleMenuChange = (event, value) => {
     this.props.history.push(value);
+  }
+
+  openFeedback = () => {
+    const win = window.open('https://goo.gl/forms/hsEbS3X2HVs4zzdE3', '_blank');
+    win.focus();
   }
 
   render() {
@@ -112,25 +117,10 @@ class NavigationDrawer extends Component {
           leftIcon={<Search />}
         />
         <ListItem
-          key="compose"
-          primaryText="Compose"
-          leftIcon={<ModeEdit />}
-          initiallyOpen
-          primaryTogglesNestedList
-          nestedItems={[
-            <ListItem
-              key="listings"
-              primaryText="Listing"
-              value="/compose/listings"
-              style={NavigationDrawer.menuChildStyle}
-            />,
-            <ListItem
-              key="seeks"
-              primaryText="Seek"
-              value="/compose/seeks"
-              style={NavigationDrawer.menuChildStyle}
-            />,
-          ]}
+          key="feedback"
+          primaryText="Feedback"
+          leftIcon={<Feedback />}
+          onClick={this.openFeedback}
         />
       </SelectableList>
     );

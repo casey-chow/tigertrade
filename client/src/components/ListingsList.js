@@ -1,19 +1,9 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
-import { Link } from 'react-router-dom';
 import { Container, Row, Col } from 'react-grid-system';
 
-import FloatingActionButton from 'material-ui/FloatingActionButton';
-import ContentAdd from 'material-ui/svg-icons/content/add';
-
 import ListingCard from './ListingCard';
-
-const fabStyle = {
-  position: 'fixed',
-  bottom: '35px',
-  right: '35px',
-};
 
 class ListingsList extends PureComponent {
   static propTypes = {
@@ -65,11 +55,6 @@ class ListingsList extends PureComponent {
             </Col>
           </Row>
         </Container>
-        <Link to="/compose">
-          <FloatingActionButton style={fabStyle}>
-            <ContentAdd />
-          </FloatingActionButton>
-        </Link>
       </div>
     );
   }
