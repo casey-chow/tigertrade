@@ -32,6 +32,18 @@ func ReadListings(w http.ResponseWriter, r *http.Request, ps httprouter.Params) 
 	// Get optional search query from params
 	query.Query = r.URL.Query().Get("query")
 
+	// Get optional price filter limits
+	if minPriceStr := r.URL.Query().Get("minPrice"); minPriceStr != "" {
+		if price, err := strconv.Atoi(minPriceStr); err == nil {
+			query.MinPrice = int(price)
+		}
+	}
+	if maxPriceStr := r.URL.Query().Get("maxPrice"); maxPriceStr != "" {
+		if price, err := strconv.Atoi(maxPriceStr); err == nil {
+			query.MaxPrice = int(price)
+		}
+	}
+
 	listings, err, code := models.ReadListings(db, query)
 	if err != nil {
 		raven.CaptureError(err, nil)
