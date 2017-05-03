@@ -125,11 +125,6 @@ func ReadListings(db *sql.DB, query *listingQuery) ([]*Listing, error, int) {
 			return nil, err, http.StatusInternalServerError
 		}
 		listings = append(listings, l)
-
-		// If no photos, initialize to empty array for frontend convenience
-		if l.Photos == nil {
-			l.Photos = []string{}
-		}
 	}
 
 	if err = rows.Err(); err != nil {
@@ -172,11 +167,6 @@ func ReadListing(db *sql.DB, id string) (Listing, error, int) {
 		return listing, err, http.StatusNotFound
 	} else if err != nil {
 		return listing, err, http.StatusInternalServerError
-	}
-
-	// If no photos, initialize to empty array for frontend convenience
-	if listing.Photos == nil {
-		listing.Photos = []string{}
 	}
 
 	return listing, nil, http.StatusOK
