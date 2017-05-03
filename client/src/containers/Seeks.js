@@ -22,9 +22,7 @@ class Seeks extends Component {
   };
 
   componentWillMount() {
-    const query = {
-      query: parse(this.props.location.search).query || '',
-    };
+    const query = this.getQuery(this.props);
     this.props.dispatch(loadSeeks(query));
   }
 

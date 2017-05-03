@@ -16,9 +16,9 @@ import { loadListings } from './../actions/listings';
 class Listings extends Component {
   static propTypes = {
     ...routerPropTypes,
+    dispatch: PropTypes.func.isRequired,
     listingsLoading: PropTypes.bool.isRequired,
     listings: PropTypes.arrayOf(PropTypes.object).isRequired,
-    dispatch: PropTypes.func.isRequired,
   };
 
   componentWillMount() {
