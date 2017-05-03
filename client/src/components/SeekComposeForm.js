@@ -46,7 +46,6 @@ class SeekComposeForm extends PureComponent {
 
     return (
       <form onSubmit={handleSubmit} style={this.props.style}>
-        <h1>New Seek</h1>
         <div>
           <label htmlFor="title">Title</label>
           <div>

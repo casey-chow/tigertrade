@@ -47,7 +47,6 @@ class ComposeForm extends PureComponent {
 
     return (
       <form onSubmit={handleSubmit} style={this.props.style}>
-        <h1>New Listing</h1>
         <div>
           <label htmlFor="title">Title</label>
           <div>
