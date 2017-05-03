@@ -5,7 +5,7 @@
 -- Dumped from database version 9.6.1
 -- Dumped by pg_dump version 9.6.1
 
--- Started on 2017-04-28 02:44:09 EDT
+-- Started on 2017-05-03 01:17:55 EDT
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -25,7 +25,7 @@ CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
 
 
 --
--- TOC entry 3133 (class 0 OID 0)
+-- TOC entry 3122 (class 0 OID 0)
 -- Dependencies: 1
 -- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: -
 --
@@ -55,12 +55,13 @@ CREATE TABLE listings (
     status character varying(20),
     expiration_date timestamp with time zone,
     is_active boolean DEFAULT true,
-    thumbnail_id bigint
+    thumbnail_id bigint,
+    photos text[]
 );
 
 
 --
--- TOC entry 202 (class 1259 OID 4640485)
+-- TOC entry 200 (class 1259 OID 4640485)
 -- Name: listings-saved_searches; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -73,7 +74,7 @@ CREATE TABLE "listings-saved_searches" (
 
 
 --
--- TOC entry 201 (class 1259 OID 4640483)
+-- TOC entry 199 (class 1259 OID 4640483)
 -- Name: listings-saved_searches_key_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -86,8 +87,8 @@ CREATE SEQUENCE "listings-saved_searches_key_id_seq"
 
 
 --
--- TOC entry 3134 (class 0 OID 0)
--- Dependencies: 201
+-- TOC entry 3123 (class 0 OID 0)
+-- Dependencies: 199
 -- Name: listings-saved_searches_key_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
@@ -108,7 +109,7 @@ CREATE SEQUENCE listings_key_id_seq
 
 
 --
--- TOC entry 3135 (class 0 OID 0)
+-- TOC entry 3124 (class 0 OID 0)
 -- Dependencies: 185
 -- Name: listings_key_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
@@ -117,46 +118,7 @@ ALTER SEQUENCE listings_key_id_seq OWNED BY listings.key_id;
 
 
 --
--- TOC entry 194 (class 1259 OID 4640003)
--- Name: photos; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE photos (
-    key_id bigint NOT NULL,
-    creation_date timestamp with time zone DEFAULT now(),
-    listing_id bigint NOT NULL,
-    url character varying(2048) NOT NULL,
-    "order" double precision,
-    is_active boolean DEFAULT true,
-    user_id bigint NOT NULL,
-    CONSTRAINT "positive user id" CHECK ((user_id > 0))
-);
-
-
---
--- TOC entry 193 (class 1259 OID 4640001)
--- Name: photos_key_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE photos_key_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- TOC entry 3136 (class 0 OID 0)
--- Dependencies: 193
--- Name: photos_key_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE photos_key_id_seq OWNED BY photos.key_id;
-
-
---
--- TOC entry 196 (class 1259 OID 4640388)
+-- TOC entry 194 (class 1259 OID 4640388)
 -- Name: saved_searches; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -175,7 +137,7 @@ CREATE TABLE saved_searches (
 
 
 --
--- TOC entry 195 (class 1259 OID 4640386)
+-- TOC entry 193 (class 1259 OID 4640386)
 -- Name: saved_searches_key_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -188,8 +150,8 @@ CREATE SEQUENCE saved_searches_key_id_seq
 
 
 --
--- TOC entry 3137 (class 0 OID 0)
--- Dependencies: 195
+-- TOC entry 3125 (class 0 OID 0)
+-- Dependencies: 193
 -- Name: saved_searches_key_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
@@ -229,7 +191,7 @@ CREATE SEQUENCE seeks_key_id_seq
 
 
 --
--- TOC entry 3138 (class 0 OID 0)
+-- TOC entry 3126 (class 0 OID 0)
 -- Dependencies: 187
 -- Name: seeks_key_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
@@ -238,7 +200,7 @@ ALTER SEQUENCE seeks_key_id_seq OWNED BY seeks.key_id;
 
 
 --
--- TOC entry 206 (class 1259 OID 5649584)
+-- TOC entry 204 (class 1259 OID 5649584)
 -- Name: starred_listings; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -252,7 +214,7 @@ CREATE TABLE starred_listings (
 
 
 --
--- TOC entry 205 (class 1259 OID 5649582)
+-- TOC entry 203 (class 1259 OID 5649582)
 -- Name: starred_listings_key_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -265,8 +227,8 @@ CREATE SEQUENCE starred_listings_key_id_seq
 
 
 --
--- TOC entry 3139 (class 0 OID 0)
--- Dependencies: 205
+-- TOC entry 3127 (class 0 OID 0)
+-- Dependencies: 203
 -- Name: starred_listings_key_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
@@ -287,7 +249,7 @@ CREATE TABLE tags (
 
 
 --
--- TOC entry 198 (class 1259 OID 4640440)
+-- TOC entry 196 (class 1259 OID 4640440)
 -- Name: tags-listings; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -300,7 +262,7 @@ CREATE TABLE "tags-listings" (
 
 
 --
--- TOC entry 197 (class 1259 OID 4640438)
+-- TOC entry 195 (class 1259 OID 4640438)
 -- Name: tags-listings_key_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -313,8 +275,8 @@ CREATE SEQUENCE "tags-listings_key_id_seq"
 
 
 --
--- TOC entry 3140 (class 0 OID 0)
--- Dependencies: 197
+-- TOC entry 3128 (class 0 OID 0)
+-- Dependencies: 195
 -- Name: tags-listings_key_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
@@ -322,7 +284,7 @@ ALTER SEQUENCE "tags-listings_key_id_seq" OWNED BY "tags-listings".key_id;
 
 
 --
--- TOC entry 200 (class 1259 OID 4640454)
+-- TOC entry 198 (class 1259 OID 4640454)
 -- Name: tags-saved_searches; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -335,7 +297,7 @@ CREATE TABLE "tags-saved_searches" (
 
 
 --
--- TOC entry 199 (class 1259 OID 4640452)
+-- TOC entry 197 (class 1259 OID 4640452)
 -- Name: tags-saved_searches_key_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -348,8 +310,8 @@ CREATE SEQUENCE "tags-saved_searches_key_id_seq"
 
 
 --
--- TOC entry 3141 (class 0 OID 0)
--- Dependencies: 199
+-- TOC entry 3129 (class 0 OID 0)
+-- Dependencies: 197
 -- Name: tags-saved_searches_key_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
@@ -370,7 +332,7 @@ CREATE SEQUENCE tags_key_id_seq
 
 
 --
--- TOC entry 3142 (class 0 OID 0)
+-- TOC entry 3130 (class 0 OID 0)
 -- Dependencies: 191
 -- Name: tags_key_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
@@ -379,7 +341,7 @@ ALTER SEQUENCE tags_key_id_seq OWNED BY tags.key_id;
 
 
 --
--- TOC entry 204 (class 1259 OID 4758080)
+-- TOC entry 202 (class 1259 OID 4758080)
 -- Name: thumbnails; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -393,7 +355,7 @@ CREATE TABLE thumbnails (
 
 
 --
--- TOC entry 203 (class 1259 OID 4758078)
+-- TOC entry 201 (class 1259 OID 4758078)
 -- Name: thumbnails_key_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -406,8 +368,8 @@ CREATE SEQUENCE thumbnails_key_id_seq
 
 
 --
--- TOC entry 3143 (class 0 OID 0)
--- Dependencies: 203
+-- TOC entry 3131 (class 0 OID 0)
+-- Dependencies: 201
 -- Name: thumbnails_key_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
@@ -424,6 +386,7 @@ CREATE TABLE users (
     creation_date timestamp with time zone DEFAULT now(),
     last_modification_date timestamp with time zone,
     net_id character varying(8) NOT NULL,
+    domain text DEFAULT 'princeton.edu'::text,
     CONSTRAINT nonempty_net_id CHECK (((net_id)::text <> ''::text)),
     CONSTRAINT "positive key_id" CHECK ((key_id > 0))
 );
@@ -443,7 +406,7 @@ CREATE SEQUENCE users_key_id_seq
 
 
 --
--- TOC entry 3144 (class 0 OID 0)
+-- TOC entry 3132 (class 0 OID 0)
 -- Dependencies: 189
 -- Name: users_key_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
@@ -452,7 +415,7 @@ ALTER SEQUENCE users_key_id_seq OWNED BY users.key_id;
 
 
 --
--- TOC entry 2954 (class 2604 OID 4639379)
+-- TOC entry 2948 (class 2604 OID 4639379)
 -- Name: listings key_id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -460,7 +423,7 @@ ALTER TABLE ONLY listings ALTER COLUMN key_id SET DEFAULT nextval('listings_key_
 
 
 --
--- TOC entry 2978 (class 2604 OID 4640488)
+-- TOC entry 2969 (class 2604 OID 4640488)
 -- Name: listings-saved_searches key_id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -468,15 +431,7 @@ ALTER TABLE ONLY "listings-saved_searches" ALTER COLUMN key_id SET DEFAULT nextv
 
 
 --
--- TOC entry 2967 (class 2604 OID 4640006)
--- Name: photos key_id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY photos ALTER COLUMN key_id SET DEFAULT nextval('photos_key_id_seq'::regclass);
-
-
---
--- TOC entry 2971 (class 2604 OID 4640391)
+-- TOC entry 2962 (class 2604 OID 4640391)
 -- Name: saved_searches key_id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -484,7 +439,7 @@ ALTER TABLE ONLY saved_searches ALTER COLUMN key_id SET DEFAULT nextval('saved_s
 
 
 --
--- TOC entry 2957 (class 2604 OID 4639456)
+-- TOC entry 2951 (class 2604 OID 4639456)
 -- Name: seeks key_id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -492,7 +447,7 @@ ALTER TABLE ONLY seeks ALTER COLUMN key_id SET DEFAULT nextval('seeks_key_id_seq
 
 
 --
--- TOC entry 2983 (class 2604 OID 5649587)
+-- TOC entry 2974 (class 2604 OID 5649587)
 -- Name: starred_listings key_id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -500,7 +455,7 @@ ALTER TABLE ONLY starred_listings ALTER COLUMN key_id SET DEFAULT nextval('starr
 
 
 --
--- TOC entry 2965 (class 2604 OID 4639971)
+-- TOC entry 2960 (class 2604 OID 4639971)
 -- Name: tags key_id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -508,7 +463,7 @@ ALTER TABLE ONLY tags ALTER COLUMN key_id SET DEFAULT nextval('tags_key_id_seq':
 
 
 --
--- TOC entry 2974 (class 2604 OID 4640443)
+-- TOC entry 2965 (class 2604 OID 4640443)
 -- Name: tags-listings key_id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -516,7 +471,7 @@ ALTER TABLE ONLY "tags-listings" ALTER COLUMN key_id SET DEFAULT nextval('"tags-
 
 
 --
--- TOC entry 2976 (class 2604 OID 4640457)
+-- TOC entry 2967 (class 2604 OID 4640457)
 -- Name: tags-saved_searches key_id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -524,7 +479,7 @@ ALTER TABLE ONLY "tags-saved_searches" ALTER COLUMN key_id SET DEFAULT nextval('
 
 
 --
--- TOC entry 2980 (class 2604 OID 4758083)
+-- TOC entry 2971 (class 2604 OID 4758083)
 -- Name: thumbnails key_id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -532,7 +487,7 @@ ALTER TABLE ONLY thumbnails ALTER COLUMN key_id SET DEFAULT nextval('thumbnails_
 
 
 --
--- TOC entry 2961 (class 2604 OID 4639700)
+-- TOC entry 2955 (class 2604 OID 4639700)
 -- Name: users key_id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -540,7 +495,7 @@ ALTER TABLE ONLY users ALTER COLUMN key_id SET DEFAULT nextval('users_key_id_seq
 
 
 --
--- TOC entry 3005 (class 2606 OID 4640491)
+-- TOC entry 2994 (class 2606 OID 4640491)
 -- Name: listings-saved_searches listings-saved_searches_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -549,7 +504,7 @@ ALTER TABLE ONLY "listings-saved_searches"
 
 
 --
--- TOC entry 2987 (class 2606 OID 4639385)
+-- TOC entry 2978 (class 2606 OID 4639385)
 -- Name: listings listings_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -558,16 +513,7 @@ ALTER TABLE ONLY listings
 
 
 --
--- TOC entry 2997 (class 2606 OID 4640009)
--- Name: photos photos_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY photos
-    ADD CONSTRAINT photos_pkey PRIMARY KEY (key_id);
-
-
---
--- TOC entry 2999 (class 2606 OID 4640398)
+-- TOC entry 2988 (class 2606 OID 4640398)
 -- Name: saved_searches saved_searches_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -576,7 +522,7 @@ ALTER TABLE ONLY saved_searches
 
 
 --
--- TOC entry 2989 (class 2606 OID 4639459)
+-- TOC entry 2980 (class 2606 OID 4639459)
 -- Name: seeks seeks_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -585,7 +531,7 @@ ALTER TABLE ONLY seeks
 
 
 --
--- TOC entry 3009 (class 2606 OID 5649589)
+-- TOC entry 2998 (class 2606 OID 5649589)
 -- Name: starred_listings starred_listings_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -594,7 +540,7 @@ ALTER TABLE ONLY starred_listings
 
 
 --
--- TOC entry 3001 (class 2606 OID 4640446)
+-- TOC entry 2990 (class 2606 OID 4640446)
 -- Name: tags-listings tags-listings_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -603,7 +549,7 @@ ALTER TABLE ONLY "tags-listings"
 
 
 --
--- TOC entry 3003 (class 2606 OID 4640460)
+-- TOC entry 2992 (class 2606 OID 4640460)
 -- Name: tags-saved_searches tags-saved_searches_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -612,7 +558,7 @@ ALTER TABLE ONLY "tags-saved_searches"
 
 
 --
--- TOC entry 2993 (class 2606 OID 4639974)
+-- TOC entry 2984 (class 2606 OID 4639974)
 -- Name: tags tags_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -621,7 +567,7 @@ ALTER TABLE ONLY tags
 
 
 --
--- TOC entry 3007 (class 2606 OID 4758090)
+-- TOC entry 2996 (class 2606 OID 4758090)
 -- Name: thumbnails thumbnails_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -630,7 +576,7 @@ ALTER TABLE ONLY thumbnails
 
 
 --
--- TOC entry 2995 (class 2606 OID 4640149)
+-- TOC entry 2986 (class 2606 OID 4640149)
 -- Name: tags uniq_name; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -639,7 +585,7 @@ ALTER TABLE ONLY tags
 
 
 --
--- TOC entry 2991 (class 2606 OID 4639703)
+-- TOC entry 2982 (class 2606 OID 4639703)
 -- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -647,7 +593,7 @@ ALTER TABLE ONLY users
     ADD CONSTRAINT users_pkey PRIMARY KEY (key_id);
 
 
--- Completed on 2017-04-28 02:44:15 EDT
+-- Completed on 2017-05-03 01:17:57 EDT
 
 --
 -- PostgreSQL database dump complete
