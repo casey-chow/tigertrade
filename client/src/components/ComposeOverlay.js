@@ -38,7 +38,7 @@ class ComposeOverlay extends Component {
     show: PropTypes.bool.isRequired,
   };
 
-  handleSubmit = (data) => {
+  handleSubmitListing = (data) => {
     this.props.dispatch(postListing({
       ...data,
       price: data.price ? Math.round(parseFloat(data.price) * 100) : 0,
@@ -79,7 +79,7 @@ class ComposeOverlay extends Component {
             </CardHeader>
             <CardText expandable>
               { (this.props.mode === 'listings') ?
-                <ComposeForm onSubmit={this.handleSubmit} /> :
+                <ComposeForm onSubmit={this.handleSubmitListing} /> :
                 <SeekComposeForm onSubmit={this.handleSubmitSeek} />
               }
             </CardText>
