@@ -57,14 +57,15 @@ class App extends Component {
             <Route path="/profile" component={Profile} />
           </Switch>
         </NavigationDrawer>
-        <ComposeOverlay />
-        { this.props.showFAB &&
-        <FloatingActionButton
-          style={fabStyle}
-          onTouchTap={() => this.props.dispatch(setComposeShown(true))}
-        >
-          <ContentAdd />
-        </FloatingActionButton> }
+        { this.props.showFAB ?
+          <FloatingActionButton
+            style={fabStyle}
+            onTouchTap={() => this.props.dispatch(setComposeShown(true))}
+          >
+            <ContentAdd />
+          </FloatingActionButton> :
+          <ComposeOverlay />
+        }
       </div>
     );
   }
