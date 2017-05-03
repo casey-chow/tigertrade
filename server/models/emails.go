@@ -10,16 +10,12 @@ import (
 	"os"
 )
 
-const (
-	DEFAULT_LISTING_SUBJECT = "I am interested in buying an item from you: %s"
-	DEFAULT_SEEK_SUBJECT    = "I am interested in selling an item to you: %s"
-)
-
 type emailInput struct {
 	Sender    string
 	Recepient string
 	Subject   string
 	Body      string `json:"body"`
+	IsSeek    bool
 }
 
 func NewEmailInput(db *sql.DB, id string, isSeek bool) (*emailInput, error, int) {
@@ -43,11 +39,8 @@ func NewEmailInput(db *sql.DB, id string, isSeek bool) (*emailInput, error, int)
 		ownerId = listing.UserID
 	}
 
-	if isSeek {
-		i.Subject = fmt.Sprintf(DEFAULT_SEEK_SUBJECT, title)
-	} else {
-		i.Subject = fmt.Sprintf(DEFAULT_LISTING_SUBJECT, title)
-	}
+	i.IsSeek = isSeek
+	i.Subject = title
 
 	if owner, err := GetUserByID(db, ownerId); err != nil {
 		return nil, err, http.StatusInternalServerError
@@ -70,20 +63,27 @@ func SendEmail(input *emailInput) (error, int) {
 	}
 
 	// Get email addresses
-	from := getEmail(input.Sender)
-	to := getEmail(input.Recepient)
-	content := mail.NewContent("text/plain", input.Body)
+	robot := mail.NewEmail("TigerTrade", "noreply@tigertra.de")
+	requestor := getEmail(input.Sender)
+	recipient := getEmail(input.Recepient)
+	content := mail.NewContent("text/html", input.Body)
 
 	// Create email
 	m := mail.NewV3Mail()
-	m.SetFrom(from)
+	m.SetFrom(robot)
 	p := mail.NewPersonalization()
-	p.AddTos(to)
-	p.AddCCs(from) // So that the sender still gets a copy in their inbox.
+	p.AddTos(recipient)
+	p.AddCCs(requestor) // So that the sender still gets a copy in their inbox.
 	p.Subject = input.Subject
 	m.AddPersonalizations(p)
 	m.AddContent(content)
-	m.SetTemplateID("f74e9873-ae64-4dde-b61b-20861f9fd645")
+
+	// Set Template
+	if input.IsSeek {
+		m.SetTemplateID("3bb3590f-04a3-4381-a79b-25a86afb4a6f")
+	} else {
+		m.SetTemplateID("b53ead7f-c9d7-4c17-9dcf-f59105b6eb65")
+	}
 
 	// Send email, hope for the best
 	request := sendgrid.GetRequest(os.Getenv("SENDGRID_API_KEY"), "/v3/mail/send", "https://api.sendgrid.com")
