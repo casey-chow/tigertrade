@@ -15,7 +15,6 @@ import {
 import ViewList from 'material-ui/svg-icons/action/view-list';
 import ShoppingCart from 'material-ui/svg-icons/action/shopping-cart';
 import Search from 'material-ui/svg-icons/action/search';
-import ModeEdit from 'material-ui/svg-icons/editor/mode-edit';
 import Restore from 'material-ui/svg-icons/action/restore';
 import Person from 'material-ui/svg-icons/social/person';
 
@@ -113,27 +112,6 @@ class NavigationDrawer extends Component {
           primaryText="Saved Searches"
           value="/savedsearches"
           leftIcon={<Search />}
-        />
-        <ListItem
-          key="compose"
-          primaryText="Compose"
-          leftIcon={<ModeEdit />}
-          initiallyOpen
-          primaryTogglesNestedList
-          nestedItems={[
-            <ListItem
-              key="listings"
-              primaryText="Listing"
-              value="/compose/listings"
-              leftIcon={<ViewList />}
-            />,
-            <ListItem
-              key="seeks"
-              primaryText="Seek"
-              value="/compose/seeks"
-              leftIcon={<ShoppingCart />}
-            />,
-          ]}
         />
       </SelectableList>
     );
