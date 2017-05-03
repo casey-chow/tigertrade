@@ -120,9 +120,9 @@ class SeekCard extends React.Component {
           open={this.state.contactOpen}
           onRequestClose={this.handleContactClose}
         >
-          <div style={{ display: 'flex', flexWrap: 'wrap', marginTop: -5, marginBottom: 10 }}>
-            <div style={{ margin: 10 }}>To:</div>
-            <Chip style={{ margin: 4 }}>{this.props.seek.username}@princeton.edu</Chip>
+          <div style={{ display: 'flex', flexWrap: 'wrap', marginTop: '-0.35rem', marginBottom: '0.625rem' }}>
+            <div style={{ margin: '0.625rem' }}>To:</div>
+            <Chip style={{ margin: '0.3rem' }}>{this.props.seek.username}@princeton.edu</Chip>
           </div>
           <ContactBuyerForm onSubmit={this.handleSubmit} title={seek.title} initialValues={{ message: `Hi! I'm interested in selling "${seek.title}".` }} />
         </Dialog>

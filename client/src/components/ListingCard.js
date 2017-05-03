@@ -130,9 +130,9 @@ class ListingCard extends React.Component {
           open={this.state.contactOpen}
           onRequestClose={this.handleContactClose}
         >
-          <div style={{ display: 'flex', flexWrap: 'wrap', marginTop: -5, marginBottom: 10 }}>
-            <div style={{ margin: 10 }}>To:</div>
-            <Chip style={{ margin: 4 }}>{this.props.listing.username}@princeton.edu</Chip>
+          <div style={{ display: 'flex', flexWrap: 'wrap', marginTop: '-0.35rem', marginBottom: '0.625rem' }}>
+            <div style={{ margin: '0.625rem' }}>To:</div>
+            <Chip style={{ margin: '0.3rem' }}>{this.props.listing.username}@princeton.edu</Chip>
           </div>
           <ContactSellerForm onSubmit={this.handleSubmit} initialValues={{ message: `Hi! I'm interested in buying "${listing.title}".` }} />
         </Dialog>
