@@ -70,7 +70,6 @@ class NavigationDrawer extends Component {
         <ListItem
           key="listings"
           primaryText="Listings"
-          // value="/listings"
           leftIcon={<ViewList />}
           initiallyOpen
           primaryTogglesNestedList
@@ -92,7 +91,6 @@ class NavigationDrawer extends Component {
         <ListItem
           key="seeks"
           primaryText="Seeks"
-          // value="/seeks"
           leftIcon={<ShoppingCart />}
           primaryTogglesNestedList
           nestedItems={[
@@ -119,7 +117,6 @@ class NavigationDrawer extends Component {
         <ListItem
           key="compose"
           primaryText="Compose"
-          // value="/compose"
           leftIcon={<ModeEdit />}
           initiallyOpen
           primaryTogglesNestedList
@@ -128,11 +125,13 @@ class NavigationDrawer extends Component {
               key="listings"
               primaryText="Listing"
               value="/compose/listings"
+              leftIcon={<ViewList />}
             />,
             <ListItem
               key="seeks"
               primaryText="Seek"
               value="/compose/seeks"
+              leftIcon={<ShoppingCart />}
             />,
           ]}
         />
