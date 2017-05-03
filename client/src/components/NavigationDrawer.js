@@ -91,6 +91,7 @@ class NavigationDrawer extends Component {
           key="seeks"
           primaryText="Seeks"
           leftIcon={<ShoppingCart />}
+          initiallyOpen
           primaryTogglesNestedList
           nestedItems={[
             <ListItem
