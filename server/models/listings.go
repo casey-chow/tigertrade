@@ -190,9 +190,9 @@ func CreateListing(db *sql.DB, listing Listing, userId int) (Listing, error, int
 	// Insert listing
 	stmt := psql.Insert("listings").
 		Columns("title", "description", "user_id", "price", "status",
-			"expiration_date", "thumbnail_id").
+			"expiration_date", "thumbnail_id", "photos").
 		Values(listing.Title, listing.Description, userId, listing.Price,
-			listing.Status, listing.ExpirationDate, listing.Thumbnail).
+			listing.Status, listing.ExpirationDate, listing.Thumbnail, listing.Photos).
 		Suffix("RETURNING key_id, creation_date")
 
 	// Add listing to database, retrieve the one we just added (now with a key_id)
@@ -225,7 +225,8 @@ func UpdateListing(db *sql.DB, id string, listing Listing, userId int) (error, i
 			"price":           listing.Price,
 			"status":          listing.Status,
 			"expiration_date": listing.ExpirationDate,
-			"thumbnail_id":    listing.Thumbnail}).
+			"thumbnail_id":    listing.Thumbnail,
+			"photos": listing.Photos}).
 		Where(sq.Eq{"listings.key_id": id,
 			"listings.user_id": userId})
 
