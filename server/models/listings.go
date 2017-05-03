@@ -6,26 +6,26 @@ import (
 	"fmt"
 	sq "github.com/Masterminds/squirrel"
 	"github.com/guregu/null"
+	"github.com/lib/pq"
 	"net/http"
 	"strings"
-	"github.com/lib/pq"
 )
 
 // Returned by a function returning only one listing (usually by ID)
 type Listing struct {
-	KeyID                int         `json:"keyId"`
-	CreationDate         null.Time   `json:"creationDate"`
-	LastModificationDate null.Time   `json:"lastModificationDate"`
-	Title                string      `json:"title"`
-	Description          null.String `json:"description"`
-	UserID               int         `json:"userId"`
-	Username             null.String `json:"username"`
-	Price                null.Int    `json:"price"`
-	Status               null.String `json:"status"`
-	ExpirationDate       null.Time   `json:"expirationDate"`
-	Thumbnail            null.String `json:"thumbnail"`
-	Photos               pq.StringArray    `json:"photos"`
-	IsStarred            bool        `json:"isStarred"`
+	KeyID                int            `json:"keyId"`
+	CreationDate         null.Time      `json:"creationDate"`
+	LastModificationDate null.Time      `json:"lastModificationDate"`
+	Title                string         `json:"title"`
+	Description          null.String    `json:"description"`
+	UserID               int            `json:"userId"`
+	Username             null.String    `json:"username"`
+	Price                null.Int       `json:"price"`
+	Status               null.String    `json:"status"`
+	ExpirationDate       null.Time      `json:"expirationDate"`
+	Thumbnail            null.String    `json:"thumbnail"`
+	Photos               pq.StringArray `json:"photos"`
+	IsStarred            bool           `json:"isStarred"`
 }
 
 type listingQuery struct {
@@ -216,7 +216,7 @@ func UpdateListing(db *sql.DB, id string, listing Listing, userId int) (error, i
 			"status":          listing.Status,
 			"expiration_date": listing.ExpirationDate,
 			"thumbnail_id":    listing.Thumbnail,
-			"photos": listing.Photos}).
+			"photos":          listing.Photos}).
 		Where(sq.Eq{"listings.key_id": id,
 			"listings.user_id": userId})
 
