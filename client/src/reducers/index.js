@@ -33,6 +33,15 @@ const displayMode = (state = 'listings', action) => {
   }
 };
 
+const composeShown = (state = false, action) => {
+  switch (action.type) {
+    case 'SET_COMPOSE_SHOWN':
+      return action.show;
+    default:
+      return state;
+  }
+};
+
 const leftDrawerVisible = (state = true, action) => {
   switch (action.type) {
     case 'TOGGLE_LEFT_DRAWER':
@@ -48,6 +57,7 @@ const rootReducer = combineReducers({
   ...seeksReducers,
   ...userReducers,
   currentQuery,
+  composeShown,
   displayMode,
   leftDrawerVisible,
   ui: uiReducer,
