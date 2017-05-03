@@ -22,6 +22,26 @@ export function loadSavedSearches() {
   };
 }
 
+export function loadSavedSearch(id = '') {
+  return function (dispatch, getState) {
+    dispatch({
+      type: 'LOAD_SAVED_SEARCHES_REQUEST',
+    });
+    fetch(`${API_ROOT}/savedsearches/${id}`, {
+      credentials: 'include',
+    })
+    .then(response => response.json())
+    .then(json => dispatch({
+      json: [json],
+      type: 'LOAD_SAVED_SEARCHES_SUCCESS',
+    }))
+    .catch(error => dispatch({
+      error,
+      type: 'LOAD_SAVED_SEARCHES_FAILURE',
+    }));
+  };
+}
+
 export function postSavedSearch(savedSearch) {
   return function (dispatch, getState) {
     dispatch({
