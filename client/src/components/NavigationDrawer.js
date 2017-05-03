@@ -72,9 +72,6 @@ class NavigationDrawer extends Component {
           leftIcon={<ViewList />}
           initiallyOpen
           primaryTogglesNestedList
-          nestedListStyle={{
-
-          }}
           nestedItems={[
             <ListItem
               key="recent"
