@@ -24,6 +24,27 @@ export function loadSeeks(query = { query: '' }) {
   };
 }
 
+export function loadSeek(id = '') {
+  return function (dispatch, getState) {
+    dispatch({
+      query: {},
+      type: 'LOAD_SEEKS_REQUEST',
+    });
+    fetch(`${API_ROOT}/seeks/${id}`, {
+      credentials: 'include',
+    })
+      .then(response => response.json())
+      .then(json => dispatch({
+        json: [json],
+        type: 'LOAD_SEEKS_SUCCESS',
+      }))
+      .catch(error => dispatch({
+        error,
+        type: 'LOAD_SEEKS_FAILURE',
+      }));
+  };
+}
+
 export function postSeek(seek) {
   return function (dispatch, getState) {
     dispatch({

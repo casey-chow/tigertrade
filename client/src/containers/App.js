@@ -12,6 +12,7 @@ import NavigationDrawer from '../components/NavigationDrawer';
 import Listings from './Listings';
 import Listing from './Listing';
 import Seeks from './Seeks';
+import Seek from './Seek';
 import SavedSearches from './SavedSearches';
 import Profile from './Profile';
 import ComposeOverlay from '../components/ComposeOverlay';
@@ -55,6 +56,7 @@ class App extends Component {
             <Route path="/listings/:type?" component={Listings} />
             <Route path="/listing/:id" component={Listing} />
             <Route path="/seeks/:type?" component={Seeks} />
+            <Route path="/seek/:id" component={Seek} />
             <Route path="/savedsearches" component={SavedSearches} />
             <Route path="/profile" component={Profile} />
           </Switch>
