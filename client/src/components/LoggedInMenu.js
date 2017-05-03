@@ -25,6 +25,11 @@ export default class LoggedInMenu extends PureComponent {
     marginBottom: '8px',
   }
 
+  feedback = () => {
+    const win = window.open('https://goo.gl/forms/hsEbS3X2HVs4zzdE3', '_blank');
+    win.focus();
+  }
+
   reload = () => {
     location.reload();
   }
@@ -58,7 +63,7 @@ export default class LoggedInMenu extends PureComponent {
         targetOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
       >
-        <MenuItem primaryText="Profile" />
+        <MenuItem onClick={this.feedback} primaryText="Feedback" />
         <MenuItem onClick={this.reload} primaryText="Refresh" />
         <MenuItem onClick={this.logout} primaryText="Sign out" />
       </IconMenu>
