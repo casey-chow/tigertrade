@@ -4,6 +4,10 @@ import { connect } from 'react-redux';
 import { Card, CardHeader, CardText } from 'material-ui/Card';
 import IconButton from 'material-ui/IconButton';
 import Clear from 'material-ui/svg-icons/content/clear';
+import {
+  propTypes as routerPropTypes,
+  withRouter,
+} from 'react-router-dom';
 
 import {
   setDisplayMode,
@@ -29,6 +33,7 @@ const hideStyle = { display: 'none' };
 
 class ComposeOverlay extends Component {
   static propTypes = {
+    ...routerPropTypes,
     dispatch: PropTypes.func.isRequired,
     history: PropTypes.shape({
       push: PropTypes.func.isRequired,
@@ -45,6 +50,8 @@ class ComposeOverlay extends Component {
     expanded: true,
   }
 
+  handleRequestClose = event => this.props.dispatch(setComposeShown(false));
+
   handleSubmitListing = (data) => {
     this.props.dispatch(postListing({
       ...data,
@@ -52,6 +59,7 @@ class ComposeOverlay extends Component {
     }));
     this.props.dispatch(loadListings());
     this.props.history.push('/listings');
+    this.handleRequestClose();
   }
 
   handleSubmitSeek = (data) => {
@@ -61,6 +69,7 @@ class ComposeOverlay extends Component {
     }));
     this.props.dispatch(loadSeeks());
     this.props.history.push('/seeks');
+    this.handleRequestClose();
   }
 
   handleToggle = (event, isInputChecked) => {
@@ -81,7 +90,7 @@ class ComposeOverlay extends Component {
         <Card expanded={this.state.expanded} onExpandChange={this.handleExpandChange}>
           <CardHeader title="Compose" actAsExpander>
             <IconButton
-              onTouchTap={event => this.props.dispatch(setComposeShown(false))}
+              onTouchTap={this.handleRequestClose}
               style={{ float: 'right', marginTop: '-15px', marginRight: '-15px' }}
             >
               <Clear />
@@ -106,4 +115,4 @@ const mapStateToProps = state => ({
   currentUserLoading: state.currentUserLoading,
 });
 
-export default connect(mapStateToProps)(ComposeOverlay);
+export default withRouter(connect(mapStateToProps)(ComposeOverlay));
