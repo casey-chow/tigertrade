@@ -24,6 +24,27 @@ export function loadListings(query = { query: '' }) {
   };
 }
 
+export function loadListing(id = '') {
+  return function (dispatch, getState) {
+    dispatch({
+      query: {},
+      type: 'LOAD_LISTINGS_REQUEST',
+    });
+    fetch(`${API_ROOT}/listings/${id}`, {
+      credentials: 'include',
+    })
+      .then(response => response.json())
+      .then(json => dispatch({
+        json: [json],
+        type: 'LOAD_LISTINGS_SUCCESS',
+      }))
+      .catch(error => dispatch({
+        error,
+        type: 'LOAD_LISTINGS_FAILURE',
+      }));
+  };
+}
+
 export function postListing(listing) {
   return function (dispatch, getState) {
     dispatch({

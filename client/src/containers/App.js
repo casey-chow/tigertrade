@@ -10,6 +10,7 @@ import Welcome from '../components/Welcome';
 import NavigationDrawer from '../components/NavigationDrawer';
 
 import Listings from './Listings';
+import Listing from './Listing';
 import Seeks from './Seeks';
 import SavedSearches from './SavedSearches';
 import Profile from './Profile';
@@ -52,6 +53,7 @@ class App extends Component {
               <Redirect push to="/listings" />
             </Route>
             <Route path="/listings/:type?" component={Listings} />
+            <Route path="/listing/:id" component={Listing} />
             <Route path="/seeks/:type?" component={Seeks} />
             <Route path="/savedsearches" component={SavedSearches} />
             <Route path="/profile" component={Profile} />
