@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	sq "github.com/Masterminds/squirrel"
+	log "github.com/Sirupsen/logrus"
 	"github.com/guregu/null"
 	"github.com/lib/pq"
 	"net/http"
@@ -74,11 +75,21 @@ func isStarredBy(id int) string {
 func ReadListings(db *sql.DB, query *listingQuery) ([]*Listing, error, int) {
 	// Create listings statement
 	stmt := psql.
-		Select("listings.key_id", "listings.creation_date",
-			"listings.last_modification_date", "title",
-			fmt.Sprintf("left(description, %d)", query.TruncationLength), "user_id",
-			"users.net_id", "price", "status", "expiration_date", "thumbnails.url",
-			isStarredBy(query.UserID), "photos").
+		Select(
+			"listings.key_id",
+			"listings.creation_date",
+			"listings.last_modification_date",
+			"title",
+			fmt.Sprintf("left(description, %d)", query.TruncationLength),
+			"user_id",
+			"users.net_id",
+			"price",
+			"status",
+			"expiration_date",
+			"thumbnails.url",
+			isStarredBy(query.UserID),
+			"photos",
+		).
 		From("listings").
 		Where("listings.is_active=true").
 		LeftJoin("users ON listings.user_id = users.key_id").
@@ -107,6 +118,9 @@ func ReadListings(db *sql.DB, query *listingQuery) ([]*Listing, error, int) {
 		stmt = stmt.Limit(maxNumResults)
 	}
 
+	queryStr, _, _ := stmt.ToSql()
+	log.WithField("query", queryStr).Info("query!")
+
 	// Query db
 	rows, err := stmt.RunWith(db).Query()
 	if err != nil {
@@ -118,9 +132,21 @@ func ReadListings(db *sql.DB, query *listingQuery) ([]*Listing, error, int) {
 	listings := make([]*Listing, 0)
 	for rows.Next() {
 		l := new(Listing)
-		err := rows.Scan(&l.KeyID, &l.CreationDate, &l.LastModificationDate,
-			&l.Title, &l.Description, &l.UserID, &l.Username, &l.Price, &l.Status,
-			&l.ExpirationDate, &l.Thumbnail, &l.IsStarred, &l.Photos)
+		err := rows.Scan(
+			&l.KeyID,
+			&l.CreationDate,
+			&l.LastModificationDate,
+			&l.Title,
+			&l.Description,
+			&l.UserID,
+			&l.Username,
+			&l.Price,
+			&l.Status,
+			&l.ExpirationDate,
+			&l.Thumbnail,
+			&l.IsStarred,
+			&l.Photos,
+		)
 		if err != nil {
 			return nil, err, http.StatusInternalServerError
 		}
@@ -141,9 +167,20 @@ func ReadListing(db *sql.DB, id string) (Listing, error, int) {
 
 	// Create listing query
 	query := psql.
-		Select("listings.key_id", "listings.creation_date", "listings.last_modification_date",
-			"title", "description", "user_id", "users.net_id", "price", "status", "expiration_date",
-			"thumbnails.url", "photos").
+		Select(
+			"listings.key_id",
+			"listings.creation_date",
+			"listings.last_modification_date",
+			"title",
+			"description",
+			"user_id",
+			"users.net_id",
+			"price",
+			"status",
+			"expiration_date",
+			"thumbnails.url",
+			"photos",
+		).
 		From("listings").
 		Where("listings.is_active=true").
 		LeftJoin("users ON listings.user_id = users.key_id").
@@ -159,10 +196,20 @@ func ReadListing(db *sql.DB, id string) (Listing, error, int) {
 
 	// Populate listing struct
 	rows.Next()
-	err = rows.Scan(&listing.KeyID, &listing.CreationDate,
-		&listing.LastModificationDate, &listing.Title, &listing.Description,
-		&listing.UserID, &listing.Username, &listing.Price, &listing.Status,
-		&listing.ExpirationDate, &listing.Thumbnail, &listing.Photos)
+	err = rows.Scan(
+		&listing.KeyID,
+		&listing.CreationDate,
+		&listing.LastModificationDate,
+		&listing.Title,
+		&listing.Description,
+		&listing.UserID,
+		&listing.Username,
+		&listing.Price,
+		&listing.Status,
+		&listing.ExpirationDate,
+		&listing.Thumbnail,
+		&listing.Photos,
+	)
 	if err == sql.ErrNoRows {
 		return listing, err, http.StatusNotFound
 	} else if err != nil {
