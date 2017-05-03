@@ -11,9 +11,10 @@ export function toggleLeftDrawer() {
   };
 }
 
-export function setComposeShown(show = false) {
+export function setComposeState(show = false, isEdit = false) {
   return {
-    type: 'SET_COMPOSE_SHOWN',
+    type: 'SET_COMPOSE_STATE',
     show,
+    isEdit,
   };
 }

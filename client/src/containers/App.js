@@ -16,7 +16,7 @@ import Profile from './Profile';
 import ComposeOverlay from '../components/ComposeOverlay';
 
 import { loadCurrentUser } from '../actions/users';
-import { setComposeShown } from '../actions/ui';
+import { setComposeState } from '../actions/ui';
 
 const fabStyle = {
   position: 'fixed',
@@ -60,7 +60,7 @@ class App extends Component {
         { this.props.showFAB ?
           <FloatingActionButton
             style={fabStyle}
-            onTouchTap={() => this.props.dispatch(setComposeShown(true))}
+            onTouchTap={() => this.props.dispatch(setComposeState(true))}
           >
             <ContentAdd />
           </FloatingActionButton> :
@@ -74,7 +74,7 @@ class App extends Component {
 const mapStateToProps = state => ({
   loading: state.currentUserLoading,
   user: state.currentUser,
-  showFAB: !state.composeShown,
+  showFAB: !state.composeState.show,
 });
 
 export default withRouter(connect(mapStateToProps)(App));

@@ -11,7 +11,7 @@ import {
 
 import {
   setDisplayMode,
-  setComposeShown,
+  setComposeState,
 } from '../actions/ui';
 import { postListing, loadListings } from '../actions/listings';
 import { postSeek, loadSeeks } from '../actions/seeks';
@@ -50,7 +50,7 @@ class ComposeOverlay extends Component {
     expanded: true,
   }
 
-  handleRequestClose = event => this.props.dispatch(setComposeShown(false));
+  handleRequestClose = event => this.props.dispatch(setComposeState(false));
 
   handleSubmitListing = (data) => {
     this.props.dispatch(postListing({
@@ -88,7 +88,7 @@ class ComposeOverlay extends Component {
     return (
       <div style={overlayStyle}>
         <Card expanded={this.state.expanded} onExpandChange={this.handleExpandChange}>
-          <CardHeader title="Compose" actAsExpander>
+          <CardHeader title={this.props.isEdit ? 'Edit' : 'Compose'} actAsExpander>
             <IconButton
               onTouchTap={this.handleRequestClose}
               style={{ float: 'right', marginTop: '-15px', marginRight: '-15px' }}
@@ -113,6 +113,7 @@ const mapStateToProps = state => ({
   form: state.form,
   mode: state.displayMode,
   currentUserLoading: state.currentUserLoading,
+  isEdit: state.composeState.isEdit,
 });
 
 export default withRouter(connect(mapStateToProps)(ComposeOverlay));

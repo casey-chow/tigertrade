@@ -33,10 +33,10 @@ const displayMode = (state = 'listings', action) => {
   }
 };
 
-const composeShown = (state = false, action) => {
+const composeState = (state = { show: false, isEdit: false }, action) => {
   switch (action.type) {
-    case 'SET_COMPOSE_SHOWN':
-      return action.show;
+    case 'SET_COMPOSE_STATE':
+      return { show: action.show, isEdit: action.isEdit };
     default:
       return state;
   }
@@ -57,7 +57,7 @@ const rootReducer = combineReducers({
   ...seeksReducers,
   ...userReducers,
   currentQuery,
-  composeShown,
+  composeState,
   displayMode,
   leftDrawerVisible,
   ui: uiReducer,
