@@ -8,6 +8,7 @@ import (
 	"github.com/guregu/null"
 	"net/http"
 	"strings"
+	"github.com/lib/pq"
 )
 
 // Returned by a function returning only one listing (usually by ID)
@@ -23,7 +24,7 @@ type Listing struct {
 	Status               null.String `json:"status"`
 	ExpirationDate       null.Time   `json:"expirationDate"`
 	Thumbnail            null.String `json:"thumbnail"`
-	Photos               []string    `json:"photos"`
+	Photos               pq.StringArray    `json:"photos"`
 	IsStarred            bool        `json:"isStarred"`
 }
 
@@ -77,7 +78,7 @@ func ReadListings(db *sql.DB, query *listingQuery) ([]*Listing, error, int) {
 			"listings.last_modification_date", "title",
 			fmt.Sprintf("left(description, %d)", query.TruncationLength), "user_id",
 			"users.net_id", "price", "status", "expiration_date", "thumbnails.url",
-			isStarredBy(query.UserID)).
+			isStarredBy(query.UserID), "photos").
 		From("listings").
 		Where("listings.is_active=true").
 		LeftJoin("users ON listings.user_id = users.key_id").
@@ -119,11 +120,16 @@ func ReadListings(db *sql.DB, query *listingQuery) ([]*Listing, error, int) {
 		l := new(Listing)
 		err := rows.Scan(&l.KeyID, &l.CreationDate, &l.LastModificationDate,
 			&l.Title, &l.Description, &l.UserID, &l.Username, &l.Price, &l.Status,
-			&l.ExpirationDate, &l.Thumbnail, &l.IsStarred)
+			&l.ExpirationDate, &l.Thumbnail, &l.IsStarred, &l.Photos)
 		if err != nil {
 			return nil, err, http.StatusInternalServerError
 		}
 		listings = append(listings, l)
+
+		// If no photos, initialize to empty array for frontend convenience
+		if l.Photos == nil {
+			l.Photos = []string{}
+		}
 	}
 
 	if err = rows.Err(); err != nil {
@@ -142,7 +148,7 @@ func ReadListing(db *sql.DB, id string) (Listing, error, int) {
 	query := psql.
 		Select("listings.key_id", "listings.creation_date", "listings.last_modification_date",
 			"title", "description", "user_id", "users.net_id", "price", "status", "expiration_date",
-			"thumbnails.url").
+			"thumbnails.url", "photos").
 		From("listings").
 		Where("listings.is_active=true").
 		LeftJoin("users ON listings.user_id = users.key_id").
@@ -161,11 +167,16 @@ func ReadListing(db *sql.DB, id string) (Listing, error, int) {
 	err = rows.Scan(&listing.KeyID, &listing.CreationDate,
 		&listing.LastModificationDate, &listing.Title, &listing.Description,
 		&listing.UserID, &listing.Username, &listing.Price, &listing.Status,
-		&listing.ExpirationDate, &listing.Thumbnail)
+		&listing.ExpirationDate, &listing.Thumbnail, &listing.Photos)
 	if err == sql.ErrNoRows {
 		return listing, err, http.StatusNotFound
 	} else if err != nil {
 		return listing, err, http.StatusInternalServerError
+	}
+
+	// If no photos, initialize to empty array for frontend convenience
+	if listing.Photos == nil {
+		listing.Photos = []string{}
 	}
 
 	return listing, nil, http.StatusOK
