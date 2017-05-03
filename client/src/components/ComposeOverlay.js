@@ -24,8 +24,8 @@ const overlayStyle = {
   bottom: '0',
   zIndex: '99',
   right: '5%',
-  width: '30%',
-  minWidth: '300px',
+  width: '40vw',
+  minWidth: '16rem',
 };
 
 const showStyle = {};
