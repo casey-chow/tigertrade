@@ -34,7 +34,6 @@ class SearchBar extends Component {
   }
 
   state = {
-    dataSource: [],
     open: false,
     focus: false,
      // submitIntent is true when the user last expressed some
@@ -43,17 +42,6 @@ class SearchBar extends Component {
   }
 
   handleUpdateInput = (value) => {
-    this.setState({
-      dataSource: [
-        'apples',
-        'oranges',
-        'chairs',
-        'textbooks',
-        'clothing',
-        'clothes',
-      ],
-    });
-
     const query = this.props.query;
     query.query = value;
 
@@ -133,7 +121,7 @@ class SearchBar extends Component {
           className="SearchBar"
           fullWidth
           hintText={hintText}
-          dataSource={this.state.dataSource}
+          dataSource={[]}
           onUpdateInput={this.handleUpdateInput}
           openOnFocus
           onClose={this.handleRequestClose}
