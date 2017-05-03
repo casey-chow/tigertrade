@@ -18,6 +18,7 @@ import Search from 'material-ui/svg-icons/action/search';
 import ModeEdit from 'material-ui/svg-icons/editor/mode-edit';
 import Restore from 'material-ui/svg-icons/action/restore';
 import Person from 'material-ui/svg-icons/social/person';
+import Feedback from 'material-ui/svg-icons/action/feedback';
 
 const SelectableList = makeSelectable(List);
 
@@ -60,6 +61,11 @@ class NavigationDrawer extends Component {
 
   handleMenuChange = (event, value) => {
     this.props.history.push(value);
+  }
+
+  openFeedback = () => {
+    const win = window.open('https://goo.gl/forms/hsEbS3X2HVs4zzdE3', '_blank');
+    win.focus();
   }
 
   render() {
@@ -135,6 +141,12 @@ class NavigationDrawer extends Component {
               value="/compose/seeks"
             />,
           ]}
+        />
+        <ListItem
+          key="feedback"
+          primaryText="Feedback"
+          leftIcon={<Feedback />}
+          onClick={this.openFeedback}
         />
       </SelectableList>
     );
