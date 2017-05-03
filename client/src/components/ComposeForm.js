@@ -29,6 +29,7 @@ const descriptionField = field => (
     value={field.input.value} onChange={field.input.onChange} multiLine
     rowsMax={8}
     fullWidth
+    rows={2}
   />
 );
 

@@ -4,6 +4,10 @@ import { connect } from 'react-redux';
 import { Card, CardHeader, CardText } from 'material-ui/Card';
 import IconButton from 'material-ui/IconButton';
 import Clear from 'material-ui/svg-icons/content/clear';
+import {
+  propTypes as routerPropTypes,
+  withRouter,
+} from 'react-router-dom';
 
 import {
   setDisplayMode,
@@ -20,12 +24,16 @@ const overlayStyle = {
   bottom: '0',
   zIndex: '99',
   right: '5%',
-  width: '30%',
-  minWidth: '300px',
+  width: '40vw',
+  minWidth: '16rem',
 };
+
+const showStyle = {};
+const hideStyle = { display: 'none' };
 
 class ComposeOverlay extends Component {
   static propTypes = {
+    ...routerPropTypes,
     dispatch: PropTypes.func.isRequired,
     history: PropTypes.shape({
       push: PropTypes.func.isRequired,
@@ -35,8 +43,14 @@ class ComposeOverlay extends Component {
     }).isRequired,
     currentUserLoading: PropTypes.bool.isRequired,
     mode: PropTypes.string.isRequired,
-    show: PropTypes.bool.isRequired,
   };
+
+  state = {
+    mode: this.props.mode,
+    expanded: true,
+  }
+
+  handleRequestClose = event => this.props.dispatch(setComposeShown(false));
 
   handleSubmitListing = (data) => {
     this.props.dispatch(postListing({
@@ -45,6 +59,7 @@ class ComposeOverlay extends Component {
     }));
     this.props.dispatch(loadListings());
     this.props.history.push('/listings');
+    this.handleRequestClose();
   }
 
   handleSubmitSeek = (data) => {
@@ -54,10 +69,15 @@ class ComposeOverlay extends Component {
     }));
     this.props.dispatch(loadSeeks());
     this.props.history.push('/seeks');
+    this.handleRequestClose();
   }
 
   handleToggle = (event, isInputChecked) => {
     this.props.dispatch(setDisplayMode(isInputChecked ? 'seeks' : 'listings'));
+  }
+
+  handleExpandChange = (expanded) => {
+    this.setState({ expanded });
   }
 
   render() {
@@ -67,24 +87,22 @@ class ComposeOverlay extends Component {
 
     return (
       <div style={overlayStyle}>
-        { this.props.show &&
-          <Card expandable initiallyExpanded>
-            <CardHeader title="Compose" actAsExpander>
-              <IconButton
-                onTouchTap={event => this.props.dispatch(setComposeShown(false))}
-                style={{ float: 'right', marginTop: '-15px', marginRight: '-15px' }}
-              >
-                <Clear />
-              </IconButton>
-            </CardHeader>
-            <CardText expandable>
-              { (this.props.mode === 'listings') ?
-                <ComposeForm onSubmit={this.handleSubmitListing} /> :
-                <SeekComposeForm onSubmit={this.handleSubmitSeek} />
-              }
-            </CardText>
-          </Card>
-        }
+        <Card expanded={this.state.expanded} onExpandChange={this.handleExpandChange}>
+          <CardHeader title="Compose" actAsExpander>
+            <IconButton
+              onTouchTap={this.handleRequestClose}
+              style={{ float: 'right', marginTop: '-15px', marginRight: '-15px' }}
+            >
+              <Clear />
+            </IconButton>
+          </CardHeader>
+          <CardText style={this.state.expanded ? showStyle : hideStyle}>
+            { (this.state.mode === 'listings') ?
+              <ComposeForm onSubmit={this.handleSubmitListing} /> :
+              <SeekComposeForm onSubmit={this.handleSubmitSeek} />
+            }
+          </CardText>
+        </Card>
       </div>
     );
   }
@@ -95,7 +113,6 @@ const mapStateToProps = state => ({
   form: state.form,
   mode: state.displayMode,
   currentUserLoading: state.currentUserLoading,
-  show: state.composeShown,
 });
 
-export default connect(mapStateToProps)(ComposeOverlay);
+export default withRouter(connect(mapStateToProps)(ComposeOverlay));
