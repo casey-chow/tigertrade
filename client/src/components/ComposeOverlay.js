@@ -24,9 +24,6 @@ const overlayStyle = {
   minWidth: '300px',
 };
 
-const showStyle = {};
-const hideStyle = { display: 'none' };
-
 class ComposeOverlay extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -38,12 +35,8 @@ class ComposeOverlay extends Component {
     }).isRequired,
     currentUserLoading: PropTypes.bool.isRequired,
     mode: PropTypes.string.isRequired,
+    show: PropTypes.bool.isRequired,
   };
-
-  state = {
-    mode: this.props.mode,
-    expanded: true,
-  }
 
   handleSubmitListing = (data) => {
     this.props.dispatch(postListing({
@@ -67,10 +60,6 @@ class ComposeOverlay extends Component {
     this.props.dispatch(setDisplayMode(isInputChecked ? 'seeks' : 'listings'));
   }
 
-  handleExpandChange = (expanded) => {
-    this.setState({ expanded });
-  }
-
   render() {
     if (!this.props.currentUserLoading && !this.props.user.loggedIn) {
       return <RedirectToCas />;
@@ -78,22 +67,24 @@ class ComposeOverlay extends Component {
 
     return (
       <div style={overlayStyle}>
-        <Card expanded={this.state.expanded} onExpandChange={this.handleExpandChange}>
-          <CardHeader title="Compose" actAsExpander>
-            <IconButton
-              onTouchTap={event => this.props.dispatch(setComposeShown(false))}
-              style={{ float: 'right', marginTop: '-15px', marginRight: '-15px' }}
-            >
-              <Clear />
-            </IconButton>
-          </CardHeader>
-          <CardText style={this.state.expanded ? showStyle : hideStyle}>
-            { (this.state.mode === 'listings') ?
-              <ComposeForm onSubmit={this.handleSubmitListing} /> :
-              <SeekComposeForm onSubmit={this.handleSubmitSeek} />
-            }
-          </CardText>
-        </Card>
+        { this.props.show &&
+          <Card expandable initiallyExpanded>
+            <CardHeader title="Compose" actAsExpander>
+              <IconButton
+                onTouchTap={event => this.props.dispatch(setComposeShown(false))}
+                style={{ float: 'right', marginTop: '-15px', marginRight: '-15px' }}
+              >
+                <Clear />
+              </IconButton>
+            </CardHeader>
+            <CardText expandable>
+              { (this.props.mode === 'listings') ?
+                <ComposeForm onSubmit={this.handleSubmitListing} /> :
+                <SeekComposeForm onSubmit={this.handleSubmitSeek} />
+              }
+            </CardText>
+          </Card>
+        }
       </div>
     );
   }
@@ -104,6 +95,7 @@ const mapStateToProps = state => ({
   form: state.form,
   mode: state.displayMode,
   currentUserLoading: state.currentUserLoading,
+  show: state.composeShown,
 });
 
 export default connect(mapStateToProps)(ComposeOverlay);
