@@ -10,22 +10,6 @@ import (
 	"strings"
 )
 
-// This is the "JSON" struct that appears in the array returned by getRecentListings
-type ListingsItem struct {
-	KeyID                int         `json:"keyId"`
-	CreationDate         null.Time   `json:"creationDate"`
-	LastModificationDate null.Time   `json:"lastModificationDate"`
-	Title                string      `json:"title"`
-	Description          null.String `json:"description"` // expect to be truncated
-	UserID               int         `json:"userId"`
-	Username             null.String `json:"username"`
-	Price                null.Int    `json:"price"`
-	Status               null.String `json:"status"`
-	ExpirationDate       null.Time   `json:"expirationDate"`
-	Thumbnail            null.String `json:"thumbnail"`
-	IsStarred            bool        `json:"isStarred"`
-}
-
 // Returned by a function returning only one listing (usually by ID)
 type Listing struct {
 	KeyID                int         `json:"keyId"`
@@ -39,7 +23,7 @@ type Listing struct {
 	Status               null.String `json:"status"`
 	ExpirationDate       null.Time   `json:"expirationDate"`
 	Thumbnail            null.String `json:"thumbnail"`
-	Photos               []Photo     `json:"photos"`
+	Photos               []string    `json:"photos"`
 	IsStarred            bool        `json:"isStarred"`
 }
 
@@ -86,7 +70,7 @@ func isStarredBy(id int) string {
 // Returns the most recent count listings, based on original date created.
 // If queryStr is nonempty, filters that every returned item must have every word in either title or description
 // On error, returns an error and the HTTP code associated with that error.
-func ReadListings(db *sql.DB, query *listingQuery) ([]*ListingsItem, error, int) {
+func ReadListings(db *sql.DB, query *listingQuery) ([]*Listing, error, int) {
 	// Create listings statement
 	stmt := psql.
 		Select("listings.key_id", "listings.creation_date",
@@ -130,9 +114,9 @@ func ReadListings(db *sql.DB, query *listingQuery) ([]*ListingsItem, error, int)
 	defer rows.Close()
 
 	// Populate listing structs
-	listings := make([]*ListingsItem, 0)
+	listings := make([]*Listing, 0)
 	for rows.Next() {
-		l := new(ListingsItem)
+		l := new(Listing)
 		err := rows.Scan(&l.KeyID, &l.CreationDate, &l.LastModificationDate,
 			&l.Title, &l.Description, &l.UserID, &l.Username, &l.Price, &l.Status,
 			&l.ExpirationDate, &l.Thumbnail, &l.IsStarred)
@@ -182,15 +166,6 @@ func ReadListing(db *sql.DB, id string) (Listing, error, int) {
 		return listing, err, http.StatusNotFound
 	} else if err != nil {
 		return listing, err, http.StatusInternalServerError
-	}
-
-	// Add photos to struct
-	photos, err, code := ReadListingPhotos(db, id)
-	if err != nil {
-		return listing, err, code
-	}
-	for i := range photos {
-		listing.Photos = append(listing.Photos, *photos[i])
 	}
 
 	return listing, nil, http.StatusOK
