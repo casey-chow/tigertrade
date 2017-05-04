@@ -42,6 +42,7 @@ class ComposeOverlay extends Component {
       loggedIn: PropTypes.bool.isRequired,
     }).isRequired,
     currentUserLoading: PropTypes.bool.isRequired,
+    isEdit: PropTypes.bool.isRequired,
     mode: PropTypes.string.isRequired,
     // eslint-disable-next-line react/forbid-prop-types
     refreshQuery: PropTypes.object,

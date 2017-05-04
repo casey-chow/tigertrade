@@ -137,8 +137,8 @@ class ListingCard extends React.Component {
                 <FlatButton primary icon={<EmailIcon />} label="Contact Seller" onTouchTap={this.handleContactOpen} /> :
 
               [
-                <FlatButton primary icon={<ModeEdit />} label="Edit" onTouchTap={this.handleEdit} />,
-                <FlatButton primary icon={<DeleteIcon />} label="Delete" onTouchTap={this.handleDelete} />,
+                <FlatButton primary icon={<ModeEdit />} label="Edit" onTouchTap={this.handleEdit} key={0} />,
+                <FlatButton primary icon={<DeleteIcon />} label="Delete" onTouchTap={this.handleDelete} key={1} />,
               ]
               }
 
