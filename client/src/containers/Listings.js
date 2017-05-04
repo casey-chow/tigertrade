@@ -65,7 +65,7 @@ class Listings extends Component {
   }
 
   loadMoreListings = () => {
-    const limit = this.props.listings.length + 10;
+    const limit = this.props.listings.length + this.props.listings.length;
     this.props.dispatch(loadListings({ query: { limit } }));
   }
 
@@ -73,7 +73,7 @@ class Listings extends Component {
     return (
       <div>
         <ListingsList listings={this.props.listings} />
-        <Waypoint topOffset="70%" onEnter={this.loadMoreListings} />
+        <Waypoint topOffset="70%" bottomOffset="-25%" onEnter={this.loadMoreListings} />
         { this.props.listingsLoading &&
           <div style={{ alignItems: 'center', justifyContent: 'center', display: 'flex' }}>
             <CircularProgress size={80} thickness={8} />
