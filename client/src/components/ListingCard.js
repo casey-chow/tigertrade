@@ -78,7 +78,11 @@ class ListingCard extends React.Component {
   }
 
   handleSubmit = (data) => {
-    this.props.dispatch(mailSeller(this.props.listing.keyId, data));
+    this.props.dispatch(mailSeller(
+      this.props.listing,
+      data,
+      `Successfully contacted seller for ${this.props.listing.title}`,
+    ));
     this.handleContactClose();
   }
 
@@ -87,7 +91,11 @@ class ListingCard extends React.Component {
   }
 
   handleDelete = () => {
-    this.props.dispatch(deleteListing(this.props.listing.keyId, this.props.query));
+    this.props.dispatch(deleteListing(
+      this.props.listing,
+      this.props.query,
+      `Successfully deleted listing ${this.props.listing.title}`,
+    ));
   }
 
   handlePermalinkRedirect = () => {

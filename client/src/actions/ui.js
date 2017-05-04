@@ -22,3 +22,16 @@ export function setComposeState(show = false, isEdit = false, mode = 'listings',
     refreshQuery,
   };
 }
+
+export function showSnackbar(message = '') {
+  return {
+    type: 'SNACKBAR_SHOW',
+    message,
+  };
+}
+
+export function hideSnackbar(message = '') {
+  return {
+    type: 'SNACKBAR_HIDE',
+  };
+}
