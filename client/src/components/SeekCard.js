@@ -24,6 +24,8 @@ import Dialog from 'material-ui/Dialog';
 import Chip from 'material-ui/Chip';
 
 import ContactBuyerForm from './ContactBuyerForm';
+
+import { redirectToCas } from '../helpers/cas';
 import { mailBuyer } from './../actions/users';
 import { deleteSeek } from './../actions/seeks';
 
@@ -31,7 +33,10 @@ class SeekCard extends React.Component {
 
   static propTypes = {
     ...routerPropTypes,
-    currentUserId: PropTypes.number,
+    currentUser: PropTypes.shape({
+      keyId: PropTypes.number.isRequired,
+      loggedIn: PropTypes.bool.isRequired,
+    }),
     dispatch: PropTypes.func.isRequired,
     expanded: PropTypes.bool.isRequired,
     onExpandChange: PropTypes.func,
@@ -52,7 +57,10 @@ class SeekCard extends React.Component {
   };
 
   static defaultProps = {
-    currentUserId: -1,
+    currentUser: {
+      keyId: -1,
+      loggedIn: false,
+    },
     expanded: false,
     onExpandChange: () => {},
     query: { query: '' },
@@ -63,6 +71,11 @@ class SeekCard extends React.Component {
   }
 
   handleContactOpen = () => {
+    if (!this.props.currentUser.loggedIn) {
+      redirectToCas();
+      return;
+    }
+
     this.setState({ contactOpen: true });
   }
 
@@ -154,7 +167,7 @@ class SeekCard extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  currentUserId: state.currentUser.keyId,
+  currentUser: state.currentUser,
   query: state.currentQuery,
 });
 

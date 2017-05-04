@@ -25,6 +25,8 @@ import FavoriteIcon from 'material-ui/svg-icons/action/favorite';
 import LinkIcon from 'material-ui/svg-icons/content/link';
 
 import ContactSellerForm from './ContactSellerForm';
+
+import { redirectToCas } from '../helpers/cas';
 import { mailSeller } from './../actions/users';
 import { editListing, deleteListing } from './../actions/listings';
 
@@ -32,7 +34,10 @@ class ListingCard extends React.Component {
 
   static propTypes = {
     ...routerPropTypes,
-    currentUserId: PropTypes.number,
+    currentUser: PropTypes.shape({
+      keyId: PropTypes.number,
+      loggedIn: PropTypes.bool,
+    }).isRequired,
     dispatch: PropTypes.func.isRequired,
     expanded: PropTypes.bool.isRequired,
     onExpandChange: PropTypes.func,
@@ -55,7 +60,10 @@ class ListingCard extends React.Component {
 
   static defaultProps = {
     query: { query: '' },
-    currentUserId: -1,
+    currentUser: {
+      keyId: -1,
+      loggedIn: false,
+    },
     expanded: false,
     onExpandChange: () => {},
   };
@@ -65,6 +73,11 @@ class ListingCard extends React.Component {
   }
 
   handleContactOpen = () => {
+    if (!this.props.currentUser.loggedIn) {
+      redirectToCas();
+      return;
+    }
+
     this.setState({ contactOpen: true });
   }
 
@@ -141,7 +154,7 @@ class ListingCard extends React.Component {
             }
 
             <CardActions>
-              { this.props.currentUserId !== listing.userId ?
+              { this.props.currentUser.keyId !== listing.userId ?
                 <FlatButton primary icon={<EmailIcon />} label="Contact Seller" onTouchTap={this.handleContactOpen} /> :
 
               [
@@ -174,7 +187,7 @@ class ListingCard extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  currentUserId: state.currentUser.keyId,
+  currentUser: state.currentUser,
   query: state.currentQuery,
 });
 
