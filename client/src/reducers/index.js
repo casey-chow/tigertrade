@@ -8,18 +8,19 @@ import * as savedSearchesReducers from './savedSearches';
 import * as seeksReducers from './seeks';
 import * as userReducers from './user';
 
-const currentQuery = (state = { query: '' }, action) => {
+const defaultQuery = { query: '' };
+const currentQuery = (state = defaultQuery, action) => {
   switch (action.type) {
     case 'LOAD_SAVED_SEARCHES_REQUEST':
       return {
         ...state,
-        query: '',
+        ...defaultQuery,
       };
     case 'LOAD_LISTINGS_REQUEST':
     case 'LOAD_SEEKS_REQUEST':
       if (action.reset) {
         return {
-          query: '',
+          ...defaultQuery,
           ...action.query,
         };
       } else {
@@ -70,7 +71,8 @@ const leftDrawerVisible = (state = true, action) => {
   }
 };
 
-const snackbar = (state = { open: false, message: '' }, action) => {
+const defaultSnackbar = { open: false, message: '' };
+const snackbar = (state = defaultSnackbar, action) => {
   switch (action.type) {
     case 'SNACKBAR_SHOW':
       return {
@@ -78,10 +80,7 @@ const snackbar = (state = { open: false, message: '' }, action) => {
         message: action.message,
       };
     case 'SNACKBAR_HIDE':
-      return {
-        open: false,
-        message: '',
-      };
+      return defaultSnackbar;
     default:
       return state;
   }
