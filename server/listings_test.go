@@ -79,7 +79,7 @@ func TestSearch(t *testing.T) {
 					"price",
 					"status",
 					"expiration_date",
-					"thumbnails.url",
+					"thumbnail_url",
 					"starred_listings.is_starred",
 					"photos",
 				}).AddRow(
@@ -133,7 +133,7 @@ func TestSearch(t *testing.T) {
 					"price",
 					"status",
 					"expiration_date",
-					"thumbnails.url",
+					"thumbnail_url",
 					"starred_listings.is_starred",
 					"photos",
 				}).AddRow(

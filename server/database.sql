@@ -5,7 +5,7 @@
 -- Dumped from database version 9.6.1
 -- Dumped by pg_dump version 9.6.1
 
--- Started on 2017-05-03 03:03:22 EDT
+-- Started on 2017-05-04 02:18:52 EDT
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -56,7 +56,8 @@ CREATE TABLE listings (
     expiration_date timestamp with time zone,
     is_active boolean DEFAULT true,
     thumbnail_id bigint,
-    photos text[] DEFAULT '{}'::text[]
+    photos text[] DEFAULT '{}'::text[],
+    thumbnail_url character varying(2084)
 );
 
 
@@ -173,7 +174,8 @@ CREATE TABLE seeks (
     saved_search_id bigint,
     notify_enabled boolean DEFAULT false,
     status character varying(20),
-    is_active boolean DEFAULT true
+    is_active boolean DEFAULT true,
+    thumbnail_url character varying(2084)
 );
 
 
@@ -593,7 +595,7 @@ ALTER TABLE ONLY users
     ADD CONSTRAINT users_pkey PRIMARY KEY (key_id);
 
 
--- Completed on 2017-05-03 03:03:25 EDT
+-- Completed on 2017-05-04 02:18:55 EDT
 
 --
 -- PostgreSQL database dump complete
