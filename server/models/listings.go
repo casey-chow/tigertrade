@@ -86,14 +86,13 @@ func ReadListings(db *sql.DB, query *listingQuery) ([]*Listing, error, int) {
 			"price",
 			"status",
 			"expiration_date",
-			"thumbnails.url",
+			"thumbnail_url",
 			isStarredBy(query.UserID),
 			"photos",
 		).
 		From("listings").
 		Where("listings.is_active=true").
-		LeftJoin("users ON listings.user_id = users.key_id").
-		LeftJoin("thumbnails ON listings.thumbnail_id = thumbnails.key_id")
+		LeftJoin("users ON listings.user_id = users.key_id")
 
 	for _, word := range strings.Fields(query.Query) {
 		stmt = stmt.Where("(lower(listings.title) LIKE lower(?) OR lower(listings.description) LIKE lower(?))", fmt.Sprint("%", word, "%"), fmt.Sprint("%", word, "%"))
@@ -178,13 +177,12 @@ func ReadListing(db *sql.DB, id string) (Listing, error, int) {
 			"price",
 			"status",
 			"expiration_date",
-			"thumbnails.url",
+			"thumbnail_url",
 			"photos",
 		).
 		From("listings").
 		Where("listings.is_active=true").
 		LeftJoin("users ON listings.user_id = users.key_id").
-		LeftJoin("thumbnails ON listings.thumbnail_id = thumbnails.key_id").
 		Where(sq.Eq{"listings.key_id": id})
 
 	// Query db for listing
@@ -227,7 +225,7 @@ func CreateListing(db *sql.DB, listing Listing, userId int) (Listing, error, int
 	// Insert listing
 	stmt := psql.Insert("listings").
 		Columns("title", "description", "user_id", "price", "status",
-			"expiration_date", "thumbnail_id", "photos").
+			"expiration_date", "thumbnail_url", "photos").
 		Values(listing.Title, listing.Description, userId, listing.Price,
 			listing.Status, listing.ExpirationDate, listing.Thumbnail, listing.Photos).
 		Suffix("RETURNING key_id, creation_date")
@@ -262,7 +260,7 @@ func UpdateListing(db *sql.DB, id string, listing Listing, userId int) (error, i
 			"price":           listing.Price,
 			"status":          listing.Status,
 			"expiration_date": listing.ExpirationDate,
-			"thumbnail_id":    listing.Thumbnail,
+			"thumbnail_url":   listing.Thumbnail,
 			"photos":          listing.Photos}).
 		Where(sq.Eq{"listings.key_id": id,
 			"listings.user_id": userId})
