@@ -38,8 +38,6 @@ class SeekCard extends React.Component {
       notifyEnabled: PropTypes.bool,
       status: PropTypes.string,
     }).isRequired,
-    // eslint-disable-next-line react/forbid-prop-types
-    query: PropTypes.object,
   };
 
   static defaultProps = {
@@ -71,7 +69,7 @@ class SeekCard extends React.Component {
   }
 
   handleDelete = () => { // second arg for refreshing
-    this.props.dispatch(deleteSeek(this.props.seek.keyId, this.props.query));
+    this.props.dispatch(deleteSeek(this.props.seek.keyId));
   }
 
   render() {
@@ -133,7 +131,6 @@ class SeekCard extends React.Component {
 
 const mapStateToProps = state => ({
   currentUserId: state.currentUser.keyId,
-  query: state.currentQuery,
 });
 
 export default connect(mapStateToProps)(SeekCard);

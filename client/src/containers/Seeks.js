@@ -23,13 +23,13 @@ class Seeks extends Component {
 
   componentWillMount() {
     const query = this.getQuery(this.props);
-    this.props.dispatch(loadSeeks(query));
+    this.props.dispatch(loadSeeks({ query, reset: true }));
   }
 
   componentWillReceiveProps(nextProps) {
     if (this.props.match.params.type !== nextProps.match.params.type) {
       const query = this.getQuery(nextProps);
-      this.props.dispatch(loadSeeks(query));
+      this.props.dispatch(loadSeeks({ query, reset: true }));
     }
   }
 

@@ -3,10 +3,12 @@ import { stringify } from 'query-string';
 
 import { API_ROOT } from './common';
 
-export function loadListings(query = { query: '' }) {
+export function loadListings({ query = {}, reset = false, append = false }) {
   return function (dispatch, getState) {
     dispatch({
       query,
+      reset,
+      append,
       type: 'LOAD_LISTINGS_REQUEST',
     });
     fetch(`${API_ROOT}/listings?${stringify(query)}`, {
@@ -43,7 +45,7 @@ export function postListing(listing) {
         json,
         type: 'POST_LISTING_SUCCESS',
       });
-      dispatch(loadListings());
+      dispatch(loadListings({ reset: true }));
     })
     .catch(error => dispatch({
       error,
@@ -52,7 +54,7 @@ export function postListing(listing) {
   };
 }
 
-export function deleteListing(listingId, refreshQuery) {
+export function deleteListing(listingId) {
   return function (dispatch, getState) {
     dispatch({
       type: 'DELETE_LISTING_REQUEST',
@@ -67,7 +69,7 @@ export function deleteListing(listingId, refreshQuery) {
         json,
         type: 'DELETE_LISTING_SUCCESS',
       });
-      dispatch(loadListings(refreshQuery));
+      dispatch(loadListings());
     })
     .catch(error => dispatch({
       error,

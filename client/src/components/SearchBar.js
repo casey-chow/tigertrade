@@ -47,10 +47,10 @@ class SearchBar extends Component {
 
     switch (this.props.displayMode) {
       case 'seeks':
-        this.props.dispatch(loadSeeks(query));
+        this.props.dispatch(loadSeeks({ query }));
         break;
       case 'listings':
-        this.props.dispatch(loadListings(query));
+        this.props.dispatch(loadListings({ query }));
         break;
       default:
         break;

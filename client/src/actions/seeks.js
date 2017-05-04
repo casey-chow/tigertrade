@@ -3,10 +3,12 @@ import { stringify } from 'query-string';
 
 import { API_ROOT } from './common';
 
-export function loadSeeks(query = { query: '' }) {
+export function loadSeeks({ query = {}, reset = false, append = false }) {
   return function (dispatch, getState) {
     dispatch({
       query,
+      reset,
+      append,
       type: 'LOAD_SEEKS_REQUEST',
     });
     fetch(`${API_ROOT}/seeks?${stringify(query)}`, {
@@ -43,7 +45,7 @@ export function postSeek(seek) {
         json,
         type: 'POST_SEEK_SUCCESS',
       });
-      dispatch(loadSeeks());
+      dispatch(loadSeeks({ reset: true }));
     })
     .catch(error => dispatch({
       error,
@@ -67,7 +69,7 @@ export function deleteSeek(seekId, refreshQuery) {
         json,
         type: 'DELETE_LISTING_SUCCESS',
       });
-      dispatch(loadSeeks(refreshQuery));
+      dispatch(loadSeeks());
     })
     .catch(error => dispatch({
       error,

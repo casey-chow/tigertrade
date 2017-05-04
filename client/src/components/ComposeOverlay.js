@@ -13,8 +13,8 @@ import {
   setDisplayMode,
   setComposeShown,
 } from '../actions/ui';
-import { postListing, loadListings } from '../actions/listings';
-import { postSeek, loadSeeks } from '../actions/seeks';
+import { postListing } from '../actions/listings';
+import { postSeek } from '../actions/seeks';
 import ComposeForm from '../components/ComposeForm';
 import SeekComposeForm from '../components/SeekComposeForm';
 import RedirectToCas from '../components/RedirectToCas';
@@ -57,7 +57,6 @@ class ComposeOverlay extends Component {
       ...data,
       price: data.price ? Math.round(parseFloat(data.price) * 100) : 0,
     }));
-    this.props.dispatch(loadListings());
     this.props.history.push('/listings');
     this.handleRequestClose();
   }
@@ -67,7 +66,6 @@ class ComposeOverlay extends Component {
       ...data,
       price: data.price ? Math.round(parseFloat(data.price) * 100) : 0,
     }));
-    this.props.dispatch(loadSeeks());
     this.props.history.push('/seeks');
     this.handleRequestClose();
   }

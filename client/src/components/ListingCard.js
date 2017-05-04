@@ -40,8 +40,6 @@ class ListingCard extends React.Component {
       expirationDate: PropTypes.number,
       thumbnail: PropTypes.string,
     }).isRequired,
-    // eslint-disable-next-line react/forbid-prop-types
-    query: PropTypes.object,
   };
 
   static defaultProps = {
@@ -74,7 +72,7 @@ class ListingCard extends React.Component {
   }
 
   handleDelete = () => {
-    this.props.dispatch(deleteListing(this.props.listing.keyId, this.props.query));
+    this.props.dispatch(deleteListing(this.props.listing.keyId));
   }
 
   render() {
@@ -143,7 +141,6 @@ class ListingCard extends React.Component {
 
 const mapStateToProps = state => ({
   currentUserId: state.currentUser.keyId,
-  query: state.currentQuery,
 });
 
 export default connect(mapStateToProps)(ListingCard);

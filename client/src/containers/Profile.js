@@ -46,8 +46,8 @@ class Profile extends Component {
       query: parse(this.props.location.search).query || '',
       isMine: true,
     };
-    this.props.dispatch(loadListings(query));
-    this.props.dispatch(loadSeeks(query));
+    this.props.dispatch(loadListings({ query, reset: true }));
+    this.props.dispatch(loadSeeks({ query, reset: true }));
 
     const mode = this.getDisplayMode();
     this.props.dispatch(setDisplayMode(mode));

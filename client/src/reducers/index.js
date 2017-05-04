@@ -11,10 +11,23 @@ import * as userReducers from './user';
 const currentQuery = (state = { query: '' }, action) => {
   switch (action.type) {
     case 'LOAD_SAVED_SEARCHES_REQUEST':
-      return { query: '' };
+      return {
+        ...state,
+        query: '',
+      };
     case 'LOAD_LISTINGS_REQUEST':
     case 'LOAD_SEEKS_REQUEST':
-      return action.query;
+      if (action.reset) {
+        return {
+          query: '',
+          ...action.query,
+        };
+      } else {
+        return {
+          ...state,
+          ...action.query,
+        };
+      }
     default:
       return state;
   }

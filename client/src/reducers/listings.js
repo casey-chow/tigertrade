@@ -15,7 +15,11 @@ export const listings = (state = [], action) => {
     case 'LOAD_LISTINGS_FAILURE': // TODO: failure state
       return [];
     case 'LOAD_LISTINGS_SUCCESS':
-      return action.json;
+      if (action.concat) {
+        return state.concat(action.json);
+      } else {
+        return action.json;
+      }
     case 'LOAD_LISTINGS_REQUEST':
     default:
       return state;
