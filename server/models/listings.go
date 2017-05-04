@@ -107,11 +107,11 @@ func ReadListings(db *sql.DB, query *listingQuery) ([]*Listing, error, int) {
 		return nil, errors.New("Unauthenticated user attempted to view profile data"), http.StatusUnauthorized
 	}
 
-	if query.MinPrice != -1 {
+	if query.MinPrice >= 0 {
 		stmt = stmt.Where(fmt.Sprintf("listings.price >= %d", query.MinPrice))
 	}
 
-	if query.MaxPrice != -1 {
+	if query.MaxPrice >= 0 {
 		stmt = stmt.Where(fmt.Sprintf("listings.price <= %d", query.MaxPrice))
 	}
 
