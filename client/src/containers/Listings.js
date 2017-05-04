@@ -65,8 +65,8 @@ class Listings extends Component {
   }
 
   loadMoreListings = () => {
-    const offset = this.props.listings.length;
-    this.props.dispatch(loadListings({ query: { offset }, concat: true }));
+    const limit = this.props.listings.length + 10;
+    this.props.dispatch(loadListings({ query: { limit } }));
   }
 
   render() {

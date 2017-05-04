@@ -11,7 +11,7 @@ export function loadListings({ query = {}, reset = false, concat = false }) {
       reset,
       type: 'LOAD_LISTINGS_REQUEST',
     });
-    fetch(`${API_ROOT}/listings?${stringify(query)}`, {
+    fetch(`${API_ROOT}/listings?${stringify(getState().currentQuery)}`, {
       credentials: 'include',
     })
       .then(response => response.json())

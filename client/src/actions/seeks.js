@@ -10,7 +10,7 @@ export function loadSeeks({ query = {}, reset = false, concat = false }) {
       reset,
       type: 'LOAD_SEEKS_REQUEST',
     });
-    fetch(`${API_ROOT}/seeks?${stringify(query)}`, {
+    fetch(`${API_ROOT}/seeks?${stringify(getState().currentQuery)}`, {
       credentials: 'include',
     })
       .then(response => response.json())
