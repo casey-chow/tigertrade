@@ -12,7 +12,6 @@ import NavigationDrawer from '../components/NavigationDrawer';
 import Listings from './Listings';
 import Seeks from './Seeks';
 import SavedSearches from './SavedSearches';
-import Profile from './Profile';
 import ComposeOverlay from '../components/ComposeOverlay';
 
 import { loadCurrentUser } from '../actions/users';
@@ -54,7 +53,6 @@ class App extends Component {
             <Route path="/listings/:type?" component={Listings} />
             <Route path="/seeks/:type?" component={Seeks} />
             <Route path="/savedsearches" component={SavedSearches} />
-            <Route path="/profile" component={Profile} />
           </Switch>
         </NavigationDrawer>
         { this.props.showFAB ?
