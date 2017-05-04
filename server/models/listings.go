@@ -43,7 +43,6 @@ func NewListingQuery() *listingQuery {
 	q := new(listingQuery)
 	q.TruncationLength = defaultTruncationLength
 	q.Limit = defaultNumResults
-	q.Offset = 0
 	return q
 }
 

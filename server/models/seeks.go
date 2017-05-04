@@ -37,7 +37,6 @@ func NewSeekQuery() *seekQuery {
 	q := new(seekQuery)
 	q.TruncationLength = defaultTruncationLength
 	q.Limit = defaultNumResults
-	q.Offset = 0
 	return q
 }
 
