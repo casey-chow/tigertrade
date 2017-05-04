@@ -33,15 +33,11 @@ func ReadListings(w http.ResponseWriter, r *http.Request, ps httprouter.Params) 
 	query.Query = r.URL.Query().Get("query")
 
 	// Get optional price filter limits
-	if minPriceStr := r.URL.Query().Get("minPrice"); minPriceStr != "" {
-		if price, err := strconv.Atoi(minPriceStr); err == nil {
-			query.MinPrice = int(price)
-		}
+	if minPrice, err := strconv.Atoi(r.URL.Query().Get("minPrice")); err == nil {
+		query.MinPrice = minPrice
 	}
-	if maxPriceStr := r.URL.Query().Get("maxPrice"); maxPriceStr != "" {
-		if price, err := strconv.Atoi(maxPriceStr); err == nil {
-			query.MaxPrice = int(price)
-		}
+	if maxPrice, err := strconv.Atoi(r.URL.Query().Get("maxPrice")); err == nil {
+		query.MaxPrice = maxPrice
 	}
 
 	listings, err, code := models.ReadListings(db, query)
