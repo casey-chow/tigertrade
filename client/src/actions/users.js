@@ -24,16 +24,14 @@ export function loadCurrentUser() {
   };
 }
 
-export function mailSeller(listingId, data) {
+export function mailSeller(listing, data, successMessage) {
   return function (dispatch, getState) {
     dispatch({
       type: 'MAIL_SELLER_REQUEST',
+      listing,
     });
 
-    console.log(`Contacting owner of listing ${listingId} with message ${data.message}`);
-    console.log(data);
-
-    fetch(`${API_ROOT}/listings/${listingId}/contact`, {
+    fetch(`${API_ROOT}/listings/${listing.keyId}/contact`, {
       credentials: 'include',
       method: 'POST',
       headers: {
@@ -45,24 +43,31 @@ export function mailSeller(listingId, data) {
         json,
         type: 'MAIL_SELLER_SUCCESS',
       });
+
+      if (successMessage) {
+        dispatch({
+          type: 'SNACKBAR_SHOW',
+          message: successMessage,
+        });
+      }
     })
     .catch(error => dispatch({
       error,
+      listing,
       type: 'MAIL_SELLER_FAILURE',
     }));
   };
 }
 
-export function mailBuyer(seekId, data) {
+export function mailBuyer(seek, data, successMessage) {
   return function (dispatch, getState) {
     dispatch({
       type: 'MAIL_BUYER_REQUEST',
+      seek,
+      data,
     });
 
-    console.log(`Contacting owner of seek ${seekId} with message ${data.message}`);
-    console.log(data);
-
-    fetch(`${API_ROOT}/seeks/${seekId}/contact`, {
+    fetch(`${API_ROOT}/seeks/${seek.keyId}/contact`, {
       credentials: 'include',
       method: 'POST',
       headers: {
@@ -74,9 +79,18 @@ export function mailBuyer(seekId, data) {
         json,
         type: 'MAIL_BUYER_SUCCESS',
       });
+
+      if (successMessage) {
+        dispatch({
+          type: 'SNACKBAR_SHOW',
+          message: successMessage,
+        });
+      }
     })
     .catch(error => dispatch({
       error,
+      seek,
+      data,
       type: 'MAIL_BUYER_FAILURE',
     }));
   };

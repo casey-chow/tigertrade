@@ -48,7 +48,7 @@ export function loadListing(id = '') {
   };
 }
 
-export function postListing(listing) {
+export function postListing(listing, successMessage) {
   return function (dispatch, getState) {
     dispatch({
       type: 'POST_LISTING_REQUEST',
@@ -67,6 +67,14 @@ export function postListing(listing) {
         json,
         type: 'POST_LISTING_SUCCESS',
       });
+
+      if (successMessage) {
+        dispatch({
+          type: 'SNACKBAR_SHOW',
+          message: successMessage,
+        });
+      }
+
       dispatch(loadListings({ query: { isMine: true }, reset: true }));
     })
     .catch(error => dispatch({
@@ -76,25 +84,35 @@ export function postListing(listing) {
   };
 }
 
-export function deleteListing(listingId) {
+export function deleteListing(listing, successMessage) {
   return function (dispatch, getState) {
     dispatch({
       type: 'DELETE_LISTING_REQUEST',
+      listing,
     });
 
-    fetch(`${API_ROOT}/listings/${listingId}`, {
+    fetch(`${API_ROOT}/listings/${listing.keyId}`, {
       credentials: 'include',
       method: 'DELETE',
     })
-    .then((json) => {
+    .then(() => {
       dispatch({
-        json,
         type: 'DELETE_LISTING_SUCCESS',
+        listing,
       });
+
+      if (successMessage) {
+        dispatch({
+          type: 'SNACKBAR_SHOW',
+          message: successMessage,
+        });
+      }
+
       dispatch(loadListings());
     })
     .catch(error => dispatch({
       error,
+      listing,
       type: 'DELETE_LISTING_FAILURE',
     }));
   };

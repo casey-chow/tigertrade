@@ -2,8 +2,10 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Switch, Route, Redirect, withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
+
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
+import Snackbar from 'material-ui/Snackbar';
 
 import ActionBar from '../components/ActionBar';
 import Welcome from '../components/Welcome';
@@ -17,7 +19,10 @@ import SavedSearches from './SavedSearches';
 import ComposeOverlay from '../components/ComposeOverlay';
 
 import { loadCurrentUser } from '../actions/users';
-import { setComposeState } from '../actions/ui';
+import {
+  setComposeState,
+  hideSnackbar,
+} from '../actions/ui';
 
 const fabStyle = {
   position: 'fixed',
@@ -29,6 +34,10 @@ class App extends Component {
   static propTypes = {
     displayMode: PropTypes.string.isRequired,
     showFAB: PropTypes.bool.isRequired,
+    snackbar: PropTypes.shape({
+      open: PropTypes.bool.isRequired,
+      message: PropTypes.string.isRequired,
+    }).isRequired,
     dispatch: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired,
     user: PropTypes.shape({
@@ -38,6 +47,10 @@ class App extends Component {
 
   componentWillMount() {
     this.props.dispatch(loadCurrentUser());
+  }
+
+  handleSnackbarRequestClose = () => {
+    this.props.dispatch(hideSnackbar());
   }
 
   render() {
@@ -60,6 +73,7 @@ class App extends Component {
             <Route path="/savedsearches" component={SavedSearches} />
           </Switch>
         </NavigationDrawer>
+
         { this.props.showFAB ?
           <FloatingActionButton
             style={fabStyle}
@@ -71,6 +85,13 @@ class App extends Component {
           </FloatingActionButton> :
           <ComposeOverlay />
         }
+
+        <Snackbar
+          open={this.props.snackbar.open}
+          message={this.props.snackbar.message}
+          autoHideDuration={4000}
+          onRequestClose={this.handleSnackbarRequestClose}
+        />
       </div>
     );
   }
@@ -79,6 +100,7 @@ class App extends Component {
 const mapStateToProps = state => ({
   loading: state.currentUserLoading,
   user: state.currentUser,
+  snackbar: state.snackbar,
   showFAB: !state.composeState.show,
   displayMode: state.displayMode,
 });

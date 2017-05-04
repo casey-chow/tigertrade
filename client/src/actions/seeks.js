@@ -47,10 +47,11 @@ export function loadSeek(id = '') {
   };
 }
 
-export function postSeek(seek) {
+export function postSeek(seek, successMessage) {
   return function (dispatch, getState) {
     dispatch({
       type: 'POST_SEEK_REQUEST',
+      seek,
     });
 
     fetch(`${API_ROOT}/seeks`, {
@@ -63,38 +64,58 @@ export function postSeek(seek) {
     })
     .then((json) => {
       dispatch({
-        json,
         type: 'POST_SEEK_SUCCESS',
+        json,
       });
+
+      if (successMessage) {
+        dispatch({
+          type: 'SNACKBAR_SHOW',
+          message: successMessage,
+        });
+      }
+
       dispatch(loadSeeks({ query: { isMine: true }, reset: true }));
     })
     .catch(error => dispatch({
       error,
+      seek,
       type: 'POST_SEEK_FAILURE',
     }));
   };
 }
 
-export function deleteSeek(seekId, refreshQuery) {
+export function deleteSeek(seek, successMessage) {
   return function (dispatch, getState) {
     dispatch({
-      type: 'DELETE_LISTING_REQUEST',
+      type: 'DELETE_SEEK_REQUEST',
+      seek,
     });
 
-    fetch(`${API_ROOT}/seeks/${seekId}`, {
+    fetch(`${API_ROOT}/seeks/${seek.keyId}`, {
       credentials: 'include',
       method: 'DELETE',
     })
     .then((json) => {
       dispatch({
+        type: 'DELETE_SEEK_SUCCESS',
         json,
-        type: 'DELETE_LISTING_SUCCESS',
+        seek,
       });
+
+      if (successMessage) {
+        dispatch({
+          type: 'SNACKBAR_SHOW',
+          message: successMessage,
+        });
+      }
+
       dispatch(loadSeeks());
     })
     .catch(error => dispatch({
       error,
-      type: 'DELETE_LISTING_FAILURE',
+      seek,
+      type: 'DELETE_SEEK_FAILURE',
     }));
   };
 }

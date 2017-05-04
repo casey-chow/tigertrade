@@ -73,12 +73,19 @@ class SeekCard extends React.Component {
   }
 
   handleSubmit = (data) => {
-    this.props.dispatch(mailBuyer(this.props.seek.keyId, data));
+    this.props.dispatch(mailBuyer(
+      this.props.seek,
+      data,
+      `Successfully contaced requestor of ${this.props.seek.title}`,
+    ));
     this.handleContactClose();
   }
 
   handleDelete = () => { // second arg for refreshing
-    this.props.dispatch(deleteSeek(this.props.seek.keyId));
+    this.props.dispatch(deleteSeek(
+      this.props.seek,
+      `Successfully deleted seek ${this.props.seek.title}`,
+    ));
   }
 
   handlePermalinkRedirect = () => {

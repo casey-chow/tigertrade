@@ -57,7 +57,9 @@ class ComposeOverlay extends Component {
     this.props.dispatch(postListing({
       ...data,
       price: data.price ? Math.round(parseFloat(data.price) * 100) : 0,
-    }));
+    },
+    `Successfully created listing ${data.title}`,
+    ));
     this.props.history.push('/listings/mine');
     this.handleRequestClose();
   }
@@ -66,7 +68,9 @@ class ComposeOverlay extends Component {
     this.props.dispatch(postSeek({
       ...data,
       price: data.price ? Math.round(parseFloat(data.price) * 100) : 0,
-    }));
+    },
+    `Successfully created seek ${data.title}`,
+    ));
     this.props.history.push('/seeks/mine');
     this.handleRequestClose();
   }
