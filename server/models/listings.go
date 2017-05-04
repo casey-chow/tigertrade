@@ -37,12 +37,16 @@ type listingQuery struct {
 	Limit            uint64 // maximum number of listings to return
 	Offset           uint64 // offset in search results to send
 	UserID           int
+	MinPrice         int
+	MaxPrice         int
 }
 
 func NewListingQuery() *listingQuery {
 	q := new(listingQuery)
 	q.TruncationLength = defaultTruncationLength
 	q.Limit = defaultNumResults
+	q.MinPrice = -1
+	q.MaxPrice = -1
 	return q
 }
 
@@ -101,6 +105,14 @@ func ReadListings(db *sql.DB, query *listingQuery) ([]*Listing, error, int) {
 
 	if query.UserID == 0 && (query.OnlyStarred || query.OnlyMine) {
 		return nil, errors.New("Unauthenticated user attempted to view profile data"), http.StatusUnauthorized
+	}
+
+	if query.MinPrice >= 0 {
+		stmt = stmt.Where(fmt.Sprintf("listings.price >= %d", query.MinPrice))
+	}
+
+	if query.MaxPrice >= 0 {
+		stmt = stmt.Where(fmt.Sprintf("listings.price <= %d", query.MaxPrice))
 	}
 
 	if query.OnlyStarred {
