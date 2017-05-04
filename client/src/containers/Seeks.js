@@ -66,8 +66,8 @@ class Seeks extends Component {
   }
 
   loadMoreSeeks = () => {
-    const limit = this.props.seeks.length + this.props.seeks.length;
-    this.props.dispatch(loadSeeks({ query: { limit }, concat: true }));
+    const limit = 2 * this.props.seeks.length;
+    this.props.dispatch(loadSeeks({ query: { limit } }));
   }
 
   render() {

@@ -65,7 +65,7 @@ class Listings extends Component {
   }
 
   loadMoreListings = () => {
-    const limit = this.props.listings.length + this.props.listings.length;
+    const limit = 2 * this.props.listings.length;
     this.props.dispatch(loadListings({ query: { limit } }));
   }
 

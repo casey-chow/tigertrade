@@ -51,8 +51,8 @@ class SavedSearches extends Component {
   }
 
   loadMoreSavedSearchs = () => {
-    const offset = this.props.savedSearches.length;
-    this.props.dispatch(loadSavedSearches({ query: { offset }, concat: true }));
+    const limit = 2 * this.props.savedSearches.length;
+    this.props.dispatch(loadSavedSearches({ query: { limit } }));
   }
 
   render() {

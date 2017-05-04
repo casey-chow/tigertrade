@@ -4,7 +4,7 @@ import { setComposeState } from './ui';
 
 import { API_ROOT } from './common';
 
-export function loadListings({ query = {}, reset = false, concat = false }) {
+export function loadListings({ query = {}, reset = false }) {
   return function (dispatch, getState) {
     dispatch({
       query,
@@ -17,7 +17,6 @@ export function loadListings({ query = {}, reset = false, concat = false }) {
       .then(response => response.json())
       .then(json => dispatch({
         json,
-        concat,
         type: 'LOAD_LISTINGS_SUCCESS',
       }))
       .catch(error => dispatch({

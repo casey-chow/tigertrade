@@ -27,11 +27,7 @@ export const seeks = (state = [], action) => {
     case 'LOAD_SEEKS_FAILURE': // TODO: failure state
       return [];
     case 'LOAD_SEEKS_SUCCESS':
-      if (action.concat) {
-        return state.concat(action.json);
-      } else {
-        return action.json;
-      }
+      return action.json;
     case 'LOAD_SEEKS_REQUEST':
     default:
       return state;

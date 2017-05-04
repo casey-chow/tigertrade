@@ -3,7 +3,7 @@ import { stringify } from 'query-string';
 
 import { API_ROOT } from './common';
 
-export function loadSeeks({ query = {}, reset = false, concat = false }) {
+export function loadSeeks({ query = {}, reset = false }) {
   return function (dispatch, getState) {
     dispatch({
       query,
@@ -16,7 +16,6 @@ export function loadSeeks({ query = {}, reset = false, concat = false }) {
       .then(response => response.json())
       .then(json => dispatch({
         json,
-        concat,
         type: 'LOAD_SEEKS_SUCCESS',
       }))
       .catch(error => dispatch({
