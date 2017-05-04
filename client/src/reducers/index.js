@@ -51,6 +51,23 @@ const leftDrawerVisible = (state = true, action) => {
   }
 };
 
+const snackbar = (state = { open: false, message: '' }, action) => {
+  switch (action.type) {
+    case 'SNACKBAR_SHOW':
+      return {
+        open: true,
+        message: action.message,
+      };
+    case 'SNACKBAR_HIDE':
+      return {
+        open: false,
+        message: '',
+      };
+    default:
+      return state;
+  }
+};
+
 const rootReducer = combineReducers({
   ...listingsReducers,
   ...savedSearchesReducers,
@@ -60,6 +77,7 @@ const rootReducer = combineReducers({
   composeShown,
   displayMode,
   leftDrawerVisible,
+  snackbar,
   ui: uiReducer,
   form: formReducer,
 });

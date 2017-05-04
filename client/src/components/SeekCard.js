@@ -80,7 +80,11 @@ class SeekCard extends React.Component {
   }
 
   handleDelete = () => { // second arg for refreshing
-    this.props.dispatch(deleteSeek(this.props.seek.keyId, this.props.query));
+    this.props.dispatch(deleteSeek(
+      this.props.seek,
+      this.props.query,
+      `Successfully deleted seek ${this.props.seek.title}`,
+    ));
   }
 
   handlePermalinkRedirect = () => {

@@ -17,3 +17,16 @@ export function setComposeShown(show = false) {
     show,
   };
 }
+
+export function showSnackbar(message = '') {
+  return {
+    type: 'SNACKBAR_SHOW',
+    message,
+  };
+}
+
+export function hideSnackbar(message = '') {
+  return {
+    type: 'SNACKBAR_HIDE',
+  };
+}
