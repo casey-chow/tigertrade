@@ -2,6 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {
+  withRouter,
+  propTypes as routerPropTypes,
+} from 'react-router-dom';
+
+import {
   Card,
   CardActions,
   CardHeader,
@@ -10,19 +15,23 @@ import {
   CardText,
 } from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
-import EmailIcon from 'material-ui/svg-icons/communication/email';
-import Delete from 'material-ui/svg-icons/action/delete';
-import FavoriteIcon from 'material-ui/svg-icons/action/favorite';
 import Dialog from 'material-ui/Dialog';
 import Chip from 'material-ui/Chip';
 
+import EmailIcon from 'material-ui/svg-icons/communication/email';
+import DeleteIcon from 'material-ui/svg-icons/action/delete';
+import ModeEdit from 'material-ui/svg-icons/editor/mode-edit';
+import FavoriteIcon from 'material-ui/svg-icons/action/favorite';
+import LinkIcon from 'material-ui/svg-icons/content/link';
+
 import ContactSellerForm from './ContactSellerForm';
 import { mailSeller } from './../actions/users';
-import { deleteListing } from './../actions/listings';
+import { editListing, deleteListing } from './../actions/listings';
 
 class ListingCard extends React.Component {
 
   static propTypes = {
+    ...routerPropTypes,
     currentUserId: PropTypes.number,
     dispatch: PropTypes.func.isRequired,
     expanded: PropTypes.bool.isRequired,
@@ -43,7 +52,6 @@ class ListingCard extends React.Component {
   };
 
   static defaultProps = {
-    query: { query: '' },
     currentUserId: -1,
     expanded: false,
     onExpandChange: () => {},
@@ -71,15 +79,23 @@ class ListingCard extends React.Component {
     this.handleContactClose();
   }
 
+  handleEdit = () => {
+    this.props.dispatch(editListing(this.props.listing));
+  }
+
   handleDelete = () => {
     this.props.dispatch(deleteListing(this.props.listing.keyId));
+  }
+
+  handlePermalinkRedirect = () => {
+    this.props.history.push(`/listing/${this.props.listing.keyId}`);
   }
 
   render() {
     const { listing, expanded } = this.props;
 
     const cardStyles = expanded ? {
-      margin: '1.5em -3em',
+      margin: '1.5rem -3rem',
     } : {};
 
     const onShowStyles = { maxHeight: '1000px', transition: 'max-height 0.5s ease-in', overflow: 'hidden' };
@@ -115,9 +131,15 @@ class ListingCard extends React.Component {
             <CardActions>
               { this.props.currentUserId !== listing.userId ?
                 <FlatButton primary icon={<EmailIcon />} label="Contact Seller" onTouchTap={this.handleContactOpen} /> :
-                <FlatButton primary icon={<Delete />} label="Delete" onTouchTap={this.handleDelete} />
+
+              [
+                <FlatButton primary icon={<ModeEdit />} label="Edit" onTouchTap={this.handleEdit} key={0} />,
+                <FlatButton primary icon={<DeleteIcon />} label="Delete" onTouchTap={this.handleDelete} key={1} />,
+              ]
               }
+
               <FlatButton secondary icon={<FavoriteIcon />} label="Save" />
+              <FlatButton icon={<LinkIcon />} label="Permalink" onTouchTap={this.handlePermalinkRedirect} />
             </CardActions>
 
           </div>
@@ -143,4 +165,4 @@ const mapStateToProps = state => ({
   currentUserId: state.currentUser.keyId,
 });
 
-export default connect(mapStateToProps)(ListingCard);
+export default withRouter(connect(mapStateToProps)(ListingCard));

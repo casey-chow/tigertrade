@@ -10,12 +10,14 @@ import Welcome from '../components/Welcome';
 import NavigationDrawer from '../components/NavigationDrawer';
 
 import Listings from './Listings';
+import Listing from './Listing';
 import Seeks from './Seeks';
+import Seek from './Seek';
 import SavedSearches from './SavedSearches';
 import ComposeOverlay from '../components/ComposeOverlay';
 
 import { loadCurrentUser } from '../actions/users';
-import { setComposeShown } from '../actions/ui';
+import { setComposeState } from '../actions/ui';
 
 const fabStyle = {
   position: 'fixed',
@@ -25,6 +27,7 @@ const fabStyle = {
 
 class App extends Component {
   static propTypes = {
+    displayMode: PropTypes.string.isRequired,
     showFAB: PropTypes.bool.isRequired,
     dispatch: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired,
@@ -51,14 +54,18 @@ class App extends Component {
               <Redirect push to="/listings" />
             </Route>
             <Route path="/listings/:type?" component={Listings} />
+            <Route path="/listing/:id" component={Listing} />
             <Route path="/seeks/:type?" component={Seeks} />
+            <Route path="/seek/:id" component={Seek} />
             <Route path="/savedsearches" component={SavedSearches} />
           </Switch>
         </NavigationDrawer>
         { this.props.showFAB ?
           <FloatingActionButton
             style={fabStyle}
-            onTouchTap={() => this.props.dispatch(setComposeShown(true))}
+            onTouchTap={
+              () => this.props.dispatch(setComposeState(true, false, this.props.displayMode))
+            }
           >
             <ContentAdd />
           </FloatingActionButton> :
@@ -72,7 +79,8 @@ class App extends Component {
 const mapStateToProps = state => ({
   loading: state.currentUserLoading,
   user: state.currentUser,
-  showFAB: !state.composeShown,
+  showFAB: !state.composeState.show,
+  displayMode: state.displayMode,
 });
 
 export default withRouter(connect(mapStateToProps)(App));
