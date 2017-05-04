@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
+import {
+  withRouter,
+  routerPropTypes,
+} from 'react-router-dom';
 
 import CircularProgress from 'material-ui/CircularProgress';
 
@@ -11,22 +14,19 @@ import { loadSavedSearches } from '../actions/savedSearches';
 
 class SavedSearches extends Component {
   static propTypes = {
+    ...routerPropTypes,
     savedSearchesLoading: PropTypes.bool.isRequired,
     savedSearches: PropTypes.arrayOf(PropTypes.object).isRequired,
     dispatch: PropTypes.func.isRequired,
   };
-
-  state = {
-    initialLoad: true,
-  }
 
   componentWillMount() {
     this.props.dispatch(loadSavedSearches());
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!nextProps.savedSearchesLoading) {
-      this.setState({ initialLoad: false });
+    if (this.props.match.params.type !== nextProps.match.params.type) {
+      this.props.dispatch(loadSavedSearches());
     }
   }
 
@@ -49,16 +49,15 @@ class SavedSearches extends Component {
   }
 
   render() {
-    if (this.props.savedSearchesLoading && this.state.initialLoad) {
-      return (
-        <div style={{ alignItems: 'center', justifyContent: 'center', display: 'flex' }}>
-          <CircularProgress size={80} thickness={8} />
-        </div>
-      );
-    }
-
     return (
-      <SavedSearchesList savedSearches={this.props.savedSearches} />
+      <div>
+        <SavedSearchesList savedSearches={this.props.savedSearches} />
+        { this.props.savedSearchesLoading &&
+          <div style={{ alignItems: 'center', justifyContent: 'center', display: 'flex' }}>
+            <CircularProgress size={80} thickness={8} />
+          </div>
+        }
+      </div>
     );
   }
 }
