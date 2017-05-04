@@ -3,12 +3,11 @@ import { stringify } from 'query-string';
 
 import { API_ROOT } from './common';
 
-export function loadSeeks({ query = {}, reset = false, append = false }) {
+export function loadSeeks({ query = {}, reset = false, concat = false }) {
   return function (dispatch, getState) {
     dispatch({
       query,
       reset,
-      append,
       type: 'LOAD_SEEKS_REQUEST',
     });
     fetch(`${API_ROOT}/seeks?${stringify(query)}`, {
@@ -17,6 +16,7 @@ export function loadSeeks({ query = {}, reset = false, append = false }) {
       .then(response => response.json())
       .then(json => dispatch({
         json,
+        concat,
         type: 'LOAD_SEEKS_SUCCESS',
       }))
       .catch(error => dispatch({

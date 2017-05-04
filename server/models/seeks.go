@@ -65,6 +65,8 @@ func ReadSeeks(db *sql.DB, query *seekQuery) ([]*Seek, error, int) {
 		stmt = stmt.Where(sq.Eq{"user_id": query.UserID})
 	}
 
+	stmt = stmt.Offset(query.Offset)
+
 	stmt = stmt.OrderBy("seeks.creation_date DESC")
 
 	if query.Limit <= maxNumResults {
@@ -72,8 +74,6 @@ func ReadSeeks(db *sql.DB, query *seekQuery) ([]*Seek, error, int) {
 	} else {
 		stmt = stmt.Limit(maxNumResults)
 	}
-
-	stmt = stmt.Offset(query.Offset)
 
 	// Query db
 	rows, err := stmt.RunWith(db).Query()

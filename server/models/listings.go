@@ -111,14 +111,14 @@ func ReadListings(db *sql.DB, query *listingQuery) ([]*Listing, error, int) {
 		stmt = stmt.Where(sq.Eq{"user_id": query.UserID})
 	}
 
+	stmt = stmt.Offset(query.Offset)
+
 	stmt = stmt.OrderBy("listings.creation_date DESC")
 	if query.Limit <= maxNumResults {
 		stmt = stmt.Limit(query.Limit)
 	} else {
 		stmt = stmt.Limit(maxNumResults)
 	}
-
-	stmt = stmt.Offset(query.Offset)
 
 	queryStr, _, _ := stmt.ToSql()
 	log.WithField("query", queryStr).Info("query!")

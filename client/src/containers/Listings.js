@@ -6,6 +6,8 @@ import {
   propTypes as routerPropTypes,
 } from 'react-router-dom';
 
+import Waypoint from 'react-waypoint';
+
 import CircularProgress from 'material-ui/CircularProgress';
 import { parse } from 'query-string';
 
@@ -37,7 +39,6 @@ class Listings extends Component {
     if (this.props.listingsLoading !== nextProps.listingsLoading) {
       return true;
     }
-
     if (this.props.listings.length !== nextProps.listings.length) {
       return true;
     }
@@ -63,10 +64,16 @@ class Listings extends Component {
     return query;
   }
 
+  loadMoreListings = () => {
+    const offset = this.props.listings.length;
+    this.props.dispatch(loadListings({ query: { offset }, concat: true }));
+  }
+
   render() {
     return (
       <div>
         <ListingsList listings={this.props.listings} />
+        <Waypoint onEnter={this.loadMoreListings} />
         { this.props.listingsLoading &&
           <div style={{ alignItems: 'center', justifyContent: 'center', display: 'flex' }}>
             <CircularProgress size={80} thickness={8} />
