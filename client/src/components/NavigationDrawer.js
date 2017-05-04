@@ -43,7 +43,6 @@ class NavigationDrawer extends Component {
       backgroundColor: 'white',
     },
     content: {
-      paddingTop: '2rem',
       paddingBottom: '2rem',
     },
   };
