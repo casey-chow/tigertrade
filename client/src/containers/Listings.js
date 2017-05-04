@@ -73,7 +73,7 @@ class Listings extends Component {
     return (
       <div>
         <ListingsList listings={this.props.listings} />
-        <Waypoint onEnter={this.loadMoreListings} />
+        <Waypoint topOffset="70%" onEnter={this.loadMoreListings} />
         { this.props.listingsLoading &&
           <div style={{ alignItems: 'center', justifyContent: 'center', display: 'flex' }}>
             <CircularProgress size={80} thickness={8} />

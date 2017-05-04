@@ -6,6 +6,8 @@ import {
   propTypes as routerPropTypes,
 } from 'react-router-dom';
 
+import Waypoint from 'react-waypoint';
+
 import CircularProgress from 'material-ui/CircularProgress';
 import { parse } from 'query-string';
 
@@ -63,10 +65,16 @@ class Seeks extends Component {
     return query;
   }
 
+  loadMoreSeeks = () => {
+    const offset = this.props.seeks.length;
+    this.props.dispatch(loadSeeks({ query: { offset }, concat: true }));
+  }
+
   render() {
     return (
       <div>
         <SeeksList seeks={this.props.seeks} />
+        <Waypoint topOffset="70%" onEnter={this.loadMoreSeeks} />
         { this.props.seeksLoading &&
           <div style={{ alignItems: 'center', justifyContent: 'center', display: 'flex' }}>
             <CircularProgress size={80} thickness={8} />
