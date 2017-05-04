@@ -20,12 +20,13 @@ import Chip from 'material-ui/Chip';
 
 import EmailIcon from 'material-ui/svg-icons/communication/email';
 import DeleteIcon from 'material-ui/svg-icons/action/delete';
+import ModeEdit from 'material-ui/svg-icons/editor/mode-edit';
 import FavoriteIcon from 'material-ui/svg-icons/action/favorite';
 import LinkIcon from 'material-ui/svg-icons/content/link';
 
 import ContactSellerForm from './ContactSellerForm';
 import { mailSeller } from './../actions/users';
-import { deleteListing } from './../actions/listings';
+import { editListing, deleteListing } from './../actions/listings';
 
 class ListingCard extends React.Component {
 
@@ -85,6 +86,10 @@ class ListingCard extends React.Component {
     this.handleContactClose();
   }
 
+  handleEdit = () => {
+    this.props.dispatch(editListing(this.props.listing, this.props.query));
+  }
+
   handleDelete = () => {
     this.props.dispatch(deleteListing(
       this.props.listing,
@@ -96,6 +101,7 @@ class ListingCard extends React.Component {
   handlePermalinkRedirect = () => {
     this.props.history.push(`/listing/${this.props.listing.keyId}`);
   }
+
 
   render() {
     const { listing, expanded } = this.props;
@@ -137,8 +143,13 @@ class ListingCard extends React.Component {
             <CardActions>
               { this.props.currentUserId !== listing.userId ?
                 <FlatButton primary icon={<EmailIcon />} label="Contact Seller" onTouchTap={this.handleContactOpen} /> :
-                <FlatButton primary icon={<DeleteIcon />} label="Delete" onTouchTap={this.handleDelete} />
+
+              [
+                <FlatButton primary icon={<ModeEdit />} label="Edit" onTouchTap={this.handleEdit} key={0} />,
+                <FlatButton primary icon={<DeleteIcon />} label="Delete" onTouchTap={this.handleDelete} key={1} />,
+              ]
               }
+
               <FlatButton secondary icon={<FavoriteIcon />} label="Save" />
               <FlatButton icon={<LinkIcon />} label="Permalink" onTouchTap={this.handlePermalinkRedirect} />
             </CardActions>

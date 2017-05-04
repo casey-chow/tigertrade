@@ -21,7 +21,7 @@ import ComposeOverlay from '../components/ComposeOverlay';
 
 import { loadCurrentUser } from '../actions/users';
 import {
-  setComposeShown,
+  setComposeState,
   hideSnackbar,
 } from '../actions/ui';
 
@@ -33,6 +33,7 @@ const fabStyle = {
 
 class App extends Component {
   static propTypes = {
+    displayMode: PropTypes.string.isRequired,
     showFAB: PropTypes.bool.isRequired,
     snackbar: PropTypes.shape({
       open: PropTypes.bool.isRequired,
@@ -78,7 +79,9 @@ class App extends Component {
         { this.props.showFAB ?
           <FloatingActionButton
             style={fabStyle}
-            onTouchTap={() => this.props.dispatch(setComposeShown(true))}
+            onTouchTap={
+              () => this.props.dispatch(setComposeState(true, false, this.props.displayMode))
+            }
           >
             <ContentAdd />
           </FloatingActionButton> :
@@ -99,8 +102,9 @@ class App extends Component {
 const mapStateToProps = state => ({
   loading: state.currentUserLoading,
   user: state.currentUser,
-  showFAB: !state.composeShown,
   snackbar: state.snackbar,
+  showFAB: !state.composeState.show,
+  displayMode: state.displayMode,
 });
 
 export default withRouter(connect(mapStateToProps)(App));

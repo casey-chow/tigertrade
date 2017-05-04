@@ -11,9 +11,9 @@ import {
 
 import {
   setDisplayMode,
-  setComposeShown,
+  setComposeState,
 } from '../actions/ui';
-import { postListing, loadListings } from '../actions/listings';
+import { postListing, loadListings, updateListing } from '../actions/listings';
 import { postSeek, loadSeeks } from '../actions/seeks';
 import ComposeForm from '../components/ComposeForm';
 import SeekComposeForm from '../components/SeekComposeForm';
@@ -42,15 +42,22 @@ class ComposeOverlay extends Component {
       loggedIn: PropTypes.bool.isRequired,
     }).isRequired,
     currentUserLoading: PropTypes.bool.isRequired,
+    isEdit: PropTypes.bool.isRequired,
     mode: PropTypes.string.isRequired,
+    // eslint-disable-next-line react/forbid-prop-types
+    refreshQuery: PropTypes.object,
   };
+
+  static defaultProps = {
+    refreshQuery: { query: '' },
+  }
 
   state = {
     mode: this.props.mode,
     expanded: true,
   }
 
-  handleRequestClose = event => this.props.dispatch(setComposeShown(false));
+  handleRequestClose = event => this.props.dispatch(setComposeState(false))
 
   handleSubmitListing = (data) => {
     this.props.dispatch(postListing({
@@ -76,6 +83,14 @@ class ComposeOverlay extends Component {
     this.handleRequestClose();
   }
 
+  handleEditListing = (data) => {
+    this.props.dispatch(updateListing({
+      ...data,
+      price: data.price ? Math.round(parseFloat(data.price) * 100) : 0,
+    }, this.props.refreshQuery));
+    this.handleRequestClose();
+  }
+
   handleToggle = (event, isInputChecked) => {
     this.props.dispatch(setDisplayMode(isInputChecked ? 'seeks' : 'listings'));
   }
@@ -92,7 +107,7 @@ class ComposeOverlay extends Component {
     return (
       <div style={overlayStyle}>
         <Card expanded={this.state.expanded} onExpandChange={this.handleExpandChange}>
-          <CardHeader title="Compose" actAsExpander>
+          <CardHeader title={this.props.isEdit ? 'Edit' : 'Compose'} actAsExpander>
             <IconButton
               onTouchTap={this.handleRequestClose}
               style={{ float: 'right', marginTop: '-15px', marginRight: '-15px' }}
@@ -102,8 +117,14 @@ class ComposeOverlay extends Component {
           </CardHeader>
           <CardText style={this.state.expanded ? showStyle : hideStyle}>
             { (this.state.mode === 'listings') ?
-              <ComposeForm onSubmit={this.handleSubmitListing} /> :
-              <SeekComposeForm onSubmit={this.handleSubmitSeek} />
+              <ComposeForm
+                onSubmit={this.props.isEdit ? this.handleEditListing : this.handleSubmitListing}
+                initialValues={
+                  this.props.isEdit ?
+                  { ...this.props.listing, price: this.props.listing.price / 100 } : {}
+                }
+              />
+              : <SeekComposeForm onSubmit={this.handleSubmitSeek} />
             }
           </CardText>
         </Card>
@@ -115,8 +136,12 @@ class ComposeOverlay extends Component {
 const mapStateToProps = state => ({
   user: state.currentUser,
   form: state.form,
-  mode: state.displayMode,
+  mode: state.composeState.mode,
   currentUserLoading: state.currentUserLoading,
+  isEdit: state.composeState.isEdit,
+  listing: state.composeState.listing,
+  seek: state.composeState.seek,
+  refreshQuery: state.composeState.refreshQuery,
 });
 
 export default withRouter(connect(mapStateToProps)(ComposeOverlay));
