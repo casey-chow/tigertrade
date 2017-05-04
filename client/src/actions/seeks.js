@@ -45,7 +45,7 @@ export function postSeek(seek) {
         json,
         type: 'POST_SEEK_SUCCESS',
       });
-      dispatch(loadSeeks({ reset: true }));
+      dispatch(loadSeeks({ query: { isMine: true }, reset: true }));
     })
     .catch(error => dispatch({
       error,

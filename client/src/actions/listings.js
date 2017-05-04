@@ -45,7 +45,7 @@ export function postListing(listing) {
         json,
         type: 'POST_LISTING_SUCCESS',
       });
-      dispatch(loadListings({ reset: true }));
+      dispatch(loadListings({ query: { isMine: true }, reset: true }));
     })
     .catch(error => dispatch({
       error,
