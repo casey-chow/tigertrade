@@ -114,9 +114,12 @@ class ComposeOverlay extends Component {
             { (this.state.mode === 'listings') ?
               <ComposeForm
                 onSubmit={this.props.isEdit ? this.handleEditListing : this.handleSubmitListing}
-                initialValues={this.props.isEdit && this.props.listing}
+                initialValues={
+                  this.props.isEdit ?
+                  { ...this.props.listing, price: this.props.listing.price / 100 } : {}
+                }
               /> :
-              <SeekComposeForm onSubmit={this.handleSubmitSeek} />
+                  <SeekComposeForm onSubmit={this.handleSubmitSeek} />
             }
           </CardText>
         </Card>
