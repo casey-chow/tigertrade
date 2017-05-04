@@ -5,26 +5,28 @@ import (
 	"errors"
 	"fmt"
 	sq "github.com/Masterminds/squirrel"
+	log "github.com/Sirupsen/logrus"
 	"github.com/guregu/null"
+	"github.com/lib/pq"
 	"net/http"
 	"strings"
 )
 
 // Returned by a function returning only one listing (usually by ID)
 type Listing struct {
-	KeyID                int         `json:"keyId"`
-	CreationDate         null.Time   `json:"creationDate"`
-	LastModificationDate null.Time   `json:"lastModificationDate"`
-	Title                string      `json:"title"`
-	Description          null.String `json:"description"`
-	UserID               int         `json:"userId"`
-	Username             null.String `json:"username"`
-	Price                null.Int    `json:"price"`
-	Status               null.String `json:"status"`
-	ExpirationDate       null.Time   `json:"expirationDate"`
-	Thumbnail            null.String `json:"thumbnail"`
-	Photos               []string    `json:"photos"`
-	IsStarred            bool        `json:"isStarred"`
+	KeyID                int            `json:"keyId"`
+	CreationDate         null.Time      `json:"creationDate"`
+	LastModificationDate null.Time      `json:"lastModificationDate"`
+	Title                string         `json:"title"`
+	Description          null.String    `json:"description"`
+	UserID               int            `json:"userId"`
+	Username             null.String    `json:"username"`
+	Price                null.Int       `json:"price"`
+	Status               null.String    `json:"status"`
+	ExpirationDate       null.Time      `json:"expirationDate"`
+	Thumbnail            null.String    `json:"thumbnail"`
+	Photos               pq.StringArray `json:"photos"`
+	IsStarred            bool           `json:"isStarred"`
 }
 
 type listingQuery struct {
@@ -73,11 +75,21 @@ func isStarredBy(id int) string {
 func ReadListings(db *sql.DB, query *listingQuery) ([]*Listing, error, int) {
 	// Create listings statement
 	stmt := psql.
-		Select("listings.key_id", "listings.creation_date",
-			"listings.last_modification_date", "title",
-			fmt.Sprintf("left(description, %d)", query.TruncationLength), "user_id",
-			"users.net_id", "price", "status", "expiration_date", "thumbnails.url",
-			isStarredBy(query.UserID)).
+		Select(
+			"listings.key_id",
+			"listings.creation_date",
+			"listings.last_modification_date",
+			"title",
+			fmt.Sprintf("left(description, %d)", query.TruncationLength),
+			"user_id",
+			"users.net_id",
+			"price",
+			"status",
+			"expiration_date",
+			"thumbnails.url",
+			isStarredBy(query.UserID),
+			"photos",
+		).
 		From("listings").
 		Where("listings.is_active=true").
 		LeftJoin("users ON listings.user_id = users.key_id").
@@ -106,6 +118,9 @@ func ReadListings(db *sql.DB, query *listingQuery) ([]*Listing, error, int) {
 		stmt = stmt.Limit(maxNumResults)
 	}
 
+	queryStr, _, _ := stmt.ToSql()
+	log.WithField("query", queryStr).Info("query!")
+
 	// Query db
 	rows, err := stmt.RunWith(db).Query()
 	if err != nil {
@@ -117,9 +132,21 @@ func ReadListings(db *sql.DB, query *listingQuery) ([]*Listing, error, int) {
 	listings := make([]*Listing, 0)
 	for rows.Next() {
 		l := new(Listing)
-		err := rows.Scan(&l.KeyID, &l.CreationDate, &l.LastModificationDate,
-			&l.Title, &l.Description, &l.UserID, &l.Username, &l.Price, &l.Status,
-			&l.ExpirationDate, &l.Thumbnail, &l.IsStarred)
+		err := rows.Scan(
+			&l.KeyID,
+			&l.CreationDate,
+			&l.LastModificationDate,
+			&l.Title,
+			&l.Description,
+			&l.UserID,
+			&l.Username,
+			&l.Price,
+			&l.Status,
+			&l.ExpirationDate,
+			&l.Thumbnail,
+			&l.IsStarred,
+			&l.Photos,
+		)
 		if err != nil {
 			return nil, err, http.StatusInternalServerError
 		}
@@ -140,9 +167,20 @@ func ReadListing(db *sql.DB, id string) (Listing, error, int) {
 
 	// Create listing query
 	query := psql.
-		Select("listings.key_id", "listings.creation_date", "listings.last_modification_date",
-			"title", "description", "user_id", "users.net_id", "price", "status", "expiration_date",
-			"thumbnails.url").
+		Select(
+			"listings.key_id",
+			"listings.creation_date",
+			"listings.last_modification_date",
+			"title",
+			"description",
+			"user_id",
+			"users.net_id",
+			"price",
+			"status",
+			"expiration_date",
+			"thumbnails.url",
+			"photos",
+		).
 		From("listings").
 		Where("listings.is_active=true").
 		LeftJoin("users ON listings.user_id = users.key_id").
@@ -158,10 +196,20 @@ func ReadListing(db *sql.DB, id string) (Listing, error, int) {
 
 	// Populate listing struct
 	rows.Next()
-	err = rows.Scan(&listing.KeyID, &listing.CreationDate,
-		&listing.LastModificationDate, &listing.Title, &listing.Description,
-		&listing.UserID, &listing.Username, &listing.Price, &listing.Status,
-		&listing.ExpirationDate, &listing.Thumbnail)
+	err = rows.Scan(
+		&listing.KeyID,
+		&listing.CreationDate,
+		&listing.LastModificationDate,
+		&listing.Title,
+		&listing.Description,
+		&listing.UserID,
+		&listing.Username,
+		&listing.Price,
+		&listing.Status,
+		&listing.ExpirationDate,
+		&listing.Thumbnail,
+		&listing.Photos,
+	)
 	if err == sql.ErrNoRows {
 		return listing, err, http.StatusNotFound
 	} else if err != nil {
@@ -179,9 +227,9 @@ func CreateListing(db *sql.DB, listing Listing, userId int) (Listing, error, int
 	// Insert listing
 	stmt := psql.Insert("listings").
 		Columns("title", "description", "user_id", "price", "status",
-			"expiration_date", "thumbnail_id").
+			"expiration_date", "thumbnail_id", "photos").
 		Values(listing.Title, listing.Description, userId, listing.Price,
-			listing.Status, listing.ExpirationDate, listing.Thumbnail).
+			listing.Status, listing.ExpirationDate, listing.Thumbnail, listing.Photos).
 		Suffix("RETURNING key_id, creation_date")
 
 	// Add listing to database, retrieve the one we just added (now with a key_id)
@@ -214,7 +262,8 @@ func UpdateListing(db *sql.DB, id string, listing Listing, userId int) (error, i
 			"price":           listing.Price,
 			"status":          listing.Status,
 			"expiration_date": listing.ExpirationDate,
-			"thumbnail_id":    listing.Thumbnail}).
+			"thumbnail_id":    listing.Thumbnail,
+			"photos":          listing.Photos}).
 		Where(sq.Eq{"listings.key_id": id,
 			"listings.user_id": userId})
 
