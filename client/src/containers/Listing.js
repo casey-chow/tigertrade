@@ -6,9 +6,10 @@ import {
   propTypes as routerPropTypes,
 } from 'react-router-dom';
 
+import { Container, Row, Col } from 'react-grid-system';
 import CircularProgress from 'material-ui/CircularProgress';
 
-import ListingsList from '../components/ListingsList';
+import ListingCard from '../components/ListingCard';
 
 import { loadListing } from './../actions/listings';
 
@@ -16,8 +17,9 @@ class Listing extends Component {
   static propTypes = {
     ...routerPropTypes,
     dispatch: PropTypes.func.isRequired,
-    listingsLoading: PropTypes.bool.isRequired,
-    listings: PropTypes.arrayOf(PropTypes.object).isRequired,
+    loading: PropTypes.bool.isRequired,
+    // eslint-disable-next-line react/forbid-prop-types
+    listings: PropTypes.object.isRequired,
   };
 
   componentWillMount() {
@@ -25,24 +27,18 @@ class Listing extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.match.params.type !== nextProps.match.params.type) {
+    if (this.props.match.params.id !== nextProps.match.params.id) {
       this.props.dispatch(loadListing(nextProps.match.params.id));
     }
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (this.props.listingsLoading !== nextProps.listingsLoading) {
+    if (this.props.loading !== nextProps.loading) {
       return true;
     }
 
-    if (this.props.listings.length !== nextProps.listings.length) {
+    if (this.props.listing.keyId !== nextProps.listing.keyId) {
       return true;
-    }
-
-    for (let i = 0; i < this.props.listings.length; i += 1) {
-      if (this.props.listings[i].keyId !== nextProps.listings[i].keyId) {
-        return true;
-      }
     }
 
     return false;
@@ -50,21 +46,26 @@ class Listing extends Component {
 
   render() {
     return (
-      <div>
-        <ListingsList listings={this.props.listings} />
-        { this.props.listingsLoading &&
-          <div style={{ alignItems: 'center', justifyContent: 'center', display: 'flex' }}>
-            <CircularProgress size={80} thickness={8} />
-          </div>
-        }
-      </div>
+      <Container className="ListingsList">
+        <Row>
+          <Col xs={1} />
+          <Col xs={10} style={{ marginTop: '-1rem' }}>
+            <ListingCard expanded listing={this.props.listing} />
+            { this.props.listingsLoading &&
+              <div style={{ alignItems: 'center', justifyContent: 'center', display: 'flex' }}>
+                <CircularProgress size={80} thickness={8} />
+              </div>
+            }
+          </Col>
+        </Row>
+      </Container>
     );
   }
 }
 
 const mapStateToProps = state => ({
-  listingsLoading: state.listingsLoading,
-  listings: state.listings,
+  loading: state.listingLoading,
+  listing: state.listing,
 });
 
 export default withRouter(connect(mapStateToProps)(Listing));

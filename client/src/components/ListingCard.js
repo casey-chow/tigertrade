@@ -93,7 +93,7 @@ class ListingCard extends React.Component {
     const { listing, expanded } = this.props;
 
     const cardStyles = expanded ? {
-      margin: '1.5em -3em',
+      margin: '1.5rem -3rem',
     } : {};
 
     const onShowStyles = { maxHeight: '1000px', transition: 'max-height 0.5s ease-in', overflow: 'hidden' };

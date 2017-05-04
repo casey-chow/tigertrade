@@ -2,6 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {
+  withRouter,
+  propTypes as routerPropTypes,
+} from 'react-router-dom';
+
+import {
   Card,
   CardActions,
   CardHeader,
@@ -9,9 +14,12 @@ import {
   CardText,
 } from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
+
 import EmailIcon from 'material-ui/svg-icons/communication/email';
-import Delete from 'material-ui/svg-icons/action/delete';
+import DeleteIcon from 'material-ui/svg-icons/action/delete';
 import FavoriteIcon from 'material-ui/svg-icons/action/favorite';
+import LinkIcon from 'material-ui/svg-icons/content/link';
+
 import Dialog from 'material-ui/Dialog';
 import Chip from 'material-ui/Chip';
 
@@ -22,6 +30,7 @@ import { deleteSeek } from './../actions/seeks';
 class SeekCard extends React.Component {
 
   static propTypes = {
+    ...routerPropTypes,
     currentUserId: PropTypes.number,
     dispatch: PropTypes.func.isRequired,
     expanded: PropTypes.bool.isRequired,
@@ -74,6 +83,10 @@ class SeekCard extends React.Component {
     this.props.dispatch(deleteSeek(this.props.seek.keyId, this.props.query));
   }
 
+  handlePermalinkRedirect = () => {
+    this.props.history.push(`/seek/${this.props.seek.keyId}`);
+  }
+
   render() {
     const { seek, expanded } = this.props;
 
@@ -107,9 +120,10 @@ class SeekCard extends React.Component {
             <CardActions>
               { this.props.currentUserId !== seek.userId ?
                 <FlatButton primary icon={<EmailIcon />} label="Contact Buyer" onTouchTap={this.handleContactOpen} /> :
-                <FlatButton primary icon={<Delete />} label="Delete" onTouchTap={this.handleDelete} />
+                <FlatButton primary icon={<DeleteIcon />} label="Delete" onTouchTap={this.handleDelete} />
               }
               <FlatButton secondary icon={<FavoriteIcon />} label="Notify Me" />
+              <FlatButton icon={<LinkIcon />} label="Permalink" onTouchTap={this.handlePermalinkRedirect} />
             </CardActions>
 
           </div>
@@ -136,4 +150,4 @@ const mapStateToProps = state => ({
   query: state.currentQuery,
 });
 
-export default connect(mapStateToProps)(SeekCard);
+export default withRouter(connect(mapStateToProps)(SeekCard));

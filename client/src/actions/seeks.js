@@ -28,19 +28,19 @@ export function loadSeek(id = '') {
   return function (dispatch, getState) {
     dispatch({
       query: {},
-      type: 'LOAD_SEEKS_REQUEST',
+      type: 'LOAD_SEEK_REQUEST',
     });
     fetch(`${API_ROOT}/seeks/${id}`, {
       credentials: 'include',
     })
       .then(response => response.json())
       .then(json => dispatch({
-        json: [json],
-        type: 'LOAD_SEEKS_SUCCESS',
+        json,
+        type: 'LOAD_SEEK_SUCCESS',
       }))
       .catch(error => dispatch({
         error,
-        type: 'LOAD_SEEKS_FAILURE',
+        type: 'LOAD_SEEK_FAILURE',
       }));
   };
 }
