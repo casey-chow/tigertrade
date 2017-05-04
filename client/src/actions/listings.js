@@ -1,5 +1,6 @@
 import fetch from 'isomorphic-fetch';
 import { stringify } from 'query-string';
+import { setComposeState } from './ui';
 
 import { API_ROOT } from './common';
 
@@ -72,6 +73,38 @@ export function deleteListing(listingId, refreshQuery) {
     .catch(error => dispatch({
       error,
       type: 'DELETE_LISTING_FAILURE',
+    }));
+  };
+}
+
+export function editListing(listing, refreshQuery) {
+  return setComposeState(true, true, 'listings', listing, undefined, refreshQuery);
+}
+
+export function updateListing(listing, refreshQuery) {
+  return function (dispatch, getState) {
+    dispatch({
+      type: 'UPDATE_LISTING_REQUEST',
+    });
+
+    fetch(`${API_ROOT}/listings/${listing.keyId}`, {
+      credentials: 'include',
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(listing),
+    })
+    .then((json) => {
+      dispatch({
+        json,
+        type: 'UPDATE_LISTING_SUCCESS',
+      });
+      dispatch(loadListings(refreshQuery));
+    })
+    .catch(error => dispatch({
+      error,
+      type: 'UPDATE_LISTING_FAILURE',
     }));
   };
 }

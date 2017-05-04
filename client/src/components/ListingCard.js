@@ -11,14 +11,14 @@ import {
 } from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
 import EmailIcon from 'material-ui/svg-icons/communication/email';
-import Delete from 'material-ui/svg-icons/action/delete';
+import ModeEdit from 'material-ui/svg-icons/editor/mode-edit';
 import FavoriteIcon from 'material-ui/svg-icons/action/favorite';
 import Dialog from 'material-ui/Dialog';
 import Chip from 'material-ui/Chip';
 
 import ContactSellerForm from './ContactSellerForm';
 import { mailSeller } from './../actions/users';
-import { deleteListing } from './../actions/listings';
+import { editListing } from './../actions/listings';
 
 class ListingCard extends React.Component {
 
@@ -73,9 +73,13 @@ class ListingCard extends React.Component {
     this.handleContactClose();
   }
 
-  handleDelete = () => {
-    this.props.dispatch(deleteListing(this.props.listing.keyId, this.props.query));
+  handleEdit = () => {
+    this.props.dispatch(editListing(this.props.listing, this.props.query));
   }
+
+  // handleDelete = () => {
+  //   this.props.dispatch(deleteListing(this.props.listing.keyId, this.props.query));
+  // }
 
   render() {
     const { listing, expanded } = this.props;
@@ -117,7 +121,7 @@ class ListingCard extends React.Component {
             <CardActions>
               { this.props.currentUserId !== listing.userId ?
                 <FlatButton primary icon={<EmailIcon />} label="Contact Seller" onTouchTap={this.handleContactOpen} /> :
-                <FlatButton primary icon={<Delete />} label="Delete" onTouchTap={this.handleDelete} />
+                <FlatButton primary icon={<ModeEdit />} label="Edit" onTouchTap={this.handleEdit} />
               }
               <FlatButton secondary icon={<FavoriteIcon />} label="Save" />
             </CardActions>

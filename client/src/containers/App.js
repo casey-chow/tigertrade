@@ -26,6 +26,7 @@ const fabStyle = {
 
 class App extends Component {
   static propTypes = {
+    displayMode: PropTypes.string.isRequired,
     showFAB: PropTypes.bool.isRequired,
     dispatch: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired,
@@ -60,7 +61,9 @@ class App extends Component {
         { this.props.showFAB ?
           <FloatingActionButton
             style={fabStyle}
-            onTouchTap={() => this.props.dispatch(setComposeState(true))}
+            onTouchTap={
+              () => this.props.dispatch(setComposeState(true, false, this.props.displayMode))
+            }
           >
             <ContentAdd />
           </FloatingActionButton> :
@@ -75,6 +78,7 @@ const mapStateToProps = state => ({
   loading: state.currentUserLoading,
   user: state.currentUser,
   showFAB: !state.composeState.show,
+  displayMode: state.displayMode,
 });
 
 export default withRouter(connect(mapStateToProps)(App));
