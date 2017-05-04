@@ -27,8 +27,9 @@ type Seek struct {
 type seekQuery struct {
 	Query            string
 	OnlyMine         bool
-	TruncationLength int
-	Limit            uint64
+	TruncationLength int    // number of characters to truncate listing descriptions to
+	Limit            uint64 // maximum number of listings to return
+	Offset           uint64 // offset in search results to send
 	UserID           int
 }
 
@@ -36,6 +37,7 @@ func NewSeekQuery() *seekQuery {
 	q := new(seekQuery)
 	q.TruncationLength = defaultTruncationLength
 	q.Limit = defaultNumResults
+	q.Offset = 0
 	return q
 }
 
@@ -71,6 +73,8 @@ func ReadSeeks(db *sql.DB, query *seekQuery) ([]*Seek, error, int) {
 	} else {
 		stmt = stmt.Limit(maxNumResults)
 	}
+
+	stmt = stmt.Offset(query.Offset)
 
 	// Query db
 	rows, err := stmt.RunWith(db).Query()

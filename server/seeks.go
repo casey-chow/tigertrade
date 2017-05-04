@@ -21,6 +21,10 @@ func ReadSeeks(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	}
 
 	query.OnlyMine, _ = strconv.ParseBool(r.URL.Query().Get("isMine"))
+	offset, err := strconv.ParseUint(r.URL.Query().Get("offset"), 10, 64)
+	if err == nil {
+		query.Offset = offset
+	}
 
 	// Get User ID if we happen to be logged in
 	if user, err := models.GetUser(db, getUsername(r)); err == nil {
