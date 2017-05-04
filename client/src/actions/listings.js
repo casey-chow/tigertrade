@@ -107,8 +107,7 @@ export function deleteListing(listing, successMessage) {
           message: successMessage,
         });
       }
-
-      dispatch(loadListings());
+      dispatch(loadListings({}));
     })
     .catch(error => dispatch({
       error,
@@ -141,7 +140,7 @@ export function updateListing(listing) {
         json,
         type: 'UPDATE_LISTING_SUCCESS',
       });
-      dispatch(loadListings());
+      dispatch(loadListings({}));
     })
     .catch(error => dispatch({
       error,

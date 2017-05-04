@@ -110,7 +110,7 @@ export function deleteSeek(seek, successMessage) {
         });
       }
 
-      dispatch(loadSeeks());
+      dispatch(loadSeeks({}));
     })
     .catch(error => dispatch({
       error,
