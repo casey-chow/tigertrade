@@ -77,7 +77,11 @@ class ListingCard extends React.Component {
   }
 
   handleSubmit = (data) => {
-    this.props.dispatch(mailSeller(this.props.listing.keyId, data));
+    this.props.dispatch(mailSeller(
+      this.props.listing,
+      data,
+      `Successfully contacted seller for ${this.props.listing.title}`,
+    ));
     this.handleContactClose();
   }
 

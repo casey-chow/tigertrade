@@ -75,7 +75,11 @@ class SeekCard extends React.Component {
   }
 
   handleSubmit = (data) => {
-    this.props.dispatch(mailBuyer(this.props.seek.keyId, data));
+    this.props.dispatch(mailBuyer(
+      this.props.seek,
+      data,
+      `Successfully contaced requestor of ${this.props.seek.title}`,
+    ));
     this.handleContactClose();
   }
 
