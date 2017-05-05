@@ -66,10 +66,10 @@ func ReadSeeks(db *sql.DB, query *seekQuery) ([]*Seek, error, int) {
 	}
 
 	stmt = stmt.OrderBy("seeks.creation_date DESC")
-	if query.Limit <= maxNumResults {
+	if query.Limit > defaultNumResults {
 		stmt = stmt.Limit(query.Limit)
 	} else {
-		stmt = stmt.Limit(maxNumResults)
+		stmt = stmt.Limit(defaultNumResults)
 	}
 	stmt = stmt.Offset(query.Offset)
 
