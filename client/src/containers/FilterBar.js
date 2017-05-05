@@ -6,7 +6,7 @@ import {
   propTypes as routerPropTypes,
 } from 'react-router-dom';
 
-import { grey400 } from 'material-ui/styles/colors';
+import { grey300 } from 'material-ui/styles/colors';
 
 import Paper from 'material-ui/Paper';
 import FlatButton from 'material-ui/FlatButton';
@@ -74,13 +74,15 @@ class FilterBar extends Component {
     const style = {
       right: '0',
       position: 'fixed',
+      paddingTop: '0.5em',
+      paddingBottom: '0.5em',
       left: this.props.leftDrawerVisible ? '20vw' : '0',
       zIndex: '50',
       ...this.props.style,
     };
 
     const favoriteButtonStyle = {
-      backgroundColor: this.props.query.isStarred ? grey400 : 'transparent',
+      backgroundColor: this.props.query.isStarred ? grey300 : 'transparent',
       float: 'center',
     };
 
@@ -88,14 +90,13 @@ class FilterBar extends Component {
       <Paper style={style}>
         <div style={{ textAlign: 'center' }}>
           <FlatButton
-            primary
             icon={<FavoriteIcon />}
-            label="Favorites"
+            label="Favorited"
             style={favoriteButtonStyle}
             onTouchTap={this.handleFavorite}
           />
         </div>
-        <div style={{ position: 'absolute', top: '0', right: '0' }}>
+        <div style={{ position: 'absolute', top: '0.5em', right: '0' }}>
           <FlatButton
             secondary
             icon={<SaveIcon />}

@@ -61,7 +61,7 @@ class App extends Component {
         <NavigationDrawer>
           <FilterBar />
 
-          <div style={{ marginBottom: '4rem' }} />
+          <div style={{ marginBottom: '5.5rem' }} />
 
           { (!this.props.loading && !this.props.user.loggedIn) &&
             <Welcome />
