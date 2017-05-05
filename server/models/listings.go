@@ -10,6 +10,7 @@ import (
 	"github.com/lib/pq"
 	"net/http"
 	"strings"
+	"time"
 )
 
 // Returned by a function returning only one listing (usually by ID)
@@ -38,6 +39,10 @@ type listingQuery struct {
 	UserID           int
 	MinPrice         int
 	MaxPrice         int
+	MinExpDate       time.Time
+	MaxExpDate       time.Time
+	MinCreateDate    time.Time
+	MaxCreateDate    time.Time
 }
 
 func NewListingQuery() *listingQuery {
@@ -107,11 +112,27 @@ func ReadListings(db *sql.DB, query *listingQuery) ([]*Listing, error, int) {
 	}
 
 	if query.MinPrice >= 0 {
-		stmt = stmt.Where(fmt.Sprintf("listings.price >= %d", query.MinPrice))
+		stmt = stmt.Where("listings.price >= ?", query.MinPrice)
 	}
 
 	if query.MaxPrice >= 0 {
-		stmt = stmt.Where(fmt.Sprintf("listings.price <= %d", query.MaxPrice))
+		stmt = stmt.Where("listings.price <= ?", query.MaxPrice)
+	}
+
+	if !query.MinExpDate.IsZero() {
+		stmt = stmt.Where("listings.expiration_date >= ? OR listings.expiration_date IS NULL", query.MinExpDate)
+	}
+
+	if !query.MaxExpDate.IsZero() {
+		stmt = stmt.Where("listings.expiration_date <= ?", query.MaxExpDate)
+	}
+
+	if !query.MinCreateDate.IsZero() {
+		stmt = stmt.Where("listings.creation_date >= ? OR listings.creation_date IS NULL", query.MinCreateDate)
+	}
+
+	if !query.MaxCreateDate.IsZero() {
+		stmt = stmt.Where("listings.creation_date <= ?", query.MaxCreateDate)
 	}
 
 	if query.OnlyStarred {
