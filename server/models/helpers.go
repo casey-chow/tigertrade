@@ -13,7 +13,6 @@ const defaultTruncationLength = 1024
 // Default and maximum number of datum returned by bulk API queries
 // Used when obtaining and displaying many datum of a given structure
 const defaultNumResults uint64 = 30
-const maxNumResults uint64 = 100
 
 func getUpdateResultCode(result sql.Result, err error) (error, int) {
 

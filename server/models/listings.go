@@ -145,10 +145,10 @@ func ReadListings(db *sql.DB, query *listingQuery) ([]*Listing, error, int) {
 	}
 
 	stmt = stmt.OrderBy("listings.creation_date DESC")
-	if query.Limit <= maxNumResults {
+	if query.Limit > defaultNumResults {
 		stmt = stmt.Limit(query.Limit)
 	} else {
-		stmt = stmt.Limit(maxNumResults)
+		stmt = stmt.Limit(defaultNumResults)
 	}
 	stmt = stmt.Offset(query.Offset)
 

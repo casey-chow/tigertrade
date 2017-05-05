@@ -45,10 +45,10 @@ func ReadSavedSearches(db *sql.DB, query *savedSearchQuery) ([]*SavedSearch, err
 			"saved_searches.is_active": true}).
 		OrderBy("saved_searches.creation_date DESC")
 
-	if query.Limit <= maxNumResults {
+	if query.Limit > defaultNumResults {
 		stmt = stmt.Limit(query.Limit)
 	} else {
-		stmt = stmt.Limit(maxNumResults)
+		stmt = stmt.Limit(defaultNumResults)
 	}
 
 	stmt = stmt.Offset(query.Offset)
