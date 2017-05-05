@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import fetch from 'isomorphic-fetch';
 import {
   concat,
+  isEqual,
   isString,
   without,
 } from 'lodash';
@@ -38,6 +39,14 @@ export default class PhotosList extends Component {
     }
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (!isEqual(this.props.input.value, nextProps.input.value)) {
+      this.setState({
+        photos: nextProps.input.value,
+      });
+    }
+  }
+
   handleDeletePhoto = photo => () => {
     const photos = without(this.state.photos, photo);
     this.setState({ photos });
@@ -45,22 +54,27 @@ export default class PhotosList extends Component {
   }
 
   handleDropAccepted = (files) => {
-    if (this.state.photos.length > 5) { return; }
+    let numFiles = this.state.photos.length;
+    files.forEach((file) => {
+      if (numFiles >= 5) { return; }
+      numFiles += 1;
 
-    const formData = new FormData();
-    formData.append('file', files[0]);
+      const formData = new FormData();
+      formData.append('file', file);
 
-    fetch(`${API_ROOT}/photos`, {
-      method: 'POST',
-      body: formData,
-    }).then(res => res.json())
-    .then((data) => {
-      const photos = concat(this.state.photos, [data.location]);
-      this.setState({ photos });
-      this.props.input.onChange(photos);
-    })
-    .catch((err) => {
-      console.error('error while uploading file:', err);
+      fetch(`${API_ROOT}/photos`, {
+        method: 'POST',
+        body: formData,
+      })
+      .then(res => res.json())
+      .then((data) => {
+        const photos = concat(this.state.photos, [data.location]);
+        this.setState({ photos });
+        this.props.input.onChange(photos);
+      })
+      .catch((err) => {
+        console.error('error while uploading file:', err);
+      });
     });
   }
 
@@ -69,11 +83,12 @@ export default class PhotosList extends Component {
   render() {
     return (
       <div>
-        { this.state.photos.length <= 5 &&
+        { this.state.photos.length < 5 &&
           <Dropzone
             accept="image/*"
             data={{ type: 'picture' }}
             maxSize={+5e6/* 5MB */}
+            disablePreview
             onDropAccepted={this.handleDropAccepted}
           >
             <div style={{ verticalAlign: 'center' }}>
