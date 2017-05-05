@@ -1,5 +1,6 @@
 import fetch from 'isomorphic-fetch';
 import { stringify } from 'query-string';
+import { setComposeState, showSnackbar } from './ui';
 
 import { API_ROOT } from './common';
 
@@ -68,10 +69,7 @@ export function postSeek(seek, successMessage) {
       });
 
       if (successMessage) {
-        dispatch({
-          type: 'SNACKBAR_SHOW',
-          message: successMessage,
-        });
+        dispatch(showSnackbar(successMessage));
       }
 
       dispatch(loadSeeks({ query: { isMine: true }, reset: true }));
@@ -103,10 +101,7 @@ export function deleteSeek(seek, successMessage) {
       });
 
       if (successMessage) {
-        dispatch({
-          type: 'SNACKBAR_SHOW',
-          message: successMessage,
-        });
+        dispatch(showSnackbar(successMessage));
       }
 
       dispatch(loadSeeks({}));
@@ -115,6 +110,41 @@ export function deleteSeek(seek, successMessage) {
       error,
       seek,
       type: 'DELETE_SEEK_FAILURE',
+    }));
+  };
+}
+
+export function editSeek(seek) {
+  return setComposeState(true, true, 'seeks', undefined, seek);
+}
+
+export function updateSeek(seek, successMessage) {
+  return function (dispatch, getState) {
+    dispatch({
+      type: 'UPDATE_SEEK_REQUEST',
+    });
+
+    fetch(`${API_ROOT}/seeks/${seek.keyId}`, {
+      credentials: 'include',
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(seek),
+    })
+    .then((json) => {
+      dispatch({
+        json,
+        type: 'UPDATE_SEEK_SUCCESS',
+      });
+      dispatch(loadSeeks({}));
+      if (successMessage) {
+        dispatch(showSnackbar(successMessage));
+      }
+    })
+    .catch(error => dispatch({
+      error,
+      type: 'UPDATE_SEEK_FAILURE',
     }));
   };
 }

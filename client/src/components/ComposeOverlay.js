@@ -14,7 +14,7 @@ import {
   setComposeState,
 } from '../actions/ui';
 import { postListing, updateListing } from '../actions/listings';
-import { postSeek } from '../actions/seeks';
+import { postSeek, updateSeek } from '../actions/seeks';
 import ComposeForm from '../components/ComposeForm';
 import SeekComposeForm from '../components/SeekComposeForm';
 import RedirectToCas from '../components/RedirectToCas';
@@ -85,6 +85,16 @@ class ComposeOverlay extends Component {
     this.handleRequestClose();
   }
 
+  handleEditSeek = (data) => {
+    this.props.dispatch(updateSeek({
+      ...data,
+      maxPrice: data.price ? Math.round(parseFloat(data.price) * 100) : 0,
+    },
+    `Successfully updated seek ${data.title}`,
+    ));
+    this.handleRequestClose();
+  }
+
   handleToggle = (event, isInputChecked) => {
     this.props.dispatch(setDisplayMode(isInputChecked ? 'seeks' : 'listings'));
   }
@@ -118,7 +128,13 @@ class ComposeOverlay extends Component {
                   { ...this.props.listing, price: this.props.listing.price / 100 } : {}
                 }
               />
-              : <SeekComposeForm onSubmit={this.handleSubmitSeek} />
+              : <SeekComposeForm
+                onSubmit={this.props.isEdit ? this.handleEditSeek : this.handleSubmitSeek}
+                initialValues={
+                  this.props.isEdit ?
+                  { ...this.props.seek, price: this.props.seek.maxPrice / 100 } : {}
+                }
+              />
             }
           </CardText>
         </Card>
