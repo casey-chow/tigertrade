@@ -59,9 +59,9 @@ class App extends Component {
       <div className="App">
         <ActionBar user={this.props.user} loading={this.props.loading} />
         <NavigationDrawer>
-          <FilterBar style={{ position: 'fixed' }} />
+          <FilterBar />
 
-          <div style={{ marginBottom: '4rem' }} />
+          <div style={{ marginBottom: '5.5rem' }} />
 
           { (!this.props.loading && !this.props.user.loggedIn) &&
             <Welcome />
