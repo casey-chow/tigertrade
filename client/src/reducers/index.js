@@ -8,7 +8,7 @@ import * as savedSearchesReducers from './savedSearches';
 import * as seeksReducers from './seeks';
 import * as userReducers from './user';
 
-const defaultQuery = { query: '' };
+const defaultQuery = { query: '', isStarred: false };
 const currentQuery = (state = defaultQuery, action) => {
   switch (action.type) {
     case 'LOAD_SAVED_SEARCHES_REQUEST':

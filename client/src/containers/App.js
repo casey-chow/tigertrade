@@ -8,6 +8,7 @@ import ContentAdd from 'material-ui/svg-icons/content/add';
 import Snackbar from 'material-ui/Snackbar';
 
 import ActionBar from '../components/ActionBar';
+import FilterBar from './FilterBar';
 import Welcome from '../components/Welcome';
 import NavigationDrawer from '../components/NavigationDrawer';
 
@@ -58,6 +59,10 @@ class App extends Component {
       <div className="App">
         <ActionBar user={this.props.user} loading={this.props.loading} />
         <NavigationDrawer>
+          <FilterBar style={{ position: 'fixed' }} />
+
+          <div style={{ marginBottom: '4rem' }} />
+
           { (!this.props.loading && !this.props.user.loggedIn) &&
             <Welcome />
           }
