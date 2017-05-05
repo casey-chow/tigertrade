@@ -7,6 +7,7 @@ import (
 	"github.com/julienschmidt/httprouter"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 // Writes the most recent count listings, based on original date created to w
@@ -39,6 +40,23 @@ func ReadListings(w http.ResponseWriter, r *http.Request, ps httprouter.Params) 
 	}
 	if maxPrice, err := strconv.Atoi(r.URL.Query().Get("maxPrice")); err == nil {
 		query.MaxPrice = maxPrice
+	}
+
+	// Get optional expiration date filter limits
+	iso := "Mon Jan 2 15:04:05 -0700 MST 2006"
+	if minExpDate, err := time.Parse(iso, r.URL.Query().Get("minExpDate")); err == nil {
+		query.MinExpDate = minExpDate
+	}
+	if maxExpDate, err := time.Parse(iso, r.URL.Query().Get("maxExpDate")); err == nil {
+		query.MaxExpDate = maxExpDate
+	}
+
+	// Get optional creation date filter limits
+	if minCreateDate, err := time.Parse(iso, r.URL.Query().Get("minCreateDate")); err == nil {
+		query.MinCreateDate = minCreateDate
+	}
+	if maxCreateDate, err := time.Parse(iso, r.URL.Query().Get("maxCreateDate")); err == nil {
+		query.MaxCreateDate = maxCreateDate
 	}
 
 	listings, err, code := models.ReadListings(db, query)
