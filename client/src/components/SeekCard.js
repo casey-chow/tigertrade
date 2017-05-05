@@ -98,7 +98,7 @@ class SeekCard extends React.Component {
     this.props.dispatch(editSeek(this.props.seek));
   }
 
-  handleDelete = () => { // second arg for refreshing
+  handleDelete = () => {
     this.props.dispatch(deleteSeek(
       this.props.seek,
       `Successfully deleted seek ${this.props.seek.title}`,
