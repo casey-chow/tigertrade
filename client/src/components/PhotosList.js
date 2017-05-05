@@ -1,9 +1,17 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Dropzone from 'react-dropzone';
 import fetch from 'isomorphic-fetch';
+import {
+  concat,
+  isString,
+  without,
+} from 'lodash';
 
-import { concat, isString } from 'lodash';
+import Dropzone from 'react-dropzone';
+import { GridList, GridTile } from 'material-ui/GridList';
+import IconButton from 'material-ui/IconButton';
+import DeleteButton from 'material-ui/svg-icons/action/delete';
+
 
 import { API_ROOT } from '../actions/common';
 
@@ -18,14 +26,6 @@ export default class PhotosList extends Component {
     }).isRequired,
   }
 
-  static styles = {
-    singlePhoto: {
-      width: '100px',
-      height: '100px',
-      backgroundSize: 'cover',
-    },
-  }
-
   componentWillMount() {
     if (isString(this.props.input.value)) {
       this.setState({
@@ -36,6 +36,12 @@ export default class PhotosList extends Component {
         photos: this.props.input.value,
       });
     }
+  }
+
+  handleDeletePhoto = photo => () => {
+    const photos = without(this.state.photos, photo);
+    this.setState({ photos });
+    this.props.input.onChange(photos);
   }
 
   handleDropAccepted = (files) => {
@@ -58,6 +64,8 @@ export default class PhotosList extends Component {
     });
   }
 
+  photoFilename = photo => decodeURIComponent(photo.split('/').pop())
+
   render() {
     return (
       <div>
@@ -73,15 +81,29 @@ export default class PhotosList extends Component {
             </div>
           </Dropzone>
         }
-        {this.state.photos.map(photo => (
-          <div
-            key={photo}
-            style={{
-              ...PhotosList.styles.singlePhoto,
-              backgroundImage: `url(${photo})`,
-            }}
-          />
-        ))}
+        <GridList
+          cols={2.2}
+          cellHeight="auto"
+          style={{
+            display: 'flex',
+            flexWrap: 'nowrap',
+            overflowX: 'auto',
+          }}
+        >
+          {this.state.photos.map(photo => (
+            <GridTile
+              key={photo}
+              title={this.photoFilename(photo)}
+              actionIcon={
+                <IconButton>
+                  <DeleteButton onTouchTap={this.handleDeletePhoto(photo)} color="white" />
+                </IconButton>
+              }
+            >
+              <img src={photo} alt="user uploaded" style={{ maxHeight: '200px' }} />
+            </GridTile>
+          ))}
+        </GridList>
       </div>
     );
   }
