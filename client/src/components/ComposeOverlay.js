@@ -79,7 +79,7 @@ class ComposeOverlay extends Component {
     this.props.dispatch(updateListing({
       ...data,
       price: data.price ? Math.round(parseFloat(data.price) * 100) : 0,
-    }));
+    }, `Successfully updated listing ${data.title}`));
     this.handleRequestClose();
   }
 
