@@ -72,9 +72,10 @@ class FilterBar extends Component {
 
   render() {
     const style = {
-      textAlign: 'center',
-      width: '100%',
-      zIndex: '1',
+      right: '0',
+      position: 'fixed',
+      left: this.props.leftDrawerVisible ? '20vw' : '0',
+      zIndex: '50',
       ...this.props.style,
     };
 
@@ -85,21 +86,24 @@ class FilterBar extends Component {
 
     return (
       <Paper style={style}>
-        <FlatButton
-          primary
-          icon={<FavoriteIcon />}
-          label="Favorites"
-          style={favoriteButtonStyle}
-          onTouchTap={this.handleFavorite}
-        />
-        <FlatButton
-          secondary
-          icon={<SaveIcon />}
-          label="Watch Results"
-          onTouchTap={this.saveSearch}
-          style={{ float: 'right' }}
-          disabled={this.props.query.query === ''}
-        />
+        <div style={{ textAlign: 'center' }}>
+          <FlatButton
+            primary
+            icon={<FavoriteIcon />}
+            label="Favorites"
+            style={favoriteButtonStyle}
+            onTouchTap={this.handleFavorite}
+          />
+        </div>
+        <div style={{ position: 'absolute', top: '0', right: '0' }}>
+          <FlatButton
+            secondary
+            icon={<SaveIcon />}
+            label="Watch Results"
+            onTouchTap={this.saveSearch}
+            disabled={this.props.query.query === ''}
+          />
+        </div>
       </Paper>
     );
   }

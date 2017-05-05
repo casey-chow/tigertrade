@@ -41,6 +41,7 @@ class NavigationDrawer extends Component {
     sidebar: {
       width: '20vw',
       backgroundColor: 'white',
+      zIndex: '500',
     },
     content: {
       paddingBottom: '2rem',
