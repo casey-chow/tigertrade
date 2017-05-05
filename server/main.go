@@ -68,7 +68,7 @@ func loadEnvironment() {
 	if os.Getenv("CONFIG_PRESENT") == "true" {
 		return
 	}
-	log.Print("loading environment from .env")
+	log.Print("environment variables not found, loading environment from .env")
 
 	// Open .env file
 	path := path.Join(os.Getenv("GOPATH"), "src/github.com/casey-chow/tigertrade/.env")
