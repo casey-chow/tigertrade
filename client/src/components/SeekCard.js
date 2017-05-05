@@ -17,6 +17,7 @@ import FlatButton from 'material-ui/FlatButton';
 
 import EmailIcon from 'material-ui/svg-icons/communication/email';
 import DeleteIcon from 'material-ui/svg-icons/action/delete';
+import ModeEdit from 'material-ui/svg-icons/editor/mode-edit';
 import FavoriteIcon from 'material-ui/svg-icons/action/favorite';
 import LinkIcon from 'material-ui/svg-icons/content/link';
 
@@ -27,7 +28,7 @@ import ContactBuyerForm from './ContactBuyerForm';
 
 import { redirectToCas } from '../helpers/cas';
 import { mailBuyer } from './../actions/users';
-import { deleteSeek } from './../actions/seeks';
+import { editSeek, deleteSeek } from './../actions/seeks';
 
 class SeekCard extends React.Component {
 
@@ -93,7 +94,11 @@ class SeekCard extends React.Component {
     this.handleContactClose();
   }
 
-  handleDelete = () => { // second arg for refreshing
+  handleEdit = () => {
+    this.props.dispatch(editSeek(this.props.seek));
+  }
+
+  handleDelete = () => {
     this.props.dispatch(deleteSeek(
       this.props.seek,
       `Successfully deleted seek ${this.props.seek.title}`,
@@ -135,10 +140,15 @@ class SeekCard extends React.Component {
             }
 
             <CardActions>
-              { this.props.currentUserId !== seek.userId ?
+              { this.props.currentUser.keyId !== seek.userId ?
                 <FlatButton primary icon={<EmailIcon />} label="Contact Buyer" onTouchTap={this.handleContactOpen} /> :
-                <FlatButton primary icon={<DeleteIcon />} label="Delete" onTouchTap={this.handleDelete} />
+
+              [
+                <FlatButton primary icon={<ModeEdit />} label="Edit" onTouchTap={this.handleEdit} key={0} />,
+                <FlatButton primary icon={<DeleteIcon />} label="Delete" onTouchTap={this.handleDelete} key={1} />,
+              ]
               }
+
               <FlatButton secondary icon={<FavoriteIcon />} label="Notify Me" />
               <FlatButton icon={<LinkIcon />} label="Permalink" onTouchTap={this.handlePermalinkRedirect} />
             </CardActions>

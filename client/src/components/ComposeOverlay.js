@@ -14,8 +14,8 @@ import {
   setComposeState,
 } from '../actions/ui';
 import { postListing, updateListing } from '../actions/listings';
-import { postSeek } from '../actions/seeks';
-import ComposeForm from '../components/ComposeForm';
+import { postSeek, updateSeek } from '../actions/seeks';
+import ListingComposeForm from '../components/ListingComposeForm';
 import SeekComposeForm from '../components/SeekComposeForm';
 import RedirectToCas from '../components/RedirectToCas';
 
@@ -56,7 +56,7 @@ class ComposeOverlay extends Component {
   handleSubmitListing = (data) => {
     this.props.dispatch(postListing({
       ...data,
-      price: data.price ? Math.round(parseFloat(data.price) * 100) : 0,
+      price: data.price ? Math.round(parseFloat(data.price) * 100) : -1,
     },
     `Successfully created listing ${data.title}`,
     ));
@@ -67,7 +67,7 @@ class ComposeOverlay extends Component {
   handleSubmitSeek = (data) => {
     this.props.dispatch(postSeek({
       ...data,
-      price: data.price ? Math.round(parseFloat(data.price) * 100) : 0,
+      maxPrice: data.price ? Math.round(parseFloat(data.price) * 100) : -1,
     },
     `Successfully created seek ${data.title}`,
     ));
@@ -78,7 +78,15 @@ class ComposeOverlay extends Component {
   handleEditListing = (data) => {
     this.props.dispatch(updateListing({
       ...data,
-      price: data.price ? Math.round(parseFloat(data.price) * 100) : 0,
+      price: data.price ? Math.round(parseFloat(data.price) * 100) : -1,
+    }));
+    this.handleRequestClose();
+  }
+
+  handleEditSeek = (data) => {
+    this.props.dispatch(updateSeek({
+      ...data,
+      maxPrice: data.price ? Math.round(parseFloat(data.price) * 100) : -1,
     }));
     this.handleRequestClose();
   }
@@ -109,14 +117,20 @@ class ComposeOverlay extends Component {
           </CardHeader>
           <CardText style={this.state.expanded ? showStyle : hideStyle}>
             { (this.state.mode === 'listings') ?
-              <ComposeForm
+              <ListingComposeForm
                 onSubmit={this.props.isEdit ? this.handleEditListing : this.handleSubmitListing}
                 initialValues={
                   this.props.isEdit ?
                   { ...this.props.listing, price: this.props.listing.price / 100 } : {}
                 }
               />
-              : <SeekComposeForm onSubmit={this.handleSubmitSeek} />
+              : <SeekComposeForm
+                onSubmit={this.props.isEdit ? this.handleEditSeek : this.handleSubmitSeek}
+                initialValues={
+                  this.props.isEdit ?
+                  { ...this.props.seek, price: this.props.seek.maxPrice / 100 } : {}
+                }
+              />
             }
           </CardText>
         </Card>

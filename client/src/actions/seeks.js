@@ -1,5 +1,6 @@
 import fetch from 'isomorphic-fetch';
 import { stringify } from 'query-string';
+import { setComposeState } from './ui';
 
 import { API_ROOT } from './common';
 
@@ -119,3 +120,34 @@ export function deleteSeek(seek, successMessage) {
   };
 }
 
+export function editSeek(seek) {
+  return setComposeState(true, true, 'listings', undefined, seek);
+}
+
+export function updateSeek(seek) {
+  return function (dispatch, getState) {
+    dispatch({
+      type: 'UPDATE_SEEK_REQUEST',
+    });
+
+    fetch(`${API_ROOT}/seeks/${seek.keyId}`, {
+      credentials: 'include',
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(seek),
+    })
+    .then((json) => {
+      dispatch({
+        json,
+        type: 'UPDATE_SEEK_SUCCESS',
+      });
+      dispatch(loadSeeks({}));
+    })
+    .catch(error => dispatch({
+      error,
+      type: 'UPDATE_SEEK_FAILURE',
+    }));
+  };
+}
