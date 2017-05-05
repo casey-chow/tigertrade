@@ -98,7 +98,7 @@ class ComposeOverlay extends Component {
 
     return (
       <div style={overlayStyle}>
-        <Card expanded={this.state.expanded} onExpandChange={this.handleExpandChange}>
+        <Card expanded={this.state.expanded} onExpandChange={this.handleExpandChange} zDepth={2}>
           <CardHeader title={this.props.isEdit ? 'Edit' : 'Compose'} actAsExpander>
             <IconButton
               onTouchTap={this.handleRequestClose}
