@@ -36,6 +36,10 @@ class Seeks extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
+    if (this.props.expandAll !== nextProps.expandAll) {
+      return true;
+    }
+
     if (this.props.seeksLoading !== nextProps.seeksLoading) {
       return true;
     }
@@ -48,10 +52,6 @@ class Seeks extends Component {
       if (this.props.seeks[i].keyId !== nextProps.seeks[i].keyId) {
         return true;
       }
-    }
-
-    if (this.props.expandAll !== nextProps.expandAll) {
-      return true;
     }
 
     return false;

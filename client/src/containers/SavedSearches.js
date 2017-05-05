@@ -33,6 +33,10 @@ class SavedSearches extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
+    if (this.props.expandAll !== nextProps.expandAll) {
+      return true;
+    }
+
     if (this.props.savedSearchesLoading !== nextProps.savedSearchesLoading) {
       return true;
     }
@@ -45,10 +49,6 @@ class SavedSearches extends Component {
       if (this.props.savedSearches[i].keyId !== nextProps.savedSearches[i].keyId) {
         return true;
       }
-    }
-
-    if (this.props.expandAll !== nextProps.expandAll) {
-      return true;
     }
 
     return false;

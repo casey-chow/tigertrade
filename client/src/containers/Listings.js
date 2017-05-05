@@ -37,6 +37,9 @@ class Listings extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
+    if (this.props.expandAll !== nextProps.expandAll) {
+      return true;
+    }
     if (this.props.listingsLoading !== nextProps.listingsLoading) {
       return true;
     }
@@ -48,10 +51,6 @@ class Listings extends Component {
       if (this.props.listings[i].keyId !== nextProps.listings[i].keyId) {
         return true;
       }
-    }
-
-    if (this.props.expandAll !== nextProps.expandAll) {
-      return true;
     }
 
     return false;
