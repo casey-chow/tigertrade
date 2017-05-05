@@ -151,7 +151,6 @@ class ListingCard extends React.Component {
             <CardActions>
               { this.props.currentUser.keyId !== listing.userId ?
                 <FlatButton primary icon={<EmailIcon />} label="Contact Seller" onTouchTap={this.handleContactOpen} /> :
-
               [
                 <FlatButton primary icon={<ModeEdit />} label="Edit" onTouchTap={this.handleEdit} key={0} />,
                 <FlatButton primary icon={<DeleteIcon />} label="Delete" onTouchTap={this.handleDelete} key={1} />,
