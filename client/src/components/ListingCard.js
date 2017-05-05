@@ -18,6 +18,8 @@ import FlatButton from 'material-ui/FlatButton';
 import Dialog from 'material-ui/Dialog';
 import Chip from 'material-ui/Chip';
 
+import { grey300 } from 'material-ui/styles/colors';
+
 import EmailIcon from 'material-ui/svg-icons/communication/email';
 import DeleteIcon from 'material-ui/svg-icons/action/delete';
 import ModeEdit from 'material-ui/svg-icons/editor/mode-edit';
@@ -28,7 +30,7 @@ import ContactSellerForm from './ContactSellerForm';
 
 import { redirectToCas } from '../helpers/cas';
 import { mailSeller } from './../actions/users';
-import { editListing, deleteListing } from './../actions/listings';
+import { editListing, deleteListing, starListing } from './../actions/listings';
 
 class ListingCard extends React.Component {
 
@@ -51,6 +53,7 @@ class ListingCard extends React.Component {
       username: PropTypes.string.isRequired,
       price: PropTypes.number,
       status: PropTypes.string,
+      isStarred: PropTypes.bool,
       expirationDate: PropTypes.number,
       thumbnail: PropTypes.string,
     }).isRequired,
@@ -111,6 +114,12 @@ class ListingCard extends React.Component {
     this.props.history.push(`/listing/${this.props.listing.keyId}`);
   }
 
+  handleStar = () => {
+    this.props.dispatch(starListing(
+      this.props.listing,
+    ));
+  }
+
   render() {
     const { listing, expanded } = this.props;
 
@@ -120,6 +129,12 @@ class ListingCard extends React.Component {
 
     const onShowStyles = { maxHeight: '1000px', transition: 'max-height 0.5s ease-in', overflow: 'hidden' };
     const onHideStyles = { maxHeight: '0', transition: 'max-height 0.15s ease-out', overflow: 'hidden' };
+
+
+    const favoriteButtonStyle = {
+      backgroundColor: this.props.listing.isStarred ? grey300 : 'transparent',
+      float: 'center',
+    };
 
     return (
       <div>
@@ -157,7 +172,7 @@ class ListingCard extends React.Component {
               ]
               }
 
-              <FlatButton secondary icon={<FavoriteIcon />} label="Save" />
+              <FlatButton secondary icon={<FavoriteIcon />} style={favoriteButtonStyle} label="Favorite" onTouchTap={this.handleStar} />
               <FlatButton icon={<LinkIcon />} label="Permalink" onTouchTap={this.handlePermalinkRedirect} />
             </CardActions>
 

@@ -80,6 +80,36 @@ export function postListing(listing, successMessage) {
   };
 }
 
+export function starListing(listing) {
+  console.log(listing.isStarred);
+  return function (dispatch, getState) {
+    dispatch({
+      type: 'STAR_LISTING_REQUEST',
+    });
+
+    fetch(`${API_ROOT}/listings/${listing.keyId}/star`, {
+      credentials: 'include',
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ isStarred: !listing.isStarred }),
+    })
+    .then((json) => {
+      dispatch({
+        json,
+        type: 'STAR_LISTING_SUCCESS',
+      });
+
+      dispatch(loadListings({ }));
+    })
+    .catch(error => dispatch({
+      error,
+      type: 'STAR_LISTING_FAILURE',
+    }));
+  };
+}
+
 export function deleteListing(listing, successMessage) {
   return function (dispatch, getState) {
     dispatch({
