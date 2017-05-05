@@ -19,6 +19,7 @@ class Listings extends Component {
   static propTypes = {
     ...routerPropTypes,
     dispatch: PropTypes.func.isRequired,
+    expandAll: PropTypes.bool.isRequired,
     listingsLoading: PropTypes.bool.isRequired,
     listings: PropTypes.arrayOf(PropTypes.object).isRequired,
   };
@@ -49,6 +50,10 @@ class Listings extends Component {
       }
     }
 
+    if (this.props.expandAll !== nextProps.listings.expandAll) {
+      return true;
+    }
+
     return false;
   }
 
@@ -72,7 +77,10 @@ class Listings extends Component {
   render() {
     return (
       <div>
-        <ListingsList listings={this.props.listings} />
+        <ListingsList
+          listings={this.props.listings}
+          expandAll={this.props.expandAll}
+        />
         <Waypoint topOffset="70%" bottomOffset="-25%" onEnter={this.loadMoreListings} />
         { this.props.listingsLoading &&
           <div style={{ alignItems: 'center', justifyContent: 'center', display: 'flex' }}>
@@ -87,6 +95,7 @@ class Listings extends Component {
 const mapStateToProps = state => ({
   listingsLoading: state.listingsLoading,
   listings: state.listings,
+  expandAll: state.expandAll,
 });
 
 export default withRouter(connect(mapStateToProps)(Listings));

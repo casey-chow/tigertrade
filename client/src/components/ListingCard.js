@@ -163,18 +163,20 @@ class ListingCard extends React.Component {
 
           </div>
         </Card>
-        <Dialog
-          title="Let the seller know you're interested. We'll put you in touch via email:"
-          modal={false}
-          open={this.state.contactOpen}
-          onRequestClose={this.handleContactClose}
-        >
-          <div style={{ display: 'flex', flexWrap: 'wrap', marginTop: '-0.35rem', marginBottom: '0.625rem' }}>
-            <div style={{ margin: '0.625rem' }}>To:</div>
-            <Chip style={{ margin: '0.3rem' }}>{this.props.listing.username}@princeton.edu</Chip>
-          </div>
-          <ContactSellerForm onSubmit={this.handleSubmit} initialValues={{ message: `Hi! I'm interested in buying "${listing.title}".` }} />
-        </Dialog>
+        {this.state.contactOpen &&
+          <Dialog
+            title="Let the seller know you're interested. We'll put you in touch via email:"
+            modal={false}
+            open={this.state.contactOpen}
+            onRequestClose={this.handleContactClose}
+          >
+            <div style={{ display: 'flex', flexWrap: 'wrap', marginTop: '-0.35rem', marginBottom: '0.625rem' }}>
+              <div style={{ margin: '0.625rem' }}>To:</div>
+              <Chip style={{ margin: '0.3rem' }}>{this.props.listing.username}@princeton.edu</Chip>
+            </div>
+            <ContactSellerForm onSubmit={this.handleSubmit} initialValues={{ message: `Hi! I'm interested in buying "${listing.title}".` }} />
+          </Dialog>
+        }
       </div>
     );
   }

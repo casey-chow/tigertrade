@@ -34,3 +34,10 @@ export function hideSnackbar(message = '') {
     type: 'SNACKBAR_HIDE',
   };
 }
+
+export function setExpandAll(expandAll = false) {
+  return {
+    type: 'SET_EXPAND_ALL',
+    expandAll,
+  };
+}

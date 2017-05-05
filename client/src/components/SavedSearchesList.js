@@ -10,6 +10,7 @@ class SavedSearchesList extends PureComponent {
     savedSearches: PropTypes.arrayOf(PropTypes.shape({
       keyId: PropTypes.number,
     })).isRequired,
+    expandAll: PropTypes.bool.isRequired,
   };
 
   state = {
@@ -38,7 +39,7 @@ class SavedSearchesList extends PureComponent {
                 {this.props.savedSearches.map(savedSearch =>
                   <SavedSearchCard
                     key={savedSearch.keyId}
-                    expanded={this.isExpanded(savedSearch.keyId)}
+                    expanded={this.props.expandAll || this.isExpanded(savedSearch.keyId)}
                     savedSearch={savedSearch}
                     onExpandChange={this.handleExpandChange}
                   />)}

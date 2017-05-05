@@ -10,6 +10,7 @@ class SeeksList extends PureComponent {
     seeks: PropTypes.arrayOf(PropTypes.shape({
       keyId: PropTypes.number,
     })).isRequired,
+    expandAll: PropTypes.bool.isRequired,
   };
 
   state = {
@@ -46,7 +47,7 @@ class SeeksList extends PureComponent {
                 {this.props.seeks.map(seek =>
                   <SeekCard
                     key={seek.keyId}
-                    expanded={this.isExpanded(seek.keyId)}
+                    expanded={this.props.expandAll || this.isExpanded(seek.keyId)}
                     seek={seek}
                     onExpandChange={this.handleExpandChange}
                   />)}

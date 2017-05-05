@@ -86,6 +86,15 @@ const snackbar = (state = defaultSnackbar, action) => {
   }
 };
 
+const expandAll = (state = false, action) => {
+  switch (action.type) {
+    case 'SET_EXPAND_ALL':
+      return action.expandAll;
+    default:
+      return state;
+  }
+};
+
 const rootReducer = combineReducers({
   ...listingsReducers,
   ...savedSearchesReducers,
@@ -96,6 +105,7 @@ const rootReducer = combineReducers({
   displayMode,
   leftDrawerVisible,
   snackbar,
+  expandAll,
   ui: uiReducer,
   form: formReducer,
 });
