@@ -153,7 +153,7 @@ func ReadListings(db *sql.DB, query *listingQuery) ([]*Listing, error, int) {
 	stmt = stmt.Offset(query.Offset)
 
 	queryStr, _, _ := stmt.ToSql()
-	log.WithField("query", queryStr).Info("query!")
+	log.WithField("query", queryStr).Debug("query!")
 
 	// Query db
 	rows, err := stmt.RunWith(db).Query()

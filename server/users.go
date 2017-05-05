@@ -20,7 +20,7 @@ var getUsername = cas.Username
 // GetCurrentUser returns the current user, or an empty JSON object if not logged in.
 func GetCurrentUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	netID := getUsername(r)
-	log.WithField("netID", netID).Info("getting username")
+	log.WithField("netID", netID).Debug("getting username")
 	if netID == "" {
 		Error(w, http.StatusUnauthorized)
 		return
@@ -44,7 +44,7 @@ func GetCurrentUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params
 // logged in, and back to the "return" parameter otherwise.
 func RedirectUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	if !isAuthenticated(r) {
-		log.Info("logging in user")
+		log.Debug("logging in user")
 		redirectToLogin(w, r)
 		return
 	}
@@ -58,7 +58,7 @@ func RedirectUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params) 
 	_, err := url.Parse(redirect)
 	if err != nil {
 		log.WithFields(log.Fields{"error": err, "url": redirect}).
-			Info("RedirectUser received invalid url")
+			Warn("RedirectUser received invalid url")
 		raven.CaptureError(err, map[string]string{"url": redirect})
 	}
 
@@ -67,7 +67,7 @@ func RedirectUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params) 
 	}
 
 	log.WithFields(log.Fields{"user": getUsername(r), "url": redirect}).
-		Info("login: redirecting user back to app")
+		Debug("login: redirecting user back to app")
 	http.Redirect(w, r, redirect, http.StatusFound)
 }
 
@@ -76,10 +76,10 @@ func RedirectUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params) 
 func LogoutUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	if isAuthenticated(r) {
 		log.WithField("user", getUsername(r)).
-			Info("logging out user")
+			Debug("logging out user")
 		redirectToLogout(w, r)
 	} else {
-		log.Info("logout: redirecting user back to app")
+		log.Debug("logout: redirecting user back to app")
 		http.Redirect(w, r, os.Getenv("CLIENT_ROOT"), http.StatusFound)
 	}
 }
