@@ -88,7 +88,7 @@ class ComposeOverlay extends Component {
   handleEditSeek = (data) => {
     this.props.dispatch(updateSeek({
       ...data,
-      price: data.price ? Math.round(parseFloat(data.price) * 100) : 0,
+      maxPrice: data.price ? Math.round(parseFloat(data.price) * 100) : 0,
     },
     `Successfully updated seek ${data.title}`,
     ));
@@ -132,7 +132,7 @@ class ComposeOverlay extends Component {
                 onSubmit={this.props.isEdit ? this.handleEditSeek : this.handleSubmitSeek}
                 initialValues={
                   this.props.isEdit ?
-                  { ...this.props.seek, price: this.props.seek.price / 100 } : {}
+                  { ...this.props.seek, price: this.props.seek.maxPrice / 100 } : {}
                 }
               />
             }
