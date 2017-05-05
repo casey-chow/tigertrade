@@ -8,13 +8,19 @@ import * as savedSearchesReducers from './savedSearches';
 import * as seeksReducers from './seeks';
 import * as userReducers from './user';
 
-const currentQuery = (state = { query: '' }, action) => {
+const currentQuery = (state = { query: '', isStarred: false }, action) => {
   switch (action.type) {
     case 'LOAD_SAVED_SEARCHES_REQUEST':
-      return { query: '' };
+      return {
+        ...state,
+        query: '',
+      };
     case 'LOAD_LISTINGS_REQUEST':
     case 'LOAD_SEEKS_REQUEST':
-      return action.query;
+      return {
+        ...state,
+        ...action.query,
+      };
     default:
       return state;
   }
