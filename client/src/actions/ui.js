@@ -11,7 +11,7 @@ export function toggleLeftDrawer() {
   };
 }
 
-export function setComposeState(show = false, isEdit = false, mode = 'listings', listing, seek, refreshQuery) {
+export function setComposeState(show = false, isEdit = false, mode = 'listings', listing, seek) {
   return {
     type: 'SET_COMPOSE_STATE',
     show,
@@ -19,7 +19,6 @@ export function setComposeState(show = false, isEdit = false, mode = 'listings',
     mode,
     listing,
     seek,
-    refreshQuery,
   };
 }
 

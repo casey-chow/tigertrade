@@ -14,15 +14,16 @@ func ReadListings(w http.ResponseWriter, r *http.Request, ps httprouter.Params) 
 	query := models.NewListingQuery()
 
 	// Get limit from params
-	if limitStr := r.URL.Query().Get("limit"); limitStr != "" {
-		if limit, err := strconv.Atoi(limitStr); err == nil && limit != 0 {
-			query.Limit = uint64(limit)
-		}
+	if limit, err := strconv.ParseUint(r.URL.Query().Get("limit"), 10, 64); err == nil && limit != 0 {
+		query.Limit = limit
 	}
 
-	// ParseBool defaults to false
 	query.OnlyStarred, _ = strconv.ParseBool(r.URL.Query().Get("isStarred"))
 	query.OnlyMine, _ = strconv.ParseBool(r.URL.Query().Get("isMine"))
+
+	if offset, err := strconv.ParseUint(r.URL.Query().Get("offset"), 10, 64); err == nil {
+		query.Offset = offset
+	}
 
 	// Get User ID if we happen to be logged in
 	if user, err := models.GetUser(db, getUsername(r)); err == nil {

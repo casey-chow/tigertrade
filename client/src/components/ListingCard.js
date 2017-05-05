@@ -54,12 +54,9 @@ class ListingCard extends React.Component {
       expirationDate: PropTypes.number,
       thumbnail: PropTypes.string,
     }).isRequired,
-    // eslint-disable-next-line react/forbid-prop-types
-    query: PropTypes.object,
   };
 
   static defaultProps = {
-    query: { query: '' },
     currentUser: {
       keyId: -1,
       loggedIn: false,
@@ -100,13 +97,12 @@ class ListingCard extends React.Component {
   }
 
   handleEdit = () => {
-    this.props.dispatch(editListing(this.props.listing, this.props.query));
+    this.props.dispatch(editListing(this.props.listing));
   }
 
   handleDelete = () => {
     this.props.dispatch(deleteListing(
       this.props.listing,
-      this.props.query,
       `Successfully deleted listing ${this.props.listing.title}`,
     ));
   }
@@ -114,7 +110,6 @@ class ListingCard extends React.Component {
   handlePermalinkRedirect = () => {
     this.props.history.push(`/listing/${this.props.listing.keyId}`);
   }
-
 
   render() {
     const { listing, expanded } = this.props;
@@ -188,7 +183,6 @@ class ListingCard extends React.Component {
 
 const mapStateToProps = state => ({
   currentUser: state.currentUser,
-  query: state.currentQuery,
 });
 
 export default withRouter(connect(mapStateToProps)(ListingCard));

@@ -20,7 +20,8 @@ type SavedSearch struct {
 }
 
 type savedSearchQuery struct {
-	Limit  uint64
+	Limit  uint64 // maximum number of listings to return
+	Offset uint64 // offset in search results to send
 	UserID int
 }
 
@@ -49,6 +50,8 @@ func ReadSavedSearches(db *sql.DB, query *savedSearchQuery) ([]*SavedSearch, err
 	} else {
 		stmt = stmt.Limit(maxNumResults)
 	}
+
+	stmt = stmt.Offset(query.Offset)
 
 	// Query db
 	rows, err := stmt.RunWith(db).Query()

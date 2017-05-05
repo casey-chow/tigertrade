@@ -1310,6 +1310,10 @@ console-control-strings@^1.0.0, console-control-strings@~1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/console-control-strings/-/console-control-strings-1.1.0.tgz#3d7cf4464db6446ea644bf4b39507f9851008e8e"
 
+consolidated-events@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/consolidated-events/-/consolidated-events-1.0.1.tgz#70f475f4a5d6d20428e702da1b8870d9cc031a14"
+
 constants-browserify@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/constants-browserify/-/constants-browserify-1.0.0.tgz#c20b96d8c617748aaf1c16021760cd27fcb8cb75"
@@ -4602,6 +4606,12 @@ react-test-renderer@^15.5.4:
   dependencies:
     fbjs "^0.8.9"
     object-assign "^4.1.0"
+
+react-waypoint@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/react-waypoint/-/react-waypoint-6.0.0.tgz#a14c8cb1305bfdf7160ace4f8a087d6c7f745639"
+  dependencies:
+    consolidated-events "^1.0.1"
 
 "react@^0.14.3 || ^15.0.1", react@^15.4.2, react@^15.4.3:
   version "15.5.4"

@@ -4,13 +4,14 @@ import { setComposeState } from './ui';
 
 import { API_ROOT } from './common';
 
-export function loadListings(query = { query: '' }) {
+export function loadListings({ query = {}, reset = false }) {
   return function (dispatch, getState) {
     dispatch({
       query,
+      reset,
       type: 'LOAD_LISTINGS_REQUEST',
     });
-    fetch(`${API_ROOT}/listings?${stringify(query)}`, {
+    fetch(`${API_ROOT}/listings?${stringify(getState().currentQuery)}`, {
       credentials: 'include',
     })
       .then(response => response.json())
@@ -73,7 +74,7 @@ export function postListing(listing, successMessage) {
         });
       }
 
-      dispatch(loadListings());
+      dispatch(loadListings({ query: { isMine: true }, reset: true }));
     })
     .catch(error => dispatch({
       error,
@@ -82,7 +83,7 @@ export function postListing(listing, successMessage) {
   };
 }
 
-export function deleteListing(listing, refreshQuery, successMessage) {
+export function deleteListing(listing, successMessage) {
   return function (dispatch, getState) {
     dispatch({
       type: 'DELETE_LISTING_REQUEST',
@@ -105,8 +106,7 @@ export function deleteListing(listing, refreshQuery, successMessage) {
           message: successMessage,
         });
       }
-
-      dispatch(loadListings(refreshQuery));
+      dispatch(loadListings({}));
     })
     .catch(error => dispatch({
       error,
@@ -116,11 +116,11 @@ export function deleteListing(listing, refreshQuery, successMessage) {
   };
 }
 
-export function editListing(listing, refreshQuery) {
-  return setComposeState(true, true, 'listings', listing, undefined, refreshQuery);
+export function editListing(listing) {
+  return setComposeState(true, true, 'listings', listing, undefined);
 }
 
-export function updateListing(listing, refreshQuery) {
+export function updateListing(listing) {
   return function (dispatch, getState) {
     dispatch({
       type: 'UPDATE_LISTING_REQUEST',
@@ -139,7 +139,7 @@ export function updateListing(listing, refreshQuery) {
         json,
         type: 'UPDATE_LISTING_SUCCESS',
       });
-      dispatch(loadListings(refreshQuery));
+      dispatch(loadListings({}));
     })
     .catch(error => dispatch({
       error,

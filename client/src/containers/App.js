@@ -17,7 +17,6 @@ import Listing from './Listing';
 import Seeks from './Seeks';
 import Seek from './Seek';
 import SavedSearches from './SavedSearches';
-import Profile from './Profile';
 import ComposeOverlay from '../components/ComposeOverlay';
 
 import { loadCurrentUser } from '../actions/users';
@@ -77,7 +76,6 @@ class App extends Component {
             <Route path="/seeks/:type?" component={Seeks} />
             <Route path="/seek/:id" component={Seek} />
             <Route path="/savedsearches" component={SavedSearches} />
-            <Route path="/profile" component={Profile} />
           </Switch>
         </NavigationDrawer>
 

@@ -8,19 +8,27 @@ import * as savedSearchesReducers from './savedSearches';
 import * as seeksReducers from './seeks';
 import * as userReducers from './user';
 
-const currentQuery = (state = { query: '', isStarred: false }, action) => {
+const defaultQuery = { query: '', isStarred: false };
+const currentQuery = (state = defaultQuery, action) => {
   switch (action.type) {
     case 'LOAD_SAVED_SEARCHES_REQUEST':
       return {
         ...state,
-        query: '',
+        ...defaultQuery,
       };
     case 'LOAD_LISTINGS_REQUEST':
     case 'LOAD_SEEKS_REQUEST':
-      return {
-        ...state,
-        ...action.query,
-      };
+      if (action.reset) {
+        return {
+          ...defaultQuery,
+          ...action.query,
+        };
+      } else {
+        return {
+          ...state,
+          ...action.query,
+        };
+      }
     default:
       return state;
   }
@@ -39,7 +47,7 @@ const displayMode = (state = 'listings', action) => {
   }
 };
 
-const composeState = (state = { show: false, isEdit: false, mode: 'listings', listing: undefined, seek: undefined, refreshQuery: undefined }, action) => {
+const composeState = (state = { show: false, isEdit: false, mode: 'listings', listing: undefined, seek: undefined }, action) => {
   switch (action.type) {
     case 'SET_COMPOSE_STATE':
       return {
@@ -48,7 +56,6 @@ const composeState = (state = { show: false, isEdit: false, mode: 'listings', li
         mode: action.mode,
         listing: action.listing,
         seek: action.seek,
-        refreshQuery: action.refreshQuery,
       };
     default:
       return state;
@@ -64,7 +71,8 @@ const leftDrawerVisible = (state = true, action) => {
   }
 };
 
-const snackbar = (state = { open: false, message: '' }, action) => {
+const defaultSnackbar = { open: false, message: '' };
+const snackbar = (state = defaultSnackbar, action) => {
   switch (action.type) {
     case 'SNACKBAR_SHOW':
       return {
@@ -72,10 +80,7 @@ const snackbar = (state = { open: false, message: '' }, action) => {
         message: action.message,
       };
     case 'SNACKBAR_HIDE':
-      return {
-        open: false,
-        message: '',
-      };
+      return defaultSnackbar;
     default:
       return state;
   }

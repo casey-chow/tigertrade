@@ -13,8 +13,8 @@ import {
   setDisplayMode,
   setComposeState,
 } from '../actions/ui';
-import { postListing, loadListings, updateListing } from '../actions/listings';
-import { postSeek, loadSeeks } from '../actions/seeks';
+import { postListing, updateListing } from '../actions/listings';
+import { postSeek } from '../actions/seeks';
 import ComposeForm from '../components/ComposeForm';
 import SeekComposeForm from '../components/SeekComposeForm';
 import RedirectToCas from '../components/RedirectToCas';
@@ -44,13 +44,7 @@ class ComposeOverlay extends Component {
     currentUserLoading: PropTypes.bool.isRequired,
     isEdit: PropTypes.bool.isRequired,
     mode: PropTypes.string.isRequired,
-    // eslint-disable-next-line react/forbid-prop-types
-    refreshQuery: PropTypes.object,
   };
-
-  static defaultProps = {
-    refreshQuery: { query: '' },
-  }
 
   state = {
     mode: this.props.mode,
@@ -66,8 +60,7 @@ class ComposeOverlay extends Component {
     },
     `Successfully created listing ${data.title}`,
     ));
-    this.props.dispatch(loadListings());
-    this.props.history.push('/listings');
+    this.props.history.push('/listings/mine');
     this.handleRequestClose();
   }
 
@@ -78,8 +71,7 @@ class ComposeOverlay extends Component {
     },
     `Successfully created seek ${data.title}`,
     ));
-    this.props.dispatch(loadSeeks());
-    this.props.history.push('/seeks');
+    this.props.history.push('/seeks/mine');
     this.handleRequestClose();
   }
 
@@ -87,7 +79,7 @@ class ComposeOverlay extends Component {
     this.props.dispatch(updateListing({
       ...data,
       price: data.price ? Math.round(parseFloat(data.price) * 100) : 0,
-    }, this.props.refreshQuery));
+    }));
     this.handleRequestClose();
   }
 
@@ -141,7 +133,6 @@ const mapStateToProps = state => ({
   isEdit: state.composeState.isEdit,
   listing: state.composeState.listing,
   seek: state.composeState.seek,
-  refreshQuery: state.composeState.refreshQuery,
 });
 
 export default withRouter(connect(mapStateToProps)(ComposeOverlay));

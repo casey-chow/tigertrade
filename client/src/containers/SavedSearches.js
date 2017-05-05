@@ -6,6 +6,8 @@ import {
   routerPropTypes,
 } from 'react-router-dom';
 
+import Waypoint from 'react-waypoint';
+
 import CircularProgress from 'material-ui/CircularProgress';
 
 import SavedSearchesList from '../components/SavedSearchesList';
@@ -48,10 +50,16 @@ class SavedSearches extends Component {
     return false;
   }
 
+  loadMoreSavedSearchs = () => {
+    const limit = 2 * this.props.savedSearches.length;
+    this.props.dispatch(loadSavedSearches({ query: { limit } }));
+  }
+
   render() {
     return (
       <div>
         <SavedSearchesList savedSearches={this.props.savedSearches} />
+        <Waypoint topOffset="70%" onEnter={this.loadMoreSavedSearches} />
         { this.props.savedSearchesLoading &&
           <div style={{ alignItems: 'center', justifyContent: 'center', display: 'flex' }}>
             <CircularProgress size={80} thickness={8} />

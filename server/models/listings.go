@@ -33,8 +33,9 @@ type listingQuery struct {
 	Query            string
 	OnlyStarred      bool
 	OnlyMine         bool
-	TruncationLength int
-	Limit            uint64
+	TruncationLength int    // number of characters to truncate listing descriptions to
+	Limit            uint64 // maximum number of listings to return
+	Offset           uint64 // offset in search results to send
 	UserID           int
 	MinPrice         int
 	MaxPrice         int
@@ -128,6 +129,7 @@ func ReadListings(db *sql.DB, query *listingQuery) ([]*Listing, error, int) {
 	} else {
 		stmt = stmt.Limit(maxNumResults)
 	}
+	stmt = stmt.Offset(query.Offset)
 
 	queryStr, _, _ := stmt.ToSql()
 	log.WithField("query", queryStr).Info("query!")

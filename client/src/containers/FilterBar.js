@@ -47,10 +47,10 @@ class FilterBar extends Component {
     this.setState({ isStarred });
     switch (this.props.displayMode) {
       case 'seeks':
-        this.props.dispatch(loadSeeks({ isStarred }));
+        this.props.dispatch(loadSeeks({ query: { isStarred } }));
         break;
       case 'listings':
-        this.props.dispatch(loadListings({ isStarred }));
+        this.props.dispatch(loadListings({ query: { isStarred } }));
         break;
       default:
         break;

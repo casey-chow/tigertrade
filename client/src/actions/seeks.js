@@ -3,13 +3,14 @@ import { stringify } from 'query-string';
 
 import { API_ROOT } from './common';
 
-export function loadSeeks(query = { query: '' }) {
+export function loadSeeks({ query = {}, reset = false }) {
   return function (dispatch, getState) {
     dispatch({
       query,
+      reset,
       type: 'LOAD_SEEKS_REQUEST',
     });
-    fetch(`${API_ROOT}/seeks?${stringify(query)}`, {
+    fetch(`${API_ROOT}/seeks?${stringify(getState().currentQuery)}`, {
       credentials: 'include',
     })
       .then(response => response.json())
@@ -73,7 +74,7 @@ export function postSeek(seek, successMessage) {
         });
       }
 
-      dispatch(loadSeeks());
+      dispatch(loadSeeks({ query: { isMine: true }, reset: true }));
     })
     .catch(error => dispatch({
       error,
@@ -83,7 +84,7 @@ export function postSeek(seek, successMessage) {
   };
 }
 
-export function deleteSeek(seek, refreshQuery, successMessage) {
+export function deleteSeek(seek, successMessage) {
   return function (dispatch, getState) {
     dispatch({
       type: 'DELETE_SEEK_REQUEST',
@@ -108,7 +109,7 @@ export function deleteSeek(seek, refreshQuery, successMessage) {
         });
       }
 
-      dispatch(loadSeeks(refreshQuery));
+      dispatch(loadSeeks({}));
     })
     .catch(error => dispatch({
       error,
