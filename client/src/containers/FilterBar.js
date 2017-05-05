@@ -3,9 +3,10 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
+import { grey400 } from 'material-ui/styles/colors';
+
 import Paper from 'material-ui/Paper';
 import FlatButton from 'material-ui/FlatButton';
-import RaisedButton from 'material-ui/RaisedButton';
 import FavoriteIcon from 'material-ui/svg-icons/action/favorite';
 
 import { loadListings } from './../actions/listings';
@@ -15,18 +16,35 @@ class FilterBar extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     displayMode: PropTypes.string.isRequired,
-    query: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
+    query: PropTypes.shape({
+      isStarred: PropTypes.bool.isRequired,
+    }).isRequired,
     style: PropTypes.object, // eslint-disable-line react/forbid-prop-types
   }
 
   static defaultProps = {
-    style: {
-      marginBottom: '2rem',
-      textAlign: 'center',
-    },
+    style: { },
   };
 
-  handleFavorite = isStarred => () => {
+  state = {
+    isStarred: false,
+  }
+
+  componentWillMount() {
+    this.setState({
+      isStarred: this.props.query.isStarred,
+    });
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      isStarred: nextProps.query.isStarred,
+    });
+  }
+
+  handleFavorite = () => {
+    const isStarred = !this.props.query.isStarred;
+    this.setState({ isStarred });
     switch (this.props.displayMode) {
       case 'seeks':
         this.props.dispatch(loadSeeks({ isStarred }));
@@ -40,12 +58,25 @@ class FilterBar extends Component {
   }
 
   render() {
+    const style = {
+      textAlign: 'center',
+      width: '100%',
+      ...this.props.style,
+    };
+
+    const favoriteButtonStyle = {
+      backgroundColor: this.props.query.isStarred ? grey400 : 'transparent',
+    };
+
     return (
-      <Paper style={this.props.style}>
-        { this.props.query.isStarred ?
-          <RaisedButton primary icon={<FavoriteIcon />} label="Favorites" onTouchTap={this.handleFavorite(false)} /> :
-          <FlatButton primary icon={<FavoriteIcon />} label="Favorites" onTouchTap={this.handleFavorite(true)} />
-        }
+      <Paper style={style}>
+        <FlatButton
+          primary
+          icon={<FavoriteIcon />}
+          label="Favorites"
+          style={favoriteButtonStyle}
+          onTouchTap={this.handleFavorite}
+        />
       </Paper>
     );
   }
