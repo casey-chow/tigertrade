@@ -6,15 +6,19 @@ import {
   propTypes as routerPropTypes,
 } from 'react-router-dom';
 
+import { Container, Row, Col } from 'react-grid-system';
+
 import { grey300 } from 'material-ui/styles/colors';
 
 import Paper from 'material-ui/Paper';
 import FlatButton from 'material-ui/FlatButton';
+import Toggle from 'material-ui/Toggle';
 import FavoriteIcon from 'material-ui/svg-icons/action/favorite';
 import SaveIcon from 'material-ui/svg-icons/content/save';
 
 import { loadListings } from './../actions/listings';
 import { loadSeeks } from './../actions/seeks';
+import { setExpandAll } from './../actions/ui';
 import { postSavedSearch } from './../actions/savedSearches';
 
 class FilterBar extends Component {
@@ -22,6 +26,7 @@ class FilterBar extends Component {
     ...routerPropTypes,
     dispatch: PropTypes.func.isRequired,
     displayMode: PropTypes.string.isRequired,
+    expandAll: PropTypes.bool.isRequired,
     query: PropTypes.shape({
       isStarred: PropTypes.bool,
       query: PropTypes.string,
@@ -86,16 +91,35 @@ class FilterBar extends Component {
       float: 'center',
     };
 
+    const expandAllToggleStyle = {
+      marginTop: '0.5rem',
+    };
+
     return (
       <Paper style={style}>
-        <div style={{ textAlign: 'center' }}>
-          <FlatButton
-            icon={<FavoriteIcon />}
-            label="Favorited"
-            style={favoriteButtonStyle}
-            onTouchTap={this.handleFavorite}
-          />
-        </div>
+        <Container>
+          <Row>
+            <Col xs={4} />
+            <Col xs={2}>
+              <div style={{ width: 'max-content' }}>
+                <FlatButton
+                  icon={<FavoriteIcon />}
+                  label="Favorited"
+                  style={favoriteButtonStyle}
+                  onTouchTap={this.handleFavorite}
+                />
+              </div>
+            </Col>
+            <Col xs={2}>
+              <Toggle
+                style={expandAllToggleStyle}
+                toggled={this.props.expandAll}
+                onToggle={(event, checked) => this.props.dispatch(setExpandAll(checked))}
+              />
+            </Col>
+            <Col xs={4} />
+          </Row>
+        </Container>
         <div style={{ position: 'absolute', top: '0.5em', right: '0' }}>
           <FlatButton
             secondary
@@ -114,6 +138,7 @@ const mapStateToProps = state => ({
   displayMode: state.displayMode,
   query: state.currentQuery,
   leftDrawerVisible: state.leftDrawerVisible,
+  expandAll: state.expandAll,
 });
 
 export default withRouter(connect(mapStateToProps)(FilterBar));

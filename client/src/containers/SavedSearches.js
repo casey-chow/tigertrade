@@ -33,6 +33,10 @@ class SavedSearches extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
+    if (this.props.expandAll !== nextProps.expandAll) {
+      return true;
+    }
+
     if (this.props.savedSearchesLoading !== nextProps.savedSearchesLoading) {
       return true;
     }
@@ -58,7 +62,10 @@ class SavedSearches extends Component {
   render() {
     return (
       <div>
-        <SavedSearchesList savedSearches={this.props.savedSearches} />
+        <SavedSearchesList
+          savedSearches={this.props.savedSearches}
+          expandAll={this.props.expandAll}
+        />
         <Waypoint topOffset="70%" onEnter={this.loadMoreSavedSearches} />
         { this.props.savedSearchesLoading &&
           <div style={{ alignItems: 'center', justifyContent: 'center', display: 'flex' }}>
@@ -73,6 +80,7 @@ class SavedSearches extends Component {
 const mapStateToProps = state => ({
   savedSearchesLoading: state.savedSearchesLoading,
   savedSearches: state.savedSearches,
+  expandAll: state.expandAll,
 });
 
 export default withRouter(connect(mapStateToProps)(SavedSearches));

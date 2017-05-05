@@ -36,6 +36,10 @@ class Seeks extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
+    if (this.props.expandAll !== nextProps.expandAll) {
+      return true;
+    }
+
     if (this.props.seeksLoading !== nextProps.seeksLoading) {
       return true;
     }
@@ -73,7 +77,7 @@ class Seeks extends Component {
   render() {
     return (
       <div>
-        <SeeksList seeks={this.props.seeks} />
+        <SeeksList seeks={this.props.seeks} expandAll={this.props.expandAll} />
         <Waypoint topOffset="70%" bottomOffset="-25%" onEnter={this.loadMoreSeeks} />
         { this.props.seeksLoading &&
           <div style={{ alignItems: 'center', justifyContent: 'center', display: 'flex' }}>
@@ -88,6 +92,7 @@ class Seeks extends Component {
 const mapStateToProps = state => ({
   seeksLoading: state.seeksLoading,
   seeks: state.seeks,
+  expandAll: state.expandAll,
 });
 
 export default withRouter(connect(mapStateToProps)(Seeks));
