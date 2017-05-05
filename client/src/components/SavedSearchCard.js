@@ -64,7 +64,7 @@ class SavedSearchCard extends React.Component {
   handleDelete = () => {
     this.props.dispatch(deleteSavedSearch(
       this.props.savedSearch,
-      `Successfully deleted saved search ${this.props.savedSearch.query}`,
+      'Successfully deleted saved search',
     ));
   }
 

@@ -66,9 +66,7 @@ class FilterBar extends Component {
   }
 
   saveSearch = () => {
-    this.props.dispatch(postSavedSearch(
-      `Successfully created saved search ${this.props.query.query}`,
-    ));
+    this.props.dispatch(postSavedSearch('Successfully created saved search'));
     this.props.history.push('/savedsearches');
   }
 
