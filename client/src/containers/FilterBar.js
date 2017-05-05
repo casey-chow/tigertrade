@@ -20,7 +20,6 @@ import { loadListings } from './../actions/listings';
 import { loadSeeks } from './../actions/seeks';
 import { setExpandAll } from './../actions/ui';
 import { postSavedSearch } from './../actions/savedSearches';
-// import { setExpandAll } from './../actions/ui';
 
 class FilterBar extends Component {
   static propTypes = {
