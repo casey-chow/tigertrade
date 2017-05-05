@@ -50,7 +50,7 @@ class Listings extends Component {
       }
     }
 
-    if (this.props.expandAll !== nextProps.listings.expandAll) {
+    if (this.props.expandAll !== nextProps.expandAll) {
       return true;
     }
 

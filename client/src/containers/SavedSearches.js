@@ -47,6 +47,10 @@ class SavedSearches extends Component {
       }
     }
 
+    if (this.props.expandAll !== nextProps.expandAll) {
+      return true;
+    }
+
     return false;
   }
 
