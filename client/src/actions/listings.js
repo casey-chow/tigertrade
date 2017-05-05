@@ -1,6 +1,6 @@
 import fetch from 'isomorphic-fetch';
 import { stringify } from 'query-string';
-import { setComposeState } from './ui';
+import { setComposeState, showSnackbar } from './ui';
 
 import { API_ROOT } from './common';
 
@@ -68,10 +68,7 @@ export function postListing(listing, successMessage) {
       });
 
       if (successMessage) {
-        dispatch({
-          type: 'SNACKBAR_SHOW',
-          message: successMessage,
-        });
+        dispatch(showSnackbar(successMessage));
       }
 
       dispatch(loadListings({ query: { isMine: true }, reset: true }));
@@ -101,10 +98,7 @@ export function deleteListing(listing, successMessage) {
       });
 
       if (successMessage) {
-        dispatch({
-          type: 'SNACKBAR_SHOW',
-          message: successMessage,
-        });
+        dispatch(showSnackbar(successMessage));
       }
       dispatch(loadListings({}));
     })
@@ -120,7 +114,7 @@ export function editListing(listing) {
   return setComposeState(true, true, 'listings', listing, undefined);
 }
 
-export function updateListing(listing) {
+export function updateListing(listing, successMessage) {
   return function (dispatch, getState) {
     dispatch({
       type: 'UPDATE_LISTING_REQUEST',
@@ -140,6 +134,9 @@ export function updateListing(listing) {
         type: 'UPDATE_LISTING_SUCCESS',
       });
       dispatch(loadListings({}));
+      if (successMessage) {
+        dispatch(showSnackbar(successMessage));
+      }
     })
     .catch(error => dispatch({
       error,
