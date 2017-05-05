@@ -1,17 +1,18 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { Field, reduxForm, propTypes as reduxFormPropTypes } from 'redux-form';
-import TextField from 'material-ui/TextField';
+import {
+  Field,
+  reduxForm,
+  propTypes as reduxFormPropTypes,
+} from 'redux-form';
+import { TextField } from 'redux-form-material-ui';
+
 import RaisedButton from 'material-ui/RaisedButton';
+// import FlatButton from 'material-ui/FlatButton';
+
+import PhotosList from './PhotosList';
 
 // https://stackoverflow.com/questions/33138370/how-to-wire-up-redux-form-bindings-to-the-forms-inputs
-
-const titleField = field => (
-  <TextField
-    hintText="What are you selling?" value={field.input.value}
-    onChange={field.input.onChange} maxLength="160" fullWidth
-  />
-);
 
 const priceField = field => (
   <div>
@@ -51,7 +52,14 @@ class ComposeForm extends PureComponent {
         <div>
           <label htmlFor="title">Title</label>
           <div>
-            <Field name="title" id="title" component={titleField} />
+            <Field
+              name="title"
+              id="title"
+              component={TextField}
+              hintText="What are you selling?"
+              maxLength="160"
+              fullWidth
+            />
           </div>
         </div>
         <div style={{ marginTop: '1em' }}>
@@ -65,6 +73,9 @@ class ComposeForm extends PureComponent {
           <div>
             <Field name="description" id="description" component={descriptionField} />
           </div>
+        </div>
+        <div style={{ marginTop: '1em' }}>
+          <Field name="photos" id="photos" component={PhotosList} />
         </div>
         <div>
           <RaisedButton type="submit" disabled={pristine || submitting} style={{ margin: 8, padding: 1 }}>Submit</RaisedButton>

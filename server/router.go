@@ -45,5 +45,8 @@ func Router() http.Handler {
 	router.PUT("/api/savedsearches/:id", UpdateSavedSearch)
 	router.DELETE("/api/savedsearches/:id", DeleteSavedSearch)
 
+	// photos.go
+	router.POST("/api/photos", CreatePhoto)
+
 	return router
 }

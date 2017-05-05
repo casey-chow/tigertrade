@@ -6,6 +6,10 @@ import (
 	"flag"
 	log "github.com/Sirupsen/logrus"
 	"github.com/TheGuyWithTheFace/cas" // NOTE: use this until https://github.com/go-cas/cas/pull/10 and pytimer's fork are merged
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/credentials"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 	"github.com/getsentry/raven-go"
 	_ "github.com/lib/pq"
 	"github.com/meatballhat/negroni-logrus"
@@ -19,6 +23,7 @@ import (
 )
 
 var db *sql.DB
+var uploader *s3manager.Uploader
 
 func casMiddleware() negroni.Handler {
 	casUrl, _ := url.Parse("https://fed.princeton.edu/cas/")
@@ -63,7 +68,7 @@ func loadEnvironment() {
 	if os.Getenv("CONFIG_PRESENT") == "true" {
 		return
 	}
-	log.Print("Heroku config variables not present. Loading manually from .env")
+	log.Print("environment variables not found, loading environment from .env")
 
 	// Open .env file
 	path := path.Join(os.Getenv("GOPATH"), "src/github.com/casey-chow/tigertrade/.env")
@@ -93,24 +98,35 @@ func initDatabase() {
 	db, err = sql.Open("postgres", os.Getenv("DATABASE_URL"))
 	if err != nil {
 		raven.CaptureErrorAndWait(err, nil)
-		log.WithField("err", err).Fatal("Unable to open postgres database")
+		log.WithField("err", err).Fatal("unable to open postgres database")
 	} else {
-		log.Print("Connected to database")
+		log.Print("connected to database")
 	}
 
 	if err = db.Ping(); err != nil {
 		raven.CaptureErrorAndWait(err, nil)
-		log.WithField("err", err).Fatal("Unable to connect to postgres database")
+		log.WithField("err", err).Fatal("unable to connect to postgres database")
 	}
+}
+
+func initS3() {
+	creds := credentials.NewEnvCredentials()
+	_, err := creds.Get()
+	if err != nil {
+		log.WithError(err).Info("error while creating aws credentials")
+	}
+
+	cfg := aws.NewConfig().
+		WithRegion("us-east-1").
+		WithCredentials(creds)
+
+	sess := session.Must(session.NewSession(cfg))
+
+	uploader = s3manager.NewUploader(sess)
 }
 
 // customize logging
 func init() {
-	if os.Getenv("ENVIRONMENT") == "production" {
-		// Log as JSON instead of the default ASCII formatter.
-		log.SetFormatter(&log.JSONFormatter{})
-	}
-
 	// Output to stdout instead of the default stderr
 	log.SetOutput(os.Stdout)
 
@@ -123,6 +139,7 @@ func init() {
 func App() http.Handler {
 	loadEnvironment()
 	initDatabase()
+	initS3()
 
 	app := negroni.New()
 
