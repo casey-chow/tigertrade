@@ -1,15 +1,32 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import {
+  withRouter,
+  propTypes as routerPropTypes,
+} from 'react-router-dom';
+import { isNull, omit, omitBy } from 'lodash';
+import { stringify } from 'query-string';
 
 import {
   Card,
+  CardActions,
   CardHeader,
   CardTitle,
 } from 'material-ui/Card';
+import FlatButton from 'material-ui/FlatButton';
+
+import SearchIcon from 'material-ui/svg-icons/action/search';
+import DeleteIcon from 'material-ui/svg-icons/action/delete';
+
+import { loadListings } from './../actions/listings';
+import { deleteSavedSearch } from './../actions/savedSearches';
 
 class SavedSearchCard extends React.Component {
 
   static propTypes = {
+    ...routerPropTypes,
+    dispatch: PropTypes.func.isRequired,
     expanded: PropTypes.bool.isRequired,
     onExpandChange: PropTypes.func,
     savedSearch: PropTypes.shape({
@@ -31,6 +48,24 @@ class SavedSearchCard extends React.Component {
 
   handleExpandChange = (expanded) => {
     this.props.onExpandChange(expanded, this.props.savedSearch.keyId);
+  }
+
+  handleActivate = () => {
+    console.log(this.props.savedSearch);
+    const query = omitBy(omit(this.props.savedSearch, ['keyId', 'creationDate', 'lastModificationDate']), isNull);
+    console.log(query);
+    this.props.dispatch(loadListings({
+      query,
+      reset: true,
+    }));
+    this.props.history.push(`/listings?${stringify(query)}`);
+  }
+
+  handleDelete = () => {
+    this.props.dispatch(deleteSavedSearch(
+      this.props.savedSearch,
+      `Successfully deleted saved search ${this.props.savedSearch.query}`,
+    ));
   }
 
   render() {
@@ -56,10 +91,15 @@ class SavedSearchCard extends React.Component {
             title={savedSearch.query}
           />
 
+          <CardActions>
+            <FlatButton primary icon={<SearchIcon />} label="Activate" onTouchTap={this.handleActivate} />
+            <FlatButton primary icon={<DeleteIcon />} label="Delete" onTouchTap={this.handleDelete} />
+          </CardActions>
+
         </div>
       </Card>
     );
   }
 }
 
-export default SavedSearchCard;
+export default withRouter(connect()(SavedSearchCard));

@@ -22,30 +22,69 @@ export function loadSavedSearches() {
   };
 }
 
-export function postSavedSearch(savedSearch) {
+export function postSavedSearch(successMessage) {
   return function (dispatch, getState) {
     dispatch({
       type: 'POST_SAVED_SEARCH_REQUEST',
     });
-
     fetch(`${API_ROOT}/savedsearches`, {
       credentials: 'include',
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(savedSearch),
+      body: JSON.stringify(getState().currentQuery),
     })
     .then((json) => {
       dispatch({
         json,
         type: 'POST_SAVED_SEARCH_SUCCESS',
       });
+
+      if (successMessage) {
+        dispatch({
+          type: 'SNACKBAR_SHOW',
+          message: successMessage,
+        });
+      }
       dispatch(loadSavedSearches());
     })
     .catch(error => dispatch({
       error,
       type: 'POST_SAVED_SEARCH_FAILURE',
+    }));
+  };
+}
+
+export function deleteSavedSearch(savedSearch, successMessage) {
+  return function (dispatch, getState) {
+    dispatch({
+      type: 'DELETE_SAVED_SEARCH_REQUEST',
+      savedSearch,
+    });
+
+    fetch(`${API_ROOT}/savedSearches/${savedSearch.keyId}`, {
+      credentials: 'include',
+      method: 'DELETE',
+    })
+    .then(() => {
+      dispatch({
+        type: 'DELETE_SAVED_SEARCH_SUCCESS',
+        savedSearch,
+      });
+
+      if (successMessage) {
+        dispatch({
+          type: 'SNACKBAR_SHOW',
+          message: successMessage,
+        });
+      }
+      dispatch(loadSavedSearches({}));
+    })
+    .catch(error => dispatch({
+      error,
+      savedSearch,
+      type: 'DELETE_SAVED_SEARCH_FAILURE',
     }));
   };
 }
