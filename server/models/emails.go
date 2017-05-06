@@ -57,7 +57,6 @@ func getEmail(netId string) *mail.Email {
 }
 
 func SendEmail(input *emailInput) (error, int) {
-
 	if input.Sender == input.Recepient {
 		return errors.New("To and From fields cannot be the same."), http.StatusBadRequest
 	}
@@ -71,12 +70,10 @@ func SendEmail(input *emailInput) (error, int) {
 	// Create email
 	m := mail.NewV3Mail()
 	m.SetFrom(robot)
+	m.SetReplyTo(requestor)
+
 	p := mail.NewPersonalization()
 	p.AddTos(recipient)
-	p.AddCCs(requestor) // So that the sender still gets a copy in their inbox.
-	p.Subject = input.Subject
-	m.AddPersonalizations(p)
-	m.AddContent(content)
 
 	// Set Template
 	if input.IsSeek {
@@ -84,6 +81,10 @@ func SendEmail(input *emailInput) (error, int) {
 	} else {
 		m.SetTemplateID("b53ead7f-c9d7-4c17-9dcf-f59105b6eb65")
 	}
+
+	p.Subject = input.Subject
+	m.AddPersonalizations(p)
+	m.AddContent(content)
 
 	// Send email, hope for the best
 	request := sendgrid.GetRequest(os.Getenv("SENDGRID_API_KEY"), "/v3/mail/send", "https://api.sendgrid.com")
