@@ -14,7 +14,15 @@ import LoadingSpinner from '../components/LoadingSpinner';
 
 import { loadListings } from './../actions/listings';
 
-class Listings extends Component {
+const mapStateToProps = state => ({
+  listingsLoading: state.listingsLoading,
+  listings: state.listings,
+  expandAll: state.expandAll,
+});
+
+@withRouter
+@connect(mapStateToProps)
+export default class Listings extends Component {
   static propTypes = {
     ...routerPropTypes,
     dispatch: PropTypes.func.isRequired,
@@ -86,11 +94,3 @@ class Listings extends Component {
     );
   }
 }
-
-const mapStateToProps = state => ({
-  listingsLoading: state.listingsLoading,
-  listings: state.listings,
-  expandAll: state.expandAll,
-});
-
-export default withRouter(connect(mapStateToProps)(Listings));

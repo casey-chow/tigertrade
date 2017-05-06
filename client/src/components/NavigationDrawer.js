@@ -19,7 +19,13 @@ import Feedback from 'material-ui/svg-icons/action/feedback';
 
 const SelectableList = makeSelectable(List);
 
-class NavigationDrawer extends Component {
+const mapStateToProps = state => ({
+  visible: state.leftDrawerVisible,
+});
+
+@withRouter
+@connect(mapStateToProps)
+export default class NavigationDrawer extends Component {
   static propTypes = {
     ...routerPropTypes,
     children: PropTypes.oneOfType([
@@ -137,8 +143,3 @@ class NavigationDrawer extends Component {
   }
 }
 
-const mapStateToProps = state => ({
-  visible: state.leftDrawerVisible,
-});
-
-export default withRouter(connect(mapStateToProps)(NavigationDrawer));

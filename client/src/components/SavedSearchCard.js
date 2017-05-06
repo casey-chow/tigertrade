@@ -22,7 +22,9 @@ import DeleteIcon from 'material-ui/svg-icons/action/delete';
 import { loadListings } from './../actions/listings';
 import { deleteSavedSearch } from './../actions/savedSearches';
 
-class SavedSearchCard extends React.Component {
+@withRouter
+@connect()
+export default class SavedSearchCard extends React.Component {
 
   static propTypes = {
     ...routerPropTypes,
@@ -115,5 +117,3 @@ class SavedSearchCard extends React.Component {
     );
   }
 }
-
-export default withRouter(connect()(SavedSearchCard));

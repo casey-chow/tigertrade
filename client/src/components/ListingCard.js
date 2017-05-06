@@ -32,7 +32,13 @@ import { redirectToCas } from '../helpers/cas';
 import { mailSeller } from './../actions/users';
 import { editListing, deleteListing, starListing } from './../actions/listings';
 
-class ListingCard extends React.Component {
+const mapStateToProps = state => ({
+  currentUser: state.currentUser,
+});
+
+@withRouter
+@connect(mapStateToProps)
+export default class ListingCard extends React.Component {
 
   static propTypes = {
     ...routerPropTypes,
@@ -217,9 +223,3 @@ class ListingCard extends React.Component {
     );
   }
 }
-
-const mapStateToProps = state => ({
-  currentUser: state.currentUser,
-});
-
-export default withRouter(connect(mapStateToProps)(ListingCard));

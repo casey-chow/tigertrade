@@ -30,7 +30,14 @@ import { redirectToCas } from '../helpers/cas';
 import { mailBuyer } from './../actions/users';
 import { editSeek, deleteSeek } from './../actions/seeks';
 
-class SeekCard extends React.Component {
+
+const mapStateToProps = state => ({
+  currentUser: state.currentUser,
+});
+
+@withRouter
+@connect(mapStateToProps)
+export default class SeekCard extends React.Component {
 
   static propTypes = {
     ...routerPropTypes,
@@ -185,9 +192,3 @@ class SeekCard extends React.Component {
     );
   }
 }
-
-const mapStateToProps = state => ({
-  currentUser: state.currentUser,
-});
-
-export default withRouter(connect(mapStateToProps)(SeekCard));

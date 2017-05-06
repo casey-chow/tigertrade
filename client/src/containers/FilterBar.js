@@ -21,7 +21,16 @@ import { loadSeeks } from './../actions/seeks';
 import { setExpandAll } from './../actions/ui';
 import { postSavedSearch } from './../actions/savedSearches';
 
-class FilterBar extends Component {
+const mapStateToProps = state => ({
+  displayMode: state.displayMode,
+  query: state.currentQuery,
+  leftDrawerVisible: state.leftDrawerVisible,
+  expandAll: state.expandAll,
+});
+
+@withRouter
+@connect(mapStateToProps)
+export default class FilterBar extends Component {
   static propTypes = {
     ...routerPropTypes,
     dispatch: PropTypes.func.isRequired,
@@ -150,12 +159,3 @@ class FilterBar extends Component {
     );
   }
 }
-
-const mapStateToProps = state => ({
-  displayMode: state.displayMode,
-  query: state.currentQuery,
-  leftDrawerVisible: state.leftDrawerVisible,
-  expandAll: state.expandAll,
-});
-
-export default withRouter(connect(mapStateToProps)(FilterBar));

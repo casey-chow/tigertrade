@@ -5,7 +5,7 @@ import { Container, Row, Col } from 'react-grid-system';
 
 import SeekCard from './SeekCard';
 
-class SeeksList extends PureComponent {
+export default class SeeksList extends PureComponent {
   static propTypes = {
     seeks: PropTypes.arrayOf(PropTypes.shape({
       keyId: PropTypes.number,
@@ -59,5 +59,3 @@ class SeeksList extends PureComponent {
     );
   }
 }
-
-export default SeeksList;

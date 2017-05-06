@@ -40,7 +40,8 @@ const descriptionField = field => (
   />
 );
 
-class ComposeForm extends PureComponent {
+@reduxForm({ form: 'compose' })
+export default class ComposeForm extends PureComponent {
   static propTypes = {
     ...reduxFormPropTypes,
     style: PropTypes.object, // eslint-disable-line react/forbid-prop-types
@@ -110,5 +111,3 @@ class ComposeForm extends PureComponent {
     );
   }
 }
-
-export default reduxForm({ form: 'compose' })(ComposeForm);

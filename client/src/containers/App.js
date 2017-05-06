@@ -25,7 +25,17 @@ import {
   hideSnackbar,
 } from '../actions/ui';
 
-class App extends Component {
+const mapStateToProps = state => ({
+  loading: state.currentUserLoading,
+  user: state.currentUser,
+  snackbar: state.snackbar,
+  showFAB: !state.composeState.show,
+  displayMode: state.displayMode,
+});
+
+@withRouter
+@connect(mapStateToProps)
+export default class App extends Component {
   static propTypes = {
     displayMode: PropTypes.string.isRequired,
     showFAB: PropTypes.bool.isRequired,
@@ -105,13 +115,3 @@ class App extends Component {
     );
   }
 }
-
-const mapStateToProps = state => ({
-  loading: state.currentUserLoading,
-  user: state.currentUser,
-  snackbar: state.snackbar,
-  showFAB: !state.composeState.show,
-  displayMode: state.displayMode,
-});
-
-export default withRouter(connect(mapStateToProps)(App));

@@ -3,7 +3,8 @@ import { Field, reduxForm, propTypes } from 'redux-form';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 
-class ContactBuyerForm extends PureComponent {
+@reduxForm({ form: 'contactBuyer' })
+export default class ContactBuyerForm extends PureComponent {
   static propTypes = {
     ...propTypes,
   }
@@ -56,5 +57,3 @@ class ContactBuyerForm extends PureComponent {
     );
   }
 }
-
-export default reduxForm({ form: 'contactBuyer' })(ContactBuyerForm);

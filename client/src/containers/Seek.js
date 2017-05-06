@@ -13,7 +13,14 @@ import SeekCard from '../components/SeekCard';
 
 import { loadSeek } from './../actions/seeks';
 
-class Seek extends Component {
+const mapStateToProps = state => ({
+  loading: state.seekLoading,
+  seek: state.seek,
+});
+
+@withRouter
+@connect(mapStateToProps)
+export default class Seek extends Component {
   static propTypes = {
     ...routerPropTypes,
     dispatch: PropTypes.func.isRequired,
@@ -60,10 +67,3 @@ class Seek extends Component {
     );
   }
 }
-
-const mapStateToProps = state => ({
-  loading: state.seekLoading,
-  seek: state.seek,
-});
-
-export default withRouter(connect(mapStateToProps)(Seek));

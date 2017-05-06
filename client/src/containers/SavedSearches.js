@@ -13,7 +13,15 @@ import LoadingSpinner from '../components/LoadingSpinner';
 
 import { loadSavedSearches } from '../actions/savedSearches';
 
-class SavedSearches extends Component {
+const mapStateToProps = state => ({
+  loading: state.savedSearchesLoading,
+  savedSearches: state.savedSearches,
+  expandAll: state.expandAll,
+});
+
+@withRouter
+@connect(mapStateToProps)
+export default class SavedSearches extends Component {
   static propTypes = {
     ...routerPropTypes,
     loading: PropTypes.bool.isRequired,
@@ -72,11 +80,3 @@ class SavedSearches extends Component {
     );
   }
 }
-
-const mapStateToProps = state => ({
-  loading: state.savedSearchesLoading,
-  savedSearches: state.savedSearches,
-  expandAll: state.expandAll,
-});
-
-export default withRouter(connect(mapStateToProps)(SavedSearches));

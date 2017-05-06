@@ -16,7 +16,9 @@ import SearchBar from './SearchBar';
 import LoginButton from './LoginButton';
 import LoggedInMenu from './LoggedInMenu';
 
-class ActionBar extends Component {
+@withRouter
+@connect()
+export default class ActionBar extends Component {
   static muiName = 'AppBar';
 
   static propTypes = {
@@ -78,5 +80,3 @@ class ActionBar extends Component {
     );
   }
 }
-
-export default withRouter(connect()(ActionBar));

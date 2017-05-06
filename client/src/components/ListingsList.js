@@ -5,7 +5,7 @@ import { Container, Row, Col } from 'react-grid-system';
 
 import ListingCard from './ListingCard';
 
-class ListingsList extends PureComponent {
+export default class ListingsList extends PureComponent {
   static propTypes = {
     listings: PropTypes.arrayOf(PropTypes.shape({
       keyId: PropTypes.number,
@@ -55,5 +55,3 @@ class ListingsList extends PureComponent {
     );
   }
 }
-
-export default ListingsList;

@@ -5,7 +5,7 @@ import { Container, Row, Col } from 'react-grid-system';
 
 import SavedSearchCard from './SavedSearchCard';
 
-class SavedSearchesList extends PureComponent {
+export default class SavedSearchesList extends PureComponent {
   static propTypes = {
     savedSearches: PropTypes.arrayOf(PropTypes.shape({
       keyId: PropTypes.number,
@@ -51,5 +51,3 @@ class SavedSearchesList extends PureComponent {
     );
   }
 }
-
-export default SavedSearchesList;

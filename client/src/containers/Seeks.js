@@ -14,7 +14,16 @@ import LoadingSpinner from '../components/LoadingSpinner';
 
 import { loadSeeks } from './../actions/seeks';
 
-class Seeks extends Component {
+
+const mapStateToProps = state => ({
+  seeksLoading: state.seeksLoading,
+  seeks: state.seeks,
+  expandAll: state.expandAll,
+});
+
+@withRouter
+@connect(mapStateToProps)
+export default class Seeks extends Component {
   static propTypes = {
     ...routerPropTypes,
     dispatch: PropTypes.func.isRequired,
@@ -89,11 +98,3 @@ class Seeks extends Component {
     );
   }
 }
-
-const mapStateToProps = state => ({
-  seeksLoading: state.seeksLoading,
-  seeks: state.seeks,
-  expandAll: state.expandAll,
-});
-
-export default withRouter(connect(mapStateToProps)(Seeks));

@@ -12,7 +12,15 @@ import { loadSeeks } from './../actions/seeks';
 
 import './SearchBar.css';
 
-class SearchBar extends Component {
+
+const mapStateToProps = state => ({
+  displayMode: state.displayMode,
+  query: state.currentQuery,
+});
+
+@withRouter
+@connect(mapStateToProps)
+export default class SearchBar extends Component {
 
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -142,10 +150,3 @@ class SearchBar extends Component {
     );
   }
 }
-
-const mapStateToProps = state => ({
-  displayMode: state.displayMode,
-  query: state.currentQuery,
-});
-
-export default withRouter(connect(mapStateToProps)(SearchBar));

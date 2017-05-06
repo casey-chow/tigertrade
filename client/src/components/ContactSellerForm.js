@@ -7,7 +7,8 @@ import {
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 
-class ContactSellerForm extends PureComponent {
+@reduxForm({ form: 'contactSeller' })
+export default class ContactSellerForm extends PureComponent {
   static propTypes = {
     ...reduxFormPropTypes,
   }
@@ -64,5 +65,3 @@ class ContactSellerForm extends PureComponent {
     );
   }
 }
-
-export default reduxForm({ form: 'contactSeller' })(ContactSellerForm);

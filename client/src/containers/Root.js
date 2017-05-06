@@ -10,7 +10,7 @@ import store from '../store';
 import muiTheme from '../helpers/theme';
 import App from './App';
 
-class Root extends PureComponent {
+export default class Root extends PureComponent {
   render() {
     return (
       <MuiThemeProvider muiTheme={getMuiTheme(muiTheme)}>
@@ -23,5 +23,3 @@ class Root extends PureComponent {
     );
   }
 }
-
-export default Root;

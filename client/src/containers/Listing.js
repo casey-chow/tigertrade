@@ -13,7 +13,15 @@ import ListingCard from '../components/ListingCard';
 
 import { loadListing } from './../actions/listings';
 
-class Listing extends Component {
+
+const mapStateToProps = state => ({
+  loading: state.listingLoading,
+  listing: state.listing,
+});
+
+@withRouter
+@connect(mapStateToProps)
+export default class Listing extends Component {
   static propTypes = {
     ...routerPropTypes,
     dispatch: PropTypes.func.isRequired,
@@ -59,10 +67,3 @@ class Listing extends Component {
     );
   }
 }
-
-const mapStateToProps = state => ({
-  loading: state.listingLoading,
-  listing: state.listing,
-});
-
-export default withRouter(connect(mapStateToProps)(Listing));

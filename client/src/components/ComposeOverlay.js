@@ -20,7 +20,19 @@ import ComposeForm from '../components/ComposeForm';
 import SeekComposeForm from '../components/SeekComposeForm';
 import RedirectToCas from '../components/RedirectToCas';
 
-class ComposeOverlay extends Component {
+const mapStateToProps = state => ({
+  user: state.currentUser,
+  form: state.form,
+  mode: state.composeState.mode,
+  currentUserLoading: state.currentUserLoading,
+  isEdit: state.composeState.isEdit,
+  listing: state.composeState.listing,
+  seek: state.composeState.seek,
+});
+
+@withRouter
+@connect(mapStateToProps)
+export default class ComposeOverlay extends Component {
   static propTypes = {
     ...routerPropTypes,
     dispatch: PropTypes.func.isRequired,
@@ -152,15 +164,3 @@ class ComposeOverlay extends Component {
     );
   }
 }
-
-const mapStateToProps = state => ({
-  user: state.currentUser,
-  form: state.form,
-  mode: state.composeState.mode,
-  currentUserLoading: state.currentUserLoading,
-  isEdit: state.composeState.isEdit,
-  listing: state.composeState.listing,
-  seek: state.composeState.seek,
-});
-
-export default withRouter(connect(mapStateToProps)(ComposeOverlay));
