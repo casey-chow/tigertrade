@@ -25,12 +25,6 @@ import {
   hideSnackbar,
 } from '../actions/ui';
 
-const fabStyle = {
-  position: 'fixed',
-  bottom: '35px',
-  right: '35px',
-};
-
 class App extends Component {
   static propTypes = {
     displayMode: PropTypes.string.isRequired,
@@ -46,6 +40,14 @@ class App extends Component {
     }).isRequired,
   }
 
+  static styles = {
+    fab: {
+      position: 'fixed',
+      bottom: '35px',
+      right: '35px',
+    },
+  }
+
   componentWillMount() {
     this.props.dispatch(loadCurrentUser());
   }
@@ -55,6 +57,8 @@ class App extends Component {
   }
 
   render() {
+    const styles = App.styles;
+
     return (
       <div className="App">
         <ActionBar user={this.props.user} loading={this.props.loading} />
@@ -81,7 +85,7 @@ class App extends Component {
 
         { this.props.showFAB ?
           <FloatingActionButton
-            style={fabStyle}
+            style={styles.fab}
             onTouchTap={
               () => this.props.dispatch(setComposeState(true, false, this.props.displayMode))
             }

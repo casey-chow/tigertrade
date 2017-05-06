@@ -68,6 +68,27 @@ class ListingCard extends React.Component {
     onExpandChange: () => {},
   };
 
+  static styles = {
+    cardExpanded: {
+      margin: '1.5rem -3rem',
+    },
+    cardContentsShown: {
+      maxHeight: '1000px',
+      transition: 'max-height 0.5s ease-in',
+      overflow: 'hidden',
+    },
+    cardContentsHidden: {
+      maxHeight: '0',
+      transition: 'max-height 0.15s ease-out',
+      overflow: 'hidden',
+    },
+    thumbnail: {
+      minWidth: undefined,
+      maxHeight: '300px',
+      width: 'auto',
+    },
+  }
+
   state = {
     contactOpen: false,
   }
@@ -122,34 +143,34 @@ class ListingCard extends React.Component {
 
   render() {
     const { listing, expanded } = this.props;
-
-    const cardStyles = expanded ? {
-      margin: '1.5rem -3rem',
-    } : {};
-
-    const onShowStyles = { maxHeight: '1000px', transition: 'max-height 0.5s ease-in', overflow: 'hidden' };
-    const onHideStyles = { maxHeight: '0', transition: 'max-height 0.15s ease-out', overflow: 'hidden' };
-
+    const styles = ListingCard.styles;
 
     const favoriteButtonStyle = {
       backgroundColor: this.props.listing.isStarred ? grey300 : 'transparent',
-      float: 'center',
     };
 
     return (
       <div>
-        <Card style={cardStyles} onExpandChange={this.handleExpandChange} expanded={expanded}>
+        <Card
+          onExpandChange={this.handleExpandChange}
+          expanded={expanded}
+          style={expanded ? styles.cardExpanded : {}}
+        >
           <CardHeader
             title={listing.title}
             subtitle={`$${listing.price / 100}`}
             actAsExpander
           />
 
-          <div style={expanded ? onShowStyles : onHideStyles}>
+          <div style={expanded ? styles.cardContentsShown : styles.cardContentsHidden}>
 
             { listing.thumbnail &&
               <CardMedia>
-                <img alt={listing.title} src={listing.thumbnail} style={{ minWidth: undefined, maxHeight: '300px', width: 'auto' }} />
+                <img
+                  alt={listing.title}
+                  src={listing.thumbnail}
+                  style={styles.thumbnail}
+                />
               </CardMedia>
             }
 

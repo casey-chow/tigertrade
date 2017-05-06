@@ -46,6 +46,22 @@ class SavedSearchCard extends React.Component {
     onExpandChange: () => {},
   };
 
+  static styles = {
+    cardExpanded: {
+      margin: '1.5rem -3rem',
+    },
+    cardContentsShown: {
+      maxHeight: '1000px',
+      transition: 'max-height 0.5s ease-in',
+      overflow: 'hidden',
+    },
+    cardContentsHidden: {
+      maxHeight: '0',
+      transition: 'max-height 0.15s ease-out',
+      overflow: 'hidden',
+    },
+  }
+
   handleExpandChange = (expanded) => {
     this.props.onExpandChange(expanded, this.props.savedSearch.keyId);
   }
@@ -70,22 +86,20 @@ class SavedSearchCard extends React.Component {
 
   render() {
     const { savedSearch, expanded } = this.props;
-
-    const cardStyles = expanded ? {
-      margin: '1.5em -3em',
-    } : {};
-
-    const onShowStyles = { maxHeight: '1000px', transition: 'max-height 0.5s ease-in', overflow: 'hidden' };
-    const onHideStyles = { maxHeight: '0', transition: 'max-height 0.15s ease-out', overflow: 'hidden' };
+    const styles = SavedSearchCard.styles;
 
     return (
-      <Card style={cardStyles} onExpandChange={this.handleExpandChange} expanded={expanded}>
+      <Card
+        style={expanded ? styles.cardExpanded : {}}
+        onExpandChange={this.handleExpandChange}
+        expanded={expanded}
+      >
         <CardHeader
           title={savedSearch.query}
           actAsExpander
         />
 
-        <div style={expanded ? onShowStyles : onHideStyles}>
+        <div style={expanded ? styles.cardContentsShown : styles.cardContentsHidden}>
 
           <CardTitle
             title={savedSearch.query}

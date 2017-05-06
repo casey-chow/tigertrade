@@ -18,11 +18,12 @@ export default class LoggedInMenu extends PureComponent {
     }).isRequired,
   }
 
-  style = {
-    ...this.props.style,
-    color: 'white',
-    marginTop: '8px',
-    marginBottom: '8px',
+  static styles = {
+    menu: {
+      color: 'white',
+      marginTop: '8px',
+      marginBottom: '8px',
+    },
   }
 
   feedback = () => {
@@ -42,10 +43,12 @@ export default class LoggedInMenu extends PureComponent {
   render() {
     // eslint-disable-next-line no-unused-vars
     const { user, ...rest } = this.props;
+    const styles = LoggedInMenu.styles;
+
     return (
       <IconMenu
         {...rest}
-        style={this.style}
+        style={{ ...styles.menu, ...this.props.style }}
         iconButtonElement={
           <FlatButton
             {...rest}

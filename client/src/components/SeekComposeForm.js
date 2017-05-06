@@ -37,12 +37,18 @@ class SeekComposeForm extends PureComponent {
     style: PropTypes.object, // eslint-disable-line react/forbid-prop-types
   }
 
+  static styles = {
+    spacer: { marginTop: '1em' },
+    actionButton: { margin: 8, padding: 1 },
+  }
+
   defaultProps = {
     style: {},
   }
 
   render() {
     const { handleSubmit, pristine, reset, submitting } = this.props;
+    const styles = SeekComposeForm.style;
 
     return (
       <form onSubmit={handleSubmit} style={this.props.style}>
@@ -52,21 +58,21 @@ class SeekComposeForm extends PureComponent {
             <Field name="title" id="title" component={titleField} />
           </div>
         </div>
-        <div style={{ marginTop: '1em' }}>
+        <div style={styles.spacer}>
           <label htmlFor="price">Price</label>
           <div>
             <Field name="price" id="price" component={priceField} />
           </div>
         </div>
-        <div style={{ marginTop: '1em' }}>
+        <div style={styles.spacer}>
           <label htmlFor="description">Description</label>
           <div>
             <Field name="description" id="description" component={descriptionField} />
           </div>
         </div>
         <div>
-          <RaisedButton type="submit" disabled={pristine || submitting} style={{ margin: 8, padding: 1 }}>Submit</RaisedButton>
-          <RaisedButton type="button" disabled={pristine || submitting} style={{ margin: 8, padding: 1 }} onClick={reset}>Clear</RaisedButton>
+          <RaisedButton type="submit" disabled={pristine || submitting} style={styles.actionButton}>Submit</RaisedButton>
+          <RaisedButton type="button" disabled={pristine || submitting} style={styles.actionButton} onClick={reset}>Clear</RaisedButton>
         </div>
       </form>
     );

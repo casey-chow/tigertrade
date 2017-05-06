@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+
 import { Card, CardHeader, CardText } from 'material-ui/Card';
 import IconButton from 'material-ui/IconButton';
 import Clear from 'material-ui/svg-icons/content/clear';
@@ -19,18 +20,6 @@ import ComposeForm from '../components/ComposeForm';
 import SeekComposeForm from '../components/SeekComposeForm';
 import RedirectToCas from '../components/RedirectToCas';
 
-const overlayStyle = {
-  position: 'fixed',
-  bottom: '0',
-  zIndex: '99',
-  right: '5%',
-  width: '40vw',
-  minWidth: '16rem',
-};
-
-const showStyle = {};
-const hideStyle = { display: 'none' };
-
 class ComposeOverlay extends Component {
   static propTypes = {
     ...routerPropTypes,
@@ -44,6 +33,18 @@ class ComposeOverlay extends Component {
     currentUserLoading: PropTypes.bool.isRequired,
     isEdit: PropTypes.bool.isRequired,
     mode: PropTypes.string.isRequired,
+  };
+
+  static styles = {
+    overlay: {
+      position: 'fixed',
+      bottom: '0',
+      zIndex: '99',
+      right: '5%',
+      width: '40vw',
+      minWidth: '16rem',
+    },
+    overlayHidden: { display: 'none' },
   };
 
   state = {
@@ -104,14 +105,23 @@ class ComposeOverlay extends Component {
   }
 
   render() {
+    const styles = ComposeOverlay.styles;
+
     if (!this.props.currentUserLoading && !this.props.user.loggedIn) {
       return <RedirectToCas />;
     }
 
     return (
-      <div style={overlayStyle}>
-        <Card expanded={this.state.expanded} onExpandChange={this.handleExpandChange} zDepth={2}>
-          <CardHeader title={this.props.isEdit ? 'Edit' : 'Compose'} actAsExpander>
+      <div style={styles.overlay}>
+        <Card
+          expanded={this.state.expanded}
+          onExpandChange={this.handleExpandChange}
+          zDepth={2}
+        >
+          <CardHeader
+            title={this.props.isEdit ? 'Edit' : 'Compose'}
+            actAsExpander
+          >
             <IconButton
               onTouchTap={this.handleRequestClose}
               style={{ float: 'right', marginTop: '-15px', marginRight: '-15px' }}
@@ -119,9 +129,9 @@ class ComposeOverlay extends Component {
               <Clear />
             </IconButton>
           </CardHeader>
-          <CardText style={this.state.expanded ? showStyle : hideStyle}>
-            { (this.state.mode === 'listings') ?
-              <ComposeForm
+          <CardText style={this.state.expanded ? {} : styles.overlayHidden}>
+            { (this.state.mode === 'listings')
+              ? <ComposeForm
                 onSubmit={this.props.isEdit ? this.handleEditListing : this.handleSubmitListing}
                 initialValues={
                   this.props.isEdit ?

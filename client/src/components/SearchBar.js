@@ -35,6 +35,16 @@ class SearchBar extends Component {
     style: {},
   }
 
+  static styles = {
+    base: {
+      backgroundColor: 'hsla(0,0%,100%,.3)',
+      marginTop: '8px',
+      marginBottom: '8px',
+      paddingLeft: '16px',
+      paddingRight: '16px',
+    },
+  }
+
   state = {
     open: false,
     focus: false,
@@ -104,21 +114,17 @@ class SearchBar extends Component {
   };
 
   render() {
-    const style = {
-      ...this.props.style,
-      backgroundColor: 'hsla(0,0%,100%,.3)',
-      marginTop: '8px',
-      marginBottom: '8px',
-      paddingLeft: '16px',
-      paddingRight: '16px',
-    };
-
+    const styles = SearchBar.styles;
     const hintText = (this.props.displayMode === 'seeks')
           ? (<span className="hint-text">What do you want to sell?</span>)
           : (<span className="hint-text">What do you want to buy?</span>);
 
     return (
-      <Paper style={style} className={this.state.focus ? 'focus' : 'blur'} zDepth={2}>
+      <Paper
+        style={{ ...styles.base, ...this.props.style }}
+        className={this.state.focus ? 'focus' : 'blur'}
+        zDepth={2}
+      >
         <AutoComplete
           className="SearchBar"
           fullWidth

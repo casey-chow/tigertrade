@@ -7,7 +7,7 @@ import {
 } from 'react-router-dom';
 
 import { Container, Row, Col } from 'react-grid-system';
-import CircularProgress from 'material-ui/CircularProgress';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 import ListingCard from '../components/ListingCard';
 
@@ -45,17 +45,14 @@ class Listing extends Component {
   }
 
   render() {
+    const { listing, listingsLoading } = this.props;
     return (
       <Container className="ListingsList">
         <Row>
           <Col xs={1} />
           <Col xs={10} style={{ marginTop: '-1rem' }}>
-            <ListingCard expanded listing={this.props.listing} />
-            { this.props.listingsLoading &&
-              <div style={{ alignItems: 'center', justifyContent: 'center', display: 'flex' }}>
-                <CircularProgress size={80} thickness={8} />
-              </div>
-            }
+            <ListingCard expanded listing={listing} />
+            <LoadingSpinner loading={listingsLoading} />
           </Col>
         </Row>
       </Container>

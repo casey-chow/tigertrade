@@ -13,23 +13,18 @@ class ListingsList extends PureComponent {
     expandAll: PropTypes.bool.isRequired,
   };
 
-  state = {
-    openCardId: -1,
-  };
+  state = { openCardId: -1 };
 
   // Reset the open card when new listings are inserted.
   componentWillReceiveProps(nextProps) {
     if (this.props !== nextProps) {
-      this.setState({
-        openCardId: -1,
-      });
+      this.setState({ openCardId: -1 });
     }
   }
 
   isExpanded = keyId => this.state.openCardId === keyId;
 
   handleExpandChange = (expanded, keyId) => {
-    console.log('handleExpandChange', this);
     if (!expanded) {
       this.setState({ openCardId: -1 });
     } else {

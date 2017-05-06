@@ -7,19 +7,23 @@ import { redirectToCas } from '../helpers/cas';
 export default class LoginButton extends PureComponent {
   static muiName = 'FlatButton';
 
-  style = {
-    color: 'white',
-    float: 'right',
-    height: '48px',
-    marginTop: '8px',
-    marginBottom: '8px',
+  static styles = {
+    base: {
+      color: 'white',
+      float: 'right',
+      height: '48px',
+      marginTop: '8px',
+      marginBottom: '8px',
+    },
   }
 
   render() {
+    const styles = LoginButton.styles;
+
     return (
       <div {...this.props}>
         <FlatButton
-          style={this.style}
+          style={styles.base}
           onClick={redirectToCas}
           label="Login"
         />

@@ -5,13 +5,12 @@ import {
   withRouter,
   propTypes as routerPropTypes,
 } from 'react-router-dom';
+import { parse } from 'query-string';
 
 import Waypoint from 'react-waypoint';
 
-import CircularProgress from 'material-ui/CircularProgress';
-import { parse } from 'query-string';
-
 import ListingsList from '../components/ListingsList';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 import { loadListings } from './../actions/listings';
 
@@ -74,18 +73,15 @@ class Listings extends Component {
   }
 
   render() {
+    const { listings, listingsLoading, expandAll } = this.props;
     return (
       <div>
         <ListingsList
-          listings={this.props.listings}
-          expandAll={this.props.expandAll}
+          listings={listings}
+          expandAll={expandAll}
         />
         <Waypoint topOffset="70%" bottomOffset="-25%" onEnter={this.loadMoreListings} />
-        { this.props.listingsLoading &&
-          <div style={{ alignItems: 'center', justifyContent: 'center', display: 'flex' }}>
-            <CircularProgress size={80} thickness={8} />
-          </div>
-        }
+        <LoadingSpinner loading={listingsLoading} />
       </div>
     );
   }

@@ -39,6 +39,26 @@ class FilterBar extends Component {
     style: { },
   };
 
+  static styles = {
+    base: {
+      right: '0',
+      position: 'fixed',
+      paddingTop: '0.5em',
+      paddingBottom: '0.5em',
+      zIndex: '50',
+    },
+    favoriteButton: {
+      float: 'center',
+    },
+    expandAllToggle: {
+      marginTop: '0.5rem',
+    },
+    watchButton: {
+      position: 'absolute',
+      top: '0.5em',
+      right: '0',
+    },
+  }
   state = {
     isStarred: false,
   }
@@ -70,33 +90,27 @@ class FilterBar extends Component {
     }
   }
 
-  saveSearch = () => {
+  handleExpandAllToggle = (event, checked) => {
+    this.props.dispatch(setExpandAll(checked));
+  }
+
+  handleWatchButtonTap = () => {
     this.props.dispatch(postSavedSearch('Successfully created saved search'));
     this.props.history.push('/savedsearches');
   }
 
   render() {
-    const style = {
-      right: '0',
-      position: 'fixed',
-      paddingTop: '0.5em',
-      paddingBottom: '0.5em',
-      left: this.props.leftDrawerVisible ? '20vw' : '0',
-      zIndex: '50',
-      ...this.props.style,
-    };
-
-    const favoriteButtonStyle = {
-      backgroundColor: this.props.query.isStarred ? grey300 : 'transparent',
-      float: 'center',
-    };
-
-    const expandAllToggleStyle = {
-      marginTop: '0.5rem',
-    };
+    const { query, leftDrawerVisible } = this.props;
+    const styles = FilterBar.styles;
 
     return (
-      <Paper style={style}>
+      <Paper
+        style={{
+          ...styles.base,
+          left: leftDrawerVisible ? '20vw' : '0',
+          ...this.props.style,
+        }}
+      >
         <Container>
           <Row>
             <Col xs={4} />
@@ -105,28 +119,31 @@ class FilterBar extends Component {
                 <FlatButton
                   icon={<FavoriteIcon />}
                   label="Favorited"
-                  style={favoriteButtonStyle}
+                  style={{
+                    ...styles.favoriteButton,
+                    backgroundColor: query.isStarred ? grey300 : 'transparent',
+                  }}
                   onTouchTap={this.handleFavorite}
                 />
               </div>
             </Col>
             <Col xs={2}>
               <Toggle
-                style={expandAllToggleStyle}
+                style={styles.expandAllToggle}
                 toggled={this.props.expandAll}
-                onToggle={(event, checked) => this.props.dispatch(setExpandAll(checked))}
+                onToggle={this.handleExpandAllToggle}
               />
             </Col>
             <Col xs={4} />
           </Row>
         </Container>
-        <div style={{ position: 'absolute', top: '0.5em', right: '0' }}>
+        <div style={styles.watchButton}>
           <FlatButton
             secondary
             icon={<SaveIcon />}
             label="Watch Results"
-            onTouchTap={this.saveSearch}
-            disabled={this.props.query.query === ''}
+            onTouchTap={this.handleWatchButtonTap}
+            disabled={query.query === ''}
           />
         </div>
       </Paper>

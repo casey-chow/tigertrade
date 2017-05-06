@@ -8,16 +8,15 @@ import {
 
 import Waypoint from 'react-waypoint';
 
-import CircularProgress from 'material-ui/CircularProgress';
-
 import SavedSearchesList from '../components/SavedSearchesList';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 import { loadSavedSearches } from '../actions/savedSearches';
 
 class SavedSearches extends Component {
   static propTypes = {
     ...routerPropTypes,
-    savedSearchesLoading: PropTypes.bool.isRequired,
+    loading: PropTypes.bool.isRequired,
     savedSearches: PropTypes.arrayOf(PropTypes.object).isRequired,
     dispatch: PropTypes.func.isRequired,
   };
@@ -37,7 +36,7 @@ class SavedSearches extends Component {
       return true;
     }
 
-    if (this.props.savedSearchesLoading !== nextProps.savedSearchesLoading) {
+    if (this.props.loading !== nextProps.loading) {
       return true;
     }
 
@@ -60,25 +59,22 @@ class SavedSearches extends Component {
   }
 
   render() {
+    const { savedSearches, expandAll, loading } = this.props;
     return (
       <div>
         <SavedSearchesList
-          savedSearches={this.props.savedSearches}
-          expandAll={this.props.expandAll}
+          savedSearches={savedSearches}
+          expandAll={expandAll}
         />
         <Waypoint topOffset="70%" onEnter={this.loadMoreSavedSearches} />
-        { this.props.savedSearchesLoading &&
-          <div style={{ alignItems: 'center', justifyContent: 'center', display: 'flex' }}>
-            <CircularProgress size={80} thickness={8} />
-          </div>
-        }
+        <LoadingSpinner loading={loading} />
       </div>
     );
   }
 }
 
 const mapStateToProps = state => ({
-  savedSearchesLoading: state.savedSearchesLoading,
+  loading: state.savedSearchesLoading,
   savedSearches: state.savedSearches,
   expandAll: state.expandAll,
 });

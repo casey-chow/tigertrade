@@ -34,23 +34,24 @@ class NavigationDrawer extends Component {
     style: {},
   };
 
-  static sidebarStyles = {
-    root: {
-      top: '4rem',
+  static styles = {
+    menuChild: {
+      paddingLeft: '16px',
     },
     sidebar: {
-      width: '20vw',
-      backgroundColor: 'white',
-      zIndex: '500',
+      root: {
+        top: '4rem',
+      },
+      sidebar: {
+        width: '20vw',
+        backgroundColor: 'white',
+        zIndex: '500',
+      },
+      content: {
+        paddingBottom: '2rem',
+      },
     },
-    content: {
-      paddingBottom: '2rem',
-    },
-  };
-
-  static menuChildStyle = {
-    paddingLeft: '16px',
-  };
+  }
 
   handleMenuChange = (event, value) => {
     this.props.history.push(value);
@@ -62,6 +63,7 @@ class NavigationDrawer extends Component {
   }
 
   render() {
+    const styles = NavigationDrawer.styles;
     const currentMajorPath = this.props.location.pathname;
 
     const SidebarItems = (
@@ -77,13 +79,13 @@ class NavigationDrawer extends Component {
               key="recent"
               primaryText="Recent Listings"
               value="/listings"
-              style={NavigationDrawer.menuChildStyle}
+              style={styles.menuChild}
             />,
             <ListItem
               key="mine"
               primaryText="My Listings"
               value="/listings/mine"
-              style={NavigationDrawer.menuChildStyle}
+              style={styles.menuChild}
             />,
           ]}
         />
@@ -98,13 +100,13 @@ class NavigationDrawer extends Component {
               key="recent"
               primaryText="Recent Seeks"
               value="/seeks"
-              style={NavigationDrawer.menuChildStyle}
+              style={styles.menuChild}
             />,
             <ListItem
               key="mine"
               primaryText="My Seeks"
               value="/seeks/mine"
-              style={NavigationDrawer.menuChildStyle}
+              style={styles.menuChild}
             />,
           ]}
         />
@@ -127,7 +129,7 @@ class NavigationDrawer extends Component {
       <Sidebar
         docked={this.props.visible}
         sidebar={SidebarItems}
-        styles={NavigationDrawer.sidebarStyles}
+        styles={styles.sidebar}
       >
         {this.props.children}
       </Sidebar>
