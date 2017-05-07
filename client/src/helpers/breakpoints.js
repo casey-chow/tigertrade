@@ -3,5 +3,5 @@ export const mediaQueries = {
 };
 
 export const breakpoints = {
-  tabletUp: 1040,
+  tabletUp: 992,
 };

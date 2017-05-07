@@ -6,9 +6,9 @@ import {
   propTypes as routerPropTypes,
 } from 'react-router-dom';
 
-import { Container, Row, Col } from 'react-grid-system';
 import LoadingSpinner from '../components/LoadingSpinner';
 
+import ListContainer from '../components/ListContainer';
 import SeekCard from '../components/SeekCard';
 
 import { loadSeek } from './../actions/seeks';
@@ -55,15 +55,10 @@ export default class Seek extends Component {
     const { seek, loading } = this.props;
 
     return (
-      <Container className="ListingsList">
-        <Row>
-          <Col xs={1} />
-          <Col xs={10} style={{ marginTop: '-1rem' }}>
-            <SeekCard expanded seek={seek} />
-            <LoadingSpinner loading={loading} />
-          </Col>
-        </Row>
-      </Container>
+      <ListContainer style={{ marginTop: '-1rem' }}>
+        <SeekCard expanded seek={seek} />
+        <LoadingSpinner loading={loading} />
+      </ListContainer>
     );
   }
 }

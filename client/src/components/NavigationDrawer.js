@@ -151,13 +151,14 @@ export default class NavigationDrawer extends Component {
                 value="/listings"
                 style={styles.menuChild}
               />,
-              (this.props.loggedIn &&
+              (this.props.loggedIn ?
                 <ListItem
                   key="mine"
                   primaryText="My Listings"
                   value="/listings/mine"
                   style={styles.menuChild}
                 />
+                : null
               ),
             ]}
           />
@@ -174,13 +175,13 @@ export default class NavigationDrawer extends Component {
                 value="/seeks"
                 style={styles.menuChild}
               />,
-              (this.props.loggedIn &&
+              (this.props.loggedIn ?
                 <ListItem
                   key="mine"
                   primaryText="My Seeks"
                   value="/seeks/mine"
                   style={styles.menuChild}
-                />
+                /> : null
               ),
             ]}
           />

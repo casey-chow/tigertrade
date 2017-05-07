@@ -6,9 +6,9 @@ import {
   propTypes as routerPropTypes,
 } from 'react-router-dom';
 
-import { Container, Row, Col } from 'react-grid-system';
 import LoadingSpinner from '../components/LoadingSpinner';
 
+import ListContainer from '../components/ListContainer';
 import ListingCard from '../components/ListingCard';
 
 import { loadListing } from './../actions/listings';
@@ -27,7 +27,7 @@ export default class Listing extends Component {
     dispatch: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired,
     // eslint-disable-next-line react/forbid-prop-types
-    listings: PropTypes.object.isRequired,
+    listing: PropTypes.object.isRequired,
   };
 
   componentWillMount() {
@@ -53,17 +53,12 @@ export default class Listing extends Component {
   }
 
   render() {
-    const { listing, listingsLoading } = this.props;
+    const { listing, loading } = this.props;
     return (
-      <Container className="ListingsList">
-        <Row>
-          <Col xs={1} />
-          <Col xs={10} style={{ marginTop: '-1rem' }}>
-            <ListingCard expanded listing={listing} />
-            <LoadingSpinner loading={listingsLoading} />
-          </Col>
-        </Row>
-      </Container>
+      <ListContainer style={{ marginTop: '-1rem' }}>
+        <ListingCard expanded listing={listing} />
+        <LoadingSpinner loading={loading} />
+      </ListContainer>
     );
   }
 }

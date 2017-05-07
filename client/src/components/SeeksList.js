@@ -1,9 +1,8 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
-import { Container, Row, Col } from 'react-grid-system';
-
 import SeekCard from './SeekCard';
+import ListContainer from './ListContainer';
 
 export default class SeeksList extends PureComponent {
   static propTypes = {
@@ -38,24 +37,16 @@ export default class SeeksList extends PureComponent {
 
   render() {
     return (
-      <div>
-        <Container className="SeeksList">
-          <Row>
-            <Col xs={1} />
-            <Col xs={10}>
-              <div className="cardsContainer">
-                {this.props.seeks.map(seek =>
-                  <SeekCard
-                    key={seek.keyId}
-                    expanded={this.props.expandAll || this.isExpanded(seek.keyId)}
-                    seek={seek}
-                    onExpandChange={this.handleExpandChange}
-                  />)}
-              </div>
-            </Col>
-          </Row>
-        </Container>
-      </div>
+      <ListContainer>
+        {this.props.seeks.map(seek =>
+          <SeekCard
+            key={seek.keyId}
+            expanded={this.props.expandAll || this.isExpanded(seek.keyId)}
+            seek={seek}
+            onExpandChange={this.handleExpandChange}
+          />)
+        }
+      </ListContainer>
     );
   }
 }
