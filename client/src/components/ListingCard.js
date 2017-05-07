@@ -5,6 +5,7 @@ import {
   withRouter,
   propTypes as routerPropTypes,
 } from 'react-router-dom';
+import Radium, { Style } from 'radium';
 
 import {
   Card,
@@ -28,6 +29,7 @@ import LinkIcon from 'material-ui/svg-icons/content/link';
 
 import ContactSellerForm from './ContactSellerForm';
 
+import { mediaQueries } from '../helpers/breakpoints';
 import { redirectToCas } from '../helpers/cas';
 import { mailSeller } from './../actions/users';
 import { editListing, deleteListing, starListing } from './../actions/listings';
@@ -38,6 +40,7 @@ const mapStateToProps = state => ({
 
 @withRouter
 @connect(mapStateToProps)
+@Radium
 export default class ListingCard extends React.Component {
 
   static propTypes = {
@@ -75,8 +78,15 @@ export default class ListingCard extends React.Component {
   };
 
   static styles = {
+    // Using a stupid style hack with classes to make this work
+    // with Material UI, because Material UI is pretty shit for styling.
     cardExpanded: {
-      margin: '1.5rem -3rem',
+      margin: '1.5rem 0',
+      mediaQueries: {
+        [mediaQueries.mediumUp]: {
+          margin: '1.5rem -3rem',
+        },
+      },
     },
     cardContentsShown: {
       maxHeight: '1000px',
@@ -157,10 +167,14 @@ export default class ListingCard extends React.Component {
 
     return (
       <div>
+        <Style
+          scopeSelector=".listing-card-expanded"
+          rules={styles.cardExpanded}
+        />
         <Card
           onExpandChange={this.handleExpandChange}
           expanded={expanded}
-          style={expanded ? styles.cardExpanded : {}}
+          className={expanded && 'listing-card-expanded'}
         >
           <CardHeader
             title={listing.title}

@@ -82,13 +82,14 @@ export default class NavigationDrawer extends Component {
     },
   }
 
-  static mediaQuery = window.matchMedia(`(min-width: ${breakpoints.tabletUp}px)`);
+  static mediaQuery = window.matchMedia(`(min-width: ${breakpoints.large}px)`);
 
   componentWillMount() {
     NavigationDrawer.mediaQuery.addListener(this.handleMediaQueryChanged);
 
     const docked = NavigationDrawer.mediaQuery.matches;
     this.setState({ docked });
+    this.props.dispatch(setLeftDrawer(docked));
   }
 
   componentWillUnmount() {

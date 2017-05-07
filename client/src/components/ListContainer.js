@@ -1,6 +1,10 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import Radium from 'radium';
 
+import { mediaQueries } from '../helpers/breakpoints';
+
+@Radium
 export default class ListContainer extends PureComponent {
   static propTypes = {
     children: PropTypes.oneOfType([
@@ -21,8 +25,11 @@ export default class ListContainer extends PureComponent {
       justifyContent: 'center',
     },
     wrapper: {
-      width: 'calc(90% - 3rem)',
-      maxWidth: '50rem',
+      width: '100%',
+      [`@media ${mediaQueries.mediumUp}`]: {
+        width: 'calc(90% - 3rem)',
+        maxWidth: '50rem',
+      },
     },
   }
 
