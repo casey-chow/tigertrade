@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import Radium from 'radium';
 
-import { mediaQueries } from '../helpers/breakpoints';
+import { atMediaQueries } from '../helpers/breakpoints';
 
 @Radium
 export default class ListContainer extends PureComponent {
@@ -26,7 +26,7 @@ export default class ListContainer extends PureComponent {
     },
     wrapper: {
       width: '100%',
-      [`@media ${mediaQueries.mediumUp}`]: {
+      [atMediaQueries.mediumUp]: {
         width: 'calc(90% - 3rem)',
         maxWidth: '50rem',
       },

@@ -1,8 +1,4 @@
-export const mediaQueries = {
-  smallUp: '(min-width: 540px)',
-  mediumUp: '(min-width: 650px)',
-  largeUp: '(min-width: 992px)',
-};
+import { chain } from 'lodash';
 
 export const breakpoints = {
   small: 540,
@@ -10,3 +6,15 @@ export const breakpoints = {
   large: 992,
   xlarge: 1140,
 };
+
+export const mediaQueries = chain(breakpoints)
+  .toPairs()
+  .map(([k, v]) => [`${k}Up`, `(min-width: ${v}px)`])
+  .fromPairs()
+  .value();
+
+export const atMediaQueries = chain(breakpoints)
+  .toPairs()
+  .map(([k, v]) => [`${k}Up`, `@media (min-width: ${v}px)`])
+  .fromPairs()
+  .value();

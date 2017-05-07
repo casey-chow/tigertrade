@@ -24,7 +24,7 @@ import Feedback from 'material-ui/svg-icons/action/feedback';
 
 import theme from '../helpers/theme';
 import { setLeftDrawer } from '../actions/ui';
-import { breakpoints } from '../helpers/breakpoints';
+import { mediaQueries } from '../helpers/breakpoints';
 
 const SelectableList = makeSelectable(List);
 
@@ -82,7 +82,7 @@ export default class NavigationDrawer extends Component {
     },
   }
 
-  static mediaQuery = window.matchMedia(`(min-width: ${breakpoints.large}px)`);
+  static mediaQuery = window.matchMedia(mediaQueries.largeUp);
 
   componentWillMount() {
     NavigationDrawer.mediaQuery.addListener(this.handleMediaQueryChanged);
