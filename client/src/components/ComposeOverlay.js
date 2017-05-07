@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import Radium from 'radium';
 
 import { Card, CardHeader, CardText } from 'material-ui/Card';
 import IconButton from 'material-ui/IconButton';
@@ -30,6 +31,7 @@ const mapStateToProps = state => ({
   seek: state.composeState.seek,
 });
 
+@Radium
 @withRouter
 @connect(mapStateToProps)
 export default class ComposeOverlay extends Component {

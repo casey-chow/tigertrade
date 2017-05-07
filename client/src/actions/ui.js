@@ -5,6 +5,13 @@ export function setDisplayMode(mode = 'listings') {
   };
 }
 
+export function setLeftDrawer(visible = false) {
+  return {
+    type: 'SET_LEFT_DRAWER',
+    visible,
+  };
+}
+
 export function toggleLeftDrawer() {
   return {
     type: 'TOGGLE_LEFT_DRAWER',

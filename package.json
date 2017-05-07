@@ -9,6 +9,7 @@
     "normalizr": "^3.2.2",
     "prop-types": "^15.5.8",
     "query-string": "^4.3.4",
+    "radium": "^0.18.2",
     "raven-js": "^3.14.1",
     "react": "^15.4.3",
     "react-dom": "^15.5.3",
