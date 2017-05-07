@@ -29,6 +29,7 @@ import { breakpoints } from '../helpers/breakpoints';
 const SelectableList = makeSelectable(List);
 
 const mapStateToProps = state => ({
+  loggedIn: state.currentUserLoading || state.currentUser.loggedIn,
   visible: state.leftDrawerVisible,
 });
 
@@ -41,6 +42,7 @@ export default class NavigationDrawer extends Component {
       PropTypes.arrayOf(PropTypes.node),
       PropTypes.node,
     ]).isRequired,
+    loggedIn: PropTypes.bool.isRequired,
     visible: PropTypes.bool.isRequired,
     style: PropTypes.object, // eslint-disable-line react/forbid-prop-types
   };
@@ -149,12 +151,14 @@ export default class NavigationDrawer extends Component {
                 value="/listings"
                 style={styles.menuChild}
               />,
-              <ListItem
-                key="mine"
-                primaryText="My Listings"
-                value="/listings/mine"
-                style={styles.menuChild}
-              />,
+              (this.props.loggedIn &&
+                <ListItem
+                  key="mine"
+                  primaryText="My Listings"
+                  value="/listings/mine"
+                  style={styles.menuChild}
+                />
+              ),
             ]}
           />
           <ListItem
@@ -170,12 +174,14 @@ export default class NavigationDrawer extends Component {
                 value="/seeks"
                 style={styles.menuChild}
               />,
-              <ListItem
-                key="mine"
-                primaryText="My Seeks"
-                value="/seeks/mine"
-                style={styles.menuChild}
-              />,
+              (this.props.loggedIn &&
+                <ListItem
+                  key="mine"
+                  primaryText="My Seeks"
+                  value="/seeks/mine"
+                  style={styles.menuChild}
+                />
+              ),
             ]}
           />
           <ListItem
