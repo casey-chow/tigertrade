@@ -16,7 +16,9 @@ import SearchBar from './SearchBar';
 import LoginButton from './LoginButton';
 import LoggedInMenu from './LoggedInMenu';
 
-class ActionBar extends Component {
+@withRouter
+@connect()
+export default class ActionBar extends Component {
   static muiName = 'AppBar';
 
   static propTypes = {
@@ -28,19 +30,24 @@ class ActionBar extends Component {
     }).isRequired,
   };
 
-  static pages = [
-    { name: 'Listings', url: '/listings' },
-    { name: 'Seeks', url: '/seeks' },
-    { name: 'Saved Searches', url: '/savedsearches' },
-    { name: 'Profile', url: '/profile' },
-    { name: 'Compose', url: '/compose' },
-  ];
+  static styles = {
+    base: {
+      position: 'fixed',
+      top: '0',
+      width: '100%',
+      zIndex: '1400',
+    },
+    searchBar: { flex: '2 2 0%' },
+    rightElement: { flex: '1 1 0%' },
+  }
 
   handleAppBarMenuTap = () => {
     this.props.dispatch(toggleLeftDrawer());
   }
 
   render() {
+    const styles = ActionBar.styles;
+
     const Title = () => (
       <Link
         to="/" style={{
@@ -60,26 +67,16 @@ class ActionBar extends Component {
     );
 
     return (
-      <Paper
-        style={{
-          position: 'fixed',
-          top: '0px',
-          width: '100%',
-          zIndex: '1400',
-        }}
-      >
+      <Paper style={styles.base}>
         <AppBar
-          // showMenuIconButton={false}
           onLeftIconButtonTouchTap={this.handleAppBarMenuTap}
           title={<Title />}
           zDepth={0}
         >
-          <SearchBar style={{ flex: '2 2 0%' }} />
-          <RightElement style={{ flex: '1 1 0%' }} />
+          <SearchBar style={styles.searchBar} />
+          <RightElement style={styles.rightElement} />
         </AppBar>
       </Paper>
     );
   }
 }
-
-export default withRouter(connect()(ActionBar));

@@ -6,14 +6,21 @@ import {
   propTypes as routerPropTypes,
 } from 'react-router-dom';
 
-import { Container, Row, Col } from 'react-grid-system';
-import CircularProgress from 'material-ui/CircularProgress';
+import LoadingSpinner from '../components/LoadingSpinner';
 
+import ListContainer from '../components/ListContainer';
 import SeekCard from '../components/SeekCard';
 
 import { loadSeek } from './../actions/seeks';
 
-class Seek extends Component {
+const mapStateToProps = state => ({
+  loading: state.seekLoading,
+  seek: state.seek,
+});
+
+@withRouter
+@connect(mapStateToProps)
+export default class Seek extends Component {
   static propTypes = {
     ...routerPropTypes,
     dispatch: PropTypes.func.isRequired,
@@ -45,27 +52,13 @@ class Seek extends Component {
   }
 
   render() {
+    const { seek, loading } = this.props;
+
     return (
-      <Container className="ListingsList">
-        <Row>
-          <Col xs={1} />
-          <Col xs={10} style={{ marginTop: '-1rem' }}>
-            <SeekCard expanded seek={this.props.seek} />
-            { this.props.loading &&
-              <div style={{ alignItems: 'center', justifyContent: 'center', display: 'flex' }}>
-                <CircularProgress size={80} thickness={8} />
-              </div>
-            }
-          </Col>
-        </Row>
-      </Container>
+      <ListContainer style={{ marginTop: '-1rem' }}>
+        <SeekCard expanded seek={seek} />
+        <LoadingSpinner loading={loading} />
+      </ListContainer>
     );
   }
 }
-
-const mapStateToProps = state => ({
-  loading: state.seekLoading,
-  seek: state.seek,
-});
-
-export default withRouter(connect(mapStateToProps)(Seek));

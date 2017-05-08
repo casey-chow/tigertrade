@@ -1,11 +1,10 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
-import { Container, Row, Col } from 'react-grid-system';
-
 import SavedSearchCard from './SavedSearchCard';
+import ListContainer from './ListContainer';
 
-class SavedSearchesList extends PureComponent {
+export default class SavedSearchesList extends PureComponent {
   static propTypes = {
     savedSearches: PropTypes.arrayOf(PropTypes.shape({
       keyId: PropTypes.number,
@@ -30,26 +29,16 @@ class SavedSearchesList extends PureComponent {
 
   render() {
     return (
-      <div>
-        <Container className="SavedSearchesList">
-          <Row>
-            <Col xs={1} />
-            <Col xs={10}>
-              <div className="cardsContainer">
-                {this.props.savedSearches.map(savedSearch =>
-                  <SavedSearchCard
-                    key={savedSearch.keyId}
-                    expanded={this.props.expandAll || this.isExpanded(savedSearch.keyId)}
-                    savedSearch={savedSearch}
-                    onExpandChange={this.handleExpandChange}
-                  />)}
-              </div>
-            </Col>
-          </Row>
-        </Container>
-      </div>
+      <ListContainer>
+        {this.props.savedSearches.map(savedSearch =>
+          <SavedSearchCard
+            key={savedSearch.keyId}
+            expanded={this.props.expandAll || this.isExpanded(savedSearch.keyId)}
+            savedSearch={savedSearch}
+            onExpandChange={this.handleExpandChange}
+          />)
+        }
+      </ListContainer>
     );
   }
 }
-
-export default SavedSearchesList;

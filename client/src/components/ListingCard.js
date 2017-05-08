@@ -5,6 +5,7 @@ import {
   withRouter,
   propTypes as routerPropTypes,
 } from 'react-router-dom';
+import Radium, { Style } from 'radium';
 
 import {
   Card,
@@ -28,11 +29,19 @@ import LinkIcon from 'material-ui/svg-icons/content/link';
 
 import ContactSellerForm from './ContactSellerForm';
 
+import { mediaQueries } from '../helpers/breakpoints';
 import { redirectToCas } from '../helpers/cas';
 import { mailSeller } from './../actions/users';
 import { editListing, deleteListing, starListing } from './../actions/listings';
 
-class ListingCard extends React.Component {
+const mapStateToProps = state => ({
+  currentUser: state.currentUser,
+});
+
+@withRouter
+@connect(mapStateToProps)
+@Radium
+export default class ListingCard extends React.Component {
 
   static propTypes = {
     ...routerPropTypes,
@@ -67,6 +76,34 @@ class ListingCard extends React.Component {
     expanded: false,
     onExpandChange: () => {},
   };
+
+  static styles = {
+    // Using a stupid style hack with classes to make this work
+    // with Material UI, because Material UI is pretty shit for styling.
+    cardExpanded: {
+      margin: '1.5rem 0',
+      mediaQueries: {
+        [mediaQueries.mediumUp]: {
+          margin: '1.5rem -3rem',
+        },
+      },
+    },
+    cardContentsShown: {
+      maxHeight: '1000px',
+      transition: 'max-height 0.5s ease-in',
+      overflow: 'hidden',
+    },
+    cardContentsHidden: {
+      maxHeight: '0',
+      transition: 'max-height 0.15s ease-out',
+      overflow: 'hidden',
+    },
+    thumbnail: {
+      minWidth: undefined,
+      maxHeight: '300px',
+      width: 'auto',
+    },
+  }
 
   state = {
     contactOpen: false,
@@ -122,34 +159,38 @@ class ListingCard extends React.Component {
 
   render() {
     const { listing, expanded } = this.props;
-
-    const cardStyles = expanded ? {
-      margin: '1.5rem -3rem',
-    } : {};
-
-    const onShowStyles = { maxHeight: '1000px', transition: 'max-height 0.5s ease-in', overflow: 'hidden' };
-    const onHideStyles = { maxHeight: '0', transition: 'max-height 0.15s ease-out', overflow: 'hidden' };
-
+    const styles = ListingCard.styles;
 
     const favoriteButtonStyle = {
       backgroundColor: this.props.listing.isStarred ? grey300 : 'transparent',
-      float: 'center',
     };
 
     return (
       <div>
-        <Card style={cardStyles} onExpandChange={this.handleExpandChange} expanded={expanded}>
+        <Style
+          scopeSelector=".listing-card-expanded"
+          rules={styles.cardExpanded}
+        />
+        <Card
+          onExpandChange={this.handleExpandChange}
+          expanded={expanded}
+          className={expanded && 'listing-card-expanded'}
+        >
           <CardHeader
             title={listing.title}
             subtitle={`$${listing.price / 100}`}
             actAsExpander
           />
 
-          <div style={expanded ? onShowStyles : onHideStyles}>
+          <div style={expanded ? styles.cardContentsShown : styles.cardContentsHidden}>
 
             { listing.thumbnail &&
               <CardMedia>
-                <img alt={listing.title} src={listing.thumbnail} style={{ minWidth: undefined, maxHeight: '300px', width: 'auto' }} />
+                <img
+                  alt={listing.title}
+                  src={listing.thumbnail}
+                  style={styles.thumbnail}
+                />
               </CardMedia>
             }
 
@@ -196,9 +237,3 @@ class ListingCard extends React.Component {
     );
   }
 }
-
-const mapStateToProps = state => ({
-  currentUser: state.currentUser,
-});
-
-export default withRouter(connect(mapStateToProps)(ListingCard));

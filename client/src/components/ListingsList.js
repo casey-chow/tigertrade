@@ -1,11 +1,10 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
-import { Container, Row, Col } from 'react-grid-system';
-
 import ListingCard from './ListingCard';
+import ListContainer from './ListContainer';
 
-class ListingsList extends PureComponent {
+export default class ListingsList extends PureComponent {
   static propTypes = {
     listings: PropTypes.arrayOf(PropTypes.shape({
       keyId: PropTypes.number,
@@ -13,23 +12,18 @@ class ListingsList extends PureComponent {
     expandAll: PropTypes.bool.isRequired,
   };
 
-  state = {
-    openCardId: -1,
-  };
+  state = { openCardId: -1 };
 
   // Reset the open card when new listings are inserted.
   componentWillReceiveProps(nextProps) {
     if (this.props !== nextProps) {
-      this.setState({
-        openCardId: -1,
-      });
+      this.setState({ openCardId: -1 });
     }
   }
 
   isExpanded = keyId => this.state.openCardId === keyId;
 
   handleExpandChange = (expanded, keyId) => {
-    console.log('handleExpandChange', this);
     if (!expanded) {
       this.setState({ openCardId: -1 });
     } else {
@@ -39,26 +33,17 @@ class ListingsList extends PureComponent {
 
   render() {
     return (
-      <div>
-        <Container className="ListingsList">
-          <Row>
-            <Col xs={1} />
-            <Col xs={10}>
-              <div className="cardsContainer">
-                {this.props.listings.map(listing =>
-                  <ListingCard
-                    key={listing.keyId}
-                    expanded={this.props.expandAll || this.isExpanded(listing.keyId)}
-                    listing={listing}
-                    onExpandChange={this.handleExpandChange}
-                  />)}
-              </div>
-            </Col>
-          </Row>
-        </Container>
-      </div>
+      <ListContainer>
+        {this.props.listings.map(listing =>
+          <ListingCard
+            key={listing.keyId}
+            expanded={this.props.expandAll || this.isExpanded(listing.keyId)}
+            listing={listing}
+            onExpandChange={this.handleExpandChange}
+
+          />)
+        }
+      </ListContainer>
     );
   }
 }
-
-export default ListingsList;

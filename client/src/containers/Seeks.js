@@ -5,17 +5,25 @@ import {
   withRouter,
   propTypes as routerPropTypes,
 } from 'react-router-dom';
+import { parse } from 'query-string';
 
 import Waypoint from 'react-waypoint';
 
-import CircularProgress from 'material-ui/CircularProgress';
-import { parse } from 'query-string';
-
 import SeeksList from '../components/SeeksList';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 import { loadSeeks } from './../actions/seeks';
 
-class Seeks extends Component {
+
+const mapStateToProps = state => ({
+  seeksLoading: state.seeksLoading,
+  seeks: state.seeks,
+  expandAll: state.expandAll,
+});
+
+@withRouter
+@connect(mapStateToProps)
+export default class Seeks extends Component {
   static propTypes = {
     ...routerPropTypes,
     dispatch: PropTypes.func.isRequired,
@@ -75,24 +83,18 @@ class Seeks extends Component {
   }
 
   render() {
+    const { seeks, expandAll, seeksLoading } = this.props;
+
     return (
       <div>
-        <SeeksList seeks={this.props.seeks} expandAll={this.props.expandAll} />
-        <Waypoint topOffset="70%" bottomOffset="-25%" onEnter={this.loadMoreSeeks} />
-        { this.props.seeksLoading &&
-          <div style={{ alignItems: 'center', justifyContent: 'center', display: 'flex' }}>
-            <CircularProgress size={80} thickness={8} />
-          </div>
-        }
+        <SeeksList seeks={seeks} expandAll={expandAll} />
+        <Waypoint
+          topOffset="70%"
+          bottomOffset="-25%"
+          onEnter={this.loadMoreSeeks}
+        />
+        <LoadingSpinner loading={seeksLoading} />
       </div>
     );
   }
 }
-
-const mapStateToProps = state => ({
-  seeksLoading: state.seeksLoading,
-  seeks: state.seeks,
-  expandAll: state.expandAll,
-});
-
-export default withRouter(connect(mapStateToProps)(Seeks));

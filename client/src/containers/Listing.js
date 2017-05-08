@@ -6,20 +6,28 @@ import {
   propTypes as routerPropTypes,
 } from 'react-router-dom';
 
-import { Container, Row, Col } from 'react-grid-system';
-import CircularProgress from 'material-ui/CircularProgress';
+import LoadingSpinner from '../components/LoadingSpinner';
 
+import ListContainer from '../components/ListContainer';
 import ListingCard from '../components/ListingCard';
 
 import { loadListing } from './../actions/listings';
 
-class Listing extends Component {
+
+const mapStateToProps = state => ({
+  loading: state.listingLoading,
+  listing: state.listing,
+});
+
+@withRouter
+@connect(mapStateToProps)
+export default class Listing extends Component {
   static propTypes = {
     ...routerPropTypes,
     dispatch: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired,
     // eslint-disable-next-line react/forbid-prop-types
-    listings: PropTypes.object.isRequired,
+    listing: PropTypes.object.isRequired,
   };
 
   componentWillMount() {
@@ -45,27 +53,12 @@ class Listing extends Component {
   }
 
   render() {
+    const { listing, loading } = this.props;
     return (
-      <Container className="ListingsList">
-        <Row>
-          <Col xs={1} />
-          <Col xs={10} style={{ marginTop: '-1rem' }}>
-            <ListingCard expanded listing={this.props.listing} />
-            { this.props.listingsLoading &&
-              <div style={{ alignItems: 'center', justifyContent: 'center', display: 'flex' }}>
-                <CircularProgress size={80} thickness={8} />
-              </div>
-            }
-          </Col>
-        </Row>
-      </Container>
+      <ListContainer style={{ marginTop: '-1rem' }}>
+        <ListingCard expanded listing={listing} />
+        <LoadingSpinner loading={loading} />
+      </ListContainer>
     );
   }
 }
-
-const mapStateToProps = state => ({
-  loading: state.listingLoading,
-  listing: state.listing,
-});
-
-export default withRouter(connect(mapStateToProps)(Listing));

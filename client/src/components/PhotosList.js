@@ -27,6 +27,17 @@ export default class PhotosList extends Component {
     }).isRequired,
   }
 
+  static styles = {
+    gridList: {
+      display: 'flex',
+      flexWrap: 'nowrap',
+      overflowX: 'auto',
+    },
+    uploadedImage: {
+      maxHeight: '200px',
+    },
+  }
+
   componentWillMount() {
     if (isString(this.props.input.value)) {
       this.setState({
@@ -81,6 +92,8 @@ export default class PhotosList extends Component {
   photoFilename = photo => decodeURIComponent(photo.split('/').pop())
 
   render() {
+    const styles = PhotosList.styles;
+
     return (
       <div>
         { this.state.photos.length < 5 &&
@@ -99,11 +112,7 @@ export default class PhotosList extends Component {
         <GridList
           cols={2.2}
           cellHeight="auto"
-          style={{
-            display: 'flex',
-            flexWrap: 'nowrap',
-            overflowX: 'auto',
-          }}
+          style={styles.gridList}
         >
           {this.state.photos.map(photo => (
             <GridTile
@@ -115,7 +124,7 @@ export default class PhotosList extends Component {
                 </IconButton>
               }
             >
-              <img src={photo} alt="user uploaded" style={{ maxHeight: '200px' }} />
+              <img src={photo} alt="user uploaded" style={styles.uploadedImage} />
             </GridTile>
           ))}
         </GridList>

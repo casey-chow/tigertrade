@@ -25,13 +25,17 @@ import {
   hideSnackbar,
 } from '../actions/ui';
 
-const fabStyle = {
-  position: 'fixed',
-  bottom: '35px',
-  right: '35px',
-};
+const mapStateToProps = state => ({
+  loading: state.currentUserLoading,
+  user: state.currentUser,
+  snackbar: state.snackbar,
+  showFAB: !state.composeState.show,
+  displayMode: state.displayMode,
+});
 
-class App extends Component {
+@withRouter
+@connect(mapStateToProps)
+export default class App extends Component {
   static propTypes = {
     displayMode: PropTypes.string.isRequired,
     showFAB: PropTypes.bool.isRequired,
@@ -46,6 +50,14 @@ class App extends Component {
     }).isRequired,
   }
 
+  static styles = {
+    fab: {
+      position: 'fixed',
+      bottom: '35px',
+      right: '35px',
+    },
+  }
+
   componentWillMount() {
     this.props.dispatch(loadCurrentUser());
   }
@@ -55,6 +67,8 @@ class App extends Component {
   }
 
   render() {
+    const styles = App.styles;
+
     return (
       <div className="App">
         <ActionBar user={this.props.user} loading={this.props.loading} />
@@ -81,7 +95,7 @@ class App extends Component {
 
         { this.props.showFAB ?
           <FloatingActionButton
-            style={fabStyle}
+            style={styles.fab}
             onTouchTap={
               () => this.props.dispatch(setComposeState(true, false, this.props.displayMode))
             }
@@ -101,13 +115,3 @@ class App extends Component {
     );
   }
 }
-
-const mapStateToProps = state => ({
-  loading: state.currentUserLoading,
-  user: state.currentUser,
-  snackbar: state.snackbar,
-  showFAB: !state.composeState.show,
-  displayMode: state.displayMode,
-});
-
-export default withRouter(connect(mapStateToProps)(App));
