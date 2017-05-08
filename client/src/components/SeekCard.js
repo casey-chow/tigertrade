@@ -12,7 +12,6 @@ import {
   Card,
   CardActions,
   CardHeader,
-  CardTitle,
   CardText,
 } from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
@@ -166,10 +165,6 @@ export default class SeekCard extends React.Component {
           />
 
           <div style={expanded ? styles.cardContentsShown : styles.cardContentsHidden}>
-
-            <CardTitle
-              title={seek.title}
-            />
 
             { seek.description &&
               <CardText>
