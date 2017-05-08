@@ -105,6 +105,8 @@ export default class SearchBar extends Component {
       case '/seeks':
       case '/listings':
       case '/profile':
+      case '/seeks/mine':
+      case '/listings/mine':
         break;
       default:
         this.props.history.push(`/${this.props.displayMode}`);

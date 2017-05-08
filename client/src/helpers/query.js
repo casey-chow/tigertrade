@@ -19,6 +19,7 @@ export const stripQuery = query => ({
   ...query,
   query: (query.query !== '') ? query.query : undefined,
   limit: undefined,
+  isMine: undefined,
   isStarred: (query.isStarred === true) ? true : undefined,
 });
 
