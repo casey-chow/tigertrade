@@ -172,7 +172,7 @@ func DeleteListing(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 	if err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while authenticating user: not authorized")
-		Error(w, http.StatusUnprocessableEntity)
+		Error(w, http.StatusUnauthorized)
 		return
 	}
 
