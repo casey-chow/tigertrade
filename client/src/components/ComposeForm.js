@@ -7,8 +7,7 @@ import {
 } from 'redux-form';
 import { TextField } from 'redux-form-material-ui';
 
-import RaisedButton from 'material-ui/RaisedButton';
-// import FlatButton from 'material-ui/FlatButton';
+import FlatButton from 'material-ui/FlatButton';
 
 import PhotosList from './PhotosList';
 
@@ -49,7 +48,12 @@ export default class ComposeForm extends PureComponent {
   }
 
   static styles = {
+    helpText: {
+      opacity: '0.6',
+      marginBottom: '1rem',
+    },
     spacer: { marginTop: '1em' },
+    actionBar: { marginTop: '0.16rem' },
     actionButton: { margin: 8, padding: 1 },
     formContainer: { maxHeight: '83vh', overflow: 'scroll' },
   }
@@ -65,6 +69,12 @@ export default class ComposeForm extends PureComponent {
     return (
       <form onSubmit={handleSubmit} style={this.props.style}>
         <div style={styles.formContainer}>
+          <div style={styles.helpText}>
+            Want to sell something to the Princeton community? You&rsquo;ve come to
+            the right place. When publishing a listing, make sure that it is clear
+            and accurately describes what you&rsquo;re selling, so that people looking
+            to buy it can more easily reach out.
+          </div>
           <div>
             <label htmlFor="title">Title</label>
             <div>
@@ -94,22 +104,23 @@ export default class ComposeForm extends PureComponent {
             <Field name="photos" id="photos" component={PhotosList} />
           </div>
         </div>
-        <div style={{ marginTop: '0.16rem' }}>
-          <RaisedButton
+        <div style={styles.actionBar}>
+          <FlatButton
             type="submit"
             disabled={pristine || submitting}
             style={styles.actionButton}
           >
             Submit
-          </RaisedButton>
-          <RaisedButton
+          </FlatButton>
+          &nbsp;
+          <FlatButton
             type="button"
             disabled={pristine || submitting}
             style={styles.actionButton}
             onClick={reset}
           >
             {this.props.isEdit ? 'Reset Changes' : 'Clear'}
-          </RaisedButton>
+          </FlatButton>
         </div>
       </form>
     );

@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Field, reduxForm, propTypes as reduxFormPropTypes } from 'redux-form';
 import TextField from 'material-ui/TextField';
-import RaisedButton from 'material-ui/RaisedButton';
+import FlatButton from 'material-ui/FlatButton';
 
 // https://stackoverflow.com/questions/33138370/how-to-wire-up-redux-form-bindings-to-the-forms-inputs
 
@@ -32,8 +32,17 @@ export default class SeekComposeForm extends PureComponent {
   }
 
   static styles = {
+    helpText: {
+      opacity: '0.6',
+      marginBottom: '1rem',
+    },
     spacer: { marginTop: '1em' },
-    actionButton: { margin: 8, padding: 1 },
+    actionBar: { display: 'flex' },
+    actionButton: {
+      marginTop: '8px',
+      padding: '1px 16px',
+      float: 'right',
+    },
     formContainer: { maxHeight: '83vh', overflow: 'scroll' },
   }
 
@@ -48,6 +57,12 @@ export default class SeekComposeForm extends PureComponent {
     return (
       <form onSubmit={handleSubmit} style={this.props.style}>
         <div style={styles.formContainer}>
+          <div style={styles.helpText}>
+            When you cannot find what you are looking for in listings,
+            you can make a buy request, or a seek for short, in TigerTrade.
+            We will let you know if anyone indicates interest in selling you
+            the item you requested.
+          </div>
           <div>
             <label htmlFor="title">Title</label>
             <div>
@@ -61,16 +76,19 @@ export default class SeekComposeForm extends PureComponent {
             </div>
           </div>
         </div>
-        <div>
-          <RaisedButton type="submit" disabled={pristine || submitting} style={styles.actionButton}>Submit</RaisedButton>
-          <RaisedButton
+        <div style={styles.actionBar}>
+          <FlatButton type="submit" disabled={pristine || submitting} style={styles.actionButton}>
+            Submit
+          </FlatButton>
+          &nbsp;
+          <FlatButton
             type="button"
             disabled={pristine || submitting}
             style={styles.actionButton}
             onClick={reset}
           >
             {this.props.isEdit ? 'Reset Changes' : 'Clear'}
-          </RaisedButton>
+          </FlatButton>
         </div>
       </form>
     );
