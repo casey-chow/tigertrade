@@ -151,6 +151,10 @@ export default class FilterBar extends Component {
     }
   }
 
+  handleOnBlur = () => {
+    writeHistory(this.props);
+  }
+
   handleWatchButtonTap = () => {
     this.props.dispatch(postSavedSearch(null, 'Successfully created saved search'));
     this.props.history.push('/savedsearches');
@@ -173,6 +177,7 @@ export default class FilterBar extends Component {
             hintText="Min Price"
             type="number"
             onChange={this.handleMinChange}
+            onBlur={this.handleOnBlur}
             value={this.state.minPrice}
             style={styles.priceField}
             prefix="$"
@@ -185,6 +190,7 @@ export default class FilterBar extends Component {
             hintText="Max Price"
             type="number"
             onChange={this.handleMaxChange}
+            onBlur={this.handleOnBlur}
             value={this.state.maxPrice}
             style={styles.priceField}
             prefix="$"
