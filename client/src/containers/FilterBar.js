@@ -104,7 +104,7 @@ export default class FilterBar extends Component {
   }
 
   handleWatchButtonTap = () => {
-    this.props.dispatch(postSavedSearch('Successfully created saved search'));
+    this.props.dispatch(postSavedSearch(null, 'Successfully created saved search'));
     this.props.history.push('/savedsearches');
   }
 

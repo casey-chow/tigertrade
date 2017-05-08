@@ -29,6 +29,7 @@ import ContactBuyerForm from './ContactBuyerForm';
 import { redirectToCas } from '../helpers/cas';
 import { mailBuyer } from './../actions/users';
 import { editSeek, deleteSeek } from './../actions/seeks';
+import { postSavedSearch } from './../actions/savedSearches';
 
 
 const mapStateToProps = state => ({
@@ -133,6 +134,12 @@ export default class SeekCard extends React.Component {
     this.props.history.push(`/seek/${this.props.seek.keyId}`);
   }
 
+  handleStar = () => {
+    this.props.dispatch(postSavedSearch({
+      query: this.props.seek.title,
+    }, 'Successfully created saved search'));
+  }
+
   render() {
     const { seek, expanded } = this.props;
     const styles = SeekCard.styles;
@@ -170,7 +177,7 @@ export default class SeekCard extends React.Component {
               ]
               }
 
-              <FlatButton secondary icon={<FavoriteIcon />} label="Notify Me" />
+              <FlatButton secondary icon={<FavoriteIcon />} label="Notify Me" onTouchTap={this.handleStar} />
               <FlatButton icon={<LinkIcon />} label="Permalink" onTouchTap={this.handlePermalinkRedirect} />
             </CardActions>
 
