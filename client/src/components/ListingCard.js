@@ -108,6 +108,11 @@ export default class ListingCard extends React.Component {
       maxHeight: '300px',
       width: 'auto',
     },
+    listingImageButton: {
+      padding: 0,
+      backgroundColor: 'transparent',
+      border: 'none',
+    },
   }
 
   state = {
@@ -199,6 +204,7 @@ export default class ListingCard extends React.Component {
                               onClick={
                                 event => this.setState({ lightboxImage: i, lightboxOpen: true })
                               }
+                              style={styles.listingImageButton}
                             >
                               <img alt="listing" src={image} />
                             </button>,
