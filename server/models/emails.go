@@ -12,11 +12,12 @@ import (
 )
 
 type emailInput struct {
-	Sender    string
-	Recipient string
-	Subject   string
-	Body      string `json:"body"`
-	IsSeek    bool
+	Sender        string
+	Recipient     string
+	Subject       string
+	Body          string `json:"body"`
+	IsSeek        bool
+	IsSavedSearch bool // should really be an enum at this point but oh well.
 }
 
 func NewEmailInput(db *sql.DB, id string, isSeek bool) (*emailInput, error, int) {
@@ -64,14 +65,15 @@ func SendEmail(input *emailInput) (error, int) {
 
 	// Get email addresses
 	robot := mail.NewEmail("TigerTrade", "noreply@tigertra.de")
-	requestor := getEmail(input.Sender)
 	recipient := getEmail(input.Recipient)
 	content := mail.NewContent("text/html", input.Body)
 
 	// Create email
 	m := mail.NewV3Mail()
 	m.SetFrom(robot)
-	m.SetReplyTo(requestor)
+	if input.Sender != "" {
+		m.SetReplyTo(getEmail(input.Sender))
+	}
 
 	p := mail.NewPersonalization()
 	p.AddTos(recipient)
@@ -81,6 +83,9 @@ func SendEmail(input *emailInput) (error, int) {
 		m.SetTemplateID("3bb3590f-04a3-4381-a79b-25a86afb4a6f")
 	} else {
 		m.SetTemplateID("b53ead7f-c9d7-4c17-9dcf-f59105b6eb65")
+	}
+	if input.IsSavedSearch {
+		m.SetTemplateID("c6388de5-deb7-416b-9527-c5017513ed91")
 	}
 
 	p.Subject = input.Subject

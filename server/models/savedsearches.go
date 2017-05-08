@@ -2,7 +2,9 @@ package models
 
 import (
 	"database/sql"
+	"fmt"
 	sq "github.com/Masterminds/squirrel"
+	log "github.com/Sirupsen/logrus"
 	"github.com/guregu/null"
 	"net/http"
 )
@@ -176,4 +178,65 @@ func DeleteSavedSearch(db *sql.DB, id string, userId int) (error, int) {
 	// Query db for savedSearch
 	result, err := stmt.RunWith(db).Exec()
 	return getUpdateResultCode(result, err)
+}
+
+// CheckNewListing checks a given listing against all saved searches and emails
+// users whose saved search matches the new listing.
+func CheckNewListing(db *sql.DB, listing Listing) {
+
+	log.Info("Scanning for queries matching newly posted listing...")
+	// Get all users with active nonexpired queries that would match the given
+	stmt := psql.
+		Select("DISTINCT on (user_id) user_id").
+		From("saved_searches").
+		Where(sq.Eq{"saved_searches.is_active": true}).
+		Where("search_expiration_date > now() OR search_expiration_date IS NULL")
+
+	// WARNING changes here will also require changes in listings.ReadListings.
+	// If this is ever changed, we should really just refactor it into a
+	// separate function that can be easily shared
+	stmt = stmt.Where("string_to_array(lower(query), ' ') <@ (string_to_array(lower(?), ' ') || string_to_array(lower(?), ' '));", listing.Title, listing.Description)
+	// By the way, we wouldn't have to repeatedly call string_to_array if we were
+	// storing things as arrays of words to begin with, and we should change that
+	// after the demo.
+
+	// Query db
+	log.Info(stmt.ToSql())
+	rows, err := stmt.RunWith(db).Query()
+	if err != nil {
+		return
+	}
+	defer rows.Close()
+
+	// Send emails
+	email := new(emailInput)
+	email.Subject = listing.Title
+	if listing.Description.IsZero() {
+		email.Body = "(no description provided)"
+
+	} else {
+		email.Body = *listing.Description.Ptr()
+	}
+	email.IsSavedSearch = true
+	var matchCount int = 0
+	for rows.Next() {
+		matchCount += 1
+		var userID int
+		err := rows.Scan(&userID)
+		if err != nil {
+			log.Warn(err)
+			break
+		}
+
+		if owner, err := GetUserByID(db, userID); err != nil {
+			log.Warn(err)
+			break
+		} else {
+			email.Recipient = owner.NetID
+		}
+		SendEmail(email)
+	}
+
+	log.Info(fmt.Printf("found %d results", matchCount))
+
 }

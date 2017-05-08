@@ -104,6 +104,9 @@ func ReadListings(db *sql.DB, query *listingQuery) ([]*Listing, error, int) {
 		Where("listings.is_active=true").
 		LeftJoin("users ON listings.user_id = users.key_id")
 
+	// WARNING changes here will also requrire changes in savesearches.CheckNewLisitng.
+	// If this is ever changed, we should really just refactor it into a
+	// separate function that can be easily shared
 	for _, word := range strings.Fields(query.Query) {
 		stmt = stmt.Where("(lower(listings.title) LIKE lower(?) OR lower(listings.description) LIKE lower(?))", fmt.Sprint("%", word, "%"), fmt.Sprint("%", word, "%"))
 	}
@@ -275,14 +278,27 @@ func CreateListing(db *sql.DB, listing Listing, userId int) (Listing, error, int
 		return listing, err, http.StatusInternalServerError
 	}
 	defer rows.Close()
-
-	// Populate listing struct
 	rows.Next()
 	err = rows.Scan(&listing.KeyID, &listing.CreationDate)
 	if err != nil {
 		return listing, err, http.StatusInternalServerError
 	}
 
+	// Insert listing into "caching" table for saved searches to run against
+	stmt = psql.Insert("new_listings").
+		Columns("key_id", "creation_date", "title", "description", "user_id", "price", "status",
+			"expiration_date", "thumbnail_url", "photos").
+		Values(listing.KeyID, listing.CreationDate, listing.Title, listing.Description, userId, listing.Price,
+			listing.Status, listing.ExpirationDate, listing.Thumbnail, listing.Photos)
+
+	// Populate listing struct
+	_, err = stmt.RunWith(db).Exec()
+	if err != nil {
+		return listing, err, http.StatusInternalServerError
+	}
+
+	// Send email(s) if this listing matches anyone's saved search.
+	go CheckNewListing(db, listing)
 	return listing, nil, http.StatusCreated
 }
 
@@ -312,13 +328,18 @@ func UpdateListing(db *sql.DB, id string, listing Listing, userId int) (error, i
 // Deletes the listing in the database with the given id with the given listing
 // (belonging to userId).
 func DeleteListing(db *sql.DB, id string, userId int) (error, int) {
-	// Update listing
+	// Delete listing
 	stmt := psql.Delete("listings").
 		Where(sq.Eq{"listings.key_id": id,
 			"listings.user_id": userId})
-
-	// Query db for listing
 	result, err := stmt.RunWith(db).Exec()
+
+	// Remove from cache table if necessary
+	stmt = psql.Delete("new_listings").
+		Where(sq.Eq{"new_listings.key_id": id,
+			"new_listings.user_id": userId})
+	stmt.RunWith(db).Exec()
+
 	return getUpdateResultCode(result, err)
 }
 
