@@ -54,6 +54,12 @@ func contactPost(w http.ResponseWriter, r *http.Request, ps httprouter.Params, i
 		Error(w, code)
 		return
 	}
+	if err, code := models.SendEmail2(email); err != nil {
+		raven.CaptureError(err, nil)
+		log.WithField("err", err).Error("Error while attempting to send second email")
+		Error(w, code)
+		return
+	}
 
 	w.WriteHeader(http.StatusNoContent)
 }
