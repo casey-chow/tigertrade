@@ -187,7 +187,7 @@ export default class SeekCard extends React.Component {
               }
 
               <FlatButton secondary icon={<FavoriteIcon />} label="Notify Me" onTouchTap={this.handleStar} />
-              <Link to={`/seek/${this.props.seek.keyId}`}> <FlatButton icon={<LinkIcon />} label="Permalink" /> </Link>
+              <Link to={`/seek/${this.props.seek.keyId}`}><FlatButton icon={<LinkIcon />} label="Permalink" /></Link>
             </CardActions>
 
           </div>
