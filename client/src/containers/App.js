@@ -48,6 +48,9 @@ export default class App extends Component {
     user: PropTypes.shape({
       loggedIn: PropTypes.bool.isRequired,
     }).isRequired,
+    location: PropTypes.shape({
+      pathname: PropTypes.string.isRequired,
+    }).isRequired,
   }
 
   static styles = {
@@ -55,6 +58,15 @@ export default class App extends Component {
       position: 'fixed',
       bottom: '35px',
       right: '35px',
+    },
+    filterBarListings: {
+      marginBottom: '5.5rem',
+    },
+    filterBarSeeks: {
+      marginBottom: '3.5rem',
+    },
+    filterBarNotVisible: {
+      marginBottom: '2rem',
     },
   }
 
@@ -68,6 +80,10 @@ export default class App extends Component {
 
   render() {
     const styles = App.styles;
+    // eslint-disable-next-line no-nested-ternary
+    const filterPadding = this.props.location.pathname.startsWith('/listings')
+      ? styles.filterBarListings : (this.props.location.pathname.startsWith('/seeks')
+      ? styles.filterBarSeeks : styles.filterBarNotVisible);
 
     return (
       <div className="App">
@@ -75,7 +91,7 @@ export default class App extends Component {
         <NavigationDrawer>
           <FilterBar />
 
-          <div style={{ marginBottom: '5.5rem' }} />
+          <div style={filterPadding} />
 
           { (!this.props.loading && !this.props.user.loggedIn) &&
             <Welcome />
