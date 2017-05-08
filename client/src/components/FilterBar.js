@@ -197,9 +197,7 @@ export default class FilterBar extends Component {
             secondary
             icon={<FavoriteIcon />}
             label="Favorites Only"
-            style={{
-              backgroundColor: query.isStarred ? grey300 : 'transparent',
-            }}
+            backgroundColor={query.isStarred ? grey300 : 'transparent'}
             onTouchTap={this.handleFavorite}
           />
         }
