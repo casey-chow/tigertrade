@@ -172,7 +172,7 @@ export default class FilterBar extends Component {
           ...this.props.style,
         }}
       >
-        { (this.props.location.pathname === '/listings') &&
+        { (this.props.location.pathname.startsWith('/listings')) &&
           <TextField
             hintText="Min Price"
             type="number"
@@ -185,7 +185,7 @@ export default class FilterBar extends Component {
             step="0.01"
           />
         }
-        { (this.props.location.pathname === '/listings') &&
+        { (this.props.location.pathname.startsWith('/listings')) &&
           <TextField
             hintText="Max Price"
             type="number"
@@ -198,7 +198,7 @@ export default class FilterBar extends Component {
             step="0.01"
           />
         }
-        { (this.props.location.pathname === '/listings') &&
+        { (this.props.location.pathname.startsWith('/listings')) &&
           <FlatButton
             secondary
             icon={<FavoriteIcon />}
@@ -207,7 +207,7 @@ export default class FilterBar extends Component {
             onTouchTap={this.handleFavorite}
           />
         }
-        { (this.props.location.pathname === '/listings' || this.props.location.pathname === '/seeks') &&
+        { (this.props.location.pathname.startsWith('/listings') || this.props.location.pathname.startsWith('/seeks')) &&
           <div>
             <Toggle
               label="Expand All"
