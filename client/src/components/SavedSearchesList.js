@@ -19,7 +19,6 @@ export default class SavedSearchesList extends PureComponent {
   isExpanded = keyId => this.state.openCardId === keyId;
 
   handleExpandChange = (expanded, keyId) => {
-    console.log('handleExpandChange', this);
     if (!expanded) {
       this.setState({ openCardId: -1 });
     } else {

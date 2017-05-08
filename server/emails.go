@@ -21,7 +21,7 @@ func contactPost(w http.ResponseWriter, r *http.Request, ps httprouter.Params, i
 	// Get post ID from params
 	id := ps.ByName("id")
 	if id == "" {
-		Error(w, http.StatusNotFound)
+		Error(w, http.StatusBadRequest)
 		return
 	}
 
@@ -43,7 +43,7 @@ func contactPost(w http.ResponseWriter, r *http.Request, ps httprouter.Params, i
 	if err := ParseJSONFromBody(r, &email); err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("error while parsing JSON file")
-		Error(w, http.StatusInternalServerError)
+		Error(w, http.StatusUnprocessableEntity)
 		return
 	}
 

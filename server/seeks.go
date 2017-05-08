@@ -48,7 +48,7 @@ func ReadSeek(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	// Get ID from params
 	id := ps.ByName("id")
 	if id == "" {
-		Error(w, http.StatusNotFound)
+		Error(w, http.StatusBadRequest)
 		return
 	}
 
@@ -70,7 +70,7 @@ func CreateSeek(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	if err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("error while parsing JSON file")
-		Error(w, http.StatusInternalServerError)
+		Error(w, http.StatusUnprocessableEntity)
 		return
 	}
 
@@ -99,7 +99,7 @@ func UpdateSeek(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	// Get ID from params
 	id := ps.ByName("id")
 	if id == "" {
-		Error(w, http.StatusNotFound)
+		Error(w, http.StatusBadRequest)
 		return
 	}
 
@@ -109,7 +109,7 @@ func UpdateSeek(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	if err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("error while parsing JSON file")
-		Error(w, http.StatusInternalServerError)
+		Error(w, http.StatusUnprocessableEntity)
 		return
 	}
 
@@ -136,7 +136,7 @@ func DeleteSeek(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	// Get ID from params
 	id := ps.ByName("id")
 	if id == "" {
-		Error(w, http.StatusNotFound)
+		Error(w, http.StatusBadRequest)
 		return
 	}
 

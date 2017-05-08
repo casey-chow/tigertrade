@@ -34,8 +34,8 @@ const descriptionField = field => (
     value={field.input.value}
     onChange={field.input.onChange}
     multiLine
-    rowsMax={8}
     fullWidth
+    rowsMax={6}
     rows={2}
   />
 );
@@ -45,11 +45,13 @@ export default class ComposeForm extends PureComponent {
   static propTypes = {
     ...reduxFormPropTypes,
     style: PropTypes.object, // eslint-disable-line react/forbid-prop-types
+    isEdit: PropTypes.bool,
   }
 
   static styles = {
     spacer: { marginTop: '1em' },
     actionButton: { margin: 8, padding: 1 },
+    formContainer: { maxHeight: '83vh', overflow: 'scroll' },
   }
 
   defaultProps = {
@@ -62,35 +64,37 @@ export default class ComposeForm extends PureComponent {
 
     return (
       <form onSubmit={handleSubmit} style={this.props.style}>
-        <div>
-          <label htmlFor="title">Title</label>
+        <div style={styles.formContainer}>
           <div>
-            <Field
-              name="title"
-              id="title"
-              component={TextField}
-              hintText="What are you selling?"
-              maxLength="160"
-              fullWidth
-            />
+            <label htmlFor="title">Title</label>
+            <div>
+              <Field
+                name="title"
+                id="title"
+                component={TextField}
+                hintText="What are you selling?"
+                maxLength="160"
+                fullWidth
+              />
+            </div>
+          </div>
+          <div style={styles.spacer}>
+            <label htmlFor="price">Price</label>
+            <div>
+              <Field name="price" id="price" component={priceField} />
+            </div>
+          </div>
+          <div style={styles.spacer}>
+            <label htmlFor="description">Description</label>
+            <div>
+              <Field name="description" id="description" component={descriptionField} />
+            </div>
+          </div>
+          <div style={styles.spacer}>
+            <Field name="photos" id="photos" component={PhotosList} />
           </div>
         </div>
-        <div style={styles.spacer}>
-          <label htmlFor="price">Price</label>
-          <div>
-            <Field name="price" id="price" component={priceField} />
-          </div>
-        </div>
-        <div style={styles.spacer}>
-          <label htmlFor="description">Description</label>
-          <div>
-            <Field name="description" id="description" component={descriptionField} />
-          </div>
-        </div>
-        <div style={styles.spacer}>
-          <Field name="photos" id="photos" component={PhotosList} />
-        </div>
-        <div>
+        <div style={{ marginTop: '0.16rem' }}>
           <RaisedButton
             type="submit"
             disabled={pristine || submitting}
@@ -104,7 +108,7 @@ export default class ComposeForm extends PureComponent {
             style={styles.actionButton}
             onClick={reset}
           >
-            Clear
+            {this.props.isEdit ? 'Reset Changes' : 'Clear'}
           </RaisedButton>
         </div>
       </form>

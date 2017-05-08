@@ -257,6 +257,10 @@ func ReadListing(db *sql.DB, id string) (Listing, error, int) {
 func CreateListing(db *sql.DB, listing Listing, userId int) (Listing, error, int) {
 	listing.UserID = userId
 
+	if listing.Photos == nil {
+		listing.Photos = []string{}
+	}
+
 	// Insert listing
 	stmt := psql.Insert("listings").
 		Columns("title", "description", "user_id", "price", "status",
@@ -340,10 +344,7 @@ func addStar(db *sql.DB, listingId string, userId int) (error, int) {
 
 // removeStar remvoes a star from the given listingId for a given userId.
 func removeStar(db *sql.DB, listingId string, userId int) (error, int) {
-	stmt := psql.Update("starred_listings").
-		SetMap(map[string]interface{}{
-			"is_active": false,
-		}).
+	stmt := psql.Delete("starred_listings").
 		Where(sq.Eq{"listing_id": listingId, "user_id": userId})
 
 	// Query db for listing

@@ -77,9 +77,7 @@ export default class SavedSearchCard extends React.Component {
   }
 
   handleActivate = () => {
-    console.log(this.props.savedSearch);
     const query = omitBy(omit(this.props.savedSearch, ['keyId', 'creationDate', 'lastModificationDate']), isNull);
-    console.log(query);
     this.props.dispatch(loadListings({
       query,
       reset: true,

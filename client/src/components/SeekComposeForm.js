@@ -13,21 +13,12 @@ const titleField = field => (
   />
 );
 
-const priceField = field => (
-  <div>
-    {field.input.value ? '$' : ''}
-    <TextField
-      hintText="How much are you willing to pay?" value={field.input.value}
-      onChange={field.input.onChange} type="number" prefix="$" min="0" step="0.01"
-    />
-  </div>
-);
-
 const descriptionField = field => (
   <TextField
     hintText="Describe what you're looking to buy. For best results, keep to 100 words or fewer."
     value={field.input.value} onChange={field.input.onChange} multiLine
     fullWidth
+    rowsMax={6}
   />
 );
 
@@ -37,11 +28,13 @@ export default class SeekComposeForm extends PureComponent {
   static propTypes = {
     ...reduxFormPropTypes,
     style: PropTypes.object, // eslint-disable-line react/forbid-prop-types
+    isEdit: PropTypes.bool.isRequired,
   }
 
   static styles = {
     spacer: { marginTop: '1em' },
     actionButton: { margin: 8, padding: 1 },
+    formContainer: { maxHeight: '83vh', overflow: 'scroll' },
   }
 
   defaultProps = {
@@ -54,27 +47,30 @@ export default class SeekComposeForm extends PureComponent {
 
     return (
       <form onSubmit={handleSubmit} style={this.props.style}>
-        <div>
-          <label htmlFor="title">Title</label>
+        <div style={styles.formContainer}>
           <div>
-            <Field name="title" id="title" component={titleField} />
+            <label htmlFor="title">Title</label>
+            <div>
+              <Field name="title" id="title" component={titleField} />
+            </div>
           </div>
-        </div>
-        <div style={styles.spacer}>
-          <label htmlFor="price">Price</label>
-          <div>
-            <Field name="price" id="price" component={priceField} />
-          </div>
-        </div>
-        <div style={styles.spacer}>
-          <label htmlFor="description">Description</label>
-          <div>
-            <Field name="description" id="description" component={descriptionField} />
+          <div style={styles.spacer}>
+            <label htmlFor="description">Description</label>
+            <div>
+              <Field name="description" id="description" component={descriptionField} />
+            </div>
           </div>
         </div>
         <div>
           <RaisedButton type="submit" disabled={pristine || submitting} style={styles.actionButton}>Submit</RaisedButton>
-          <RaisedButton type="button" disabled={pristine || submitting} style={styles.actionButton} onClick={reset}>Clear</RaisedButton>
+          <RaisedButton
+            type="button"
+            disabled={pristine || submitting}
+            style={styles.actionButton}
+            onClick={reset}
+          >
+            {this.props.isEdit ? 'Reset Changes' : 'Clear'}
+          </RaisedButton>
         </div>
       </form>
     );

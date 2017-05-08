@@ -81,9 +81,9 @@ export function postListing(listing, successMessage) {
 }
 
 export function starListing(listing) {
-  console.log(listing.isStarred);
   return function (dispatch, getState) {
     dispatch({
+      listing,
       type: 'STAR_LISTING_REQUEST',
     });
 
