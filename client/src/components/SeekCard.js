@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {
+  Link,
   withRouter,
   propTypes as routerPropTypes,
 } from 'react-router-dom';
@@ -137,10 +138,6 @@ export default class SeekCard extends React.Component {
     ));
   }
 
-  handlePermalinkRedirect = () => {
-    this.props.history.push(`/seek/${this.props.seek.keyId}`);
-  }
-
   render() {
     const { seek, expanded } = this.props;
     const styles = SeekCard.styles;
@@ -183,7 +180,7 @@ export default class SeekCard extends React.Component {
               }
 
               <FlatButton secondary icon={<FavoriteIcon />} label="Notify Me" />
-              <FlatButton icon={<LinkIcon />} label="Permalink" onTouchTap={this.handlePermalinkRedirect} />
+              <Link to={`/seek/${this.props.seek.keyId}`}> <FlatButton icon={<LinkIcon />} label="Permalink" /> </Link>
             </CardActions>
 
           </div>
