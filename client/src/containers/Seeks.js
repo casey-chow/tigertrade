@@ -31,13 +31,13 @@ export default class Seeks extends Component {
   };
 
   componentWillMount() {
-    const query = parseQuery(this.props.location, this.props.match.params);
+    const query = parseQuery(this.props);
     this.props.dispatch(loadSeeks({ query, reset: true }));
   }
 
   componentWillReceiveProps(nextProps) {
     if (this.props.match.params.type !== nextProps.match.params.type) {
-      const query = parseQuery(nextProps.location, nextProps.match.params);
+      const query = parseQuery(nextProps);
       this.props.dispatch(loadSeeks({ query, reset: true }));
     }
   }

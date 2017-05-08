@@ -1,6 +1,6 @@
 import { parse, stringify } from 'query-string';
 
-export const parseQuery = (location, params) => {
+export const parseQuery = ({ location, match }) => {
   const queryStrings = parse(location.search);
   const query = {
     query: queryStrings.query,
@@ -8,7 +8,7 @@ export const parseQuery = (location, params) => {
     maxPrice: (queryStrings.maxPrice === '' || queryStrings.maxPrice === undefined) ? undefined : parseInt(queryStrings.maxPrice, 10),
   };
 
-  if (params.type === 'mine') {
+  if (match.params.type === 'mine') {
     query.isMine = true;
   }
 
