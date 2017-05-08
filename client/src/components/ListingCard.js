@@ -211,7 +211,7 @@ export default class ListingCard extends React.Component {
               }
 
               <FlatButton secondary icon={<FavoriteIcon />} style={favoriteButtonStyle} label="Favorite" onTouchTap={this.handleStar} />
-              <Link to={`/listing/${this.props.listing.keyId}`}> <FlatButton icon={<LinkIcon />} label="Permalink" /> </Link>
+              <Link to={`/listing/${this.props.listing.keyId}`}><FlatButton icon={<LinkIcon />} label="Permalink" /></Link>
             </CardActions>
 
           </div>
