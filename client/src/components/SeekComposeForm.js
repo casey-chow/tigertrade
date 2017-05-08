@@ -50,7 +50,7 @@ export default class SeekComposeForm extends PureComponent {
 
   render() {
     const { handleSubmit, pristine, reset, submitting } = this.props;
-    const styles = SeekComposeForm.style;
+    const styles = SeekComposeForm.styles;
 
     return (
       <form onSubmit={handleSubmit} style={this.props.style}>
