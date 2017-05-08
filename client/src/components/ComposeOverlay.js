@@ -133,7 +133,7 @@ export default class ComposeOverlay extends Component {
           zDepth={2}
         >
           <CardHeader
-            title={`${this.props.isEdit ? 'Edit' : 'Compose'} ${this.state.mode === 'listings' ? 'Listing' : 'Seek'}`}
+            title={`${this.props.isEdit ? 'Edit' : 'Compose'} ${this.state.mode === 'listings' ? 'Listing' : 'Buy Request'}`}
             actAsExpander
           >
             <IconButton

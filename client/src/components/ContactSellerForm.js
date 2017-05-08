@@ -5,7 +5,7 @@ import {
   propTypes as reduxFormPropTypes,
 } from 'redux-form';
 import TextField from 'material-ui/TextField';
-import RaisedButton from 'material-ui/RaisedButton';
+import FlatButton from 'material-ui/FlatButton';
 
 @reduxForm({ form: 'contactSeller' })
 export default class ContactSellerForm extends PureComponent {
@@ -17,12 +17,15 @@ export default class ContactSellerForm extends PureComponent {
     actionArea: { width: '100%' },
     messageField: {
       backgroundColor: 'rgba(0,0,0,0.05)',
-      padding: '5px',
+      borderRadius: '2px',
+      padding: '0 0.75rem',
       marginLeft: '-5px',
     },
     sendButton: {
-      margin: 8,
-      padding: 1,
+      fontWeight: 500,
+      textTransform: 'uppercase',
+      marginTop: '8px',
+      padding: '1px 16px',
       float: 'right',
     },
   }
@@ -58,13 +61,14 @@ export default class ContactSellerForm extends PureComponent {
           </div>
         </div>
         <div style={styles.actionArea}>
-          <RaisedButton
+          <FlatButton
             type="submit"
+            primary
             disabled={submitting}
             style={styles.sendButton}
           >
-            Send
-          </RaisedButton>
+            Send E-mail
+          </FlatButton>
         </div>
       </form>
     );

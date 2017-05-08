@@ -165,21 +165,21 @@ export default class NavigationDrawer extends Component {
           />
           <ListItem
             key="seeks"
-            primaryText="Seeks"
+            primaryText="Buy Requests"
             leftIcon={<ShoppingCart />}
             initiallyOpen
             primaryTogglesNestedList
             nestedItems={[
               <ListItem
                 key="recent"
-                primaryText="Recent Seeks"
+                primaryText="Recent Buy Requests"
                 value="/seeks"
                 style={styles.menuChild}
               />,
               (this.props.loggedIn ?
                 <ListItem
                   key="mine"
-                  primaryText="My Seeks"
+                  primaryText="My Buy Requests"
                   value="/seeks/mine"
                   style={styles.menuChild}
                 /> : null
