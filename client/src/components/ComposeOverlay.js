@@ -57,7 +57,6 @@ export default class ComposeOverlay extends Component {
       right: '5%',
       width: '40vw',
       minWidth: '16rem',
-      maxHeight: '90vh',
     },
     overlayHidden: { display: 'none' },
   };

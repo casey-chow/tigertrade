@@ -54,22 +54,24 @@ export default class SeekComposeForm extends PureComponent {
 
     return (
       <form onSubmit={handleSubmit} style={this.props.style}>
-        <div>
-          <label htmlFor="title">Title</label>
+        <div style={{ maxHeight: '80vh', overflow: 'scroll' }}>
           <div>
-            <Field name="title" id="title" component={titleField} />
+            <label htmlFor="title">Title</label>
+            <div>
+              <Field name="title" id="title" component={titleField} />
+            </div>
           </div>
-        </div>
-        <div style={styles.spacer}>
-          <label htmlFor="price">Price</label>
-          <div>
-            <Field name="price" id="price" component={priceField} />
+          <div style={styles.spacer}>
+            <label htmlFor="price">Price</label>
+            <div>
+              <Field name="price" id="price" component={priceField} />
+            </div>
           </div>
-        </div>
-        <div style={styles.spacer}>
-          <label htmlFor="description">Description</label>
-          <div>
-            <Field name="description" id="description" component={descriptionField} />
+          <div style={styles.spacer}>
+            <label htmlFor="description">Description</label>
+            <div>
+              <Field name="description" id="description" component={descriptionField} />
+            </div>
           </div>
         </div>
         <div>

@@ -36,6 +36,11 @@ export default class PhotosList extends Component {
     uploadedImage: {
       maxHeight: '200px',
     },
+    dropzone: {
+      width: '8rem',
+      height: '8rem',
+      backgroundColor: 'rgba(0, 0, 0, 0.1)',
+    },
   }
 
   componentWillMount() {
@@ -98,13 +103,14 @@ export default class PhotosList extends Component {
       <div>
         { this.state.photos.length < 5 &&
           <Dropzone
+            style={styles.dropzone}
             accept="image/*"
             data={{ type: 'picture' }}
             maxSize={+5e6/* 5MB */}
             disablePreview
             onDropAccepted={this.handleDropAccepted}
           >
-            <div style={{ verticalAlign: 'center' }}>
+            <div style={{ lineHeight: '8rem', verticalAlign: 'middle', textAlign: 'center' }}>
               UPLOAD IMAGES HERE
             </div>
           </Dropzone>

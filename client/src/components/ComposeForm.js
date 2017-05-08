@@ -34,7 +34,6 @@ const descriptionField = field => (
     value={field.input.value}
     onChange={field.input.onChange}
     multiLine
-    rowsMax={8}
     fullWidth
     rows={2}
   />
@@ -62,33 +61,35 @@ export default class ComposeForm extends PureComponent {
 
     return (
       <form onSubmit={handleSubmit} style={this.props.style}>
-        <div>
-          <label htmlFor="title">Title</label>
+        <div style={{ maxHeight: '80vh', overflow: 'scroll' }}>
           <div>
-            <Field
-              name="title"
-              id="title"
-              component={TextField}
-              hintText="What are you selling?"
-              maxLength="160"
-              fullWidth
-            />
+            <label htmlFor="title">Title</label>
+            <div>
+              <Field
+                name="title"
+                id="title"
+                component={TextField}
+                hintText="What are you selling?"
+                maxLength="160"
+                fullWidth
+              />
+            </div>
           </div>
-        </div>
-        <div style={styles.spacer}>
-          <label htmlFor="price">Price</label>
-          <div>
-            <Field name="price" id="price" component={priceField} />
+          <div style={styles.spacer}>
+            <label htmlFor="price">Price</label>
+            <div>
+              <Field name="price" id="price" component={priceField} />
+            </div>
           </div>
-        </div>
-        <div style={styles.spacer}>
-          <label htmlFor="description">Description</label>
-          <div>
-            <Field name="description" id="description" component={descriptionField} />
+          <div style={styles.spacer}>
+            <label htmlFor="description">Description</label>
+            <div>
+              <Field name="description" id="description" component={descriptionField} />
+            </div>
           </div>
-        </div>
-        <div style={styles.spacer}>
-          <Field name="photos" id="photos" component={PhotosList} />
+          <div style={styles.spacer}>
+            <Field name="photos" id="photos" component={PhotosList} />
+          </div>
         </div>
         <div>
           <RaisedButton
