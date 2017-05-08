@@ -53,10 +53,11 @@ export default class ComposeOverlay extends Component {
     overlay: {
       position: 'fixed',
       bottom: '0',
-      zIndex: '99',
+      zIndex: '9001',
       right: '5%',
       width: '40vw',
       minWidth: '16rem',
+      maxHeight: '90vh',
     },
     overlayHidden: { display: 'none' },
   };
@@ -133,7 +134,7 @@ export default class ComposeOverlay extends Component {
           zDepth={2}
         >
           <CardHeader
-            title={this.props.isEdit ? 'Edit' : 'Compose'}
+            title={`${this.props.isEdit ? 'Edit' : 'Compose'} ${this.state.mode === 'listings' ? 'Listing' : 'Seek'}`}
             actAsExpander
           >
             <IconButton
