@@ -75,7 +75,7 @@ func ReadListing(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	// Get ID from params
 	id := ps.ByName("id")
 	if id == "" {
-		Error(w, http.StatusNotFound)
+		Error(w, http.StatusBadRequest)
 		return
 	}
 
@@ -97,7 +97,7 @@ func CreateListing(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 	if err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("error while parsing JSON file")
-		Error(w, http.StatusInternalServerError)
+		Error(w, http.StatusUnprocessableEntity)
 		return
 	}
 
@@ -126,7 +126,7 @@ func UpdateListing(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 	// Get ID from params
 	id := ps.ByName("id")
 	if id == "" {
-		Error(w, http.StatusNotFound)
+		Error(w, http.StatusBadRequest)
 		return
 	}
 
@@ -136,7 +136,7 @@ func UpdateListing(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 	if err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("error while parsing JSON file")
-		Error(w, http.StatusInternalServerError)
+		Error(w, http.StatusUnprocessableEntity)
 		return
 	}
 
@@ -163,7 +163,7 @@ func DeleteListing(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 	// Get ID from params
 	id := ps.ByName("id")
 	if id == "" {
-		Error(w, http.StatusNotFound)
+		Error(w, http.StatusBadRequest)
 		return
 	}
 
@@ -191,8 +191,7 @@ func UpdateListingStar(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 	// Get ID from params
 	id := ps.ByName("id")
 	if id == "" {
-		// Return 404 error with empty body if not found
-		Error(w, http.StatusNotFound)
+		Error(w, http.StatusBadRequest)
 		return
 	}
 
@@ -202,7 +201,7 @@ func UpdateListingStar(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 	if err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("error while parsing JSON")
-		Error(w, http.StatusInternalServerError)
+		Error(w, http.StatusUnprocessableEntity)
 		return
 	}
 

@@ -36,7 +36,7 @@ func TestAuthentication(t *testing.T) {
 			req, _ := http.NewRequest("GET", "/api/users/current", nil)
 			res := executeRequest(app, req)
 
-			So(res.Code, ShouldEqual, http.StatusUnauthorized)
+			So(res.Code, ShouldEqual, http.StatusNoContent)
 		})
 
 		Convey("creates a user if they do not already exist in the database", nil)
