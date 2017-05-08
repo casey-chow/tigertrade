@@ -22,7 +22,7 @@ func GetCurrentUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params
 	netID := getUsername(r)
 	log.WithField("netID", netID).Debug("getting username")
 	if netID == "" {
-		Error(w, http.StatusUnauthorized)
+		w.WriteHeader(http.StatusNoContent)
 		return
 	}
 
