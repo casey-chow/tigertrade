@@ -13,7 +13,6 @@ import {
   CardActions,
   CardHeader,
   CardMedia,
-  CardTitle,
   CardText,
 } from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
@@ -28,12 +27,16 @@ import ModeEdit from 'material-ui/svg-icons/editor/mode-edit';
 import FavoriteIcon from 'material-ui/svg-icons/action/favorite';
 import LinkIcon from 'material-ui/svg-icons/content/link';
 
+import Lightbox from 'react-images';
+
 import ContactSellerForm from './ContactSellerForm';
 
 import { mediaQueries } from '../helpers/breakpoints';
 import { redirectToCas } from '../helpers/cas';
 import { mailSeller } from './../actions/users';
 import { editListing, deleteListing, starListing } from './../actions/listings';
+
+import './ListingCard.css';
 
 const mapStateToProps = state => ({
   currentUser: state.currentUser,
@@ -66,6 +69,7 @@ export default class ListingCard extends React.Component {
       isStarred: PropTypes.bool,
       expirationDate: PropTypes.number,
       thumbnail: PropTypes.string,
+      photos: PropTypes.array,
     }).isRequired,
   };
 
@@ -108,6 +112,8 @@ export default class ListingCard extends React.Component {
 
   state = {
     contactOpen: false,
+    lightboxImage: -1,
+    lightboxOpen: false,
   }
 
   handleContactOpen = () => {
@@ -179,19 +185,40 @@ export default class ListingCard extends React.Component {
 
           <div style={expanded ? styles.cardContentsShown : styles.cardContentsHidden}>
 
-            { listing.thumbnail &&
+            { listing.photos && listing.photos.length > 0 &&
+
               <CardMedia>
-                <img
-                  alt={listing.title}
-                  src={listing.thumbnail}
-                  style={styles.thumbnail}
-                />
+                <div className="wrapper">
+                  <div className="scrolls">
+                    <div className="imageDiv">
+                      {
+                        listing.photos.map(
+                          (image, i) =>
+                            <button
+                              key={image}
+                              onClick={
+                                event => this.setState({ lightboxImage: i, lightboxOpen: true })
+                              }
+                            >
+                              <img alt="listing" src={image} />
+                            </button>,
+                          )
+                      }
+                    </div>
+                  </div>
+                </div>
+                { this.state.lightboxOpen &&
+                <Lightbox
+                  images={listing.photos.map(image => ({ src: image }))}
+                  onClose={() => this.setState({ lightboxOpen: false })}
+                  isOpen={this.state.lightboxOpen}
+                  currentImage={this.state.lightboxImage}
+                  onClickNext={() => this.setState({ lightboxImage: this.state.lightboxImage + 1 })}
+                  onClickPrev={() => this.setState({ lightboxImage: this.state.lightboxImage - 1 })}
+                  backdropClosesModal
+                /> }
               </CardMedia>
             }
-
-            <CardTitle
-              title={listing.title}
-            />
 
             { listing.description &&
               <CardText>
@@ -216,16 +243,24 @@ export default class ListingCard extends React.Component {
         </Card>
         {this.state.contactOpen &&
           <Dialog
-            title="Let the seller know you're interested. We'll put you in touch via email:"
+            title="Contact Seller"
             modal={false}
             open={this.state.contactOpen}
             onRequestClose={this.handleContactClose}
           >
-            <div style={{ display: 'flex', flexWrap: 'wrap', marginTop: '-0.35rem', marginBottom: '0.625rem' }}>
-              <div style={{ margin: '0.625rem' }}>To:</div>
-              <Chip style={{ margin: '0.3rem' }}>{this.props.listing.username}@princeton.edu</Chip>
+            <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+              <div style={{ marginBottom: '0.5rem' }}>
+                If you are interested in this item, you can let the seller know here.
+                We&rsquo;ll send the seller an email about your interest so that you
+                can further discuss and make plans.
+              </div>
+              <div style={{ margin: '10px 0.625rem 0 0' }}>To:</div>
+              <Chip style={{ margin: '0.3rem 0 1rem' }}>{this.props.listing.username}@princeton.edu</Chip>
             </div>
-            <ContactSellerForm onSubmit={this.handleSubmit} initialValues={{ message: `Hi! I'm interested in buying "${listing.title}".` }} />
+            <ContactSellerForm
+              onSubmit={this.handleSubmit}
+              initialValues={{ message: `Hi! I'm interested in buying "${listing.title}".` }}
+            />
           </Dialog>
         }
       </div>

@@ -15,16 +15,15 @@ export const parseQuery = ({ location, match }) => {
   return query;
 };
 
-export const stringifyQuery = query =>
-  stringify({
-    ...query,
-    query: (query.query !== '') ? query.query : undefined,
-    limit: undefined,
-    isStarred: (query.isStarred === true) ? true : undefined,
-  });
+export const stripQuery = query => ({
+  ...query,
+  query: (query.query !== '') ? query.query : undefined,
+  limit: undefined,
+  isStarred: (query.isStarred === true) ? true : undefined,
+});
 
 export const writeHistory = ({ query, history, location }) => {
-  const queryStr = stringifyQuery(query);
+  const queryStr = stringify(stripQuery(query));
   if (queryStr !== '') {
     history.push(`${location.pathname}?${queryStr}`);
   } else {
