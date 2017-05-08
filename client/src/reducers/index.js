@@ -62,7 +62,7 @@ const composeState = (state = { show: false, isEdit: false, mode: 'listings', li
   }
 };
 
-const leftDrawerVisible = (state = true, action) => {
+const leftDrawerVisible = (state = false, action) => {
   switch (action.type) {
     case 'SET_LEFT_DRAWER':
       return action.visible;

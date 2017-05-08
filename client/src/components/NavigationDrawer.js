@@ -82,23 +82,23 @@ export default class NavigationDrawer extends Component {
     },
   }
 
-  static mediaQuery = window.matchMedia(mediaQueries.largeUp);
-
   componentWillMount() {
-    NavigationDrawer.mediaQuery.addListener(this.handleMediaQueryChanged);
+    this.mediaQuery.addListener(this.handleMediaQueryChanged);
 
-    const docked = NavigationDrawer.mediaQuery.matches;
+    const docked = this.mediaQuery.matches;
     this.setState({ docked });
     this.props.dispatch(setLeftDrawer(docked));
   }
 
   componentWillUnmount() {
-    NavigationDrawer.mediaQuery.removeListener(this.handleMediaQueryChanged);
+    this.mediaQuery.removeListener(this.handleMediaQueryChanged);
   }
+
+  mediaQuery = window.matchMedia(mediaQueries.largeUp);
 
   handleMediaQueryChanged = () => {
     const prevDocked = this.state && this.state.docked;
-    const docked = NavigationDrawer.mediaQuery.matches;
+    const docked = this.mediaQuery.matches;
 
     // show the drawer if growing, hide if shrinking
     if (!prevDocked && docked) {
