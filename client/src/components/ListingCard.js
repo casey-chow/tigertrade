@@ -7,7 +7,6 @@ import {
   propTypes as routerPropTypes,
 } from 'react-router-dom';
 import Radium, { Style } from 'radium';
-import ImageGallery from 'react-image-gallery';
 
 import {
   Card,
@@ -168,21 +167,6 @@ export default class ListingCard extends React.Component {
       backgroundColor: this.props.listing.isStarred ? grey300 : 'transparent',
     };
 
-    const images = [
-      {
-        original: 'http://lorempixel.com/1000/600/nature/1/',
-        thumbnail: 'http://lorempixel.com/250/150/nature/1/',
-      },
-      {
-        original: 'http://lorempixel.com/1000/600/nature/2/',
-        thumbnail: 'http://lorempixel.com/250/150/nature/2/',
-      },
-      {
-        original: 'http://lorempixel.com/1000/600/nature/3/',
-        thumbnail: 'http://lorempixel.com/250/150/nature/3/',
-      },
-    ];
-
     return (
       <div>
         <Style
@@ -205,21 +189,15 @@ export default class ListingCard extends React.Component {
             { listing.photos && listing.photos.length > 0 &&
 
               <CardMedia>
-                <div style={{ width: '100px' }}>
-                  <ImageGallery
-                    items={images}
-                    slideInterval={2000}
-                    onImageLoad={this.handleImageLoad}
-                    useBrowserFullscreen={false}
-                    showPlayButton={false}
-                  />
+                <div className="wrapper">
+                  <div className="scrolls">
+                    <div className="imageDiv">
+                      {
+                        listing.photos.map(image => <img alt="listing" src={image} />)
+                      }
+                    </div>
+                  </div>
                 </div>
-
-                <img
-                  alt={listing.title}
-                  src={listing.photos[0]}
-                  style={styles.thumbnail}
-                />
               </CardMedia>
             }
 
