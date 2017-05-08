@@ -22,3 +22,12 @@ export const stringifyQuery = query =>
     limit: undefined,
     isStarred: (query.isStarred === true) ? true : undefined,
   });
+
+export const writeHistory = ({ query, history, pathname }) => {
+  const queryStr = stringifyQuery(query);
+  if (queryStr !== '') {
+    history.push(`${location.pathname}?${queryStr}`);
+  } else {
+    history.push(`${location.pathname}`);
+  }
+};

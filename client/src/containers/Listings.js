@@ -38,7 +38,7 @@ export default class Listings extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (this.props.match.params.type !== nextProps.match.params.type) {
-      const query = parseQuery(this.props.location, this.props.match.params);
+      const query = parseQuery(nextProps.location, nextProps.match.params);
       this.props.dispatch(loadListings({ query, reset: true }));
     }
   }

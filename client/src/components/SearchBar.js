@@ -8,7 +8,7 @@ import Paper from 'material-ui/Paper';
 
 import { loadListings } from './../actions/listings';
 import { loadSeeks } from './../actions/seeks';
-import { stringifyQuery } from '../helpers/query';
+import { writeHistory } from '../helpers/query';
 
 import './SearchBar.css';
 
@@ -111,12 +111,7 @@ export default class SearchBar extends Component {
       focus: false,
     });
 
-    const queryStr = stringifyQuery(this.props.query);
-    if (queryStr !== '') {
-      this.props.history.push(`${this.props.location.pathname}?${queryStr}`);
-    } else {
-      this.props.history.push(`${this.props.location.pathname}`);
-    }
+    writeHistory(this.props);
   };
 
   render() {

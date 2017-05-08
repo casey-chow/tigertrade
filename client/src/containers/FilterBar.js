@@ -22,6 +22,7 @@ import { loadListings } from './../actions/listings';
 import { loadSeeks } from './../actions/seeks';
 import { setExpandAll } from './../actions/ui';
 import { postSavedSearch } from './../actions/savedSearches';
+import { writeHistory } from '../helpers/query';
 
 const mapStateToProps = state => ({
   displayMode: state.displayMode,
@@ -36,6 +37,12 @@ export default class FilterBar extends Component {
   static propTypes = {
     ...routerPropTypes,
     dispatch: PropTypes.func.isRequired,
+    history: PropTypes.shape({
+      push: PropTypes.func.isRequired,
+    }).isRequired,
+    location: PropTypes.shape({
+      pathname: PropTypes.string.isRequired,
+    }).isRequired,
     displayMode: PropTypes.string.isRequired,
     expandAll: PropTypes.bool.isRequired,
     query: PropTypes.shape({
@@ -107,6 +114,8 @@ export default class FilterBar extends Component {
       default:
         break;
     }
+
+    writeHistory({ query, history: this.props.history, location: this.props.location });
   }
 
   handleExpandAllToggle = (event, checked) => {
