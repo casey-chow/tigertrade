@@ -7,11 +7,13 @@ import {
 } from 'react-router-dom';
 
 import { Container, Row, Col } from 'react-grid-system';
+import { isEmpty, omit } from 'lodash';
 
 import { grey300 } from 'material-ui/styles/colors';
 
 import Paper from 'material-ui/Paper';
 import FlatButton from 'material-ui/FlatButton';
+import TextField from 'material-ui/TextField';
 import Toggle from 'material-ui/Toggle';
 import FavoriteIcon from 'material-ui/svg-icons/action/favorite';
 import SaveIcon from 'material-ui/svg-icons/content/save';
@@ -68,31 +70,39 @@ export default class FilterBar extends Component {
       right: '0',
     },
   }
+
   state = {
     isStarred: false,
+    minPrice: -1,
+    maxPrice: -1,
   }
 
   componentWillMount() {
     this.setState({
       isStarred: this.props.query.isStarred,
+      minPrice: this.props.query.minPrice / 100 || '',
+      maxPrice: this.props.query.maxPrice / 100 || '',
     });
   }
 
   componentWillReceiveProps(nextProps) {
     this.setState({
       isStarred: nextProps.query.isStarred,
+      minPrice: nextProps.query.minPrice / 100 || '',
+      maxPrice: nextProps.query.maxPrice / 100 || '',
     });
   }
 
   handleFavorite = () => {
     const isStarred = !this.props.query.isStarred;
-    this.setState({ isStarred });
+    const query = { isStarred };
+    this.setState(query);
     switch (this.props.displayMode) {
       case 'seeks':
-        this.props.dispatch(loadSeeks({ query: { isStarred } }));
+        this.props.dispatch(loadSeeks({ query }));
         break;
       case 'listings':
-        this.props.dispatch(loadListings({ query: { isStarred } }));
+        this.props.dispatch(loadListings({ query }));
         break;
       default:
         break;
@@ -101,6 +111,36 @@ export default class FilterBar extends Component {
 
   handleExpandAllToggle = (event, checked) => {
     this.props.dispatch(setExpandAll(checked));
+  }
+
+  handleMinChange = (event, minPrice) => {
+    this.setState({ minPrice });
+    const query = { minPrice: (minPrice === '') ? undefined : Math.floor(minPrice * 100) };
+    switch (this.props.displayMode) {
+      case 'seeks':
+        this.props.dispatch(loadSeeks({ query }));
+        break;
+      case 'listings':
+        this.props.dispatch(loadListings({ query }));
+        break;
+      default:
+        break;
+    }
+  }
+
+  handleMaxChange = (event, maxPrice) => {
+    this.setState({ maxPrice });
+    const query = { maxPrice: (maxPrice === '') ? undefined : Math.floor(maxPrice * 100) };
+    switch (this.props.displayMode) {
+      case 'seeks':
+        this.props.dispatch(loadSeeks({ query }));
+        break;
+      case 'listings':
+        this.props.dispatch(loadListings({ query }));
+        break;
+      default:
+        break;
+    }
   }
 
   handleWatchButtonTap = () => {
@@ -122,10 +162,33 @@ export default class FilterBar extends Component {
       >
         <Container>
           <Row>
-            <Col xs={4} />
+            <Col xs={3} />
+            <Col xs={1}>
+              <TextField
+                hintText="Min Price"
+                type="number"
+                onChange={this.handleMinChange}
+                value={this.state.minPrice}
+                prefix="$"
+                min="0"
+                step="0.01"
+              />
+            </Col>
+            <Col xs={1}>
+              <TextField
+                hintText="Max Price"
+                type="number"
+                onChange={this.handleMaxChange}
+                value={this.state.maxPrice}
+                prefix="$"
+                min="0"
+                step="0.01"
+              />
+            </Col>
             <Col xs={2}>
               <div style={{ width: 'max-content' }}>
                 <FlatButton
+                  secondary
                   icon={<FavoriteIcon />}
                   label="Favorited"
                   style={{
@@ -137,22 +200,26 @@ export default class FilterBar extends Component {
               </div>
             </Col>
             <Col xs={2}>
-              <Toggle
-                style={styles.expandAllToggle}
-                toggled={this.props.expandAll}
-                onToggle={this.handleExpandAllToggle}
-              />
+              <div style={{ width: 'max-content' }}>
+                <Toggle
+                  label="Expand All"
+                  labelPosition="right"
+                  style={styles.expandAllToggle}
+                  toggled={this.props.expandAll}
+                  onToggle={this.handleExpandAllToggle}
+                />
+              </div>
             </Col>
-            <Col xs={4} />
+            <Col xs={3} />
           </Row>
         </Container>
         <div style={styles.watchButton}>
           <FlatButton
-            secondary
+            primary
             icon={<SaveIcon />}
             label="Watch Results"
             onTouchTap={this.handleWatchButtonTap}
-            disabled={query.query === ''}
+            disabled={isEmpty(omit(query, ['isStarred', 'limit']))}
           />
         </div>
       </Paper>

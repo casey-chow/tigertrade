@@ -5,7 +5,6 @@ import {
   withRouter,
   propTypes as routerPropTypes,
 } from 'react-router-dom';
-import { parse } from 'query-string';
 
 import Waypoint from 'react-waypoint';
 
@@ -13,6 +12,7 @@ import ListingsList from '../components/ListingsList';
 import LoadingSpinner from '../components/LoadingSpinner';
 
 import { loadListings } from './../actions/listings';
+import { parseQuery } from '../helpers/query';
 
 const mapStateToProps = state => ({
   listingsLoading: state.listingsLoading,
@@ -32,13 +32,13 @@ export default class Listings extends Component {
   };
 
   componentWillMount() {
-    const query = this.getQuery(this.props);
+    const query = parseQuery(this.props.location, this.props.match.params);
     this.props.dispatch(loadListings({ query, reset: true }));
   }
 
   componentWillReceiveProps(nextProps) {
     if (this.props.match.params.type !== nextProps.match.params.type) {
-      const query = this.getQuery(nextProps);
+      const query = parseQuery(this.props.location, this.props.match.params);
       this.props.dispatch(loadListings({ query, reset: true }));
     }
   }
@@ -61,18 +61,6 @@ export default class Listings extends Component {
     }
 
     return false;
-  }
-
-  getQuery = (props) => {
-    const query = {
-      query: parse(props.location.search).query || '',
-    };
-
-    if (props.match.params.type === 'mine') {
-      query.isMine = true;
-    }
-
-    return query;
   }
 
   loadMoreListings = () => {
