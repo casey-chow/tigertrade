@@ -24,6 +24,13 @@ export const listingLoading = (state = false, action) => {
 
 export const listings = (state = [], action) => {
   switch (action.type) {
+    case 'STAR_LISTING_REQUEST':
+      return state.map(listing => (
+        (action.listing.keyId === listing.keyId) ?
+        {
+          ...listing,
+          isStarred: !listing.isStarred,
+        } : listing));
     case 'LOAD_LISTINGS_FAILURE': // TODO: failure state
       return [];
     case 'LOAD_LISTINGS_SUCCESS':
