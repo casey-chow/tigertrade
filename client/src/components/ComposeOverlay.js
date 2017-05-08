@@ -53,7 +53,7 @@ export default class ComposeOverlay extends Component {
     overlay: {
       position: 'fixed',
       bottom: '0',
-      zIndex: '99',
+      zIndex: '9001',
       right: '5%',
       width: '40vw',
       minWidth: '16rem',
@@ -133,7 +133,7 @@ export default class ComposeOverlay extends Component {
           zDepth={2}
         >
           <CardHeader
-            title={this.props.isEdit ? 'Edit' : 'Compose'}
+            title={`${this.props.isEdit ? 'Edit' : 'Compose'} ${this.state.mode === 'listings' ? 'Listing' : 'Seek'}`}
             actAsExpander
           >
             <IconButton
@@ -146,6 +146,7 @@ export default class ComposeOverlay extends Component {
           <CardText style={this.state.expanded ? {} : styles.overlayHidden}>
             { (this.state.mode === 'listings')
               ? <ComposeForm
+                isEdit={this.props.isEdit}
                 onSubmit={this.props.isEdit ? this.handleEditListing : this.handleSubmitListing}
                 initialValues={
                   this.props.isEdit ?
@@ -153,6 +154,7 @@ export default class ComposeOverlay extends Component {
                 }
               />
               : <SeekComposeForm
+                isEdit={this.props.isEdit}
                 onSubmit={this.props.isEdit ? this.handleEditSeek : this.handleSubmitSeek}
                 initialValues={
                   this.props.isEdit ?
