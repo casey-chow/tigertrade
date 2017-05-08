@@ -71,10 +71,9 @@ export default class FilterBar extends Component {
       paddingBottom: '0.5em',
       zIndex: '50',
     },
-    favoriteButton: {
-    },
     priceField: {
-      maxWidth: '128px',
+      maxWidth: '6.5rem',
+      width: '100%',
     },
   }
 
@@ -170,66 +169,58 @@ export default class FilterBar extends Component {
         }}
       >
         { (this.props.location.pathname === '/listings') &&
-          <div style={styles.priceField}>
-            <TextField
-              hintText="Min Price"
-              type="number"
-              onChange={this.handleMinChange}
-              value={this.state.minPrice}
-              prefix="$"
-              min="0"
-              step="0.01"
-            />
-          </div>
+          <TextField
+            hintText="Min Price"
+            type="number"
+            onChange={this.handleMinChange}
+            value={this.state.minPrice}
+            style={styles.priceField}
+            prefix="$"
+            min="0"
+            step="0.01"
+          />
         }
         { (this.props.location.pathname === '/listings') &&
-          <div style={styles.priceField}>
-            <TextField
-              hintText="Max Price"
-              type="number"
-              onChange={this.handleMaxChange}
-              value={this.state.maxPrice}
-              prefix="$"
-              min="0"
-              step="0.01"
-            />
-          </div>
+          <TextField
+            hintText="Max Price"
+            type="number"
+            onChange={this.handleMaxChange}
+            value={this.state.maxPrice}
+            style={styles.priceField}
+            prefix="$"
+            min="0"
+            step="0.01"
+          />
         }
         { (this.props.location.pathname === '/listings') &&
-          <div>
-            <FlatButton
-              secondary
-              icon={<FavoriteIcon />}
-              label="Favorites Only"
-              style={{
-                ...styles.favoriteButton,
-                backgroundColor: query.isStarred ? grey300 : 'transparent',
-              }}
-              onTouchTap={this.handleFavorite}
-            />
-          </div>
+          <FlatButton
+            secondary
+            icon={<FavoriteIcon />}
+            label="Favorites Only"
+            style={{
+              backgroundColor: query.isStarred ? grey300 : 'transparent',
+            }}
+            onTouchTap={this.handleFavorite}
+          />
         }
         { (this.props.location.pathname === '/listings' || this.props.location.pathname === '/seeks') &&
-          <div style={styles.expandToggle}>
+          <div>
             <Toggle
               label="Expand All"
               labelPosition="right"
-              style={styles.expandAllToggle}
               toggled={this.props.expandAll}
               onToggle={this.handleExpandAllToggle}
             />
           </div>
         }
         { (this.props.location.pathname === '/listings') &&
-          <div style={styles.watchButton}>
-            <FlatButton
-              primary
-              icon={<SaveIcon />}
-              label="Watch Results"
-              onTouchTap={this.handleWatchButtonTap}
-              disabled={isEmpty(omit(query, ['isStarred', 'limit']))}
-            />
-          </div>
+          <FlatButton
+            primary
+            icon={<SaveIcon />}
+            label="Watch Results"
+            onTouchTap={this.handleWatchButtonTap}
+            disabled={isEmpty(omit(query, ['isStarred', 'limit']))}
+          />
         }
       </Paper>
     );
