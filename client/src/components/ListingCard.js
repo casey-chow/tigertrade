@@ -13,7 +13,6 @@ import {
   CardActions,
   CardHeader,
   CardMedia,
-  CardTitle,
   CardText,
 } from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
@@ -28,7 +27,7 @@ import ModeEdit from 'material-ui/svg-icons/editor/mode-edit';
 import FavoriteIcon from 'material-ui/svg-icons/action/favorite';
 import LinkIcon from 'material-ui/svg-icons/content/link';
 
-import 'react-image-gallery/styles/css/image-gallery.css';
+import Lightbox from 'react-images';
 
 import ContactSellerForm from './ContactSellerForm';
 
@@ -113,6 +112,8 @@ export default class ListingCard extends React.Component {
 
   state = {
     contactOpen: false,
+    lightboxImage: -1,
+    lightboxOpen: false,
   }
 
   handleContactOpen = () => {
@@ -193,17 +194,32 @@ export default class ListingCard extends React.Component {
                   <div className="scrolls">
                     <div className="imageDiv">
                       {
-                        listing.photos.map(image => <img alt="listing" src={image} />)
+                        listing.photos.map(
+                          (image, i) =>
+                            <button
+                              key={image}
+                              onClick={
+                                event => this.setState({ lightboxImage: i, lightboxOpen: true })
+                              }
+                            >
+                              <img alt="listing" src={image} />
+                            </button>,
+                          )
                       }
                     </div>
                   </div>
                 </div>
+                { this.state.lightboxOpen &&
+                <Lightbox
+                  images={listing.photos.map(image => ({ src: image }))}
+                  onClose={() => this.setState({ lightboxOpen: false })}
+                  isOpen={this.state.lightboxOpen}
+                  currentImage={this.state.lightboxImage}
+                  onClickNext={() => this.setState({ lightboxImage: this.state.lightboxImage + 1 })}
+                  onClickPrev={() => this.setState({ lightboxImage: this.state.lightboxImage - 1 })}
+                /> }
               </CardMedia>
             }
-
-            <CardTitle
-              title={listing.title}
-            />
 
             { listing.description &&
               <CardText>
