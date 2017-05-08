@@ -109,6 +109,7 @@ export default class ComposeForm extends PureComponent {
             type="submit"
             disabled={pristine || submitting}
             style={styles.actionButton}
+            primary
           >
             Submit
           </FlatButton>
@@ -118,6 +119,7 @@ export default class ComposeForm extends PureComponent {
             disabled={pristine || submitting}
             style={styles.actionButton}
             onClick={reset}
+            secondary
           >
             {this.props.isEdit ? 'Reset Changes' : 'Clear'}
           </FlatButton>

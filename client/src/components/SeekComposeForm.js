@@ -77,7 +77,12 @@ export default class SeekComposeForm extends PureComponent {
           </div>
         </div>
         <div style={styles.actionBar}>
-          <FlatButton type="submit" disabled={pristine || submitting} style={styles.actionButton}>
+          <FlatButton
+            type="submit"
+            disabled={pristine || submitting}
+            style={styles.actionButton}
+            primary
+          >
             Submit
           </FlatButton>
           &nbsp;
@@ -86,6 +91,7 @@ export default class SeekComposeForm extends PureComponent {
             disabled={pristine || submitting}
             style={styles.actionButton}
             onClick={reset}
+            secondary
           >
             {this.props.isEdit ? 'Reset Changes' : 'Clear'}
           </FlatButton>
