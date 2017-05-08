@@ -16,8 +16,17 @@ export default class ListingsList extends PureComponent {
 
   // Reset the open card when new listings are inserted.
   componentWillReceiveProps(nextProps) {
-    if (this.props !== nextProps) {
+    if (this.props.listings.length > nextProps.listings.length) {
       this.setState({ openCardId: -1 });
+    }
+
+    if (this.state.openCardId !== -1) {
+      for (let i = 0; i < this.props.listings.length; i += 1) {
+        if (this.props.listings[i].keyId !== nextProps.listings[i].keyId) {
+          this.setState({ openCardId: -1 });
+          break;
+        }
+      }
     }
   }
 

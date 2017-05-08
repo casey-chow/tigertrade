@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {
+  Link,
   withRouter,
   propTypes as routerPropTypes,
 } from 'react-router-dom';
@@ -147,10 +148,6 @@ export default class ListingCard extends React.Component {
     ));
   }
 
-  handlePermalinkRedirect = () => {
-    this.props.history.push(`/listing/${this.props.listing.keyId}`);
-  }
-
   handleStar = () => {
     this.props.dispatch(starListing(
       this.props.listing,
@@ -214,7 +211,7 @@ export default class ListingCard extends React.Component {
               }
 
               <FlatButton secondary icon={<FavoriteIcon />} style={favoriteButtonStyle} label="Favorite" onTouchTap={this.handleStar} />
-              <FlatButton icon={<LinkIcon />} label="Permalink" onTouchTap={this.handlePermalinkRedirect} />
+              <Link to={`/listing/${this.props.listing.keyId}`}> <FlatButton icon={<LinkIcon />} label="Permalink" /> </Link>
             </CardActions>
 
           </div>

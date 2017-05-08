@@ -7,6 +7,7 @@ import {
 } from 'react-router-dom';
 import { isNull, omit, omitBy } from 'lodash';
 import { stringify } from 'query-string';
+import Radium, { Style } from 'radium';
 
 import {
   Card,
@@ -19,11 +20,13 @@ import FlatButton from 'material-ui/FlatButton';
 import SearchIcon from 'material-ui/svg-icons/action/search';
 import DeleteIcon from 'material-ui/svg-icons/action/delete';
 
+import { mediaQueries } from '../helpers/breakpoints';
 import { loadListings } from './../actions/listings';
 import { deleteSavedSearch } from './../actions/savedSearches';
 
 @withRouter
 @connect()
+@Radium
 export default class SavedSearchCard extends React.Component {
 
   static propTypes = {
@@ -50,7 +53,12 @@ export default class SavedSearchCard extends React.Component {
 
   static styles = {
     cardExpanded: {
-      margin: '1.5rem -3rem',
+      margin: '1.5rem 0',
+      mediaQueries: {
+        [mediaQueries.mediumUp]: {
+          margin: '1.5rem -3rem',
+        },
+      },
     },
     cardContentsShown: {
       maxHeight: '1000px',
@@ -69,9 +77,7 @@ export default class SavedSearchCard extends React.Component {
   }
 
   handleActivate = () => {
-    console.log(this.props.savedSearch);
     const query = omitBy(omit(this.props.savedSearch, ['keyId', 'creationDate', 'lastModificationDate']), isNull);
-    console.log(query);
     this.props.dispatch(loadListings({
       query,
       reset: true,
@@ -91,29 +97,35 @@ export default class SavedSearchCard extends React.Component {
     const styles = SavedSearchCard.styles;
 
     return (
-      <Card
-        style={expanded ? styles.cardExpanded : {}}
-        onExpandChange={this.handleExpandChange}
-        expanded={expanded}
-      >
-        <CardHeader
-          title={savedSearch.query}
-          actAsExpander
+      <div>
+        <Style
+          scopeSelector=".savedsearch-card-expanded"
+          rules={styles.cardExpanded}
         />
-
-        <div style={expanded ? styles.cardContentsShown : styles.cardContentsHidden}>
-
-          <CardTitle
+        <Card
+          onExpandChange={this.handleExpandChange}
+          expanded={expanded}
+          className={expanded && 'savedsearch-card-expanded'}
+        >
+          <CardHeader
             title={savedSearch.query}
+            actAsExpander
           />
 
-          <CardActions>
-            <FlatButton primary icon={<SearchIcon />} label="Activate" onTouchTap={this.handleActivate} />
-            <FlatButton primary icon={<DeleteIcon />} label="Delete" onTouchTap={this.handleDelete} />
-          </CardActions>
+          <div style={expanded ? styles.cardContentsShown : styles.cardContentsHidden}>
 
-        </div>
-      </Card>
+            <CardTitle
+              title={savedSearch.query}
+            />
+
+            <CardActions>
+              <FlatButton primary icon={<SearchIcon />} label="Activate" onTouchTap={this.handleActivate} />
+              <FlatButton primary icon={<DeleteIcon />} label="Delete" onTouchTap={this.handleDelete} />
+            </CardActions>
+
+          </div>
+        </Card>
+      </div>
     );
   }
 }

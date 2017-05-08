@@ -2,9 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {
+  Link,
   withRouter,
   propTypes as routerPropTypes,
 } from 'react-router-dom';
+import Radium, { Style } from 'radium';
 
 import {
   Card,
@@ -26,9 +28,11 @@ import Chip from 'material-ui/Chip';
 
 import ContactBuyerForm from './ContactBuyerForm';
 
+import { mediaQueries } from '../helpers/breakpoints';
 import { redirectToCas } from '../helpers/cas';
 import { mailBuyer } from './../actions/users';
 import { editSeek, deleteSeek } from './../actions/seeks';
+import { postSavedSearch } from './../actions/savedSearches';
 
 
 const mapStateToProps = state => ({
@@ -37,6 +41,7 @@ const mapStateToProps = state => ({
 
 @withRouter
 @connect(mapStateToProps)
+@Radium
 export default class SeekCard extends React.Component {
 
   static propTypes = {
@@ -73,7 +78,12 @@ export default class SeekCard extends React.Component {
 
   static styles = {
     cardExpanded: {
-      margin: '1.5rem -3rem',
+      margin: '1.5rem 0',
+      mediaQueries: {
+        [mediaQueries.mediumUp]: {
+          margin: '1.5rem -3rem',
+        },
+      },
     },
     cardContentsShown: {
       maxHeight: '1000px',
@@ -129,8 +139,10 @@ export default class SeekCard extends React.Component {
     ));
   }
 
-  handlePermalinkRedirect = () => {
-    this.props.history.push(`/seek/${this.props.seek.keyId}`);
+  handleStar = () => {
+    this.props.dispatch(postSavedSearch({
+      query: this.props.seek.title,
+    }, 'Successfully created saved search'));
   }
 
   render() {
@@ -139,10 +151,14 @@ export default class SeekCard extends React.Component {
 
     return (
       <div>
+        <Style
+          scopeSelector=".seek-card-expanded"
+          rules={styles.cardExpanded}
+        />
         <Card
-          style={expanded ? styles.cardExpanded : {}}
           onExpandChange={this.handleExpandChange}
           expanded={expanded}
+          className={expanded && 'seek-card-expanded'}
         >
           <CardHeader
             title={seek.title}
@@ -170,8 +186,8 @@ export default class SeekCard extends React.Component {
               ]
               }
 
-              <FlatButton secondary icon={<FavoriteIcon />} label="Notify Me" />
-              <FlatButton icon={<LinkIcon />} label="Permalink" onTouchTap={this.handlePermalinkRedirect} />
+              <FlatButton secondary icon={<FavoriteIcon />} label="Notify Me" onTouchTap={this.handleStar} />
+              <Link to={`/seek/${this.props.seek.keyId}`}> <FlatButton icon={<LinkIcon />} label="Permalink" /> </Link>
             </CardActions>
 
           </div>

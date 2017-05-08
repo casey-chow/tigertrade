@@ -18,10 +18,17 @@ export default class SeeksList extends PureComponent {
 
   // Reset the open card when new seeks are inserted.
   componentWillReceiveProps(nextProps) {
-    if (this.props !== nextProps) {
-      this.setState({
-        openCardId: -1,
-      });
+    if (this.props.seeks.length > nextProps.seeks.length) {
+      this.setState({ openCardId: -1 });
+    }
+
+    if (this.state.openCardId !== -1) {
+      for (let i = 0; i < this.props.seeks.length; i += 1) {
+        if (this.props.seeks[i].keyId !== nextProps.seeks[i].keyId) {
+          this.setState({ openCardId: -1 });
+          break;
+        }
+      }
     }
   }
 
