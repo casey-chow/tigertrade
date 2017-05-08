@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"github.com/sendgrid/rest"
 	"github.com/sendgrid/sendgrid-go"
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
 	"net/http"
@@ -12,7 +13,7 @@ import (
 
 type emailInput struct {
 	Sender    string
-	Recepient string
+	Recipient string
 	Subject   string
 	Body      string `json:"body"`
 	IsSeek    bool
@@ -45,7 +46,7 @@ func NewEmailInput(db *sql.DB, id string, isSeek bool) (*emailInput, error, int)
 	if owner, err := GetUserByID(db, ownerId); err != nil {
 		return nil, err, http.StatusInternalServerError
 	} else {
-		i.Recepient = owner.NetID
+		i.Recipient = owner.NetID
 	}
 
 	return i, nil, http.StatusOK
@@ -57,14 +58,14 @@ func getEmail(netId string) *mail.Email {
 }
 
 func SendEmail(input *emailInput) (error, int) {
-	if input.Sender == input.Recepient {
+	if input.Sender == input.Recipient {
 		return errors.New("To and From fields cannot be the same."), http.StatusBadRequest
 	}
 
 	// Get email addresses
 	robot := mail.NewEmail("TigerTrade", "noreply@tigertra.de")
 	requestor := getEmail(input.Sender)
-	recipient := getEmail(input.Recepient)
+	recipient := getEmail(input.Recipient)
 	content := mail.NewContent("text/html", input.Body)
 
 	// Create email
@@ -86,11 +87,7 @@ func SendEmail(input *emailInput) (error, int) {
 	m.AddPersonalizations(p)
 	m.AddContent(content)
 
-	// Send email, hope for the best
-	request := sendgrid.GetRequest(os.Getenv("SENDGRID_API_KEY"), "/v3/mail/send", "https://api.sendgrid.com")
-	request.Method = "POST"
-	request.Body = mail.GetRequestBody(m)
-	response, err := sendgrid.API(request)
+	response, err := sendRequest(m)
 	if err != nil {
 		return err, http.StatusInternalServerError
 	}
@@ -100,4 +97,46 @@ func SendEmail(input *emailInput) (error, int) {
 	}
 
 	return err, response.StatusCode
+}
+
+func SendEmail2(input *emailInput) (error, int) {
+	robot := mail.NewEmail("TigerTrade", "noreply@tigertra.de")
+	recipient := getEmail(input.Sender)
+	content := mail.NewContent("text/html", input.Body)
+
+	// Create email
+	m := mail.NewV3Mail()
+	m.SetFrom(robot)
+
+	p := mail.NewPersonalization()
+	p.AddTos(recipient)
+
+	// Set Template
+	if input.IsSeek {
+		m.SetTemplateID("7bb4322d-f98d-417b-b148-90826fe212ab")
+	} else {
+		m.SetTemplateID("d3adbb24-4445-43f8-a026-ec4b013b5850")
+	}
+
+	p.Subject = input.Subject
+	m.AddPersonalizations(p)
+	m.AddContent(content)
+
+	response, err := sendRequest(m)
+	if err != nil {
+		return err, http.StatusInternalServerError
+	}
+	if response.StatusCode != 202 {
+		err = errors.New(fmt.Sprint("Response not queued for sending. Status code: ", response.StatusCode))
+	}
+
+	return err, response.StatusCode
+}
+
+func sendRequest(m *mail.SGMailV3) (*rest.Response, error) {
+	// Send email, hope for the best
+	request := sendgrid.GetRequest(os.Getenv("SENDGRID_API_KEY"), "/v3/mail/send", "https://api.sendgrid.com")
+	request.Method = "POST"
+	request.Body = mail.GetRequestBody(m)
+	return sendgrid.API(request)
 }
