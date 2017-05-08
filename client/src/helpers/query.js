@@ -23,7 +23,7 @@ export const stringifyQuery = query =>
     isStarred: (query.isStarred === true) ? true : undefined,
   });
 
-export const writeHistory = ({ query, history, pathname }) => {
+export const writeHistory = ({ query, history, location }) => {
   const queryStr = stringifyQuery(query);
   if (queryStr !== '') {
     history.push(`${location.pathname}?${queryStr}`);
