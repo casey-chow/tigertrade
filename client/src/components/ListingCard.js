@@ -160,6 +160,8 @@ export default class ListingCard extends React.Component {
     ));
   }
 
+  formatDescription = description => description.split('\n').map(line => <p key={line}>{line}</p>);
+
   render() {
     const { listing, expanded } = this.props;
     const styles = ListingCard.styles;
@@ -222,7 +224,7 @@ export default class ListingCard extends React.Component {
 
             { listing.description &&
               <CardText>
-                {listing.description}
+                {this.formatDescription(listing.description)}
               </CardText>
             }
 
