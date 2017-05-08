@@ -8,7 +8,7 @@ import ContentAdd from 'material-ui/svg-icons/content/add';
 import Snackbar from 'material-ui/Snackbar';
 
 import ActionBar from '../components/ActionBar';
-import FilterBar from './FilterBar';
+import FilterBar from '../components/FilterBar';
 import Welcome from '../components/Welcome';
 import NavigationDrawer from '../components/NavigationDrawer';
 
