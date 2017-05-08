@@ -28,6 +28,7 @@ const descriptionField = field => (
     hintText="Describe what you're looking to buy. For best results, keep to 100 words or fewer."
     value={field.input.value} onChange={field.input.onChange} multiLine
     fullWidth
+    rowsMax={6}
   />
 );
 
@@ -54,7 +55,7 @@ export default class SeekComposeForm extends PureComponent {
 
     return (
       <form onSubmit={handleSubmit} style={this.props.style}>
-        <div style={{ maxHeight: '80vh', overflow: 'scroll' }}>
+        <div style={{ maxHeight: '83vh', overflow: 'scroll' }}>
           <div>
             <label htmlFor="title">Title</label>
             <div>

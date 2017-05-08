@@ -35,6 +35,7 @@ const descriptionField = field => (
     onChange={field.input.onChange}
     multiLine
     fullWidth
+    rowsMax={6}
     rows={2}
   />
 );
@@ -61,7 +62,7 @@ export default class ComposeForm extends PureComponent {
 
     return (
       <form onSubmit={handleSubmit} style={this.props.style}>
-        <div style={{ maxHeight: '80vh', overflow: 'scroll' }}>
+        <div style={{ maxHeight: '83vh', overflow: 'scroll' }}>
           <div>
             <label htmlFor="title">Title</label>
             <div>
@@ -91,7 +92,7 @@ export default class ComposeForm extends PureComponent {
             <Field name="photos" id="photos" component={PhotosList} />
           </div>
         </div>
-        <div>
+        <div style={{ marginTop: '0.16rem' }}>
           <RaisedButton
             type="submit"
             disabled={pristine || submitting}

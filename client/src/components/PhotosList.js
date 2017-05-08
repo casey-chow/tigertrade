@@ -13,6 +13,7 @@ import { GridList, GridTile } from 'material-ui/GridList';
 import IconButton from 'material-ui/IconButton';
 import DeleteButton from 'material-ui/svg-icons/action/delete';
 
+import { grey300 } from 'material-ui/styles/colors';
 
 import { API_ROOT } from '../actions/common';
 
@@ -37,8 +38,14 @@ export default class PhotosList extends Component {
       maxHeight: '200px',
     },
     dropzone: {
-      width: '8rem',
-      height: '8rem',
+      width: '7rem',
+      height: '7rem',
+      backgroundColor: grey300,
+      borderRadius: '5px',
+    },
+    dropzoneHide: {
+      width: '7rem',
+      height: '2rem',
       backgroundColor: 'rgba(0, 0, 0, 0.1)',
     },
   }
@@ -103,15 +110,15 @@ export default class PhotosList extends Component {
       <div>
         { this.state.photos.length < 5 &&
           <Dropzone
-            style={styles.dropzone}
+            style={this.state.photos.length > 0 ? styles.dropzoneHide : styles.dropzone}
             accept="image/*"
             data={{ type: 'picture' }}
             maxSize={+5e6/* 5MB */}
             disablePreview
             onDropAccepted={this.handleDropAccepted}
           >
-            <div style={{ lineHeight: '8rem', verticalAlign: 'middle', textAlign: 'center' }}>
-              UPLOAD IMAGES HERE
+            <div style={{ lineHeight: this.state.photos.length > 0 ? '2rem' : '7rem', verticalAlign: 'middle', textAlign: 'center' }}>
+              Upload images
             </div>
           </Dropzone>
         }
