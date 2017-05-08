@@ -193,16 +193,25 @@ export default class SeekCard extends React.Component {
           </div>
         </Card>
         <Dialog
-          title="Let the seller know you're interested. We'll put you in touch via email:"
+          title="Contact Buyer"
           modal={false}
           open={this.state.contactOpen}
           onRequestClose={this.handleContactClose}
         >
           <div style={{ display: 'flex', flexWrap: 'wrap', marginTop: '-0.35rem', marginBottom: '0.625rem' }}>
-            <div style={{ margin: '0.625rem' }}>To:</div>
-            <Chip style={{ margin: '0.3rem' }}>{this.props.seek.username}@princeton.edu</Chip>
+            <div style={{ margin: '0.25rem 0 0.5rem' }}>
+              If you are interested in answering this buy request, you can let the
+              buyer know here. We&rsquo;ll send them an email about your interest
+              so that you can further discuss and make plans.
+            </div>
+            <div style={{ margin: '10px 0.625rem 0 0' }}>To:</div>
+            <Chip style={{ margin: '0.3rem 0 1rem' }}>{this.props.seek.username}@princeton.edu</Chip>
           </div>
-          <ContactBuyerForm onSubmit={this.handleSubmit} title={seek.title} initialValues={{ message: `Hi! I'm interested in selling "${seek.title}".` }} />
+          <ContactBuyerForm
+            onSubmit={this.handleSubmit}
+            title={seek.title}
+            initialValues={{ message: `Hi! I'm interested in selling "${seek.title}".` }}
+          />
         </Dialog>
       </div>
     );

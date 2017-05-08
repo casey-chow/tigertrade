@@ -1,24 +1,29 @@
 import React, { PureComponent } from 'react';
-import { Field, reduxForm, propTypes } from 'redux-form';
+import {
+  Field,
+  reduxForm,
+  propTypes as reduxFormPropTypes,
+} from 'redux-form';
 import TextField from 'material-ui/TextField';
-import RaisedButton from 'material-ui/RaisedButton';
+import FlatButton from 'material-ui/FlatButton';
 
 @reduxForm({ form: 'contactBuyer' })
 export default class ContactBuyerForm extends PureComponent {
   static propTypes = {
-    ...propTypes,
+    ...reduxFormPropTypes,
   }
 
   static styles = {
     actionArea: { width: '100%' },
     messageField: {
       backgroundColor: 'rgba(0,0,0,0.05)',
-      padding: '5px',
+      borderRadius: '2px',
+      padding: '0 0.75rem',
       marginLeft: '-5px',
     },
     sendButton: {
-      margin: 8,
-      padding: 1,
+      marginTop: '8px',
+      padding: '1px 16px',
       float: 'right',
     },
   }
@@ -52,13 +57,14 @@ export default class ContactBuyerForm extends PureComponent {
           <Field name="message" id="message" component={this.messageField} />
         </div>
         <div style={styles.actionArea}>
-          <RaisedButton
+          <FlatButton
             type="submit"
+            primary
             disabled={submitting}
             style={styles.sendButton}
           >
-            Send
-          </RaisedButton>
+            Send E-mail
+          </FlatButton>
         </div>
       </form>
     );
