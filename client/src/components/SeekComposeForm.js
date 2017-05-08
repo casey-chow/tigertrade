@@ -13,16 +13,6 @@ const titleField = field => (
   />
 );
 
-const priceField = field => (
-  <div>
-    {field.input.value ? '$' : ''}
-    <TextField
-      hintText="How much are you willing to pay?" value={field.input.value}
-      onChange={field.input.onChange} type="number" prefix="$" min="0" step="0.01"
-    />
-  </div>
-);
-
 const descriptionField = field => (
   <TextField
     hintText="Describe what you're looking to buy. For best results, keep to 100 words or fewer."
@@ -62,12 +52,6 @@ export default class SeekComposeForm extends PureComponent {
             <label htmlFor="title">Title</label>
             <div>
               <Field name="title" id="title" component={titleField} />
-            </div>
-          </div>
-          <div style={styles.spacer}>
-            <label htmlFor="price">Price</label>
-            <div>
-              <Field name="price" id="price" component={priceField} />
             </div>
           </div>
           <div style={styles.spacer}>
