@@ -43,6 +43,7 @@ export default class SeekComposeForm extends PureComponent {
   static styles = {
     spacer: { marginTop: '1em' },
     actionButton: { margin: 8, padding: 1 },
+    formContainer: { maxHeight: '83vh', overflow: 'scroll' },
   }
 
   defaultProps = {
@@ -55,7 +56,7 @@ export default class SeekComposeForm extends PureComponent {
 
     return (
       <form onSubmit={handleSubmit} style={this.props.style}>
-        <div style={{ maxHeight: '83vh', overflow: 'scroll' }}>
+        <div style={styles.formContainer}>
           <div>
             <label htmlFor="title">Title</label>
             <div>
@@ -77,7 +78,7 @@ export default class SeekComposeForm extends PureComponent {
         </div>
         <div>
           <RaisedButton type="submit" disabled={pristine || submitting} style={styles.actionButton}>Submit</RaisedButton>
-          <RaisedButton type="button" disabled={pristine || submitting} style={styles.actionButton} onClick={reset}>Clear</RaisedButton>
+          <RaisedButton type="button" disabled={pristine || submitting} style={styles.actionButton} onClick={reset}>Reset</RaisedButton>
         </div>
       </form>
     );

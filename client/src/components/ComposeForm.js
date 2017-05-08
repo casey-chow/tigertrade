@@ -50,6 +50,7 @@ export default class ComposeForm extends PureComponent {
   static styles = {
     spacer: { marginTop: '1em' },
     actionButton: { margin: 8, padding: 1 },
+    formContainer: { maxHeight: '83vh', overflow: 'scroll' },
   }
 
   defaultProps = {
@@ -62,7 +63,7 @@ export default class ComposeForm extends PureComponent {
 
     return (
       <form onSubmit={handleSubmit} style={this.props.style}>
-        <div style={{ maxHeight: '83vh', overflow: 'scroll' }}>
+        <div style={styles.formContainer}>
           <div>
             <label htmlFor="title">Title</label>
             <div>
@@ -106,7 +107,7 @@ export default class ComposeForm extends PureComponent {
             style={styles.actionButton}
             onClick={reset}
           >
-            Clear
+            Reset
           </RaisedButton>
         </div>
       </form>
