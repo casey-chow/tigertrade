@@ -51,6 +51,12 @@ export default class SearchBar extends Component {
       paddingLeft: '16px',
       paddingRight: '16px',
     },
+    hintText: {
+      whiteSpace: 'nowrap',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      width: '100%',
+    },
   }
 
   state = {
@@ -130,6 +136,7 @@ export default class SearchBar extends Component {
           className="SearchBar"
           fullWidth
           hintText={hintText}
+          hintStyle={styles.hintText}
           dataSource={[]}
           onUpdateInput={this.handleUpdateInput}
           openOnFocus
