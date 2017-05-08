@@ -275,14 +275,14 @@ func CreateListing(db *sql.DB, listing Listing, userId int) (Listing, error, int
 		return listing, err, http.StatusInternalServerError
 	}
 	defer rows.Close()
-
-	// Populate listing struct
 	rows.Next()
 	err = rows.Scan(&listing.KeyID, &listing.CreationDate)
 	if err != nil {
 		return listing, err, http.StatusInternalServerError
 	}
 
+	// Send email(s) if this listing matches anyone's saved search.
+	go CheckNewListing(db, listing)
 	return listing, nil, http.StatusCreated
 }
 
@@ -312,13 +312,12 @@ func UpdateListing(db *sql.DB, id string, listing Listing, userId int) (error, i
 // Deletes the listing in the database with the given id with the given listing
 // (belonging to userId).
 func DeleteListing(db *sql.DB, id string, userId int) (error, int) {
-	// Update listing
+	// Delete listing
 	stmt := psql.Delete("listings").
 		Where(sq.Eq{"listings.key_id": id,
 			"listings.user_id": userId})
-
-	// Query db for listing
 	result, err := stmt.RunWith(db).Exec()
+
 	return getUpdateResultCode(result, err)
 }
 
