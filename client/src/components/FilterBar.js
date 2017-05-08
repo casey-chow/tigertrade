@@ -6,7 +6,6 @@ import {
   propTypes as routerPropTypes,
 } from 'react-router-dom';
 
-import { Container, Row, Col } from 'react-grid-system';
 import { isEmpty, omit } from 'lodash';
 
 import { grey300 } from 'material-ui/styles/colors';
@@ -54,7 +53,14 @@ export default class FilterBar extends Component {
   }
 
   static defaultProps = {
-    style: { },
+    style: {
+      display: 'flex',
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      justifyContent: 'space-around',
+      alignItems: 'center',
+      alignContent: 'space-around',
+    },
   };
 
   static styles = {
@@ -66,15 +72,9 @@ export default class FilterBar extends Component {
       zIndex: '50',
     },
     favoriteButton: {
-      float: 'center',
     },
-    expandAllToggle: {
-      marginTop: '0.5rem',
-    },
-    watchButton: {
-      position: 'absolute',
-      top: '0.5em',
-      right: '0',
+    priceField: {
+      maxWidth: '128px',
     },
   }
 
@@ -169,68 +169,68 @@ export default class FilterBar extends Component {
           ...this.props.style,
         }}
       >
-        <Container>
-          <Row>
-            <Col xs={3} />
-            <Col xs={1}>
-              <TextField
-                hintText="Min Price"
-                type="number"
-                onChange={this.handleMinChange}
-                value={this.state.minPrice}
-                prefix="$"
-                min="0"
-                step="0.01"
-              />
-            </Col>
-            <Col xs={1}>
-              <TextField
-                hintText="Max Price"
-                type="number"
-                onChange={this.handleMaxChange}
-                value={this.state.maxPrice}
-                prefix="$"
-                min="0"
-                step="0.01"
-              />
-            </Col>
-            <Col xs={2}>
-              <div style={{ width: 'max-content' }}>
-                <FlatButton
-                  secondary
-                  icon={<FavoriteIcon />}
-                  label="Favorited"
-                  style={{
-                    ...styles.favoriteButton,
-                    backgroundColor: query.isStarred ? grey300 : 'transparent',
-                  }}
-                  onTouchTap={this.handleFavorite}
-                />
-              </div>
-            </Col>
-            <Col xs={2}>
-              <div style={{ width: 'max-content' }}>
-                <Toggle
-                  label="Expand All"
-                  labelPosition="right"
-                  style={styles.expandAllToggle}
-                  toggled={this.props.expandAll}
-                  onToggle={this.handleExpandAllToggle}
-                />
-              </div>
-            </Col>
-            <Col xs={3} />
-          </Row>
-        </Container>
-        <div style={styles.watchButton}>
-          <FlatButton
-            primary
-            icon={<SaveIcon />}
-            label="Watch Results"
-            onTouchTap={this.handleWatchButtonTap}
-            disabled={isEmpty(omit(query, ['isStarred', 'limit']))}
-          />
-        </div>
+        { (this.props.location.pathname === '/listings') &&
+          <div style={styles.priceField}>
+            <TextField
+              hintText="Min Price"
+              type="number"
+              onChange={this.handleMinChange}
+              value={this.state.minPrice}
+              prefix="$"
+              min="0"
+              step="0.01"
+            />
+          </div>
+        }
+        { (this.props.location.pathname === '/listings') &&
+          <div style={styles.priceField}>
+            <TextField
+              hintText="Max Price"
+              type="number"
+              onChange={this.handleMaxChange}
+              value={this.state.maxPrice}
+              prefix="$"
+              min="0"
+              step="0.01"
+            />
+          </div>
+        }
+        { (this.props.location.pathname === '/listings') &&
+          <div>
+            <FlatButton
+              secondary
+              icon={<FavoriteIcon />}
+              label="Favorites Only"
+              style={{
+                ...styles.favoriteButton,
+                backgroundColor: query.isStarred ? grey300 : 'transparent',
+              }}
+              onTouchTap={this.handleFavorite}
+            />
+          </div>
+        }
+        { (this.props.location.pathname === '/listings' || this.props.location.pathname === '/seeks') &&
+          <div style={styles.expandToggle}>
+            <Toggle
+              label="Expand All"
+              labelPosition="right"
+              style={styles.expandAllToggle}
+              toggled={this.props.expandAll}
+              onToggle={this.handleExpandAllToggle}
+            />
+          </div>
+        }
+        { (this.props.location.pathname === '/listings') &&
+          <div style={styles.watchButton}>
+            <FlatButton
+              primary
+              icon={<SaveIcon />}
+              label="Watch Results"
+              onTouchTap={this.handleWatchButtonTap}
+              disabled={isEmpty(omit(query, ['isStarred', 'limit']))}
+            />
+          </div>
+        }
       </Paper>
     );
   }
