@@ -3479,10 +3479,6 @@ lodash.cond@^4.3.0:
   version "4.5.2"
   resolved "https://registry.yarnpkg.com/lodash.cond/-/lodash.cond-4.5.2.tgz#f471a1da486be60f6ab955d17115523dd1d255d5"
 
-lodash.debounce@^4.0.8:
-  version "4.0.8"
-  resolved "https://registry.yarnpkg.com/lodash.debounce/-/lodash.debounce-4.0.8.tgz#82d79bff30a67c4005ffd5e2515300ad9ca4d7af"
-
 lodash.defaults@^4.0.1:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/lodash.defaults/-/lodash.defaults-4.2.0.tgz#d09178716ffea4dde9e5fb7b37f6f0802274580c"
@@ -4624,14 +4620,6 @@ react-grid-system@^2.7.0:
     prop-types "15.5.8"
     react "15.5.4"
 
-react-image-gallery@^0.7.16:
-  version "0.7.16"
-  resolved "https://registry.yarnpkg.com/react-image-gallery/-/react-image-gallery-0.7.16.tgz#6716dcf45acb465fcd0fc600b3ad36f30c3906e6"
-  dependencies:
-    lodash.debounce "^4.0.8"
-    lodash.throttle "^4.1.1"
-    react-swipeable "^3.5.1"
-
 react-images@^0.5.2:
   version "0.5.2"
   resolved "https://registry.yarnpkg.com/react-images/-/react-images-0.5.2.tgz#e1d537f9bcc71b8ba46b8d3ec984e0ee2ffd641b"
@@ -4691,10 +4679,6 @@ react-scrolllock@^1.0.1:
 react-sidebar@^2.3.2:
   version "2.3.2"
   resolved "https://registry.yarnpkg.com/react-sidebar/-/react-sidebar-2.3.2.tgz#ec140bea8a6f5fa3d8ea7a56479665b44cf4f9cf"
-
-react-swipeable@^3.5.1:
-  version "3.9.2"
-  resolved "https://registry.yarnpkg.com/react-swipeable/-/react-swipeable-3.9.2.tgz#bbaab62688b1aed4a4f73830d272eedd168f3627"
 
 react-tap-event-plugin@^2.0.1:
   version "2.0.1"

@@ -217,6 +217,7 @@ export default class ListingCard extends React.Component {
                   currentImage={this.state.lightboxImage}
                   onClickNext={() => this.setState({ lightboxImage: this.state.lightboxImage + 1 })}
                   onClickPrev={() => this.setState({ lightboxImage: this.state.lightboxImage - 1 })}
+                  backdropClosesModal
                 /> }
               </CardMedia>
             }
