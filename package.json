@@ -15,6 +15,7 @@
     "react-dom": "^15.5.3",
     "react-dropzone": "^3.13.1",
     "react-grid-system": "^2.7.0",
+    "react-image-gallery": "^0.7.16",
     "react-redux": "^5.0.4",
     "react-router": "^4.0.0",
     "react-router-dom": "^4.0.0",

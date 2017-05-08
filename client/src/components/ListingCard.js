@@ -7,6 +7,7 @@ import {
   propTypes as routerPropTypes,
 } from 'react-router-dom';
 import Radium, { Style } from 'radium';
+import ImageGallery from 'react-image-gallery';
 
 import {
   Card,
@@ -28,12 +29,16 @@ import ModeEdit from 'material-ui/svg-icons/editor/mode-edit';
 import FavoriteIcon from 'material-ui/svg-icons/action/favorite';
 import LinkIcon from 'material-ui/svg-icons/content/link';
 
+import 'react-image-gallery/styles/css/image-gallery.css';
+
 import ContactSellerForm from './ContactSellerForm';
 
 import { mediaQueries } from '../helpers/breakpoints';
 import { redirectToCas } from '../helpers/cas';
 import { mailSeller } from './../actions/users';
 import { editListing, deleteListing, starListing } from './../actions/listings';
+
+import './ListingCard.css';
 
 const mapStateToProps = state => ({
   currentUser: state.currentUser,
@@ -163,6 +168,21 @@ export default class ListingCard extends React.Component {
       backgroundColor: this.props.listing.isStarred ? grey300 : 'transparent',
     };
 
+    const images = [
+      {
+        original: 'http://lorempixel.com/1000/600/nature/1/',
+        thumbnail: 'http://lorempixel.com/250/150/nature/1/',
+      },
+      {
+        original: 'http://lorempixel.com/1000/600/nature/2/',
+        thumbnail: 'http://lorempixel.com/250/150/nature/2/',
+      },
+      {
+        original: 'http://lorempixel.com/1000/600/nature/3/',
+        thumbnail: 'http://lorempixel.com/250/150/nature/3/',
+      },
+    ];
+
     return (
       <div>
         <Style
@@ -183,7 +203,18 @@ export default class ListingCard extends React.Component {
           <div style={expanded ? styles.cardContentsShown : styles.cardContentsHidden}>
 
             { listing.photos && listing.photos.length > 0 &&
+
               <CardMedia>
+                <div style={{ width: '100px' }}>
+                  <ImageGallery
+                    items={images}
+                    slideInterval={2000}
+                    onImageLoad={this.handleImageLoad}
+                    useBrowserFullscreen={false}
+                    showPlayButton={false}
+                  />
+                </div>
+
                 <img
                   alt={listing.title}
                   src={listing.photos[0]}
