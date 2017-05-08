@@ -9,22 +9,7 @@ export default class SavedSearchesList extends PureComponent {
     savedSearches: PropTypes.arrayOf(PropTypes.shape({
       keyId: PropTypes.number,
     })).isRequired,
-    expandAll: PropTypes.bool.isRequired,
   };
-
-  state = {
-    openCardId: -1,
-  };
-
-  isExpanded = keyId => this.state.openCardId === keyId;
-
-  handleExpandChange = (expanded, keyId) => {
-    if (!expanded) {
-      this.setState({ openCardId: -1 });
-    } else {
-      this.setState({ openCardId: keyId });
-    }
-  }
 
   render() {
     return (
@@ -32,9 +17,7 @@ export default class SavedSearchesList extends PureComponent {
         {this.props.savedSearches.map(savedSearch =>
           <SavedSearchCard
             key={savedSearch.keyId}
-            expanded={this.props.expandAll || this.isExpanded(savedSearch.keyId)}
             savedSearch={savedSearch}
-            onExpandChange={this.handleExpandChange}
           />)
         }
       </ListContainer>

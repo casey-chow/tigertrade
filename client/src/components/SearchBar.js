@@ -5,10 +5,10 @@ import { withRouter } from 'react-router-dom';
 
 import AutoComplete from 'material-ui/AutoComplete';
 import Paper from 'material-ui/Paper';
-import { stringify } from 'query-string';
 
 import { loadListings } from './../actions/listings';
 import { loadSeeks } from './../actions/seeks';
+import { writeHistory } from '../helpers/query';
 
 import './SearchBar.css';
 
@@ -51,6 +51,12 @@ export default class SearchBar extends Component {
       paddingLeft: '16px',
       paddingRight: '16px',
     },
+    hintText: {
+      whiteSpace: 'nowrap',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      width: '100%',
+    },
   }
 
   state = {
@@ -62,9 +68,7 @@ export default class SearchBar extends Component {
   }
 
   handleUpdateInput = (value) => {
-    const query = this.props.query;
-    query.query = value;
-
+    const query = { query: value === '' ? undefined : value };
     switch (this.props.displayMode) {
       case 'seeks':
         this.props.dispatch(loadSeeks({ query }));
@@ -101,6 +105,8 @@ export default class SearchBar extends Component {
       case '/seeks':
       case '/listings':
       case '/profile':
+      case '/seeks/mine':
+      case '/listings/mine':
         break;
       default:
         this.props.history.push(`/${this.props.displayMode}`);
@@ -113,12 +119,7 @@ export default class SearchBar extends Component {
       focus: false,
     });
 
-    if (this.props.query) {
-      const queryStr = stringify(this.props.query);
-      this.props.history.push(`${this.props.location.pathname}?${queryStr}`);
-    } else {
-      this.props.history.push(`${this.props.location.pathname}`);
-    }
+    writeHistory(this.props);
   };
 
   render() {
@@ -137,6 +138,7 @@ export default class SearchBar extends Component {
           className="SearchBar"
           fullWidth
           hintText={hintText}
+          hintStyle={styles.hintText}
           dataSource={[]}
           onUpdateInput={this.handleUpdateInput}
           openOnFocus

@@ -5,7 +5,6 @@ import {
   withRouter,
   propTypes as routerPropTypes,
 } from 'react-router-dom';
-import { parse } from 'query-string';
 
 import Waypoint from 'react-waypoint';
 
@@ -13,7 +12,7 @@ import SeeksList from '../components/SeeksList';
 import LoadingSpinner from '../components/LoadingSpinner';
 
 import { loadSeeks } from './../actions/seeks';
-
+import { parseQuery } from '../helpers/query';
 
 const mapStateToProps = state => ({
   seeksLoading: state.seeksLoading,
@@ -32,13 +31,13 @@ export default class Seeks extends Component {
   };
 
   componentWillMount() {
-    const query = this.getQuery(this.props);
+    const query = parseQuery(this.props);
     this.props.dispatch(loadSeeks({ query, reset: true }));
   }
 
   componentWillReceiveProps(nextProps) {
     if (this.props.match.params.type !== nextProps.match.params.type) {
-      const query = this.getQuery(nextProps);
+      const query = parseQuery(nextProps);
       this.props.dispatch(loadSeeks({ query, reset: true }));
     }
   }
@@ -63,18 +62,6 @@ export default class Seeks extends Component {
     }
 
     return false;
-  }
-
-  getQuery = (props) => {
-    const query = {
-      query: parse(props.location.search).query || '',
-    };
-
-    if (props.match.params.type === 'mine') {
-      query.isMine = true;
-    }
-
-    return query;
   }
 
   loadMoreSeeks = () => {

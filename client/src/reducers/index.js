@@ -2,32 +2,26 @@ import { reducer as formReducer } from 'redux-form';
 import { reducer as uiReducer } from 'redux-ui';
 
 import { combineReducers } from 'redux';
+import { isUndefined, omitBy } from 'lodash';
 
 import * as listingsReducers from './listings';
 import * as savedSearchesReducers from './savedSearches';
 import * as seeksReducers from './seeks';
 import * as userReducers from './user';
 
-const defaultQuery = { query: '', isStarred: false };
-const currentQuery = (state = defaultQuery, action) => {
+const currentQuery = (state = {}, action) => {
   switch (action.type) {
     case 'LOAD_SAVED_SEARCHES_REQUEST':
-      return {
-        ...state,
-        ...defaultQuery,
-      };
+      return {};
     case 'LOAD_LISTINGS_REQUEST':
     case 'LOAD_SEEKS_REQUEST':
       if (action.reset) {
-        return {
-          ...defaultQuery,
-          ...action.query,
-        };
+        return omitBy(action.query, isUndefined);
       } else {
-        return {
+        return omitBy({
           ...state,
           ...action.query,
-        };
+        }, isUndefined);
       }
     default:
       return state;

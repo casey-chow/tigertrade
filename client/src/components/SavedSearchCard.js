@@ -13,7 +13,7 @@ import {
   Card,
   CardActions,
   CardHeader,
-  CardTitle,
+  CardText,
 } from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
 
@@ -32,8 +32,6 @@ export default class SavedSearchCard extends React.Component {
   static propTypes = {
     ...routerPropTypes,
     dispatch: PropTypes.func.isRequired,
-    expanded: PropTypes.bool.isRequired,
-    onExpandChange: PropTypes.func,
     savedSearch: PropTypes.shape({
       keyId: PropTypes.number,
       creationDate: PropTypes.string,
@@ -44,11 +42,6 @@ export default class SavedSearchCard extends React.Component {
       listingExpirationDate: PropTypes.string,
       searchExpirationDate: PropTypes.string,
     }).isRequired,
-  };
-
-  static defaultProps = {
-    expanded: false,
-    onExpandChange: () => {},
   };
 
   static styles = {
@@ -65,15 +58,6 @@ export default class SavedSearchCard extends React.Component {
       transition: 'max-height 0.5s ease-in',
       overflow: 'hidden',
     },
-    cardContentsHidden: {
-      maxHeight: '0',
-      transition: 'max-height 0.15s ease-out',
-      overflow: 'hidden',
-    },
-  }
-
-  handleExpandChange = (expanded) => {
-    this.props.onExpandChange(expanded, this.props.savedSearch.keyId);
   }
 
   handleActivate = () => {
@@ -93,7 +77,7 @@ export default class SavedSearchCard extends React.Component {
   }
 
   render() {
-    const { savedSearch, expanded } = this.props;
+    const { savedSearch } = this.props;
     const styles = SavedSearchCard.styles;
 
     return (
@@ -103,20 +87,24 @@ export default class SavedSearchCard extends React.Component {
           rules={styles.cardExpanded}
         />
         <Card
-          onExpandChange={this.handleExpandChange}
-          expanded={expanded}
-          className={expanded && 'savedsearch-card-expanded'}
+          expanded
+          className="savedsearch-card-expanded"
         >
-          <CardHeader
-            title={savedSearch.query}
-            actAsExpander
-          />
-
-          <div style={expanded ? styles.cardContentsShown : styles.cardContentsHidden}>
-
-            <CardTitle
+          { savedSearch.query &&
+            <CardHeader
               title={savedSearch.query}
             />
+          }
+
+          <div style={styles.cardContentsShown}>
+
+            { (savedSearch.minPrice || savedSearch.minPrice === 0) &&
+              <CardText> Minimum Price: {savedSearch.minPrice / 100} </CardText>
+            }
+
+            { (savedSearch.maxPrice || savedSearch.maxPrice === 0) &&
+              <CardText> Maximum Price: {savedSearch.maxPrice / 100} </CardText>
+            }
 
             <CardActions>
               <FlatButton primary icon={<SearchIcon />} label="Activate" onTouchTap={this.handleActivate} />

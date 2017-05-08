@@ -164,9 +164,7 @@ export default class ListingCard extends React.Component {
     const { listing, expanded } = this.props;
     const styles = ListingCard.styles;
 
-    const favoriteButtonStyle = {
-      backgroundColor: this.props.listing.isStarred ? grey300 : 'transparent',
-    };
+    const favoriteButtonBackground = this.props.listing.isStarred ? grey300 : 'transparent';
 
     return (
       <div>
@@ -237,7 +235,7 @@ export default class ListingCard extends React.Component {
               ]
               }
 
-              <FlatButton secondary icon={<FavoriteIcon />} style={favoriteButtonStyle} label="Favorite" onTouchTap={this.handleStar} />
+              <FlatButton secondary icon={<FavoriteIcon />} backgroundColor={favoriteButtonBackground} label="Favorite" onTouchTap={this.handleStar} />
               <Link to={`/listing/${this.props.listing.keyId}`}><FlatButton icon={<LinkIcon />} label="Permalink" /></Link>
             </CardActions>
 

@@ -1,6 +1,7 @@
 import fetch from 'isomorphic-fetch';
 
 import { API_ROOT } from './common';
+import { stripQuery } from '../helpers/query';
 
 export function loadSavedSearches() {
   return function (dispatch, getState) {
@@ -33,7 +34,7 @@ export function postSavedSearch(savedSearch, successMessage) {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(savedSearch || getState().currentQuery),
+      body: JSON.stringify(stripQuery(savedSearch || getState().currentQuery)),
     })
     .then((json) => {
       dispatch({
