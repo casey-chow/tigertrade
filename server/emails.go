@@ -10,15 +10,14 @@ import (
 
 // (•_•) ( •_•)>⌐■-■ (⌐■_■)
 func ContactListing(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	ContactPost(w, r, ps, false)
+	contactPost(w, r, ps, false)
 }
 func ContactSeek(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	ContactPost(w, r, ps, true)
+	contactPost(w, r, ps, true)
 }
 
 // Sends an email from the current user to the owner of a given post
-func ContactPost(w http.ResponseWriter, r *http.Request, ps httprouter.Params, isSeek bool) {
-
+func contactPost(w http.ResponseWriter, r *http.Request, ps httprouter.Params, isSeek bool) {
 	// Get post ID from params
 	id := ps.ByName("id")
 	if id == "" {
