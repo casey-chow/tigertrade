@@ -48,6 +48,10 @@ export default class PhotosList extends Component {
       height: '2rem',
       backgroundColor: 'rgba(0, 0, 0, 0.1)',
     },
+    uploadText: {
+      verticalAlign: 'middle',
+      textAlign: 'center',
+    },
   }
 
   componentWillMount() {
@@ -117,7 +121,12 @@ export default class PhotosList extends Component {
             disablePreview
             onDropAccepted={this.handleDropAccepted}
           >
-            <div style={{ lineHeight: this.state.photos.length > 0 ? '2rem' : '7rem', verticalAlign: 'middle', textAlign: 'center' }}>
+            <div
+              style={{
+                ...styles.uploadText,
+                lineHeight: this.state.photos.length > 0 ? '2rem' : '7rem',
+              }}
+            >
               Upload images
             </div>
           </Dropzone>
