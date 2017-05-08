@@ -37,8 +37,13 @@ export default class SeekComposeForm extends PureComponent {
       marginBottom: '1rem',
     },
     spacer: { marginTop: '1em' },
-    actionBar: { display: 'flex' },
+    actionBar: {
+      display: 'flex',
+      justifyContent: 'flex-end',
+    },
     actionButton: {
+      fontWeight: 500,
+      textTransform: 'uppercase',
       marginTop: '8px',
       padding: '1px 16px',
       float: 'right',
@@ -78,15 +83,6 @@ export default class SeekComposeForm extends PureComponent {
         </div>
         <div style={styles.actionBar}>
           <FlatButton
-            type="submit"
-            disabled={pristine || submitting}
-            style={styles.actionButton}
-            primary
-          >
-            Submit
-          </FlatButton>
-          &nbsp;
-          <FlatButton
             type="button"
             disabled={pristine || submitting}
             style={styles.actionButton}
@@ -94,6 +90,15 @@ export default class SeekComposeForm extends PureComponent {
             secondary
           >
             {this.props.isEdit ? 'Reset Changes' : 'Clear'}
+          </FlatButton>
+          &nbsp;
+          <FlatButton
+            type="submit"
+            disabled={pristine || submitting}
+            style={styles.actionButton}
+            primary
+          >
+            Submit
           </FlatButton>
         </div>
       </form>

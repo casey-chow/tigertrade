@@ -22,6 +22,8 @@ export default class ContactBuyerForm extends PureComponent {
       marginLeft: '-5px',
     },
     sendButton: {
+      fontWeight: 500,
+      textTransform: 'uppercase',
       marginTop: '8px',
       padding: '1px 16px',
       float: 'right',
