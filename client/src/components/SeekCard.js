@@ -5,6 +5,7 @@ import {
   withRouter,
   propTypes as routerPropTypes,
 } from 'react-router-dom';
+import Radium, { Style } from 'radium';
 
 import {
   Card,
@@ -26,6 +27,7 @@ import Chip from 'material-ui/Chip';
 
 import ContactBuyerForm from './ContactBuyerForm';
 
+import { mediaQueries } from '../helpers/breakpoints';
 import { redirectToCas } from '../helpers/cas';
 import { mailBuyer } from './../actions/users';
 import { editSeek, deleteSeek } from './../actions/seeks';
@@ -37,6 +39,7 @@ const mapStateToProps = state => ({
 
 @withRouter
 @connect(mapStateToProps)
+@Radium
 export default class SeekCard extends React.Component {
 
   static propTypes = {
@@ -73,7 +76,12 @@ export default class SeekCard extends React.Component {
 
   static styles = {
     cardExpanded: {
-      margin: '1.5rem -3rem',
+      margin: '1.5rem 0',
+      mediaQueries: {
+        [mediaQueries.mediumUp]: {
+          margin: '1.5rem -3rem',
+        },
+      },
     },
     cardContentsShown: {
       maxHeight: '1000px',
@@ -139,10 +147,14 @@ export default class SeekCard extends React.Component {
 
     return (
       <div>
+        <Style
+          scopeSelector=".seek-card-expanded"
+          rules={styles.cardExpanded}
+        />
         <Card
-          style={expanded ? styles.cardExpanded : {}}
           onExpandChange={this.handleExpandChange}
           expanded={expanded}
+          className={expanded && 'seek-card-expanded'}
         >
           <CardHeader
             title={seek.title}
