@@ -2,7 +2,6 @@ package models
 
 import (
 	"database/sql"
-	"fmt"
 	sq "github.com/Masterminds/squirrel"
 	log "github.com/Sirupsen/logrus"
 	"github.com/guregu/null"
@@ -201,9 +200,9 @@ func CheckNewListing(db *sql.DB, listing Listing) {
 	// after the demo.
 
 	// Query db
-	log.Info(stmt.ToSql())
 	rows, err := stmt.RunWith(db).Query()
 	if err != nil {
+		log.WithError(err).Error("error while checking for new listings")
 		return
 	}
 	defer rows.Close()
@@ -213,30 +212,29 @@ func CheckNewListing(db *sql.DB, listing Listing) {
 	email.Subject = listing.Title
 	if listing.Description.IsZero() {
 		email.Body = "(no description provided)"
-
 	} else {
 		email.Body = *listing.Description.Ptr()
 	}
 	email.IsSavedSearch = true
-	var matchCount int = 0
+
+	matchCount := 0
 	for rows.Next() {
 		matchCount += 1
 		var userID int
-		err := rows.Scan(&userID)
-		if err != nil {
-			log.Warn(err)
-			break
+		if err := rows.Scan(&userID); err != nil {
+			log.WithError(err).Error("error while finding matches in new listings check")
+			continue
 		}
 
-		if owner, err := GetUserByID(db, userID); err != nil {
-			log.Warn(err)
-			break
-		} else {
-			email.Recipient = owner.NetID
+		owner, err := GetUserByID(db, userID)
+		if err != nil {
+			log.WithError(err).Error("error while finding user in new listings check")
+			continue
 		}
+
+		email.Recipient = owner.NetID
 		SendEmail(email)
 	}
 
-	log.Info(fmt.Printf("found %d results", matchCount))
-
+	log.Infof("saved searches: found %d results", matchCount)
 }
