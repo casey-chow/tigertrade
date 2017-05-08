@@ -257,6 +257,10 @@ func ReadListing(db *sql.DB, id string) (Listing, error, int) {
 func CreateListing(db *sql.DB, listing Listing, userId int) (Listing, error, int) {
 	listing.UserID = userId
 
+	if listing.Photos == nil {
+		listing.Photos = []string{}
+	}
+
 	// Insert listing
 	stmt := psql.Insert("listings").
 		Columns("title", "description", "user_id", "price", "status",
