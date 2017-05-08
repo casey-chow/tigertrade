@@ -45,6 +45,7 @@ export default class ComposeForm extends PureComponent {
   static propTypes = {
     ...reduxFormPropTypes,
     style: PropTypes.object, // eslint-disable-line react/forbid-prop-types
+    isEdit: PropTypes.bool,
   }
 
   static styles = {
@@ -107,7 +108,7 @@ export default class ComposeForm extends PureComponent {
             style={styles.actionButton}
             onClick={reset}
           >
-            Reset
+            {this.props.isEdit ? 'Reset Changes' : 'Clear'}
           </RaisedButton>
         </div>
       </form>

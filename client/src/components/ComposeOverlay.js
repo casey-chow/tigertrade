@@ -146,6 +146,7 @@ export default class ComposeOverlay extends Component {
           <CardText style={this.state.expanded ? {} : styles.overlayHidden}>
             { (this.state.mode === 'listings')
               ? <ComposeForm
+                isEdit={this.props.isEdit}
                 onSubmit={this.props.isEdit ? this.handleEditListing : this.handleSubmitListing}
                 initialValues={
                   this.props.isEdit ?
@@ -153,6 +154,7 @@ export default class ComposeOverlay extends Component {
                 }
               />
               : <SeekComposeForm
+                isEdit={this.props.isEdit}
                 onSubmit={this.props.isEdit ? this.handleEditSeek : this.handleSubmitSeek}
                 initialValues={
                   this.props.isEdit ?

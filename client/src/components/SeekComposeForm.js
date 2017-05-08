@@ -38,6 +38,7 @@ export default class SeekComposeForm extends PureComponent {
   static propTypes = {
     ...reduxFormPropTypes,
     style: PropTypes.object, // eslint-disable-line react/forbid-prop-types
+    isEdit: PropTypes.bool.isRequired,
   }
 
   static styles = {
@@ -78,7 +79,14 @@ export default class SeekComposeForm extends PureComponent {
         </div>
         <div>
           <RaisedButton type="submit" disabled={pristine || submitting} style={styles.actionButton}>Submit</RaisedButton>
-          <RaisedButton type="button" disabled={pristine || submitting} style={styles.actionButton} onClick={reset}>Reset</RaisedButton>
+          <RaisedButton
+            type="button"
+            disabled={pristine || submitting}
+            style={styles.actionButton}
+            onClick={reset}
+          >
+            {this.props.isEdit ? 'Reset Changes' : 'Clear'}
+          </RaisedButton>
         </div>
       </form>
     );
