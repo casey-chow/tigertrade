@@ -59,7 +59,7 @@ export default class SeekComposeForm extends PureComponent {
         <div style={styles.formContainer}>
           <div style={styles.helpText}>
             When you cannot find what you are looking for in listings,
-            you can make a buy request, or a seek for short, in TigerTrade.
+            you can make a buy request in TigerTrade.
             We will let you know if anyone indicates interest in selling you
             the item you requested.
           </div>

@@ -135,7 +135,7 @@ export default class SeekCard extends React.Component {
   handleDelete = () => {
     this.props.dispatch(deleteSeek(
       this.props.seek,
-      `Successfully deleted seek ${this.props.seek.title}`,
+      `Successfully deleted buy request ${this.props.seek.title}`,
     ));
   }
 
