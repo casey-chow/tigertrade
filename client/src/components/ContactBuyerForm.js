@@ -9,18 +9,6 @@ export default class ContactBuyerForm extends PureComponent {
     ...propTypes,
   }
 
-  // https://stackoverflow.com/questions/33138370/how-to-wire-up-redux-form-bindings-to-the-forms-inputs
-  static messageField = field => (
-    <div style={ContactBuyerForm.styles.messageField}>
-      <TextField
-        name="contactBuyer"
-        hintText="Write your message to the prospective buyer here."
-        value={field.input.value} onChange={field.input.onChange} multiLine
-        fullWidth
-      />
-    </div>
-  );
-
   static styles = {
     actionArea: { width: '100%' },
     messageField: {
@@ -35,6 +23,25 @@ export default class ContactBuyerForm extends PureComponent {
     },
   }
 
+  // https://stackoverflow.com/questions/33138370/how-to-wire-up-redux-form-bindings-to-the-forms-inputs
+  messageField = (field) => {
+    const styles = ContactBuyerForm.styles;
+    const input = field.input;
+
+    return (
+      <div style={styles.messageField}>
+        <TextField
+          name="contactBuyer"
+          hintText="Write your message to the prospective buyer here."
+          value={input.value}
+          onChange={input.onChange}
+          multiLine
+          fullWidth
+        />
+      </div>
+    );
+  }
+
   render() {
     const { handleSubmit, submitting } = this.props;
     const styles = ContactBuyerForm.styles;
@@ -42,7 +49,7 @@ export default class ContactBuyerForm extends PureComponent {
     return (
       <form onSubmit={handleSubmit}>
         <div>
-          <Field name="message" id="message" component={ContactBuyerForm.messageField} />
+          <Field name="message" id="message" component={this.messageField} />
         </div>
         <div style={styles.actionArea}>
           <RaisedButton

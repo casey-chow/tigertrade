@@ -28,18 +28,23 @@ export default class ContactSellerForm extends PureComponent {
   }
 
   // https://stackoverflow.com/questions/33138370/how-to-wire-up-redux-form-bindings-to-the-forms-inputs
-  static messageField = field => (
-    <div style={ContactSellerForm.styles.messageField}>
-      <TextField
-        name="contactSeller"
-        hintText="Write your message to the seller here."
-        value={field.input.value}
-        onChange={field.input.onChange}
-        multiLine
-        fullWidth
-      />
-    </div>
-  );
+  messageField = (field) => {
+    const styles = ContactSellerForm.styles;
+    const input = field.input;
+
+    return (
+      <div style={styles.messageField}>
+        <TextField
+          name="contactSeller"
+          hintText="Write your message to the seller here."
+          value={input.value}
+          onChange={input.onChange}
+          multiLine
+          fullWidth
+        />
+      </div>
+    );
+  }
 
   render() {
     const { handleSubmit, submitting } = this.props;
@@ -49,7 +54,7 @@ export default class ContactSellerForm extends PureComponent {
       <form onSubmit={handleSubmit}>
         <div>
           <div>
-            <Field name="message" id="message" component={ContactSellerForm.messageField} />
+            <Field name="message" id="message" component={this.messageField} />
           </div>
         </div>
         <div style={styles.actionArea}>
