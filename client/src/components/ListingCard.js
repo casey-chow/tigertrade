@@ -66,6 +66,7 @@ export default class ListingCard extends React.Component {
       isStarred: PropTypes.bool,
       expirationDate: PropTypes.number,
       thumbnail: PropTypes.string,
+      photos: PropTypes.array,
     }).isRequired,
   };
 
@@ -181,11 +182,11 @@ export default class ListingCard extends React.Component {
 
           <div style={expanded ? styles.cardContentsShown : styles.cardContentsHidden}>
 
-            { listing.thumbnail &&
+            { listing.photos && listing.photos.length > 0 &&
               <CardMedia>
                 <img
                   alt={listing.title}
-                  src={listing.thumbnail}
+                  src={listing.photos[0]}
                   style={styles.thumbnail}
                 />
               </CardMedia>
