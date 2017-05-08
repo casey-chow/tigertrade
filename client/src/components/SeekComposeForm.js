@@ -43,7 +43,7 @@ export default class SeekComposeForm extends PureComponent {
       padding: '1px 16px',
       float: 'right',
     },
-    formContainer: { maxHeight: '83vh', overflow: 'scroll' },
+    formContainer: { maxHeight: '60vh', overflow: 'scroll' },
   }
 
   defaultProps = {

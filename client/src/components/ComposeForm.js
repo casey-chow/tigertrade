@@ -55,7 +55,7 @@ export default class ComposeForm extends PureComponent {
     spacer: { marginTop: '1em' },
     actionBar: { marginTop: '0.16rem' },
     actionButton: { margin: 8, padding: 1 },
-    formContainer: { maxHeight: '83vh', overflow: 'scroll' },
+    formContainer: { maxHeight: '60vh', overflow: 'scroll' },
   }
 
   defaultProps = {
