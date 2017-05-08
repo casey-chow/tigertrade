@@ -16,7 +16,6 @@ import { loadSavedSearches } from '../actions/savedSearches';
 const mapStateToProps = state => ({
   loading: state.savedSearchesLoading,
   savedSearches: state.savedSearches,
-  expandAll: state.expandAll,
 });
 
 @withRouter
@@ -40,10 +39,6 @@ export default class SavedSearches extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (this.props.expandAll !== nextProps.expandAll) {
-      return true;
-    }
-
     if (this.props.loading !== nextProps.loading) {
       return true;
     }
@@ -67,12 +62,11 @@ export default class SavedSearches extends Component {
   }
 
   render() {
-    const { savedSearches, expandAll, loading } = this.props;
+    const { savedSearches, loading } = this.props;
     return (
       <div>
         <SavedSearchesList
           savedSearches={savedSearches}
-          expandAll={expandAll}
         />
         <Waypoint topOffset="70%" onEnter={this.loadMoreSavedSearches} />
         <LoadingSpinner loading={loading} />
