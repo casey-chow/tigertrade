@@ -48,15 +48,26 @@ func contactPost(w http.ResponseWriter, r *http.Request, ps httprouter.Params, i
 	}
 
 	// Send email
+	if (isSeek) {
+		email.Template = models.ContactSeekPoster
+	} else {
+		email.Template = models.ContactListingPoster
+	}
 	if code, err := models.SendEmail(email); err != nil {
 		raven.CaptureError(err, nil)
-		log.WithField("err", err).Error("Error while attempting to send email")
+		log.WithField("err", err).Error("error while attempting to send email to poster")
 		Error(w, code)
 		return
 	}
+
+	if (isSeek) {
+		email.Template = models.ContactSeekReader
+	} else {
+		email.Template = models.ContactListingReader
+	}
 	if code, err := models.SendEmail2(email); err != nil {
 		raven.CaptureError(err, nil)
-		log.WithField("err", err).Error("Error while attempting to send second email")
+		log.WithField("err", err).Error("error while attempting to send email to post reader")
 		Error(w, code)
 		return
 	}

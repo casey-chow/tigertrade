@@ -262,7 +262,7 @@ func CheckNewListing(db *sql.DB, listing Listing) {
 	} else {
 		email.Body = *listing.Description.Ptr()
 	}
-	email.IsSavedSearch = true
+	email.Template = ContactSearchWatcher
 
 	matchCount := 0
 	for rows.Next() {
