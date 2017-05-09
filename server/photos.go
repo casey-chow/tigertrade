@@ -25,9 +25,10 @@ func CreatePhoto(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	path := "/photos/" + fileUUID + "/" + fileHeader.Filename
 
 	res, err := uploader.Upload(&s3manager.UploadInput{
-		Bucket: aws.String("tigertrade"),
-		Key:    aws.String(path),
-		Body:   file,
+		Bucket:       aws.String("tigertrade"),
+		CacheControl: aws.String("max-age=31536000, public"),
+		Key:          aws.String(path),
+		Body:         file,
 	})
 	if err != nil {
 		raven.CaptureError(err, nil)
