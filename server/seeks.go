@@ -32,7 +32,7 @@ func ReadSeeks(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	// Get optional search query from params
 	query.Query = r.URL.Query().Get("query")
 
-	seeks, err, code := models.ReadSeeks(db, query)
+	seeks, code, err := models.ReadSeeks(db, query)
 	if err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while reading recent or queried seeks")
@@ -52,7 +52,7 @@ func ReadSeek(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		return
 	}
 
-	seeks, err, code := models.ReadSeek(db, id)
+	seeks, code, err := models.ReadSeek(db, id)
 	if err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while getting seek by ID")
@@ -83,7 +83,7 @@ func CreateSeek(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		return
 	}
 
-	seek, err, code := models.CreateSeek(db, seek, user.KeyID)
+	seek, code, err := models.CreateSeek(db, seek, user.KeyID)
 	if err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while adding new seek")
@@ -122,7 +122,7 @@ func UpdateSeek(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		return
 	}
 
-	if err, code := models.UpdateSeek(db, id, seek, user.KeyID); err != nil {
+	if code, err := models.UpdateSeek(db, id, seek, user.KeyID); err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while updating seek by ID")
 		Error(w, code)
@@ -149,7 +149,7 @@ func DeleteSeek(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		return
 	}
 
-	if err, code := models.DeleteSeek(db, id, user.KeyID); err != nil {
+	if code, err := models.DeleteSeek(db, id, user.KeyID); err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while deleting seek by ID")
 		Error(w, code)

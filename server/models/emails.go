@@ -11,7 +11,7 @@ import (
 	"os"
 )
 
-type emailInput struct {
+type EmailInput struct {
 	Sender        string
 	Recipient     string
 	Subject       string
@@ -20,47 +20,47 @@ type emailInput struct {
 	IsSavedSearch bool // should really be an enum at this point but oh well.
 }
 
-func NewEmailInput(db *sql.DB, id string, isSeek bool) (*emailInput, error, int) {
-	i := new(emailInput)
+func NewEmailInput(db *sql.DB, id string, isSeek bool) (*EmailInput, int, error) {
+	i := new(EmailInput)
 
 	var title string
-	var ownerId int
+	var ownerID int
 	if isSeek {
-		seek, err, code := ReadSeek(db, id)
+		seek, code, err := ReadSeek(db, id)
 		if err != nil {
-			return nil, err, code
+			return nil, code, err
 		}
 		title = seek.Title
-		ownerId = seek.UserID
+		ownerID = seek.UserID
 	} else {
-		listing, err, code := ReadListing(db, id)
+		listing, code, err := ReadListing(db, id)
 		if err != nil {
-			return nil, err, code
+			return nil, code, err
 		}
 		title = listing.Title
-		ownerId = listing.UserID
+		ownerID = listing.UserID
 	}
 
 	i.IsSeek = isSeek
 	i.Subject = title
 
-	if owner, err := GetUserByID(db, ownerId); err != nil {
-		return nil, err, http.StatusInternalServerError
-	} else {
-		i.Recipient = owner.NetID
+	owner, err := GetUserByID(db, ownerID)
+	if err != nil {
+		return nil, http.StatusInternalServerError, err
 	}
+	i.Recipient = owner.NetID
 
-	return i, nil, http.StatusOK
+	return i, http.StatusOK, nil
 }
 
-func getEmail(netId string) *mail.Email {
-	addr := netId + "@princeton.edu" // TODO WARNING We can't assume this.
-	return mail.NewEmail(netId, addr)
+func getEmail(netID string) *mail.Email {
+	addr := netID + "@princeton.edu" // TODO WARNING We can't assume this.
+	return mail.NewEmail(netID, addr)
 }
 
-func SendEmail(input *emailInput) (error, int) {
+func SendEmail(input *EmailInput) (int, error) {
 	if input.Sender == input.Recipient {
-		return errors.New("To and From fields cannot be the same."), http.StatusBadRequest
+		return http.StatusBadRequest, errors.New("to and From fields cannot be the same")
 	}
 
 	// Get email addresses
@@ -94,17 +94,17 @@ func SendEmail(input *emailInput) (error, int) {
 
 	response, err := sendRequest(m)
 	if err != nil {
-		return err, http.StatusInternalServerError
+		return http.StatusInternalServerError, err
 	}
 
 	if response.StatusCode != 202 {
 		err = errors.New(fmt.Sprint("Response not queued for sending. Status code: ", response.StatusCode))
 	}
 
-	return err, response.StatusCode
+	return response.StatusCode, err
 }
 
-func SendEmail2(input *emailInput) (error, int) {
+func SendEmail2(input *EmailInput) (int, error) {
 	robot := mail.NewEmail("TigerTrade", "noreply@tigertra.de")
 	recipient := getEmail(input.Sender)
 	content := mail.NewContent("text/html", input.Body)
@@ -129,13 +129,13 @@ func SendEmail2(input *emailInput) (error, int) {
 
 	response, err := sendRequest(m)
 	if err != nil {
-		return err, http.StatusInternalServerError
+		return http.StatusInternalServerError, err
 	}
 	if response.StatusCode != 202 {
 		err = errors.New(fmt.Sprint("Response not queued for sending. Status code: ", response.StatusCode))
 	}
 
-	return err, response.StatusCode
+	return response.StatusCode, err
 }
 
 func sendRequest(m *mail.SGMailV3) (*rest.Response, error) {

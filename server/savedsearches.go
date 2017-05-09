@@ -32,7 +32,7 @@ func ReadSavedSearches(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 		query.UserID = user.KeyID
 	}
 
-	savedSearches, err, code := models.ReadSavedSearches(db, query)
+	savedSearches, code, err := models.ReadSavedSearches(db, query)
 	if err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while reading recent or queried saved searches")
@@ -61,7 +61,7 @@ func ReadSavedSearch(w http.ResponseWriter, r *http.Request, ps httprouter.Param
 		return
 	}
 
-	savedSearches, err, code := models.ReadSavedSearch(db, id, user.KeyID)
+	savedSearches, code, err := models.ReadSavedSearch(db, id, user.KeyID)
 	if err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while getting saved search by ID")
@@ -92,7 +92,7 @@ func CreateSavedSearch(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 		return
 	}
 
-	savedSearch, err, code := models.CreateSavedSearch(db, savedSearch, user.KeyID)
+	savedSearch, code, err := models.CreateSavedSearch(db, savedSearch, user.KeyID)
 	if err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while getting adding saved search")
@@ -131,7 +131,7 @@ func UpdateSavedSearch(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 		return
 	}
 
-	if err, code := models.UpdateSavedSearch(db, id, savedSearch, user.KeyID); err != nil {
+	if code, err := models.UpdateSavedSearch(db, id, savedSearch, user.KeyID); err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while updating savedSearch by ID")
 		Error(w, code)
@@ -158,7 +158,7 @@ func DeleteSavedSearch(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 		return
 	}
 
-	if err, code := models.DeleteSavedSearch(db, id, user.KeyID); err != nil {
+	if code, err := models.DeleteSavedSearch(db, id, user.KeyID); err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while deleting savedSearch by ID")
 		Error(w, code)

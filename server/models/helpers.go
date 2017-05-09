@@ -3,8 +3,12 @@ package models
 import (
 	"database/sql"
 	"errors"
+	sq "github.com/Masterminds/squirrel"
 	"net/http"
 )
+
+// Postgres Statement Builder instance
+var psql = sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
 
 // Default maximum number of characters in a truncated description of a datum
 // Used when obtaining and displaying many datum of a given structure
@@ -14,21 +18,21 @@ const defaultTruncationLength = 1024
 // Used when obtaining and displaying many datum of a given structure
 const defaultNumResults uint64 = 30
 
-func getUpdateResultCode(result sql.Result, err error) (error, int) {
+func getUpdateResultCode(result sql.Result, err error) (int, error) {
 
 	if err != nil {
-		return err, http.StatusInternalServerError
+		return http.StatusInternalServerError, err
 	}
 	numRows, err := result.RowsAffected()
 	if err != nil {
-		return err, http.StatusInternalServerError
+		return http.StatusInternalServerError, err
 	}
 	if numRows == 0 {
-		return sql.ErrNoRows, http.StatusNotFound
+		return http.StatusNotFound, sql.ErrNoRows
 	}
 	if numRows != 1 {
-		return errors.New("Multiple rows affected!"), http.StatusInternalServerError
+		return http.StatusInternalServerError, errors.New("multiple rows affected")
 	}
 
-	return nil, http.StatusNoContent
+	return http.StatusNoContent, nil
 }

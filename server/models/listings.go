@@ -13,7 +13,7 @@ import (
 	"time"
 )
 
-// Returned by a function returning only one listing (usually by ID)
+// A Listing is a record type storing a row of the listings table
 type Listing struct {
 	KeyID                int            `json:"keyId"`
 	CreationDate         null.Time      `json:"creationDate"`
@@ -30,7 +30,8 @@ type Listing struct {
 	IsStarred            bool           `json:"isStarred"`
 }
 
-type listingQuery struct {
+// A ListingQuery contains the necessary parameters for a parametrized query of the listings table
+type ListingQuery struct {
 	Query            string
 	OnlyStarred      bool
 	OnlyMine         bool
@@ -46,8 +47,9 @@ type listingQuery struct {
 	MaxCreateDate    time.Time
 }
 
-func NewListingQuery() *listingQuery {
-	q := new(listingQuery)
+// NewListingQuery creates a LisitngQuery with the appropriate default values
+func NewListingQuery() *ListingQuery {
+	q := new(ListingQuery)
 	q.TruncationLength = defaultTruncationLength
 	q.Limit = defaultNumResults
 	q.MinPrice = -1
@@ -55,6 +57,7 @@ func NewListingQuery() *listingQuery {
 	return q
 }
 
+// An IsStarred is the body of a request to SetStar
 type IsStarred struct {
 	IsStarred bool `json:"isStarred"`
 }
@@ -79,10 +82,8 @@ func isStarredBy(id int) string {
 		" AND starred_listings.is_active)")
 }
 
-// Returns the most recent count listings, based on original date created.
-// If queryStr is nonempty, filters that every returned item must have every word in either title or description
-// On error, returns an error and the HTTP code associated with that error.
-func ReadListings(db *sql.DB, query *listingQuery) ([]*Listing, error, int) {
+// ReadListings performs a customizable request for a collection of listings, as specified by a ListingQuery
+func ReadListings(db *sql.DB, query *ListingQuery) ([]*Listing, int, error) {
 	// Create listings statement
 	stmt := psql.
 		Select(
@@ -109,7 +110,7 @@ func ReadListings(db *sql.DB, query *listingQuery) ([]*Listing, error, int) {
 	}
 
 	if query.UserID == 0 && (query.OnlyStarred || query.OnlyMine) {
-		return nil, errors.New("Unauthenticated user attempted to view profile data"), http.StatusUnauthorized
+		return nil, http.StatusUnauthorized, errors.New("Unauthenticated user attempted to view profile data")
 	}
 
 	if query.MinPrice >= 0 {
@@ -158,7 +159,7 @@ func ReadListings(db *sql.DB, query *listingQuery) ([]*Listing, error, int) {
 	// Query db
 	rows, err := stmt.RunWith(db).Query()
 	if err != nil {
-		return nil, err, http.StatusInternalServerError
+		return nil, http.StatusInternalServerError, err
 	}
 	defer rows.Close()
 
@@ -182,21 +183,20 @@ func ReadListings(db *sql.DB, query *listingQuery) ([]*Listing, error, int) {
 			&l.Photos,
 		)
 		if err != nil {
-			return nil, err, http.StatusInternalServerError
+			return nil, http.StatusInternalServerError, err
 		}
 		listings = append(listings, l)
 	}
 
 	if err = rows.Err(); err != nil {
-		return nil, err, http.StatusInternalServerError
+		return nil, http.StatusInternalServerError, err
 	}
 
-	return listings, nil, http.StatusOK
+	return listings, http.StatusOK, nil
 }
 
-// Returns the most recent count listings, based on original date created. On error
-// returns an error and the HTTP code associated with that error.
-func ReadListing(db *sql.DB, id string) (Listing, error, int) {
+// ReadListing returns the listing with the given ID
+func ReadListing(db *sql.DB, id string) (Listing, int, error) {
 	var listing Listing
 
 	// Create listing query
@@ -223,7 +223,7 @@ func ReadListing(db *sql.DB, id string) (Listing, error, int) {
 	// Query db for listing
 	rows, err := query.RunWith(db).Query()
 	if err != nil {
-		return listing, err, http.StatusInternalServerError
+		return listing, http.StatusInternalServerError, err
 	}
 	defer rows.Close()
 
@@ -244,18 +244,18 @@ func ReadListing(db *sql.DB, id string) (Listing, error, int) {
 		&listing.Photos,
 	)
 	if err == sql.ErrNoRows {
-		return listing, err, http.StatusNotFound
+		return listing, http.StatusNotFound, err
 	} else if err != nil {
-		return listing, err, http.StatusInternalServerError
+		return listing, http.StatusInternalServerError, err
 	}
 
-	return listing, nil, http.StatusOK
+	return listing, http.StatusOK, nil
 }
 
-// Inserts the given listing (belonging to userId) into the database. Returns
-// listing with its new KeyID added.
-func CreateListing(db *sql.DB, listing Listing, userId int) (Listing, error, int) {
-	listing.UserID = userId
+// CreateListing inserts the given listing (belonging to userID) into the database.
+// Returns the listing with its new KeyID added
+func CreateListing(db *sql.DB, listing Listing, userID int) (Listing, int, error) {
+	listing.UserID = userID
 
 	if listing.Photos == nil {
 		listing.Photos = []string{}
@@ -263,33 +263,52 @@ func CreateListing(db *sql.DB, listing Listing, userId int) (Listing, error, int
 
 	// Insert listing
 	stmt := psql.Insert("listings").
-		Columns("title", "description", "user_id", "price", "status",
-			"expiration_date", "thumbnail_url", "photos").
-		Values(listing.Title, listing.Description, userId, listing.Price,
-			listing.Status, listing.ExpirationDate, listing.Thumbnail, listing.Photos).
+		Columns(
+			"title",
+			"description",
+			"user_id",
+			"price",
+			"status",
+			"expiration_date",
+			"thumbnail_url",
+			"photos",
+		).
+		Values(
+			listing.Title,
+			listing.Description,
+			userID,
+			listing.Price,
+			listing.Status,
+			listing.ExpirationDate,
+			listing.Thumbnail,
+			listing.Photos,
+		).
 		Suffix("RETURNING key_id, creation_date")
 
 	// Add listing to database, retrieve the one we just added (now with a key_id)
 	rows, err := stmt.RunWith(db).Query()
 	if err != nil {
-		return listing, err, http.StatusInternalServerError
+		return listing, http.StatusInternalServerError, err
 	}
 	defer rows.Close()
+
 	rows.Next()
-	err = rows.Scan(&listing.KeyID, &listing.CreationDate)
+	err = rows.Scan(
+		&listing.KeyID,
+		&listing.CreationDate,
+	)
 	if err != nil {
-		return listing, err, http.StatusInternalServerError
+		return listing, http.StatusInternalServerError, err
 	}
 
 	// Send email(s) if this listing matches anyone's saved search.
 	go CheckNewListing(db, listing)
-	return listing, nil, http.StatusCreated
+	return listing, http.StatusCreated, nil
 }
 
-// Overwrites the listing in the database with the given id with the given listing
-// (belonging to userId). Returns the updated listing.
-func UpdateListing(db *sql.DB, id string, listing Listing, userId int) (error, int) {
-	listing.UserID = userId
+// UpdateListing overwrites the listing in the database with the given id with the given listing
+func UpdateListing(db *sql.DB, id string, listing Listing, userID int) (int, error) {
+	listing.UserID = userID
 
 	// Update listing
 	stmt := psql.Update("listings").
@@ -300,51 +319,64 @@ func UpdateListing(db *sql.DB, id string, listing Listing, userId int) (error, i
 			"status":          listing.Status,
 			"expiration_date": listing.ExpirationDate,
 			"thumbnail_url":   listing.Thumbnail,
-			"photos":          listing.Photos}).
-		Where(sq.Eq{"listings.key_id": id,
-			"listings.user_id": userId})
+			"photos":          listing.Photos,
+		}).
+		Where(sq.Eq{
+			"listings.key_id":  id,
+			"listings.user_id": userID,
+		})
 
 	// Update listing
 	result, err := stmt.RunWith(db).Exec()
 	return getUpdateResultCode(result, err)
 }
 
-// Deletes the listing in the database with the given id with the given listing
-// (belonging to userId).
-func DeleteListing(db *sql.DB, id string, userId int) (error, int) {
+// DeleteListing deletes the listing in the database with the given id
+func DeleteListing(db *sql.DB, id string, userID int) (int, error) {
 	// Delete listing
 	stmt := psql.Delete("listings").
-		Where(sq.Eq{"listings.key_id": id,
-			"listings.user_id": userId})
+		Where(sq.Eq{
+			"listings.key_id":  id,
+			"listings.user_id": userID,
+		})
 	result, err := stmt.RunWith(db).Exec()
 
 	return getUpdateResultCode(result, err)
 }
 
-// SetStar adds or removes a star, depending on whether add is set to true.
-func SetStar(db *sql.DB, add bool, listingId string, userId int) (error, int) {
+// SetStar adds or removes a star, depending on whether add is set to true
+func SetStar(db *sql.DB, add bool, listingID string, userID int) (int, error) {
 	if add {
-		return addStar(db, listingId, userId)
+		return addStar(db, listingID, userID)
 	} else {
-		return removeStar(db, listingId, userId)
+		return removeStar(db, listingID, userID)
 	}
 }
 
-// addStar adds a star to the table for the given listingId and userId.
-func addStar(db *sql.DB, listingId string, userId int) (error, int) {
+// addStar adds a star to the table for the given listingID and userID
+func addStar(db *sql.DB, listingID string, userID int) (int, error) {
 	insertStarStmt := psql.Insert("starred_listings").
-		Columns("user_id", "listing_id").
-		Values(userId, listingId)
+		Columns(
+			"user_id",
+			"listing_id",
+		).
+		Values(
+			userID,
+			listingID,
+		)
 
 	// Query db for listing
 	result, err := insertStarStmt.RunWith(db).Exec()
 	return getUpdateResultCode(result, err)
 }
 
-// removeStar remvoes a star from the given listingId for a given userId.
-func removeStar(db *sql.DB, listingId string, userId int) (error, int) {
+// removeStar remvoes a star from the given listingID for a given userID
+func removeStar(db *sql.DB, listingID string, userID int) (int, error) {
 	stmt := psql.Delete("starred_listings").
-		Where(sq.Eq{"listing_id": listingId, "user_id": userId})
+		Where(sq.Eq{
+			"listing_id": listingID,
+			"user_id":    userID,
+		})
 
 	// Query db for listing
 	result, err := stmt.RunWith(db).Exec()

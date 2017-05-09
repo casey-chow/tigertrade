@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-// Returned by a function returning only one seek (usually by ID)
+// A Seek is a record type storing a row of the seeks table
 type Seek struct {
 	KeyID                int         `json:"keyId"`
 	CreationDate         null.Time   `json:"creationDate"`
@@ -24,7 +24,8 @@ type Seek struct {
 	Status               null.String `json:"status"`
 }
 
-type seekQuery struct {
+// A SeekQuery contains the necessary parameters for a parametrized query of the seeks table
+type SeekQuery struct {
 	Query            string
 	OnlyMine         bool
 	TruncationLength int    // number of characters to truncate listing descriptions to
@@ -33,22 +34,30 @@ type seekQuery struct {
 	UserID           int
 }
 
-func NewSeekQuery() *seekQuery {
-	q := new(seekQuery)
+// NewSeekQuery creates a SeeqQuery with the appropriate default values
+func NewSeekQuery() *SeekQuery {
+	q := new(SeekQuery)
 	q.TruncationLength = defaultTruncationLength
 	q.Limit = defaultNumResults
 	return q
 }
 
-// Returns the most recent count seeks, based on original date created.
-// If queryStr is nonempty, filters that every returned item must have every word in either title or description
-// On error, returns an error and the HTTP code associated with that error.
-func ReadSeeks(db *sql.DB, query *seekQuery) ([]*Seek, error, int) {
+// ReadSeeks performs a customizable request for a collection of seeks, as specified by a SeekQuery
+func ReadSeeks(db *sql.DB, query *SeekQuery) ([]*Seek, int, error) {
 	// Create seeks statement
 	stmt := psql.
-		Select("seeks.key_id", "seeks.creation_date", "seeks.last_modification_date",
-			"title", fmt.Sprintf("left(description, %d)", query.TruncationLength),
-			"user_id", "users.net_id", "saved_search_id", "notify_enabled", "status").
+		Select(
+			"seeks.key_id",
+			"seeks.creation_date",
+			"seeks.last_modification_date",
+			"title",
+			fmt.Sprintf("left(description, %d)", query.TruncationLength),
+			"user_id",
+			"users.net_id",
+			"saved_search_id",
+			"notify_enabled",
+			"status",
+		).
 		From("seeks").
 		Where("seeks.is_active=true").
 		LeftJoin("users ON seeks.user_id = users.key_id")
@@ -58,7 +67,7 @@ func ReadSeeks(db *sql.DB, query *seekQuery) ([]*Seek, error, int) {
 	}
 
 	if query.UserID == 0 && query.OnlyMine {
-		return nil, errors.New("Unauthenticated user attempted to view profile data"), http.StatusUnauthorized
+		return nil, http.StatusUnauthorized, errors.New("Unauthenticated user attempted to view profile data")
 	}
 
 	if query.OnlyMine {
@@ -76,7 +85,7 @@ func ReadSeeks(db *sql.DB, query *seekQuery) ([]*Seek, error, int) {
 	// Query db
 	rows, err := stmt.RunWith(db).Query()
 	if err != nil {
-		return nil, err, http.StatusInternalServerError
+		return nil, http.StatusInternalServerError, err
 	}
 	defer rows.Close()
 
@@ -84,31 +93,48 @@ func ReadSeeks(db *sql.DB, query *seekQuery) ([]*Seek, error, int) {
 	seeks := make([]*Seek, 0)
 	for rows.Next() {
 		s := new(Seek)
-		err := rows.Scan(&s.KeyID, &s.CreationDate, &s.LastModificationDate,
-			&s.Title, &s.Description, &s.UserID, &s.Username, &s.SavedSearchID,
-			&s.NotifyEnabled, &s.Status)
+		err := rows.Scan(
+			&s.KeyID,
+			&s.CreationDate,
+			&s.LastModificationDate,
+			&s.Title,
+			&s.Description,
+			&s.UserID,
+			&s.Username,
+			&s.SavedSearchID,
+			&s.NotifyEnabled,
+			&s.Status,
+		)
 		if err != nil {
-			return nil, err, http.StatusInternalServerError
+			return nil, http.StatusInternalServerError, err
 		}
 		seeks = append(seeks, s)
 	}
 	if err = rows.Err(); err != nil {
-		return nil, err, http.StatusInternalServerError
+		return nil, http.StatusInternalServerError, err
 	}
 
-	return seeks, nil, http.StatusOK
+	return seeks, http.StatusOK, nil
 }
 
-// Returns the most recent count seeks, based on original date created. On error
-// returns an error and the HTTP code associated with that error.
-func ReadSeek(db *sql.DB, id string) (Seek, error, int) {
+// ReadSeek returns the seek with the given ID
+func ReadSeek(db *sql.DB, id string) (Seek, int, error) {
 	var seek Seek
 
 	// Create seek query
 	query := psql.
-		Select("seeks.key_id", "seeks.creation_date",
-			"seeks.last_modification_date", "title", "description", "user_id",
-			"users.net_id", "saved_search_id", "notify_enabled", "status").
+		Select(
+			"seeks.key_id",
+			"seeks.creation_date",
+			"seeks.last_modification_date",
+			"title",
+			"description",
+			"user_id",
+			"users.net_id",
+			"saved_search_id",
+			"notify_enabled",
+			"status",
+		).
 		From("seeks").
 		Where("seeks.is_active=true").
 		LeftJoin("users ON seeks.user_id = users.key_id").
@@ -117,7 +143,7 @@ func ReadSeek(db *sql.DB, id string) (Seek, error, int) {
 	// Query db for seek
 	rows, err := query.RunWith(db).Query()
 	if err != nil {
-		return seek, err, http.StatusInternalServerError
+		return seek, http.StatusInternalServerError, err
 	}
 	defer rows.Close()
 
@@ -127,48 +153,62 @@ func ReadSeek(db *sql.DB, id string) (Seek, error, int) {
 		&seek.Title, &seek.Description, &seek.UserID, &seek.Username, &seek.SavedSearchID,
 		&seek.NotifyEnabled, &seek.Status)
 	if err == sql.ErrNoRows {
-		return seek, err, http.StatusNotFound
+		return seek, http.StatusNotFound, err
 	} else if err != nil {
-		return seek, err, http.StatusInternalServerError
+		return seek, http.StatusInternalServerError, err
 	}
 
-	return seek, nil, http.StatusOK
+	return seek, http.StatusOK, nil
 }
 
-// Inserts the given seek (belonging to userId) into the database. Returns
-// seek with its new KeyID added.
-func CreateSeek(db *sql.DB, seek Seek, userId int) (Seek, error, int) {
-	seek.UserID = userId
+// CreateSeek inserts the given seek (belonging to userID) into the database.
+// Returns the seek with its new KeyID added
+func CreateSeek(db *sql.DB, seek Seek, userID int) (Seek, int, error) {
+	seek.UserID = userID
 
 	// Insert seek
 	stmt := psql.Insert("seeks").
-		Columns("title", "description", "user_id", "saved_search_id",
-			"notify_enabled", "status").
-		Values(seek.Title, seek.Description, userId, seek.SavedSearchID,
-			seek.NotifyEnabled, seek.Status).
+		Columns(
+			"title",
+			"description",
+			"user_id",
+			"saved_search_id",
+			"notify_enabled",
+			"status",
+		).
+		Values(
+			seek.Title,
+			seek.Description,
+			userID,
+			seek.SavedSearchID,
+			seek.NotifyEnabled,
+			seek.Status,
+		).
 		Suffix("RETURNING key_id, creation_date")
 
 	// Query db for seek
 	rows, err := stmt.RunWith(db).Query()
 	if err != nil {
-		return seek, err, http.StatusInternalServerError
+		return seek, http.StatusInternalServerError, err
 	}
 	defer rows.Close()
 
 	// Populate seek struct
 	rows.Next()
-	err = rows.Scan(&seek.KeyID, &seek.CreationDate)
+	err = rows.Scan(
+		&seek.KeyID,
+		&seek.CreationDate,
+	)
 	if err != nil {
-		return seek, err, http.StatusInternalServerError
+		return seek, http.StatusInternalServerError, err
 	}
 
-	return seek, nil, http.StatusCreated
+	return seek, http.StatusCreated, nil
 }
 
-// Overwrites the seek in the database with the given id with the given seek
-// (belonging to userId). Returns the updated seek.
-func UpdateSeek(db *sql.DB, id string, seek Seek, userId int) (error, int) {
-	seek.UserID = userId
+// UpdateSeek overwrites the seek in the database with the given id with the given seek
+func UpdateSeek(db *sql.DB, id string, seek Seek, userID int) (int, error) {
+	seek.UserID = userID
 
 	// Update seek
 	stmt := psql.Update("seeks").
@@ -176,22 +216,26 @@ func UpdateSeek(db *sql.DB, id string, seek Seek, userId int) (error, int) {
 			"title":           seek.Title,
 			"description":     seek.Description,
 			"saved_search_id": seek.SavedSearchID,
-			"notify_enabled":  seek.NotifyEnabled}).
-		Where(sq.Eq{"seeks.key_id": id,
-			"seeks.user_id": userId})
+			"notify_enabled":  seek.NotifyEnabled,
+		}).
+		Where(sq.Eq{
+			"seeks.key_id":  id,
+			"seeks.user_id": userID,
+		})
 
 	// Query db for seek
 	result, err := stmt.RunWith(db).Exec()
 	return getUpdateResultCode(result, err)
 }
 
-// Deletes the seek in the database with the given id with the given seek
-// (belonging to userId).
-func DeleteSeek(db *sql.DB, id string, userId int) (error, int) {
+// DeleteSeek deletes the seek in the database with the given id
+func DeleteSeek(db *sql.DB, id string, userID int) (int, error) {
 	// Update seek
 	stmt := psql.Delete("seeks").
-		Where(sq.Eq{"seeks.key_id": id,
-			"seeks.user_id": userId})
+		Where(sq.Eq{
+			"seeks.key_id":  id,
+			"seeks.user_id": userID,
+		})
 
 	// Query db for seek
 	result, err := stmt.RunWith(db).Exec()

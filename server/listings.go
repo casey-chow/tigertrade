@@ -59,7 +59,7 @@ func ReadListings(w http.ResponseWriter, r *http.Request, ps httprouter.Params) 
 		query.MaxCreateDate = maxCreateDate
 	}
 
-	listings, err, code := models.ReadListings(db, query)
+	listings, code, err := models.ReadListings(db, query)
 	if err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while reading recent or queried listings")
@@ -79,7 +79,7 @@ func ReadListing(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		return
 	}
 
-	listings, err, code := models.ReadListing(db, id)
+	listings, code, err := models.ReadListing(db, id)
 	if err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while getting listing by ID")
@@ -110,7 +110,7 @@ func CreateListing(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 		return
 	}
 
-	listing, err, code := models.CreateListing(db, listing, user.KeyID)
+	listing, code, err := models.CreateListing(db, listing, user.KeyID)
 	if err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while adding new listing")
@@ -149,7 +149,7 @@ func UpdateListing(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 		return
 	}
 
-	if err, code := models.UpdateListing(db, id, listing, user.KeyID); err != nil {
+	if code, err := models.UpdateListing(db, id, listing, user.KeyID); err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while updating listing by ID")
 		Error(w, code)
@@ -176,7 +176,7 @@ func DeleteListing(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 		return
 	}
 
-	if err, code := models.DeleteListing(db, id, user.KeyID); err != nil {
+	if code, err := models.DeleteListing(db, id, user.KeyID); err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while deleting listing by ID")
 		Error(w, code)
@@ -215,7 +215,7 @@ func UpdateListingStar(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 	}
 
 	// Update Listing data
-	if err, code := models.SetStar(db, input.IsStarred, id, user.KeyID); err != nil {
+	if code, err := models.SetStar(db, input.IsStarred, id, user.KeyID); err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while removing star from listing")
 		Error(w, code)

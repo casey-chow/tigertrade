@@ -25,7 +25,7 @@ func contactPost(w http.ResponseWriter, r *http.Request, ps httprouter.Params, i
 		return
 	}
 
-	email, err, code := models.NewEmailInput(db, id, isSeek)
+	email, code, err := models.NewEmailInput(db, id, isSeek)
 	if err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("error while creating email struct")
@@ -33,7 +33,7 @@ func contactPost(w http.ResponseWriter, r *http.Request, ps httprouter.Params, i
 		return
 	}
 
-	// Get NetId of the user initiating the contact
+	// Get NetID of the user initiating the contact
 	if email.Sender = getUsername(r); email.Sender == "" {
 		Error(w, http.StatusUnauthorized)
 		return
@@ -48,13 +48,13 @@ func contactPost(w http.ResponseWriter, r *http.Request, ps httprouter.Params, i
 	}
 
 	// Send email
-	if err, code := models.SendEmail(email); err != nil {
+	if code, err := models.SendEmail(email); err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while attempting to send email")
 		Error(w, code)
 		return
 	}
-	if err, code := models.SendEmail2(email); err != nil {
+	if code, err := models.SendEmail2(email); err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while attempting to send second email")
 		Error(w, code)

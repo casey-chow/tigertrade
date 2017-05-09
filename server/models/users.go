@@ -7,7 +7,7 @@ import (
 	"github.com/guregu/null"
 )
 
-// User represents a user of the app.
+// A User is a record type storing a row of the users table
 type User struct {
 	KeyID                int       `json:"keyId"`
 	CreationDate         null.Time `json:"creationDate"`
@@ -15,10 +15,8 @@ type User struct {
 	NetID                string    `json:"netId"`
 }
 
-// GetOrCreateUser makes sure the netID exists in the db, creating it if
-// it doesn't already.
-// Security Note: DO NOT allow user-generated data into this function. This assumes
-// the netID is from CAS.
+// GetOrCreateUser makes sure the netID exists in the db, creating it if it doesn't already.
+// Security Note: DO NOT allow user-generated data into this function. This assumes the netID is from CAS.
 func GetOrCreateUser(db *sql.DB, netID string) (*User, error) {
 	user, err := GetUser(db, netID)
 	if err == nil {
@@ -35,7 +33,8 @@ func GetOrCreateUser(db *sql.DB, netID string) (*User, error) {
 	log.WithField("netID", netID).
 		Print("creating user")
 	insert := psql.Insert("users").
-		Columns("net_id").Values(netID)
+		Columns("net_id").
+		Values(netID)
 
 	_, err = insert.RunWith(db).Exec()
 	if err != nil {
