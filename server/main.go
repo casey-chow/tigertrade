@@ -118,7 +118,7 @@ func initS3() {
 	}
 
 	cfg := aws.NewConfig().
-		WithRegion("us-east-1").
+		WithRegion(os.Getenv("AWS_REGION")).
 		WithCredentials(creds)
 
 	sess := session.Must(session.NewSession(cfg))
