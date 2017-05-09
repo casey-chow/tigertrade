@@ -13,6 +13,7 @@ import (
 	"github.com/getsentry/raven-go"
 	_ "github.com/lib/pq"
 	"github.com/meatballhat/negroni-logrus"
+	"github.com/phyber/negroni-gzip/gzip"
 	"github.com/rs/cors"
 	"github.com/urfave/negroni"
 	"net/http"
@@ -146,6 +147,7 @@ func App() http.Handler {
 	app.Use(casMiddleware())
 	app.Use(sentryMiddleware())
 	app.Use(logMiddleware())
+	app.Use(gzip.Gzip(gzip.DefaultCompression))
 	app.Use(corsMiddleware())
 
 	app.UseHandler(Router())
