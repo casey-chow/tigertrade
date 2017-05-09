@@ -208,7 +208,7 @@ export default class ListingCard extends React.Component {
                               }
                               style={styles.listingImageButton}
                             >
-                              <img alt="listing" src={image} />
+                              { expanded && <img alt="listing" src={image} /> }
                             </button>,
                           )
                       }
