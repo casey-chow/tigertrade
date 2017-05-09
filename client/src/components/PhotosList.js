@@ -92,6 +92,7 @@ export default class PhotosList extends Component {
       fetch(`${API_ROOT}/photos`, {
         method: 'POST',
         body: formData,
+        credentials: 'include',
       })
       .then(res => res.json())
       .then((data) => {
@@ -117,7 +118,7 @@ export default class PhotosList extends Component {
             style={this.state.photos.length > 0 ? styles.dropzoneHide : styles.dropzone}
             accept="image/*"
             data={{ type: 'picture' }}
-            maxSize={+5e6/* 5MB */}
+            maxSize={+10e6/* 10MB */}
             disablePreview
             onDropAccepted={this.handleDropAccepted}
           >
