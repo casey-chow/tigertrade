@@ -26,6 +26,7 @@
     "redux-form": "^6.6.2",
     "redux-form-material-ui": "^4.2.0",
     "redux-logger": "^3.0.1",
+    "redux-persist": "^4.8.0",
     "redux-thunk": "^2.2.0",
     "redux-ui": "^0.0.15"
   },
