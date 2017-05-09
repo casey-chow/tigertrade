@@ -18,7 +18,8 @@ import (
 )
 
 func CreatePhoto(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	if !isAuthenticated(r) {
+	user := getUsername(r)
+	if user == "" {
 		Error(w, http.StatusUnauthorized)
 		return
 	}
@@ -33,7 +34,7 @@ func CreatePhoto(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	defer file.Close()
 
 	fileUUID := uuid.NewV4().String()
-	path := "/photos/" + fileUUID + "/" + fileHeader.Filename
+	path := "/photos/" + user + "/" + fileUUID + "/" + fileHeader.Filename
 
 	img, imgType, err := image.Decode(file)
 	if err != nil || (imgType != "jpeg" && imgType != "gif" && imgType != "png") {
