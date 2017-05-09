@@ -450,6 +450,12 @@
 			"revisionTime": "2016-06-28T04:38:43Z"
 		},
 		{
+			"checksumSHA1": "BvmQASxE1Ftl+szCnsWWV70LHDo=",
+			"path": "github.com/phyber/negroni-gzip/gzip",
+			"revision": "8118ae63850fee22b2fe43cea81d3bc149774503",
+			"revisionTime": "2017-03-23T13:29:14Z"
+		},
+		{
 			"checksumSHA1": "4Am6YMPQZGR+f7rqKyvciJzyV6A=",
 			"path": "github.com/rs/cors",
 			"revision": "a62a804a8a009876ca59105f7899938a1349f4b3",
