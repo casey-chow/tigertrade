@@ -144,6 +144,8 @@ export default class SeekCard extends React.Component {
     }, 'Successfully created saved search'));
   }
 
+  formatDescription = description => description.split('\n').map(line => <p key={line}>{line}</p>);
+
   render() {
     const { seek, expanded } = this.props;
     const styles = SeekCard.styles;
@@ -168,7 +170,7 @@ export default class SeekCard extends React.Component {
 
             { seek.description &&
               <CardText>
-                {seek.description}
+                {this.formatDescription(seek.description)}
               </CardText>
             }
 
