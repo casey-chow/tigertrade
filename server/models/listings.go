@@ -30,6 +30,41 @@ type Listing struct {
 	IsStarred            bool           `json:"isStarred"`
 }
 
+// GetCreationDate returns the CreationDate of the Listing
+func (l Listing) GetCreationDate() null.Time {
+	return l.CreationDate
+}
+
+// GetLastModificationDate returns the LastModificationDate of the Listing
+func (l Listing) GetLastModificationDate() null.Time {
+	return l.LastModificationDate
+}
+
+// GetTitle returns the Title of the Listing
+func (l Listing) GetTitle() string {
+	return l.Title
+}
+
+// GetDescription returns the Description of the Listing
+func (l Listing) GetDescription() null.String {
+	return l.Description
+}
+
+// GetUserID returns the UserID of the Listing
+func (l Listing) GetUserID() int {
+	return l.UserID
+}
+
+// GetUsername returns the Username of the Listing
+func (l Listing) GetUsername() null.String {
+	return l.Username
+}
+
+// GetStatus returns the Status of the Listing
+func (l Listing) GetStatus() null.String {
+	return l.Status
+}
+
 // A ListingQuery contains the necessary parameters for a parametrized query of the listings table
 type ListingQuery struct {
 	Query            string

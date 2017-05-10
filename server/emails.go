@@ -10,14 +10,14 @@ import (
 
 // (•_•) ( •_•)>⌐■-■ (⌐■_■)
 func ContactListing(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	contactPost(w, r, ps, false)
+	contactPost(w, r, ps, models.ReadListingAsPost, models.ContactListingPoster, models.ContactListingReader)
 }
 func ContactSeek(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	contactPost(w, r, ps, true)
+	contactPost(w, r, ps, models.ReadSeekAsPost, models.ContactSeekPoster, models.ContactSeekReader)
 }
 
 // Sends an email from the current user to the owner of a given post
-func contactPost(w http.ResponseWriter, r *http.Request, ps httprouter.Params, isSeek bool) {
+func contactPost(w http.ResponseWriter, r *http.Request, ps httprouter.Params, read models.PostReader, posterTemplate models.MailTemplate, readerTemplate models.MailTemplate) {
 	// Get post ID from params
 	id := ps.ByName("id")
 	if id == "" {
@@ -25,7 +25,7 @@ func contactPost(w http.ResponseWriter, r *http.Request, ps httprouter.Params, i
 		return
 	}
 
-	email, code, err := models.NewEmailInput(db, id, isSeek)
+	email, code, err := models.NewEmailInput(db, id, read)
 	if err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("error while creating email struct")
@@ -48,23 +48,14 @@ func contactPost(w http.ResponseWriter, r *http.Request, ps httprouter.Params, i
 	}
 
 	// Send email
-	if (isSeek) {
-		email.Template = models.ContactSeekPoster
-	} else {
-		email.Template = models.ContactListingPoster
-	}
+	email.Template = posterTemplate
 	if code, err := models.SendEmail(email); err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("error while attempting to send email to poster")
 		Error(w, code)
 		return
 	}
-
-	if (isSeek) {
-		email.Template = models.ContactSeekReader
-	} else {
-		email.Template = models.ContactListingReader
-	}
+	email.Template = readerTemplate
 	if code, err := models.SendEmail2(email); err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("error while attempting to send email to post reader")

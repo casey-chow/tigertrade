@@ -29,37 +29,25 @@ const (
 
 // An EmailInput contains the necessary parameters for the creation of an email
 type EmailInput struct {
-	Sender        string
-	Recipient     string
-	Subject       string
-	Body          string `json:"body"`
-	Template      MailTemplate
+	Sender    string
+	Recipient string
+	Subject   string
+	Body      string `json:"body"`
+	Template  MailTemplate
 }
 
-func NewEmailInput(db *sql.DB, id string, isSeek bool) (*EmailInput, int, error) {
+// NewEmailInput creates a new EmailInput with the appropriate defualt values
+func NewEmailInput(db *sql.DB, id string, read PostReader) (*EmailInput, int, error) {
 	i := new(EmailInput)
 
-	var title string
-	var ownerID int
-	if isSeek {
-		seek, code, err := ReadSeek(db, id)
-		if err != nil {
-			return nil, code, err
-		}
-		title = seek.Title
-		ownerID = seek.UserID
-	} else {
-		listing, code, err := ReadListing(db, id)
-		if err != nil {
-			return nil, code, err
-		}
-		title = listing.Title
-		ownerID = listing.UserID
+	post, code, err := read(db, id)
+	if err != nil {
+		return nil, code, err
 	}
 
-	i.Subject = title
+	i.Subject = post.GetTitle()
 
-	owner, err := GetUserByID(db, ownerID)
+	owner, err := GetUserByID(db, post.GetUserID())
 	if err != nil {
 		return nil, http.StatusInternalServerError, err
 	}

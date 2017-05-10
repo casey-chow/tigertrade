@@ -24,6 +24,41 @@ type Seek struct {
 	Status               null.String `json:"status"`
 }
 
+// GetCreationDate returns the CreationDate of the Seek
+func (s Seek) GetCreationDate() null.Time {
+	return s.CreationDate
+}
+
+// GetLastModificationDate returns the LastModificationDate of the Seek
+func (s Seek) GetLastModificationDate() null.Time {
+	return s.LastModificationDate
+}
+
+// GetTitle returns the Title of the Seek
+func (s Seek) GetTitle() string {
+	return s.Title
+}
+
+// GetDescription returns the Description of the Seek
+func (s Seek) GetDescription() null.String {
+	return s.Description
+}
+
+// GetUserID returns the UserID of the Seek
+func (s Seek) GetUserID() int {
+	return s.UserID
+}
+
+// GetUsername returns the Username of the Seek
+func (s Seek) GetUsername() null.String {
+	return s.Username
+}
+
+// GetStatus returns the Status of the Seek
+func (s Seek) GetStatus() null.String {
+	return s.Status
+}
+
 // A SeekQuery contains the necessary parameters for a parametrized query of the seeks table
 type SeekQuery struct {
 	Query            string
@@ -34,7 +69,7 @@ type SeekQuery struct {
 	UserID           int
 }
 
-// NewSeekQuery creates a SeeqQuery with the appropriate default values
+// NewSeekQuery creates a SeekQuery with the appropriate default values
 func NewSeekQuery() *SeekQuery {
 	q := new(SeekQuery)
 	q.TruncationLength = defaultTruncationLength
