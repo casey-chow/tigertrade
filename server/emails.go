@@ -49,14 +49,14 @@ func contactPost(w http.ResponseWriter, r *http.Request, ps httprouter.Params, r
 
 	// Send email
 	email.Template = posterTemplate
-	if code, err := models.SendEmail(email); err != nil {
+	if code, err := models.SendNotificationEmail(email); err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("error while attempting to send email to poster")
 		Error(w, code)
 		return
 	}
 	email.Template = readerTemplate
-	if code, err := models.SendEmail2(email); err != nil {
+	if code, err := models.SendConfirmationEmail(email); err != nil {
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("error while attempting to send email to post reader")
 		Error(w, code)

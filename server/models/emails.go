@@ -61,7 +61,8 @@ func getEmail(netID string) *mail.Email {
 	return mail.NewEmail(netID, addr)
 }
 
-func SendEmail(input *EmailInput) (int, error) {
+// SendNotificationEmail sends an email to the recipient of an EmailInput
+func SendNotificationEmail(input *EmailInput) (int, error) {
 	if input.Sender == input.Recipient {
 		return http.StatusBadRequest, errors.New("email To and From fields cannot be the same")
 	}
@@ -99,7 +100,8 @@ func SendEmail(input *EmailInput) (int, error) {
 	return response.StatusCode, err
 }
 
-func SendEmail2(input *EmailInput) (int, error) {
+// SendConfirmationEmail sends an email to the sender of an EmailInput
+func SendConfirmationEmail(input *EmailInput) (int, error) {
 	robot := mail.NewEmail("TigerTrade", "noreply@tigertra.de")
 	recipient := getEmail(input.Sender)
 	content := mail.NewContent("text/html", input.Body)
@@ -121,6 +123,7 @@ func SendEmail2(input *EmailInput) (int, error) {
 	if err != nil {
 		return http.StatusInternalServerError, err
 	}
+
 	if response.StatusCode != 202 {
 		err = errors.New(fmt.Sprint("response not queued for sending. Status code: ", response.StatusCode))
 	}

@@ -280,7 +280,7 @@ func CheckNewListing(db *sql.DB, listing Listing) {
 		}
 
 		email.Recipient = owner.NetID
-		SendEmail(email)
+		SendNotificationEmail(email)
 	}
 
 	log.Infof("saved searches: found %d results", matchCount)
