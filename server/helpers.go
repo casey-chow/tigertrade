@@ -20,7 +20,7 @@ func Serve(w http.ResponseWriter, v interface{}) {
 		var err error
 		marshaled, err = json.Marshal(v)
 		if err != nil {
-			log.WithField("err", err).Error("error while marshaling to JSON")
+			log.WithError(err).Error("error while marshaling to JSON")
 			raven.CaptureError(err, nil)
 			Error(w, http.StatusInternalServerError)
 			return

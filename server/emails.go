@@ -30,7 +30,7 @@ func contactPost(w http.ResponseWriter, r *http.Request, ps httprouter.Params, r
 	email, code, err := models.NewEmailInput(db, id, read)
 	if err != nil {
 		raven.CaptureError(err, nil)
-		log.WithField("err", err).Error("error while creating email struct")
+		log.WithError(err).Error("error while creating email struct")
 		Error(w, code)
 		return
 	}
@@ -44,7 +44,7 @@ func contactPost(w http.ResponseWriter, r *http.Request, ps httprouter.Params, r
 	// Get Body from request
 	if err := ParseJSONFromBody(r, &email); err != nil {
 		raven.CaptureError(err, nil)
-		log.WithField("err", err).Error("error while parsing JSON file")
+		log.WithError(err).Error("error while parsing JSON file")
 		Error(w, http.StatusUnprocessableEntity)
 		return
 	}
@@ -53,14 +53,14 @@ func contactPost(w http.ResponseWriter, r *http.Request, ps httprouter.Params, r
 	email.Template = posterTemplate
 	if code, err := models.SendNotificationEmail(email); err != nil {
 		raven.CaptureError(err, nil)
-		log.WithField("err", err).Error("error while attempting to send email to poster")
+		log.WithError(err).Error("error while attempting to send email to poster")
 		Error(w, code)
 		return
 	}
 	email.Template = readerTemplate
 	if code, err := models.SendConfirmationEmail(email); err != nil {
 		raven.CaptureError(err, nil)
-		log.WithField("err", err).Error("error while attempting to send email to post reader")
+		log.WithError(err).Error("error while attempting to send email to post reader")
 		Error(w, code)
 		return
 	}

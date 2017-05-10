@@ -76,7 +76,7 @@ func loadEnvironment() {
 	file, err := os.Open(path)
 
 	if err != nil {
-		log.WithField("err", err).Fatal("Unable to load .env file: file not found")
+		log.WithError(err).Fatal("Unable to load .env file: file not found")
 	}
 	defer file.Close()
 	scanner := bufio.NewScanner(file)
@@ -88,7 +88,7 @@ func loadEnvironment() {
 	}
 
 	if err := scanner.Err(); err != nil {
-		log.WithField("err", err).Fatal("Unable to set config vars in environment")
+		log.WithError(err).Fatal("Unable to set config vars in environment")
 	}
 
 }
@@ -99,14 +99,14 @@ func initDatabase() {
 	db, err = sql.Open("postgres", os.Getenv("DATABASE_URL"))
 	if err != nil {
 		raven.CaptureErrorAndWait(err, nil)
-		log.WithField("err", err).Fatal("unable to open postgres database")
+		log.WithError(err).Fatal("unable to open postgres database")
 	} else {
 		log.Print("connected to database")
 	}
 
 	if err = db.Ping(); err != nil {
 		raven.CaptureErrorAndWait(err, nil)
-		log.WithField("err", err).Fatal("unable to connect to postgres database")
+		log.WithError(err).Fatal("unable to connect to postgres database")
 	}
 }
 
