@@ -27,9 +27,9 @@ var db *sql.DB
 var uploader *s3manager.Uploader
 
 func casMiddleware() negroni.Handler {
-	casUrl, _ := url.Parse("https://fed.princeton.edu/cas/")
+	casURL, _ := url.Parse("https://fed.princeton.edu/cas/")
 	casClient := cas.NewClient(&cas.Options{
-		URL:         casUrl,
+		URL:         casURL,
 		SendService: true,
 		Secure:      os.Getenv("DEBUG") != "true",
 	})
