@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-// Writes the most recent count listings, based on original date created to w
+// ReadListings performs a customizable request defined by r for a collection of listings, and writes them to w
 func ReadListings(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	query := models.NewListingQuery()
 
@@ -70,7 +70,7 @@ func ReadListings(w http.ResponseWriter, r *http.Request, ps httprouter.Params) 
 	Serve(w, listings)
 }
 
-// Writes the most recent count listings, based on original date created to w
+// ReadListing writes a listing identified in r to w
 func ReadListing(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	// Get ID from params
 	id := ps.ByName("id")
@@ -90,6 +90,8 @@ func ReadListing(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	Serve(w, listings)
 }
 
+// CreateListing creates a new listing based on the contents of r, owned by the current user,
+// and then writes it to w with its keyId set
 func CreateListing(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	// Get listing to add from request body
 	listing := models.Listing{}
@@ -122,6 +124,7 @@ func CreateListing(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 	Serve(w, listing)
 }
 
+// UpdateListing updates the requested listing if it is owned by the current user
 func UpdateListing(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	// Get ID from params
 	id := ps.ByName("id")
@@ -159,6 +162,7 @@ func UpdateListing(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 	w.WriteHeader(http.StatusNoContent)
 }
 
+// DeleteListing deletes the requested listing if it is owned by the current user
 func DeleteListing(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	// Get ID from params
 	id := ps.ByName("id")
@@ -186,6 +190,7 @@ func DeleteListing(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 	w.WriteHeader(http.StatusNoContent)
 }
 
+// UpdateListingStar adds or removes a star to a listing for the current user
 func UpdateListingStar(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 
 	// Get ID from params

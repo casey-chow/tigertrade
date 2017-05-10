@@ -9,7 +9,7 @@ import (
 	"strconv"
 )
 
-// Writes the most recent count saved searches, based on original date created to w
+// ReadSavedSearches performs a request for the current user's saved searches, and writes them to w
 func ReadSavedSearches(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	query := models.NewSavedSearchQuery()
 
@@ -23,14 +23,14 @@ func ReadSavedSearches(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 	}
 
 	// Retrieve UserID
-	if user, err := models.GetUser(db, getUsername(r)); err != nil { // Not authorized
+	user, err := models.GetUser(db, getUsername(r))
+	if err != nil { // Not authorized
 		raven.CaptureError(err, nil)
 		log.WithField("err", err).Error("Error while authenticating user: not authorized")
 		Error(w, http.StatusUnauthorized)
 		return
-	} else {
-		query.UserID = user.KeyID
 	}
+	query.UserID = user.KeyID
 
 	savedSearches, code, err := models.ReadSavedSearches(db, query)
 	if err != nil {
@@ -43,7 +43,7 @@ func ReadSavedSearches(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 	Serve(w, savedSearches)
 }
 
-// Writes the most recent count saved searches, based on original date created to w
+// ReadSavedSearch writes a saved search identified in r to w
 func ReadSavedSearch(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	// Get ID from params
 	id := ps.ByName("id")
@@ -72,6 +72,8 @@ func ReadSavedSearch(w http.ResponseWriter, r *http.Request, ps httprouter.Param
 	Serve(w, savedSearches)
 }
 
+// CreateSavedSearch creates a new saved search based on the contents of r, owned by the current user,
+// and then writes it to w with its keyId set
 func CreateSavedSearch(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	// Get saved search to add from request body
 	savedSearch := models.SavedSearch{}
@@ -104,6 +106,7 @@ func CreateSavedSearch(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 	Serve(w, savedSearch)
 }
 
+// UpdateSavedSearch updates the requested saved search if it is owned by the current user
 func UpdateSavedSearch(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	// Get ID from params
 	id := ps.ByName("id")
@@ -141,6 +144,7 @@ func UpdateSavedSearch(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 	w.WriteHeader(http.StatusNoContent)
 }
 
+// DeleteSavedSearch delete the requested saved search if it is owned by the current user
 func DeleteSavedSearch(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	// Get ID from params
 	id := ps.ByName("id")

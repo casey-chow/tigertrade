@@ -381,11 +381,14 @@ func DeleteListing(db *sql.DB, id string, userID int) (int, error) {
 
 // SetStar adds or removes a star, depending on whether add is set to true
 func SetStar(db *sql.DB, add bool, listingID string, userID int) (int, error) {
+	var code int
+	var err error
 	if add {
-		return addStar(db, listingID, userID)
+		code, err = addStar(db, listingID, userID)
 	} else {
-		return removeStar(db, listingID, userID)
+		code, err = removeStar(db, listingID, userID)
 	}
+	return code, err
 }
 
 // addStar adds a star to the table for the given listingID and userID

@@ -36,6 +36,7 @@ func Error(w http.ResponseWriter, code int) {
 	http.Error(w, http.StatusText(code), code)
 }
 
+// ParseJSONFromBody reads r as a JSON string and writes its attributes to v
 func ParseJSONFromBody(r *http.Request, v interface{}) error {
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -45,7 +46,7 @@ func ParseJSONFromBody(r *http.Request, v interface{}) error {
 	return json.Unmarshal(body, v)
 }
 
-// formatRequest generates ASCII representation of a request
+// PrettyPrintRequest generates the ASCII representation of a request
 // https://medium.com/doing-things-right/pretty-printing-http-requests-in-golang-a918d5aaa000
 func PrettyPrintRequest(r *http.Request) string {
 	// Create return string

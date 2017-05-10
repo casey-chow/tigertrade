@@ -10,6 +10,7 @@ import (
 	"net/http"
 )
 
+// CreatePhoto uploads the photo in r to Amazon S3 and writes its location to w
 func CreatePhoto(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	file, fileHeader, err := r.FormFile("file")
 	if err != nil {

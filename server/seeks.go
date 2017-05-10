@@ -9,7 +9,7 @@ import (
 	"strconv"
 )
 
-// Writes the most recent count seeks, based on original date created to w
+// ReadSeeks performs a customizable request defined by r for a collection of seeks, and writes them to w
 func ReadSeeks(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	query := models.NewSeekQuery()
 
@@ -43,7 +43,7 @@ func ReadSeeks(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	Serve(w, seeks)
 }
 
-// Writes the most recent count seeks, based on original date created to w
+// ReadSeek writes the seek identified in r to w
 func ReadSeek(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	// Get ID from params
 	id := ps.ByName("id")
@@ -63,6 +63,8 @@ func ReadSeek(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	Serve(w, seeks)
 }
 
+// CreateSeek creates a new seek based on the contents of r, owned by the current user,
+// and then writes it to w with its keyId set
 func CreateSeek(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	// Get seek to add from request body
 	seek := models.Seek{}
@@ -95,6 +97,7 @@ func CreateSeek(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	Serve(w, seek)
 }
 
+// UpdateSeek updates the requested seek if it is owned by the current user
 func UpdateSeek(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	// Get ID from params
 	id := ps.ByName("id")
@@ -132,6 +135,7 @@ func UpdateSeek(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	w.WriteHeader(http.StatusNoContent)
 }
 
+// DeleteSeek deletes the requested seek if it is owned by the current user
 func DeleteSeek(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	// Get ID from params
 	id := ps.ByName("id")
