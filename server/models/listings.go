@@ -145,7 +145,7 @@ func ReadListings(db *sql.DB, query *ListingQuery) ([]*Listing, int, error) {
 	}
 
 	if query.UserID == 0 && (query.OnlyStarred || query.OnlyMine) {
-		return nil, http.StatusUnauthorized, errors.New("Unauthenticated user attempted to view profile data")
+		return nil, http.StatusUnauthorized, errors.New("unauthenticated user attempted to view profile data")
 	}
 
 	if query.MinPrice >= 0 {

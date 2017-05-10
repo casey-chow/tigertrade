@@ -76,7 +76,7 @@ func loadEnvironment() {
 	file, err := os.Open(path)
 
 	if err != nil {
-		log.WithError(err).Fatal("Unable to load .env file: file not found")
+		log.WithError(err).Fatal("unable to load .env file: file not found")
 	}
 	defer file.Close()
 	scanner := bufio.NewScanner(file)
@@ -88,7 +88,7 @@ func loadEnvironment() {
 	}
 
 	if err := scanner.Err(); err != nil {
-		log.WithError(err).Fatal("Unable to set config vars in environment")
+		log.WithError(err).Fatal("unable to set config vars in environment")
 	}
 
 }

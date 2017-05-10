@@ -102,7 +102,7 @@ func ReadSeeks(db *sql.DB, query *SeekQuery) ([]*Seek, int, error) {
 	}
 
 	if query.UserID == 0 && query.OnlyMine {
-		return nil, http.StatusUnauthorized, errors.New("Unauthenticated user attempted to view profile data")
+		return nil, http.StatusUnauthorized, errors.New("unauthenticated user attempted to view profile data")
 	}
 
 	if query.OnlyMine {

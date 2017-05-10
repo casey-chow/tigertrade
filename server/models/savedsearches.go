@@ -230,7 +230,7 @@ func DeleteSavedSearch(db *sql.DB, id string, userID int) (int, error) {
 // users whose saved search matches the new listing
 func CheckNewListing(db *sql.DB, listing Listing) {
 
-	log.Info("Scanning for queries matching newly posted listing...")
+	log.Info("scanning for queries matching newly posted listing...")
 	// Get all users with active unexpired queries that would match the given
 	stmt := psql.
 		Select("DISTINCT on (user_id) user_id").
