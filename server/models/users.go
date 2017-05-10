@@ -23,14 +23,15 @@ func GetOrCreateUser(db *sql.DB, netID string) (*User, error) {
 		return user, nil
 	}
 	if err != sql.ErrNoRows {
-		log.WithFields(log.Fields{
-			"err":   err,
-			"netID": netID,
-		}).Error("error while getting user")
+		log.
+			WithField("netID", netID).
+			WithError(err).
+			Error("error while getting user")
 		return nil, err
 	}
 
-	log.WithField("netID", netID).
+	log.
+		WithField("netID", netID).
 		Print("creating user")
 	insert := psql.Insert("users").
 		Columns("net_id").
