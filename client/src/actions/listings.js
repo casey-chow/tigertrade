@@ -89,7 +89,7 @@ export function starListing(listing) {
 
     fetch(`${API_ROOT}/listings/${listing.keyId}/star`, {
       credentials: 'include',
-      method: 'PUT',
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
