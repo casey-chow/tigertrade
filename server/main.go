@@ -64,7 +64,7 @@ func corsMiddleware() negroni.Handler {
 }
 
 // Manually loads config variables from .env file if they are not already.
-// This is a workaround because we're not starting the app with heroku local.
+// This is a workaround because we're not starting the app with Heroku local
 func loadEnvironment() {
 	if os.Getenv("CONFIG_PRESENT") == "true" {
 		return
@@ -93,7 +93,7 @@ func loadEnvironment() {
 
 }
 
-// Connects to database specified in DATABASE_URL env variable.
+// Connects to database specified in DATABASE_URL env variable
 func initDatabase() {
 	var err error
 	db, err = sql.Open("postgres", os.Getenv("DATABASE_URL"))

@@ -16,7 +16,7 @@ type Post interface {
 	GetStatus() null.String
 }
 
-// A PostReader is a function which quieries the appropriate table for the post with the given ID
+// A PostReader is a function which queries the appropriate table for the post with the given ID
 type PostReader (func(*sql.DB, string) (Post, int, error))
 
 // ReadListingAsPost is a PostReader for Listings

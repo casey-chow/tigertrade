@@ -11,7 +11,7 @@ import (
 )
 
 // Serve converts v to a JSON string and writes to w.
-// Writes an InternalServerError on error.
+// Writes an InternalServerError on error
 func Serve(w http.ResponseWriter, v interface{}) {
 	var marshaled []byte
 	if v == nil {
@@ -20,7 +20,7 @@ func Serve(w http.ResponseWriter, v interface{}) {
 		var err error
 		marshaled, err = json.Marshal(v)
 		if err != nil {
-			log.WithField("err", err).Error("Error while marshalling to JSON")
+			log.WithField("err", err).Error("error while marshaling to JSON")
 			raven.CaptureError(err, nil)
 			Error(w, http.StatusInternalServerError)
 			return
@@ -31,7 +31,7 @@ func Serve(w http.ResponseWriter, v interface{}) {
 	fmt.Fprint(w, string(marshaled))
 }
 
-// Error writes an HTTP error with default status text. It does not end the stream.
+// Error writes an HTTP error with default status text. It does not end the stream
 func Error(w http.ResponseWriter, code int) {
 	http.Error(w, http.StatusText(code), code)
 }
@@ -45,7 +45,7 @@ func ParseJSONFromBody(r *http.Request, v interface{}) error {
 	return json.Unmarshal(body, v)
 }
 
-// formatRequest generates ascii representation of a request
+// formatRequest generates ASCII representation of a request
 // https://medium.com/doing-things-right/pretty-printing-http-requests-in-golang-a918d5aaa000
 func PrettyPrintRequest(r *http.Request) string {
 	// Create return string

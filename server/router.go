@@ -10,7 +10,7 @@ func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	fmt.Fprint(w, "Welcome!")
 }
 
-// Router returns the router http handler for the package.
+// Router returns the router http handler for the package
 func Router() http.Handler {
 	router := httprouter.New()
 

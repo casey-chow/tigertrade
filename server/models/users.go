@@ -16,7 +16,7 @@ type User struct {
 }
 
 // GetOrCreateUser makes sure the netID exists in the db, creating it if it doesn't already.
-// Security Note: DO NOT allow user-generated data into this function. This assumes the netID is from CAS.
+// Security Note: DO NOT allow user-generated data into this function. This assumes the netID is from CAS
 func GetOrCreateUser(db *sql.DB, netID string) (*User, error) {
 	user, err := GetUser(db, netID)
 	if err == nil {
@@ -44,7 +44,7 @@ func GetOrCreateUser(db *sql.DB, netID string) (*User, error) {
 	return GetUser(db, netID)
 }
 
-// GetUser gets the specified user. If user does not exist, returns an error.
+// GetUser gets the specified user. If user does not exist, returns an error
 func GetUser(db *sql.DB, netID string) (*User, error) {
 	query := psql.
 		Select("key_id", "net_id", "creation_date", "last_modification_date").
@@ -68,7 +68,7 @@ func GetUser(db *sql.DB, netID string) (*User, error) {
 	return user, nil
 }
 
-// GetUserByID gets the specified user. If user does not exist, returns an error.
+// GetUserByID gets the specified user. If user does not exist, returns an error
 func GetUserByID(db *sql.DB, id int) (*User, error) {
 	query := psql.
 		Select("key_id", "net_id", "creation_date", "last_modification_date").

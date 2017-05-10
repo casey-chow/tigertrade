@@ -27,7 +27,7 @@ type SavedSearchQuery struct {
 	UserID int
 }
 
-// NewSavedSearchQuery makes a new SavedSearchQuery with the appropriate default vlaues
+// NewSavedSearchQuery makes a new SavedSearchQuery with the appropriate default values
 func NewSavedSearchQuery() *SavedSearchQuery {
 	q := new(SavedSearchQuery)
 	q.Limit = defaultNumResults
@@ -231,7 +231,7 @@ func DeleteSavedSearch(db *sql.DB, id string, userID int) (int, error) {
 func CheckNewListing(db *sql.DB, listing Listing) {
 
 	log.Info("Scanning for queries matching newly posted listing...")
-	// Get all users with active nonexpired queries that would match the given
+	// Get all users with active unexpired queries that would match the given
 	stmt := psql.
 		Select("DISTINCT on (user_id) user_id").
 		From("saved_searches").

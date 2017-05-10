@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-// Postgres Statement Builder instance
+// PostgreSQL Statement Builder instance
 var psql = sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
 
 // Default maximum number of characters in a truncated description of a datum

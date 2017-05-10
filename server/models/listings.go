@@ -99,7 +99,7 @@ type IsStarred struct {
 
 // Returns the SQL query that returns true if a particular listing is starred
 // by the user with key_id id. This method exists because dealing with nested
-// SQL queries in squirrel is an ugly pain in the ass.
+// SQL queries in squirrel is an ugly pain in the ass
 func isStarredBy(id int) string {
 	// "But Perry!" you say,
 	// "concatenating strings and putting it directly in an SQL query is bad!"
@@ -405,7 +405,7 @@ func addStar(db *sql.DB, listingID string, userID int) (int, error) {
 	return getUpdateResultCode(result, err)
 }
 
-// removeStar remvoes a star from the given listingID for a given userID
+// removeStar removes a star from the given listingID for a given userID
 func removeStar(db *sql.DB, listingID string, userID int) (int, error) {
 	stmt := psql.Delete("starred_listings").
 		Where(sq.Eq{

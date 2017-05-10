@@ -11,13 +11,13 @@ import (
 	"os"
 )
 
-// Use these variables so that we can mock them out in tests.
+// Use these variables so that we can mock them out in tests
 var isAuthenticated = cas.IsAuthenticated
 var redirectToLogin = cas.RedirectToLogin
 var redirectToLogout = cas.RedirectToLogout
 var getUsername = cas.Username
 
-// GetCurrentUser returns the current user, or an empty JSON object if not logged in.
+// GetCurrentUser returns the current user, or an empty JSON object if not logged in
 func GetCurrentUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	netID := getUsername(r)
 	log.WithField("netID", netID).Debug("getting username")
@@ -41,7 +41,7 @@ func GetCurrentUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params
 }
 
 // RedirectUser redirects the user to CAS authentication if they are not
-// logged in, and back to the "return" parameter otherwise.
+// logged in, and back to the "return" parameter otherwise
 func RedirectUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	if !isAuthenticated(r) {
 		log.Debug("logging in user")
@@ -71,8 +71,7 @@ func RedirectUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params) 
 	http.Redirect(w, r, redirect, http.StatusFound)
 }
 
-// LogoutUser logs the user out from CAS, if they are logged in, and redirects
-// to app root.
+// LogoutUser logs the user out from CAS, if they are logged in, and redirects to app root
 func LogoutUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	if isAuthenticated(r) {
 		log.WithField("user", getUsername(r)).

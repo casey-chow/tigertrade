@@ -11,7 +11,7 @@ import (
 	"os"
 )
 
-// MailTemplate indicates what sendgrid template to ues on the email
+// MailTemplate indicates what SendGrid template to use on the email
 type MailTemplate string
 
 const (
@@ -36,7 +36,7 @@ type EmailInput struct {
 	Template  MailTemplate
 }
 
-// NewEmailInput creates a new EmailInput with the appropriate defualt values
+// NewEmailInput creates a new EmailInput with the appropriate default values
 func NewEmailInput(db *sql.DB, id string, read PostReader) (*EmailInput, int, error) {
 	i := new(EmailInput)
 
