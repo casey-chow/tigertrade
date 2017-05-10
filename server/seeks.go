@@ -35,7 +35,7 @@ func ReadSeeks(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	seeks, code, err := models.ReadSeeks(db, query)
 	if err != nil {
 		raven.CaptureError(err, nil)
-		log.WithField("err", err).Error("Error while reading recent or queried seeks")
+		log.WithError(err).Error("error while reading recent or queried seeks")
 		Error(w, code)
 		return
 	}
@@ -55,7 +55,7 @@ func ReadSeek(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	seeks, code, err := models.ReadSeek(db, id)
 	if err != nil {
 		raven.CaptureError(err, nil)
-		log.WithField("err", err).Error("Error while getting seek by ID")
+		log.WithError(err).Error("error while getting seek by ID")
 		Error(w, code)
 		return
 	}
@@ -71,7 +71,7 @@ func CreateSeek(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	err := ParseJSONFromBody(r, &seek)
 	if err != nil {
 		raven.CaptureError(err, nil)
-		log.WithField("err", err).Error("error while parsing JSON file")
+		log.WithError(err).Error("error while parsing JSON file")
 		Error(w, http.StatusUnprocessableEntity)
 		return
 	}
@@ -80,7 +80,7 @@ func CreateSeek(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	user, err := models.GetUser(db, getUsername(r))
 	if err != nil {
 		raven.CaptureError(err, nil)
-		log.WithField("err", err).Error("Error while authenticating user: not authorized")
+		log.WithError(err).Error("error while authenticating user: not authorized")
 		Error(w, http.StatusUnauthorized)
 		return
 	}
@@ -88,7 +88,7 @@ func CreateSeek(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	seek, code, err := models.CreateSeek(db, seek, user.KeyID)
 	if err != nil {
 		raven.CaptureError(err, nil)
-		log.WithField("err", err).Error("Error while adding new seek")
+		log.WithError(err).Error("error while adding new seek")
 		Error(w, code)
 		return
 	}
@@ -111,7 +111,7 @@ func UpdateSeek(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	err := ParseJSONFromBody(r, &seek)
 	if err != nil {
 		raven.CaptureError(err, nil)
-		log.WithField("err", err).Error("error while parsing JSON file")
+		log.WithError(err).Error("error while parsing JSON file")
 		Error(w, http.StatusUnprocessableEntity)
 		return
 	}
@@ -120,14 +120,14 @@ func UpdateSeek(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	user, err := models.GetUser(db, getUsername(r))
 	if err != nil {
 		raven.CaptureError(err, nil)
-		log.WithField("err", err).Error("Error while authenticating user: not authorized")
+		log.WithError(err).Error("error while authenticating user: not authorized")
 		Error(w, http.StatusUnauthorized)
 		return
 	}
 
 	if code, err := models.UpdateSeek(db, id, seek, user.KeyID); err != nil {
 		raven.CaptureError(err, nil)
-		log.WithField("err", err).Error("Error while updating seek by ID")
+		log.WithError(err).Error("error while updating seek by ID")
 		Error(w, code)
 		return
 	}
@@ -148,14 +148,14 @@ func DeleteSeek(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	user, err := models.GetUser(db, getUsername(r))
 	if err != nil {
 		raven.CaptureError(err, nil)
-		log.WithField("err", err).Error("Error while authenticating user: not authorized")
+		log.WithError(err).Error("error while authenticating user: not authorized")
 		Error(w, http.StatusUnauthorized)
 		return
 	}
 
 	if code, err := models.DeleteSeek(db, id, user.KeyID); err != nil {
 		raven.CaptureError(err, nil)
-		log.WithField("err", err).Error("Error while deleting seek by ID")
+		log.WithError(err).Error("error while deleting seek by ID")
 		Error(w, code)
 		return
 	}
