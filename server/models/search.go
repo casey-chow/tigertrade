@@ -5,15 +5,15 @@ import (
 	sq "github.com/Masterminds/squirrel"
 	log "github.com/Sirupsen/logrus"
 	"github.com/bbalet/stopwords"
+	"github.com/casey-chow/wnram"
 	"github.com/getsentry/raven-go"
-	"github.com/karan/vocabulary"
 	"github.com/lib/pq"
 	"github.com/mozillazg/go-unidecode"
 	"strings"
 	"time"
 )
 
-var vocab vocabulary.Vocabulary
+var wn *wnram.Handle
 
 func IndexListing(db *sql.DB, listing Listing) {
 	log.WithField("keyID", listing.KeyID).Info("indexing listing")
@@ -46,12 +46,19 @@ func IndexListing(db *sql.DB, listing Listing) {
 }
 
 func WhereFuzzyOrSemanticMatch(stmt sq.SelectBuilder, query string) sq.SelectBuilder {
-	semantic := semanticMatch(query)
-	fuzzy := fuzzyMatch(query)
+	if query == "" {
+		return stmt
+	}
 
-	queries := sq.Or{semantic, fuzzy}
+	queries := make(sq.Or, 0, 2)
+	if semantic := semanticMatch(query); semantic != nil {
+		queries = append(queries, semantic)
+	}
+	if fuzzy := fuzzyMatch(query); fuzzy != nil {
+		queries = append(queries, fuzzy)
+	}
+
 	queriesSQL, args, _ := queries.ToSql()
-
 	return stmt.Where(queriesSQL, args...)
 }
 
@@ -104,7 +111,7 @@ func wordsForCorpus(corpus string) []string {
 	words := tokenize(corpus)
 
 	for _, word := range words {
-		synonyms, err := vocab.Synonyms(word)
+		synonyms, err := synonymsFor(word)
 		if err != nil {
 			log.WithError(err).
 				Warning("error while retrieving synonyms")
@@ -122,10 +129,25 @@ func wordsForCorpus(corpus string) []string {
 	return stringUnique(words)
 }
 
+func synonymsFor(word string) ([]string, error) {
+	lookups, err := wn.Lookup(wnram.Criteria{Matching: word})
+	if err != nil {
+		return nil, err
+	}
+
+	synonyms := make([]string, 0, len(lookups)*3)
+	for _, lookup := range lookups {
+		syns := lookup.Synonyms()
+		synonyms = append(synonyms, syns...)
+	}
+
+	return synonyms, nil
+}
+
 func init() {
 	var err error
-	vocab, err = vocabulary.New(&vocabulary.Config{})
+	wn, err = wnram.New()
 	if err != nil {
-		log.WithError(err).Fatal("error while initializing vocabulary")
+		log.WithError(err).Fatal("error while initializing wordnet")
 	}
 }

@@ -294,6 +294,12 @@
 			"revisionTime": "2016-06-11T22:19:34Z"
 		},
 		{
+			"checksumSHA1": "xkzzJhpNz3HtQdeC81rc2WuN5c8=",
+			"path": "github.com/casey-chow/wnram",
+			"revision": "12d124eedc9f46c46c1189113920dc70ed4c048f",
+			"revisionTime": "2017-05-11T05:15:25Z"
+		},
+		{
 			"checksumSHA1": "EKAwLldD4TW84cbtA1yrkxSq6gE=",
 			"path": "github.com/certifi/gocertifi",
 			"revision": "03be5e6bb9874570ea7fb0961225d193cbc374c5",

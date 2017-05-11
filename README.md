@@ -69,6 +69,7 @@ govendor list                   List all installed packages
 - Sentry [Error Reporting]
 - React [Frontend]
     - `create-react-app` for boilerplate
+- Wordnet
 
 ## Sentry
 
