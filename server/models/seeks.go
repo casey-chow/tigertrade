@@ -136,7 +136,7 @@ func seekQueryToSQL(query *SeekQuery) sq.SelectBuilder {
 		Where("seeks.is_active=true").
 		LeftJoin("users ON seeks.user_id = users.key_id")
 
-	stmt = WhereFuzzyOrSemanticMatch(stmt, query.Query)
+	stmt = whereFuzzyOrSemanticMatch(stmt, query.Query)
 
 	if query.OnlyMine {
 		stmt = stmt.Where(sq.Eq{"user_id": query.UserID})

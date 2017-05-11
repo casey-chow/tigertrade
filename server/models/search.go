@@ -15,7 +15,7 @@ import (
 
 var wn *wnram.Handle
 
-func IndexListing(db *sql.DB, listing Listing) {
+func indexListing(db *sql.DB, listing Listing) {
 	log.WithField("keyID", listing.KeyID).Info("indexing listing")
 	start := time.Now()
 	defer logTime(start, "IndexListing")
@@ -45,7 +45,7 @@ func IndexListing(db *sql.DB, listing Listing) {
 	}
 }
 
-func WhereFuzzyOrSemanticMatch(stmt sq.SelectBuilder, query string) sq.SelectBuilder {
+func whereFuzzyOrSemanticMatch(stmt sq.SelectBuilder, query string) sq.SelectBuilder {
 	if query == "" {
 		return stmt
 	}
@@ -61,7 +61,7 @@ func WhereFuzzyOrSemanticMatch(stmt sq.SelectBuilder, query string) sq.SelectBui
 func semanticMatch(query string) sq.Sqlizer {
 	words := tokenize(query)
 	if len(words) == 0 {
-		return new(EmptyQuery)
+		return new(emptyQuery)
 	}
 
 	wordsJoined := strings.Join(words, " ")
@@ -75,7 +75,7 @@ func fuzzyMatch(query string) sq.Sqlizer {
 	cleaned := strings.ToLower(query)
 	words := strings.Fields(cleaned)
 	if len(words) == 0 {
-		return new(EmptyQuery)
+		return new(emptyQuery)
 	}
 
 	queries := make(sq.Or, 0, 2*len(words)) // two queries per word

@@ -226,9 +226,9 @@ func DeleteSavedSearch(db *sql.DB, id string, userID int) (int, error) {
 	return getUpdateResultCode(result, err)
 }
 
-// CheckNewListing checks a given listing against all saved searches and emails
+// checkNewListing checks a given listing against all saved searches and emails
 // users whose saved search matches the new listing
-func CheckNewListing(db *sql.DB, listing Listing) {
+func checkNewListing(db *sql.DB, listing Listing) {
 
 	log.Info("scanning for queries matching newly posted listing...")
 	// Get all users with active unexpired queries that would match the given

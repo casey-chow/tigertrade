@@ -184,7 +184,7 @@ func listingQueryToSQL(query *ListingQuery) sq.SelectBuilder {
 		Where("listings.is_active=true").
 		LeftJoin("users ON listings.user_id = users.key_id")
 
-	stmt = WhereFuzzyOrSemanticMatch(stmt, query.Query)
+	stmt = whereFuzzyOrSemanticMatch(stmt, query.Query)
 
 	if query.MinPrice >= 0 {
 		stmt = stmt.Where("listings.price >= ?", query.MinPrice)
@@ -335,8 +335,8 @@ func CreateListing(db *sql.DB, listing Listing, userID int) (Listing, int, error
 		return listing, http.StatusInternalServerError, err
 	}
 
-	go CheckNewListing(db, listing)
-	go IndexListing(db, listing)
+	go checkNewListing(db, listing)
+	go indexListing(db, listing)
 	return listing, http.StatusCreated, nil
 }
 
@@ -370,8 +370,8 @@ func UpdateListing(db *sql.DB, id string, listing Listing, userID int) (int, err
 	result, err := stmt.RunWith(db).Exec()
 	code, err := getUpdateResultCode(result, err)
 	if err == nil {
-		go CheckNewListing(db, listing)
-		go IndexListing(db, listing)
+		go checkNewListing(db, listing)
+		go indexListing(db, listing)
 	}
 
 	return code, err
