@@ -8,18 +8,21 @@ import (
 	"net/http"
 )
 
-// ContactListing reads the listing from the params and sends notification and confirmation emails to the listing owner and current user
+// ContactListing reads the listing from the params and sends notification and confirmation emails
+// to the listing owner and current user
 func ContactListing(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	contactPost(w, r, ps, models.ReadListingAsPost, models.ContactListingPoster, models.ContactListingReader)
 }
 
-// ContactSeek reads the seek from the params and sends notification and confirmation emails to the seek owner and current user
+// ContactSeek reads the seek from the params and sends notification and confirmation emails
+// to the seek owner and current user
 func ContactSeek(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	contactPost(w, r, ps, models.ReadSeekAsPost, models.ContactSeekPoster, models.ContactSeekReader)
 }
 
-// contactPost implements both ContactListing and ContactSeek
-func contactPost(w http.ResponseWriter, r *http.Request, ps httprouter.Params, read models.PostReader, posterTemplate models.MailTemplate, readerTemplate models.MailTemplate) {
+func contactPost(w http.ResponseWriter, r *http.Request, ps httprouter.Params,
+	read models.PostReader, posterTemplate models.MailTemplate, readerTemplate models.MailTemplate) {
+
 	// Get post ID from params
 	id := ps.ByName("id")
 	if id == "" {
