@@ -9,7 +9,6 @@ import (
 	"github.com/lib/pq"
 	"net/http"
 	"strconv"
-	"strings"
 	"time"
 )
 
@@ -124,9 +123,8 @@ func ReadListings(db *sql.DB, query *ListingQuery) ([]*Listing, int, error) {
 		return nil, http.StatusUnauthorized, errors.New("unauthenticated user attempted to view profile data")
 	}
 
-	stmt := queryToSQL(query)
-
 	// Query db
+	stmt := queryToSQL(query)
 	rows, err := stmt.RunWith(db).Query()
 	if err != nil {
 		return nil, http.StatusInternalServerError, err
@@ -186,9 +184,7 @@ func queryToSQL(query *ListingQuery) sq.SelectBuilder {
 		Where("listings.is_active=true").
 		LeftJoin("users ON listings.user_id = users.key_id")
 
-	for _, word := range strings.Fields(query.Query) {
-		stmt = stmt.Where("(lower(listings.title) LIKE lower(?) OR lower(listings.description) LIKE lower(?))", fmt.Sprint("%", word, "%"), fmt.Sprint("%", word, "%"))
-	}
+	stmt = WhereFuzzyOrSemanticMatch(stmt, query.Query)
 
 	if query.MinPrice >= 0 {
 		stmt = stmt.Where("listings.price >= ?", query.MinPrice)

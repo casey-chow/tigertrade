@@ -45,18 +45,63 @@ func IndexListing(db *sql.DB, listing Listing) {
 	}
 }
 
+func WhereFuzzyOrSemanticMatch(stmt sq.SelectBuilder, query string) sq.SelectBuilder {
+	semantic := semanticMatch(query)
+	fuzzy := fuzzyMatch(query)
+
+	queries := sq.Or{semantic, fuzzy}
+	queriesSQL, args, _ := queries.ToSql()
+
+	return stmt.Where(queriesSQL, args...)
+}
+
+func semanticMatch(query string) sq.Sqlizer {
+	words := tokenize(query)
+	if len(words) == 0 {
+		return nil
+	}
+
+	wordsJoined := strings.Join(words, " ")
+
+	// && -> the postgres array intersection operator
+	// returns true when the two arrays intersect
+	return sq.Expr("string_to_array(?, ' ') && keywords", wordsJoined)
+}
+
+func fuzzyMatch(query string) sq.Sqlizer {
+	cleaned := strings.ToLower(query)
+	words := strings.Fields(cleaned)
+	if len(words) == 0 {
+		return nil
+	}
+
+	queries := make(sq.Or, 0, 2*len(words)) // two queries per word
+
+	for _, word := range words {
+		titleMatch := sq.Expr(
+			"lower(listings.title) LIKE ?",
+			"%"+word+"%",
+		)
+		descMatch := sq.Expr(
+			"lower(listings.description) LIKE ?",
+			"%"+word+"%",
+		)
+		queries = append(queries, titleMatch, descMatch)
+	}
+
+	return queries
+}
+
 // Unidecode, remove stopwords, and lowercase string for analysis.
-func normalize(str string) string {
+func tokenize(str string) []string {
 	decoded := unidecode.Unidecode(str)
 	cleaned := stopwords.CleanString(decoded, "en", true)
 	lowered := strings.ToLower(cleaned)
-
-	return lowered
+	return stringUnique(strings.Fields(lowered))
 }
 
 func wordsForCorpus(corpus string) []string {
-	normalized := normalize(corpus)
-	words := stringUnique(strings.Fields(normalized))
+	words := tokenize(corpus)
 
 	for _, word := range words {
 		synonyms, err := vocab.Synonyms(word)
