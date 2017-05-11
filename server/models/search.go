@@ -9,6 +9,7 @@ import (
 	"github.com/getsentry/raven-go"
 	"github.com/karan/vocabulary"
 	"github.com/lib/pq"
+	"github.com/mozillazg/go-unidecode"
 	"strings"
 	"time"
 )
@@ -45,10 +46,18 @@ func IndexListing(db *sql.DB, listing Listing) {
 	}
 }
 
-func wordsForCorpus(corpus string) []string {
+// Unidecode, remove stopwords, and lowercase string for analysis.
+func normalize(str string) string {
+	decoded := unidecode.Unidecode(str)
+	cleaned := stopwords.CleanString(decoded, "en", true)
+	lowered := strings.ToLower(cleaned)
 
-	cleaned := stopwords.CleanString(corpus, "en", true)
-	words := stringUnique(rake.SeperateWords(cleaned))
+	return lowered
+}
+
+func wordsForCorpus(corpus string) []string {
+	normalized := normalize(corpus)
+	words := stringUnique(rake.SeperateWords(normalized))
 
 	for _, word := range words {
 		synonyms, err := vocab.Synonyms(word)

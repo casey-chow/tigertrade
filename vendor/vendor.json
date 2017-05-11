@@ -474,6 +474,18 @@
 			"revisionTime": "2016-06-28T04:38:43Z"
 		},
 		{
+			"checksumSHA1": "7jWJLxZrL6vTOQeC4124nCnUuqY=",
+			"path": "github.com/mozillazg/go-unidecode",
+			"revision": "8772af720c7f2f4d216cc73c5f23de17450dd008",
+			"revisionTime": "2016-11-07T13:59:01Z"
+		},
+		{
+			"checksumSHA1": "8aydIRe3ywfQEZ1IM1RtC1TGfNg=",
+			"path": "github.com/mozillazg/go-unidecode/table",
+			"revision": "8772af720c7f2f4d216cc73c5f23de17450dd008",
+			"revisionTime": "2016-11-07T13:59:01Z"
+		},
+		{
 			"checksumSHA1": "BvmQASxE1Ftl+szCnsWWV70LHDo=",
 			"path": "github.com/phyber/negroni-gzip/gzip",
 			"revision": "8118ae63850fee22b2fe43cea81d3bc149774503",
