@@ -8,7 +8,7 @@ import (
 	"net/http"
 )
 
-// Returned by functions returning one or more saved searches
+// A SavedSearch is a record type storing a row of the saved searches table
 type SavedSearch struct {
 	KeyID                 int         `json:"keyId"`
 	CreationDate          null.Time   `json:"creationDate"`
@@ -20,30 +20,39 @@ type SavedSearch struct {
 	SearchExpirationDate  null.Time   `json:"searchExpirationDate"`
 }
 
-type savedSearchQuery struct {
+// A SavedSearchQuery contains the necessary parameters for a parametrized query of the saved searches table
+type SavedSearchQuery struct {
 	Limit  uint64 // maximum number of listings to return
 	Offset uint64 // offset in search results to send
 	UserID int
 }
 
-func NewSavedSearchQuery() *savedSearchQuery {
-	q := new(savedSearchQuery)
+// NewSavedSearchQuery makes a new SavedSearchQuery with the appropriate default values
+func NewSavedSearchQuery() *SavedSearchQuery {
+	q := new(SavedSearchQuery)
 	q.Limit = defaultNumResults
 	return q
 }
 
-// Returns the most recent count saved searches, based on original date created.
-// If queryStr is nonempty, filters that every returned item must have every word in either title or description
-// On error, returns an error and the HTTP code associated with that error.
-func ReadSavedSearches(db *sql.DB, query *savedSearchQuery) ([]*SavedSearch, error, int) {
+// ReadSavedSearches performs a customizable request for a collection of saved searches, as specified by a SavedSearchQuery
+func ReadSavedSearches(db *sql.DB, query *SavedSearchQuery) ([]*SavedSearch, int, error) {
 	// Create saved searches statement
 	stmt := psql.
-		Select("saved_searches.key_id", "saved_searches.creation_date",
-			"saved_searches.last_modification_date", "query", "min_price",
-			"max_price", "listing_expiration_date", "search_expiration_date").
+		Select(
+			"saved_searches.key_id",
+			"saved_searches.creation_date",
+			"saved_searches.last_modification_date",
+			"query",
+			"min_price",
+			"max_price",
+			"listing_expiration_date",
+			"search_expiration_date",
+		).
 		From("saved_searches").
-		Where(sq.Eq{"saved_searches.user_id": query.UserID,
-			"saved_searches.is_active": true}).
+		Where(sq.Eq{
+			"saved_searches.user_id":   query.UserID,
+			"saved_searches.is_active": true,
+		}).
 		OrderBy("saved_searches.creation_date DESC")
 
 	if query.Limit > defaultNumResults {
@@ -57,7 +66,7 @@ func ReadSavedSearches(db *sql.DB, query *savedSearchQuery) ([]*SavedSearch, err
 	// Query db
 	rows, err := stmt.RunWith(db).Query()
 	if err != nil {
-		return nil, err, http.StatusInternalServerError
+		return nil, http.StatusInternalServerError, err
 	}
 	defer rows.Close()
 
@@ -65,114 +74,152 @@ func ReadSavedSearches(db *sql.DB, query *savedSearchQuery) ([]*SavedSearch, err
 	savedSearches := make([]*SavedSearch, 0)
 	for rows.Next() {
 		ss := new(SavedSearch)
-		err := rows.Scan(&ss.KeyID, &ss.CreationDate, &ss.LastModificationDate,
-			&ss.Query, &ss.MinPrice, &ss.MaxPrice,
-			&ss.ListingExpirationDate, &ss.SearchExpirationDate)
+		err := rows.Scan(
+			&ss.KeyID,
+			&ss.CreationDate,
+			&ss.LastModificationDate,
+			&ss.Query,
+			&ss.MinPrice,
+			&ss.MaxPrice,
+			&ss.ListingExpirationDate,
+			&ss.SearchExpirationDate,
+		)
 		if err != nil {
-			return nil, err, http.StatusInternalServerError
+			return nil, http.StatusInternalServerError, err
 		}
 		savedSearches = append(savedSearches, ss)
 	}
 	if err = rows.Err(); err != nil {
-		return nil, err, http.StatusInternalServerError
+		return nil, http.StatusInternalServerError, err
 	}
 
-	return savedSearches, nil, http.StatusOK
+	return savedSearches, http.StatusOK, nil
 }
 
-// Returns the most recent count saved searches, based on original date created. On error
-// returns an error and the HTTP code associated with that error.
-func ReadSavedSearch(db *sql.DB, id string, userId int) (SavedSearch, error, int) {
+// ReadSavedSearch returns the listing with the given ID
+func ReadSavedSearch(db *sql.DB, id string, userID int) (SavedSearch, int, error) {
 	var savedSearch SavedSearch
 
 	// Create saved search query
 	query := psql.
-		Select("saved_searches.key_id", "saved_searches.creation_date",
-			"saved_searches.last_modification_date", "query", "min_price",
-			"max_price", "listing_expiration_date", "search_expiration_date").
+		Select(
+			"saved_searches.key_id",
+			"saved_searches.creation_date",
+			"saved_searches.last_modification_date",
+			"query",
+			"min_price",
+			"max_price",
+			"listing_expiration_date",
+			"search_expiration_date",
+		).
 		From("saved_searches").
-		Where(sq.Eq{"saved_searches.is_active": true,
-			"saved_searches.key_id":  id,
-			"saved_searches.user_id": userId})
+		Where(sq.Eq{
+			"saved_searches.is_active": true,
+			"saved_searches.key_id":    id,
+			"saved_searches.user_id":   userID,
+		})
 
 	// Query db for savedSearch
 	rows, err := query.RunWith(db).Query()
 	if err != nil {
-		return savedSearch, err, http.StatusInternalServerError
+		return savedSearch, http.StatusInternalServerError, err
 	}
 	defer rows.Close()
 
 	// Populate savedSearch struct
 	rows.Next()
-	err = rows.Scan(&savedSearch.KeyID, &savedSearch.CreationDate,
-		&savedSearch.LastModificationDate, &savedSearch.Query,
-		&savedSearch.MinPrice, &savedSearch.MaxPrice,
-		&savedSearch.ListingExpirationDate, &savedSearch.SearchExpirationDate)
+	err = rows.Scan(
+		&savedSearch.KeyID,
+		&savedSearch.CreationDate,
+		&savedSearch.LastModificationDate,
+		&savedSearch.Query,
+		&savedSearch.MinPrice,
+		&savedSearch.MaxPrice,
+		&savedSearch.ListingExpirationDate,
+		&savedSearch.SearchExpirationDate,
+	)
 	if err == sql.ErrNoRows {
-		return savedSearch, err, http.StatusNotFound
+		return savedSearch, http.StatusNotFound, err
 	} else if err != nil {
-		return savedSearch, err, http.StatusInternalServerError
+		return savedSearch, http.StatusInternalServerError, err
 	}
 
-	return savedSearch, nil, http.StatusOK
+	return savedSearch, http.StatusOK, nil
 }
 
-// Inserts the given saved search (belonging to userId) into the database. Returns
-// saved search with its new KeyID added.
-func CreateSavedSearch(db *sql.DB, savedSearch SavedSearch, userId int) (SavedSearch, error, int) {
+// CreateSavedSearch inserts the given saved search (belonging to userID) into the database.
+// Returns the Saved Search with its new KeyID added
+func CreateSavedSearch(db *sql.DB, savedSearch SavedSearch, userID int) (SavedSearch, int, error) {
 	// Insert saved search
 	stmt := psql.Insert("saved_searches").
-		Columns("user_id", "query", "min_price", "max_price",
-			"listing_expiration_date", "search_expiration_date").
-		Values(userId, savedSearch.Query, savedSearch.MinPrice,
-			savedSearch.MaxPrice, savedSearch.ListingExpirationDate,
-			savedSearch.SearchExpirationDate).
+		Columns(
+			"user_id",
+			"query",
+			"min_price",
+			"max_price",
+			"listing_expiration_date",
+			"search_expiration_date",
+		).
+		Values(
+			userID,
+			savedSearch.Query,
+			savedSearch.MinPrice,
+			savedSearch.MaxPrice,
+			savedSearch.ListingExpirationDate,
+			savedSearch.SearchExpirationDate,
+		).
 		Suffix("RETURNING key_id, creation_date")
 
 	// Query db for saved search
 	rows, err := stmt.RunWith(db).Query()
 	if err != nil {
-		return savedSearch, err, http.StatusInternalServerError
+		return savedSearch, http.StatusInternalServerError, err
 	}
 	defer rows.Close()
 
 	// Populate saved search struct
 	rows.Next()
-	err = rows.Scan(&savedSearch.KeyID, &savedSearch.CreationDate)
+	err = rows.Scan(
+		&savedSearch.KeyID,
+		&savedSearch.CreationDate,
+	)
 	if err != nil {
-		return savedSearch, err, http.StatusInternalServerError
+		return savedSearch, http.StatusInternalServerError, err
 	}
 
-	return savedSearch, nil, http.StatusCreated
+	return savedSearch, http.StatusCreated, nil
 }
 
-// Overwrites the saved search in the database with the given id with the given saved search
-// (belonging to userId). Returns the updated saved search.
-func UpdateSavedSearch(db *sql.DB, id string, savedSearch SavedSearch, userId int) (error, int) {
+// UpdateSavedSearch overwrites the saved search in the database with the given id with the given saved search
+func UpdateSavedSearch(db *sql.DB, id string, savedSearch SavedSearch, userID int) (int, error) {
 	// Update savedSearch
 	stmt := psql.Update("saved_searches").
 		SetMap(map[string]interface{}{
-			"user_id":                 userId,
+			"user_id":                 userID,
 			"query":                   savedSearch.Query,
 			"min_price":               savedSearch.MinPrice,
 			"max_price":               savedSearch.MaxPrice,
 			"listing_expiration_date": savedSearch.ListingExpirationDate,
-			"search_expiration_date":  savedSearch.SearchExpirationDate}).
-		Where(sq.Eq{"saved_searches.key_id": id,
-			"saved_searches.user_id": userId})
+			"search_expiration_date":  savedSearch.SearchExpirationDate,
+		}).
+		Where(sq.Eq{
+			"saved_searches.key_id":  id,
+			"saved_searches.user_id": userID,
+		})
 
 	// Query db for savedSearch
 	result, err := stmt.RunWith(db).Exec()
 	return getUpdateResultCode(result, err)
 }
 
-// Deletes the saved search in the database with the given id with the given saved search
-// (belonging to userId).
-func DeleteSavedSearch(db *sql.DB, id string, userId int) (error, int) {
+// DeleteSavedSearch deletes the saved search in the database with the given id
+func DeleteSavedSearch(db *sql.DB, id string, userID int) (int, error) {
 	// Update savedSearch
 	stmt := psql.Delete("saved_searches").
-		Where(sq.Eq{"saved_searches.key_id": id,
-			"saved_searches.user_id": userId})
+		Where(sq.Eq{
+			"saved_searches.key_id":  id,
+			"saved_searches.user_id": userID,
+		})
 
 	// Query db for savedSearch
 	result, err := stmt.RunWith(db).Exec()
@@ -180,11 +227,11 @@ func DeleteSavedSearch(db *sql.DB, id string, userId int) (error, int) {
 }
 
 // CheckNewListing checks a given listing against all saved searches and emails
-// users whose saved search matches the new listing.
+// users whose saved search matches the new listing
 func CheckNewListing(db *sql.DB, listing Listing) {
 
-	log.Info("Scanning for queries matching newly posted listing...")
-	// Get all users with active nonexpired queries that would match the given
+	log.Info("scanning for queries matching newly posted listing...")
+	// Get all users with active unexpired queries that would match the given
 	stmt := psql.
 		Select("DISTINCT on (user_id) user_id").
 		From("saved_searches").
@@ -208,18 +255,18 @@ func CheckNewListing(db *sql.DB, listing Listing) {
 	defer rows.Close()
 
 	// Send emails
-	email := new(emailInput)
+	email := new(EmailInput)
 	email.Subject = listing.Title
 	if listing.Description.IsZero() {
 		email.Body = "(no description provided)"
 	} else {
 		email.Body = *listing.Description.Ptr()
 	}
-	email.IsSavedSearch = true
+	email.Template = ContactSearchWatcher
 
 	matchCount := 0
 	for rows.Next() {
-		matchCount += 1
+		matchCount++
 		var userID int
 		if err := rows.Scan(&userID); err != nil {
 			log.WithError(err).Error("error while finding matches in new listings check")
@@ -233,7 +280,7 @@ func CheckNewListing(db *sql.DB, listing Listing) {
 		}
 
 		email.Recipient = owner.NetID
-		SendEmail(email)
+		SendNotificationEmail(email)
 	}
 
 	log.Infof("saved searches: found %d results", matchCount)

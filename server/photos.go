@@ -4,13 +4,13 @@ import (
 	log "github.com/Sirupsen/logrus"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
-	// "github.com/casey-chow/tigertrade/server/models"
 	"github.com/getsentry/raven-go"
 	"github.com/julienschmidt/httprouter"
 	"github.com/satori/go.uuid"
 	"net/http"
 )
 
+// CreatePhoto uploads the photo in r to Amazon S3 and writes its location to w
 func CreatePhoto(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	file, fileHeader, err := r.FormFile("file")
 	if err != nil {
