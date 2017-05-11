@@ -20,6 +20,12 @@ const defaultTruncationLength = 1024
 // Used when obtaining and displaying many datum of a given structure
 const defaultNumResults uint64 = 30
 
+type EmptyQuery struct{}
+
+func (_ EmptyQuery) ToSql() (string, []interface{}, error) {
+	return "", nil, nil
+}
+
 func getUpdateResultCode(result sql.Result, err error) (int, error) {
 
 	if err != nil {

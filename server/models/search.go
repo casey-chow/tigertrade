@@ -50,14 +50,10 @@ func WhereFuzzyOrSemanticMatch(stmt sq.SelectBuilder, query string) sq.SelectBui
 		return stmt
 	}
 
-	queries := make(sq.Or, 0, 2)
-	if semantic := semanticMatch(query); semantic != nil {
-		queries = append(queries, semantic)
-	}
-	if fuzzy := fuzzyMatch(query); fuzzy != nil {
-		queries = append(queries, fuzzy)
-	}
+	semantic := semanticMatch(query)
+	fuzzy := fuzzyMatch(query)
 
+	queries := sq.Or{semantic, fuzzy}
 	queriesSQL, args, _ := queries.ToSql()
 	return stmt.Where(queriesSQL, args...)
 }
@@ -65,7 +61,7 @@ func WhereFuzzyOrSemanticMatch(stmt sq.SelectBuilder, query string) sq.SelectBui
 func semanticMatch(query string) sq.Sqlizer {
 	words := tokenize(query)
 	if len(words) == 0 {
-		return nil
+		return new(EmptyQuery)
 	}
 
 	wordsJoined := strings.Join(words, " ")
@@ -79,7 +75,7 @@ func fuzzyMatch(query string) sq.Sqlizer {
 	cleaned := strings.ToLower(query)
 	words := strings.Fields(cleaned)
 	if len(words) == 0 {
-		return nil
+		return new(EmptyQuery)
 	}
 
 	queries := make(sq.Or, 0, 2*len(words)) // two queries per word
