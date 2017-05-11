@@ -165,7 +165,9 @@ export default class ListingCard extends React.Component {
     ));
   }
 
-  formatDescription = description => description.split('\n').map(line => <p key={line}>{line}</p>);
+  formatDescription = desc => desc.split('\n').map(
+    // eslint-disable-next-line react/no-array-index-key
+    (line, idx) => <p key={line + idx}>{line}</p>);
 
   render() {
     const { listing, expanded } = this.props;
