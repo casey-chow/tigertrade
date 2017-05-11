@@ -4,7 +4,6 @@ import fetch from 'isomorphic-fetch';
 import {
   concat,
   isEqual,
-  isString,
   without,
 } from 'lodash';
 
@@ -55,21 +54,15 @@ export default class PhotosList extends Component {
   }
 
   componentWillMount() {
-    if (isString(this.props.input.value)) {
-      this.setState({
-        photos: [],
-      });
-    } else {
-      this.setState({
-        photos: this.props.input.value,
-      });
-    }
+    this.setState({
+      photos: this.props.input.value || [],
+    });
   }
 
   componentWillReceiveProps(nextProps) {
     if (!isEqual(this.props.input.value, nextProps.input.value)) {
       this.setState({
-        photos: nextProps.input.value,
+        photos: nextProps.input.value || [],
       });
     }
   }
