@@ -48,13 +48,13 @@ func IndexListing(db *sql.DB, listing Listing) {
 func wordsForCorpus(corpus string) []string {
 
 	cleaned := stopwords.CleanString(corpus, "en", true)
-
-	words := rake.SeperateWords(cleaned)
+	words := stringUnique(rake.SeperateWords(cleaned))
 
 	for _, word := range words {
 		synonyms, err := vocab.Synonyms(word)
 		if err != nil {
-			log.WithError(err).Warning("error while retrieving synonyms")
+			log.WithError(err).
+				Warning("error while retrieving synonyms")
 			continue
 		}
 
@@ -66,7 +66,7 @@ func wordsForCorpus(corpus string) []string {
 		}
 	}
 
-	return words
+	return stringUnique(words)
 }
 
 func init() {

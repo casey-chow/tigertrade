@@ -43,5 +43,20 @@ func getUpdateResultCode(result sql.Result, err error) (int, error) {
 func logTime(start time.Time, name string) {
 	elapsed := time.Since(start)
 	log.WithField("took", elapsed).
-		Infof("completed execution of %s", name, elapsed)
+		Infof("completed execution of %s", name)
+}
+
+// https://goo.gl/BPVkA6
+func stringUnique(s []string) []string {
+	seen := make(map[string]struct{}, len(s))
+	j := 0
+	for _, v := range s {
+		if _, ok := seen[v]; ok {
+			continue
+		}
+		seen[v] = struct{}{}
+		s[j] = v
+		j++
+	}
+	return s[:j]
 }

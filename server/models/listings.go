@@ -339,7 +339,6 @@ func CreateListing(db *sql.DB, listing Listing, userID int) (Listing, int, error
 		return listing, http.StatusInternalServerError, err
 	}
 
-	// Send email(s) if this listing matches anyone's saved search.
 	go CheckNewListing(db, listing)
 	go IndexListing(db, listing)
 	return listing, http.StatusCreated, nil
