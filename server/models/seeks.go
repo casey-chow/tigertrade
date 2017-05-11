@@ -7,7 +7,6 @@ import (
 	sq "github.com/Masterminds/squirrel"
 	"github.com/guregu/null"
 	"net/http"
-	"strings"
 )
 
 // A Seek is a record type storing a row of the seeks table
@@ -79,45 +78,12 @@ func NewSeekQuery() *SeekQuery {
 
 // ReadSeeks performs a customizable request for a collection of seeks, as specified by a SeekQuery
 func ReadSeeks(db *sql.DB, query *SeekQuery) ([]*Seek, int, error) {
-	// Create seeks statement
-	stmt := psql.
-		Select(
-			"seeks.key_id",
-			"seeks.creation_date",
-			"seeks.last_modification_date",
-			"title",
-			fmt.Sprintf("left(description, %d)", query.TruncationLength),
-			"user_id",
-			"users.net_id",
-			"saved_search_id",
-			"notify_enabled",
-			"status",
-		).
-		From("seeks").
-		Where("seeks.is_active=true").
-		LeftJoin("users ON seeks.user_id = users.key_id")
-
-	for _, word := range strings.Fields(query.Query) {
-		stmt = stmt.Where("(lower(seeks.title) LIKE lower(?) OR lower(seeks.description) LIKE lower(?))", fmt.Sprint("%", word, "%"), fmt.Sprint("%", word, "%"))
-	}
-
 	if query.UserID == 0 && query.OnlyMine {
 		return nil, http.StatusUnauthorized, errors.New("unauthenticated user attempted to view profile data")
 	}
 
-	if query.OnlyMine {
-		stmt = stmt.Where(sq.Eq{"user_id": query.UserID})
-	}
-
-	stmt = stmt.OrderBy("seeks.creation_date DESC")
-	if query.Limit > defaultNumResults {
-		stmt = stmt.Limit(query.Limit)
-	} else {
-		stmt = stmt.Limit(defaultNumResults)
-	}
-	stmt = stmt.Offset(query.Offset)
-
 	// Query db
+	stmt := seekQueryToSQL(query)
 	rows, err := stmt.RunWith(db).Query()
 	if err != nil {
 		return nil, http.StatusInternalServerError, err
@@ -150,6 +116,41 @@ func ReadSeeks(db *sql.DB, query *SeekQuery) ([]*Seek, int, error) {
 	}
 
 	return seeks, http.StatusOK, nil
+}
+
+func seekQueryToSQL(query *SeekQuery) sq.SelectBuilder {
+	stmt := psql.
+		Select(
+			"seeks.key_id",
+			"seeks.creation_date",
+			"seeks.last_modification_date",
+			"title",
+			fmt.Sprintf("left(description, %d)", query.TruncationLength),
+			"user_id",
+			"users.net_id",
+			"saved_search_id",
+			"notify_enabled",
+			"status",
+		).
+		From("seeks").
+		Where("seeks.is_active=true").
+		LeftJoin("users ON seeks.user_id = users.key_id")
+
+	stmt = WhereFuzzyOrSemanticMatch(stmt, query.Query)
+
+	if query.OnlyMine {
+		stmt = stmt.Where(sq.Eq{"user_id": query.UserID})
+	}
+
+	stmt = stmt.OrderBy("seeks.creation_date DESC")
+	if query.Limit > defaultNumResults {
+		stmt = stmt.Limit(query.Limit)
+	} else {
+		stmt = stmt.Limit(defaultNumResults)
+	}
+	stmt = stmt.Offset(query.Offset)
+
+	return stmt
 }
 
 // ReadSeek returns the seek with the given ID

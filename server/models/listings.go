@@ -124,7 +124,7 @@ func ReadListings(db *sql.DB, query *ListingQuery) ([]*Listing, int, error) {
 	}
 
 	// Query db
-	stmt := queryToSQL(query)
+	stmt := listingQueryToSQL(query)
 	rows, err := stmt.RunWith(db).Query()
 	if err != nil {
 		return nil, http.StatusInternalServerError, err
@@ -163,7 +163,7 @@ func ReadListings(db *sql.DB, query *ListingQuery) ([]*Listing, int, error) {
 	return listings, http.StatusOK, nil
 }
 
-func queryToSQL(query *ListingQuery) sq.SelectBuilder {
+func listingQueryToSQL(query *ListingQuery) sq.SelectBuilder {
 	stmt := psql.
 		Select(
 			"listings.key_id",

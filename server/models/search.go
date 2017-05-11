@@ -86,11 +86,11 @@ func fuzzyMatch(query string) sq.Sqlizer {
 
 	for _, word := range words {
 		titleMatch := sq.Expr(
-			"lower(listings.title) LIKE ?",
+			"lower(title) LIKE ?",
 			"%"+word+"%",
 		)
 		descMatch := sq.Expr(
-			"lower(listings.description) LIKE ?",
+			"lower(description) LIKE ?",
 			"%"+word+"%",
 		)
 		queries = append(queries, titleMatch, descMatch)
