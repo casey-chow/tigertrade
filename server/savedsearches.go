@@ -9,7 +9,7 @@ import (
 	"strconv"
 )
 
-// Writes the most recent count saved searches, based on original date created to w
+// ReadSavedSearches performs a request for the current user's saved searches, and writes them to w
 func ReadSavedSearches(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	query := models.NewSavedSearchQuery()
 
@@ -23,19 +23,19 @@ func ReadSavedSearches(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 	}
 
 	// Retrieve UserID
-	if user, err := models.GetUser(db, getUsername(r)); err != nil { // Not authorized
+	user, err := models.GetUser(db, getUsername(r))
+	if err != nil { // Not authorized
 		raven.CaptureError(err, nil)
-		log.WithField("err", err).Error("Error while authenticating user: not authorized")
+		log.WithError(err).Error("error while authenticating user: not authorized")
 		Error(w, http.StatusUnauthorized)
 		return
-	} else {
-		query.UserID = user.KeyID
 	}
+	query.UserID = user.KeyID
 
-	savedSearches, err, code := models.ReadSavedSearches(db, query)
+	savedSearches, code, err := models.ReadSavedSearches(db, query)
 	if err != nil {
 		raven.CaptureError(err, nil)
-		log.WithField("err", err).Error("Error while reading recent or queried saved searches")
+		log.WithError(err).Error("error while reading recent or queried saved searches")
 		Error(w, code)
 		return
 	}
@@ -43,7 +43,7 @@ func ReadSavedSearches(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 	Serve(w, savedSearches)
 }
 
-// Writes the most recent count saved searches, based on original date created to w
+// ReadSavedSearch writes a saved search identified in r to w
 func ReadSavedSearch(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	// Get ID from params
 	id := ps.ByName("id")
@@ -56,15 +56,15 @@ func ReadSavedSearch(w http.ResponseWriter, r *http.Request, ps httprouter.Param
 	user, err := models.GetUser(db, getUsername(r))
 	if err != nil { // Not authorized
 		raven.CaptureError(err, nil)
-		log.WithField("err", err).Error("Error while authenticating user: not authorized")
+		log.WithError(err).Error("error while authenticating user: not authorized")
 		Error(w, http.StatusUnauthorized)
 		return
 	}
 
-	savedSearches, err, code := models.ReadSavedSearch(db, id, user.KeyID)
+	savedSearches, code, err := models.ReadSavedSearch(db, id, user.KeyID)
 	if err != nil {
 		raven.CaptureError(err, nil)
-		log.WithField("err", err).Error("Error while getting saved search by ID")
+		log.WithError(err).Error("error while getting saved search by ID")
 		Error(w, code)
 		return
 	}
@@ -72,13 +72,15 @@ func ReadSavedSearch(w http.ResponseWriter, r *http.Request, ps httprouter.Param
 	Serve(w, savedSearches)
 }
 
+// CreateSavedSearch creates a new saved search based on the contents of r, owned by the current user,
+// and then writes it to w with its keyId set
 func CreateSavedSearch(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	// Get saved search to add from request body
 	savedSearch := models.SavedSearch{}
 	err := ParseJSONFromBody(r, &savedSearch)
 	if err != nil {
 		raven.CaptureError(err, nil)
-		log.WithField("err", err).Error("error while parsing JSON file")
+		log.WithError(err).Error("error while parsing JSON file")
 		Error(w, http.StatusUnprocessableEntity)
 		return
 	}
@@ -87,15 +89,15 @@ func CreateSavedSearch(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 	user, err := models.GetUser(db, getUsername(r))
 	if err != nil {
 		raven.CaptureError(err, nil)
-		log.WithField("err", err).Error("Error while authenticating user: not authorized")
+		log.WithError(err).Error("error while authenticating user: not authorized")
 		Error(w, http.StatusUnauthorized)
 		return
 	}
 
-	savedSearch, err, code := models.CreateSavedSearch(db, savedSearch, user.KeyID)
+	savedSearch, code, err := models.CreateSavedSearch(db, savedSearch, user.KeyID)
 	if err != nil {
 		raven.CaptureError(err, nil)
-		log.WithField("err", err).Error("Error while getting adding saved search")
+		log.WithError(err).Error("error while getting adding saved search")
 		Error(w, code)
 		return
 	}
@@ -104,6 +106,7 @@ func CreateSavedSearch(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 	Serve(w, savedSearch)
 }
 
+// UpdateSavedSearch updates the requested saved search if it is owned by the current user
 func UpdateSavedSearch(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	// Get ID from params
 	id := ps.ByName("id")
@@ -117,7 +120,7 @@ func UpdateSavedSearch(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 	err := ParseJSONFromBody(r, &savedSearch)
 	if err != nil {
 		raven.CaptureError(err, nil)
-		log.WithField("err", err).Error("error while parsing JSON file")
+		log.WithError(err).Error("error while parsing JSON file")
 		Error(w, http.StatusUnprocessableEntity)
 		return
 	}
@@ -126,14 +129,14 @@ func UpdateSavedSearch(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 	user, err := models.GetUser(db, getUsername(r))
 	if err != nil {
 		raven.CaptureError(err, nil)
-		log.WithField("err", err).Error("Error while authenticating user: not authorized")
+		log.WithError(err).Error("error while authenticating user: not authorized")
 		Error(w, http.StatusUnauthorized)
 		return
 	}
 
-	if err, code := models.UpdateSavedSearch(db, id, savedSearch, user.KeyID); err != nil {
+	if code, err := models.UpdateSavedSearch(db, id, savedSearch, user.KeyID); err != nil {
 		raven.CaptureError(err, nil)
-		log.WithField("err", err).Error("Error while updating savedSearch by ID")
+		log.WithError(err).Error("error while updating savedSearch by ID")
 		Error(w, code)
 		return
 	}
@@ -141,6 +144,7 @@ func UpdateSavedSearch(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 	w.WriteHeader(http.StatusNoContent)
 }
 
+// DeleteSavedSearch delete the requested saved search if it is owned by the current user
 func DeleteSavedSearch(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	// Get ID from params
 	id := ps.ByName("id")
@@ -153,14 +157,14 @@ func DeleteSavedSearch(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 	user, err := models.GetUser(db, getUsername(r))
 	if err != nil {
 		raven.CaptureError(err, nil)
-		log.WithField("err", err).Error("Error while authenticating user: not authorized")
+		log.WithError(err).Error("error while authenticating user: not authorized")
 		Error(w, http.StatusUnauthorized)
 		return
 	}
 
-	if err, code := models.DeleteSavedSearch(db, id, user.KeyID); err != nil {
+	if code, err := models.DeleteSavedSearch(db, id, user.KeyID); err != nil {
 		raven.CaptureError(err, nil)
-		log.WithField("err", err).Error("Error while deleting savedSearch by ID")
+		log.WithError(err).Error("error while deleting savedSearch by ID")
 		Error(w, code)
 		return
 	}

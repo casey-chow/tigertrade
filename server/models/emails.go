@@ -11,56 +11,60 @@ import (
 	"os"
 )
 
-type emailInput struct {
-	Sender        string
-	Recipient     string
-	Subject       string
-	Body          string `json:"body"`
-	IsSeek        bool
-	IsSavedSearch bool // should really be an enum at this point but oh well.
+// MailTemplate indicates what SendGrid template to use on the email
+type MailTemplate string
+
+const (
+	// ContactListingPoster is the email to the owner of a listing when a reader is interesting in buying
+	ContactListingPoster MailTemplate = "b53ead7f-c9d7-4c17-9dcf-f59105b6eb65"
+	// ContactListingReader is the email to confirm to a reader that they have contacted a listing's owner
+	ContactListingReader = "7bb4322d-f98d-417b-b148-90826fe212ab"
+	// ContactSeekPoster is the email to the owner of a seek when a reader is interesting in selling
+	ContactSeekPoster = "3bb3590f-04a3-4381-a79b-25a86afb4a6f"
+	// ContactSeekReader is the email to confirm to a reader that they have contacted a seek's owner
+	ContactSeekReader = "d3adbb24-4445-43f8-a026-ec4b013b5850"
+	// ContactSearchWatcher is the email to notify a user when their saved search has a new matching listing
+	ContactSearchWatcher = "c6388de5-deb7-416b-9527-c5017513ed91"
+)
+
+// An EmailInput contains the necessary parameters for the creation of an email
+type EmailInput struct {
+	Sender    string
+	Recipient string
+	Subject   string
+	Body      string `json:"body"`
+	Template  MailTemplate
 }
 
-func NewEmailInput(db *sql.DB, id string, isSeek bool) (*emailInput, error, int) {
-	i := new(emailInput)
+// NewEmailInput creates a new EmailInput with the appropriate default values
+func NewEmailInput(db *sql.DB, id string, read PostReader) (*EmailInput, int, error) {
+	i := new(EmailInput)
 
-	var title string
-	var ownerId int
-	if isSeek {
-		seek, err, code := ReadSeek(db, id)
-		if err != nil {
-			return nil, err, code
-		}
-		title = seek.Title
-		ownerId = seek.UserID
-	} else {
-		listing, err, code := ReadListing(db, id)
-		if err != nil {
-			return nil, err, code
-		}
-		title = listing.Title
-		ownerId = listing.UserID
+	post, code, err := read(db, id)
+	if err != nil {
+		return nil, code, err
 	}
 
-	i.IsSeek = isSeek
-	i.Subject = title
+	i.Subject = post.GetTitle()
 
-	if owner, err := GetUserByID(db, ownerId); err != nil {
-		return nil, err, http.StatusInternalServerError
-	} else {
-		i.Recipient = owner.NetID
+	owner, err := GetUserByID(db, post.GetUserID())
+	if err != nil {
+		return nil, http.StatusInternalServerError, err
 	}
+	i.Recipient = owner.NetID
 
-	return i, nil, http.StatusOK
+	return i, http.StatusOK, nil
 }
 
-func getEmail(netId string) *mail.Email {
-	addr := netId + "@princeton.edu" // TODO WARNING We can't assume this.
-	return mail.NewEmail(netId, addr)
+func getEmail(netID string) *mail.Email {
+	addr := netID + "@princeton.edu" // TODO WARNING We can't assume this.
+	return mail.NewEmail(netID, addr)
 }
 
-func SendEmail(input *emailInput) (error, int) {
+// SendNotificationEmail sends an email to the recipient of an EmailInput
+func SendNotificationEmail(input *EmailInput) (int, error) {
 	if input.Sender == input.Recipient {
-		return errors.New("To and From fields cannot be the same."), http.StatusBadRequest
+		return http.StatusBadRequest, errors.New("email To and From fields cannot be the same")
 	}
 
 	// Get email addresses
@@ -78,15 +82,7 @@ func SendEmail(input *emailInput) (error, int) {
 	p := mail.NewPersonalization()
 	p.AddTos(recipient)
 
-	// Set Template
-	if input.IsSeek {
-		m.SetTemplateID("3bb3590f-04a3-4381-a79b-25a86afb4a6f")
-	} else {
-		m.SetTemplateID("b53ead7f-c9d7-4c17-9dcf-f59105b6eb65")
-	}
-	if input.IsSavedSearch {
-		m.SetTemplateID("c6388de5-deb7-416b-9527-c5017513ed91")
-	}
+	m.SetTemplateID(string(input.Template))
 
 	p.Subject = input.Subject
 	m.AddPersonalizations(p)
@@ -94,17 +90,18 @@ func SendEmail(input *emailInput) (error, int) {
 
 	response, err := sendRequest(m)
 	if err != nil {
-		return err, http.StatusInternalServerError
+		return http.StatusInternalServerError, err
 	}
 
 	if response.StatusCode != 202 {
-		err = errors.New(fmt.Sprint("Response not queued for sending. Status code: ", response.StatusCode))
+		err = errors.New(fmt.Sprint("response not queued for sending. Status code: ", response.StatusCode))
 	}
 
-	return err, response.StatusCode
+	return response.StatusCode, err
 }
 
-func SendEmail2(input *emailInput) (error, int) {
+// SendConfirmationEmail sends an email to the sender of an EmailInput
+func SendConfirmationEmail(input *EmailInput) (int, error) {
 	robot := mail.NewEmail("TigerTrade", "noreply@tigertra.de")
 	recipient := getEmail(input.Sender)
 	content := mail.NewContent("text/html", input.Body)
@@ -116,12 +113,7 @@ func SendEmail2(input *emailInput) (error, int) {
 	p := mail.NewPersonalization()
 	p.AddTos(recipient)
 
-	// Set Template
-	if input.IsSeek {
-		m.SetTemplateID("7bb4322d-f98d-417b-b148-90826fe212ab")
-	} else {
-		m.SetTemplateID("d3adbb24-4445-43f8-a026-ec4b013b5850")
-	}
+	m.SetTemplateID(string(input.Template))
 
 	p.Subject = input.Subject
 	m.AddPersonalizations(p)
@@ -129,13 +121,14 @@ func SendEmail2(input *emailInput) (error, int) {
 
 	response, err := sendRequest(m)
 	if err != nil {
-		return err, http.StatusInternalServerError
-	}
-	if response.StatusCode != 202 {
-		err = errors.New(fmt.Sprint("Response not queued for sending. Status code: ", response.StatusCode))
+		return http.StatusInternalServerError, err
 	}
 
-	return err, response.StatusCode
+	if response.StatusCode != 202 {
+		err = errors.New(fmt.Sprint("response not queued for sending. Status code: ", response.StatusCode))
+	}
+
+	return response.StatusCode, err
 }
 
 func sendRequest(m *mail.SGMailV3) (*rest.Response, error) {

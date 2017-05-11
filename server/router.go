@@ -6,15 +6,16 @@ import (
 	"net/http"
 )
 
-func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+// Index serves a welcome page
+func index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	fmt.Fprint(w, "Welcome!")
 }
 
-// Router returns the router http handler for the package.
+// Router returns the router http handler for the package
 func Router() http.Handler {
 	router := httprouter.New()
 
-	router.GET("/", Index)
+	router.GET("/", index)
 
 	// users.go
 	router.GET("/api/users/redirect", RedirectUser)

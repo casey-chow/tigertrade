@@ -51,7 +51,7 @@ func TestListings(t *testing.T) {
 func TestSearch(t *testing.T) {
 	app := App()
 
-	// Uses hardcoded data from the current testing database
+	// Uses hard-coded data from the current testing database
 	Convey("Search Functionality", t, func() {
 		oldDb := db
 		defer func() {
