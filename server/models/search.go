@@ -3,7 +3,6 @@ package models
 import (
 	"database/sql"
 	sq "github.com/Masterminds/squirrel"
-	"github.com/Obaied/RAKE.Go"
 	log "github.com/Sirupsen/logrus"
 	"github.com/bbalet/stopwords"
 	"github.com/getsentry/raven-go"
@@ -57,7 +56,7 @@ func normalize(str string) string {
 
 func wordsForCorpus(corpus string) []string {
 	normalized := normalize(corpus)
-	words := stringUnique(rake.SeperateWords(normalized))
+	words := stringUnique(strings.Fields(normalized))
 
 	for _, word := range words {
 		synonyms, err := vocab.Synonyms(word)

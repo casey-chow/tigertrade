@@ -12,12 +12,6 @@
 			"revisionTime": "2015-03-02T16:50:45Z"
 		},
 		{
-			"checksumSHA1": "lvDpfpWmX6WC5e/N1x8G2Ci8e5s=",
-			"path": "github.com/Obaied/RAKE.Go",
-			"revision": "ea334dbbc4ffe071f71d2a46d780198160d75500",
-			"revisionTime": "2016-12-20T09:39:08Z"
-		},
-		{
 			"checksumSHA1": "CEonWSn+KAO6bqzJCvPU0o9HhtY=",
 			"path": "github.com/Sirupsen/logrus",
 			"revision": "10f801ebc38b33738c9d17d50860f484a0988ff5",
