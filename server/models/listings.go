@@ -372,7 +372,13 @@ func UpdateListing(db *sql.DB, id string, listing Listing, userID int) (int, err
 
 	// Update listing
 	result, err := stmt.RunWith(db).Exec()
-	return getUpdateResultCode(result, err)
+	code, err := getUpdateResultCode(result, err)
+	if err == nil {
+		go CheckNewListing(db, listing)
+		go IndexListing(db, listing)
+	}
+
+	return code, err
 }
 
 // DeleteListing deletes the listing in the database with the given id
