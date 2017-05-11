@@ -10,12 +10,15 @@ import (
 	"github.com/karan/vocabulary"
 	"github.com/lib/pq"
 	"strings"
+	"time"
 )
 
 var vocab vocabulary.Vocabulary
 
 func IndexListing(db *sql.DB, listing Listing) {
 	log.WithField("keyID", listing.KeyID).Info("indexing listing")
+	start := time.Now()
+	defer logTime(start, "IndexListing")
 
 	description, _ := listing.Description.MarshalText()
 	corpus := strings.Join([]string{

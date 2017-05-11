@@ -4,7 +4,9 @@ import (
 	"database/sql"
 	"errors"
 	sq "github.com/Masterminds/squirrel"
+	log "github.com/Sirupsen/logrus"
 	"net/http"
+	"time"
 )
 
 // PostgreSQL Statement Builder instance
@@ -35,4 +37,11 @@ func getUpdateResultCode(result sql.Result, err error) (int, error) {
 	}
 
 	return http.StatusNoContent, nil
+}
+
+// https://coderwall.com/p/cp5fya/measuring-execution-time-in-go
+func logTime(start time.Time, name string) {
+	elapsed := time.Since(start)
+	log.WithField("took", elapsed).
+		Infof("completed execution of %s", name, elapsed)
 }
