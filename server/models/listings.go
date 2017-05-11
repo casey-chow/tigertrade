@@ -401,7 +401,8 @@ func addStar(db *sql.DB, listingID string, userID int) (int, error) {
 		Values(
 			userID,
 			listingID,
-		)
+		).
+		Suffix("ON CONFLICT DO NOTHING")
 
 	// Query db for listing
 	result, err := insertStarStmt.RunWith(db).Exec()

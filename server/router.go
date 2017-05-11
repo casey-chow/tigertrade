@@ -27,7 +27,7 @@ func Router() http.Handler {
 	router.POST("/api/listings", CreateListing)
 	router.GET("/api/listings/:id", ReadListing)
 	router.PUT("/api/listings/:id", UpdateListing)
-	router.PUT("/api/listings/:id/star", UpdateListingStar)
+	router.POST("/api/listings/:id/star", UpdateListingStar)
 	router.DELETE("/api/listings/:id", DeleteListing)
 	router.POST("/api/listings/:id/contact", ContactListing)
 
