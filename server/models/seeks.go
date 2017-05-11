@@ -83,7 +83,7 @@ func ReadSeeks(db *sql.DB, query *SeekQuery) ([]*Seek, int, error) {
 	}
 
 	// Query db
-	stmt := seekQueryToSQL(query)
+	stmt := buildSeekQuery(query)
 	rows, err := stmt.RunWith(db).Query()
 	if err != nil {
 		return nil, http.StatusInternalServerError, err
@@ -118,7 +118,7 @@ func ReadSeeks(db *sql.DB, query *SeekQuery) ([]*Seek, int, error) {
 	return seeks, http.StatusOK, nil
 }
 
-func seekQueryToSQL(query *SeekQuery) sq.SelectBuilder {
+func buildSeekQuery(query *SeekQuery) sq.SelectBuilder {
 	stmt := psql.
 		Select(
 			"seeks.key_id",
