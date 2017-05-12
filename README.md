@@ -4,7 +4,7 @@
 
 The Princeton COS333 Project of Andrew Casey Evan Maryam Perry.
 
-# Running the server
+# 1. Running the server
 
 This assumes you have initialized and migrated the database, and have Go and NPM installed.
 
@@ -14,15 +14,11 @@ make install
 make serve
 ```
 
-Go to [http://localhost:3030](http://localhost:3030).
+# 2. Running the client
 
-# Running the client
-
-Build and run with
+In another terminal, build and run with
 
 ```sh
-make dev
-make install
 make serve-client
 ```
 
@@ -67,9 +63,13 @@ govendor list                   List all installed packages
 - Go [Language]
     - `net/http` [Web Server]
 - Postgres [Database]
+- AWS S3 [Image Storage]
+- Cloudflare [DNS, CDN]
+- Heroku [Server]
 - Sentry [Error Reporting]
 - React [Frontend]
     - `create-react-app` for boilerplate
+- Wordnet
 
 ## Sentry
 
@@ -105,6 +105,7 @@ callback(function(err, res) {
 ```
 client/             client code
 server/             server code
+hooks/              useful development hooks
 node_modules/       Javascript dependencies
 vendor/             Go dependencies
 ```

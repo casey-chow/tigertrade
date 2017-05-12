@@ -5,11 +5,10 @@ import (
 	"errors"
 	"fmt"
 	sq "github.com/Masterminds/squirrel"
-	log "github.com/Sirupsen/logrus"
 	"github.com/guregu/null"
 	"github.com/lib/pq"
 	"net/http"
-	"strings"
+	"strconv"
 	"time"
 )
 
@@ -28,6 +27,7 @@ type Listing struct {
 	Thumbnail            null.String    `json:"thumbnail"`
 	Photos               pq.StringArray `json:"photos"`
 	IsStarred            bool           `json:"isStarred"`
+	Keywords             pq.StringArray
 }
 
 // GetCreationDate returns the CreationDate of the Listing
@@ -119,7 +119,51 @@ func isStarredBy(id int) string {
 
 // ReadListings performs a customizable request for a collection of listings, as specified by a ListingQuery
 func ReadListings(db *sql.DB, query *ListingQuery) ([]*Listing, int, error) {
-	// Create listings statement
+	if query.UserID == 0 && (query.OnlyStarred || query.OnlyMine) {
+		return nil, http.StatusUnauthorized, errors.New("unauthenticated user attempted to view profile data")
+	}
+
+	// Query db
+	stmt := buildListingQuery(query)
+	rows, err := stmt.RunWith(db).Query()
+	if err != nil {
+		return nil, http.StatusInternalServerError, err
+	}
+	defer rows.Close()
+
+	// Populate listing structs
+	listings := make([]*Listing, 0)
+	for rows.Next() {
+		l := new(Listing)
+		err := rows.Scan(
+			&l.KeyID,
+			&l.CreationDate,
+			&l.LastModificationDate,
+			&l.Title,
+			&l.Description,
+			&l.UserID,
+			&l.Username,
+			&l.Price,
+			&l.Status,
+			&l.ExpirationDate,
+			&l.Thumbnail,
+			&l.IsStarred,
+			&l.Photos,
+		)
+		if err != nil {
+			return nil, http.StatusInternalServerError, err
+		}
+		listings = append(listings, l)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, http.StatusInternalServerError, err
+	}
+
+	return listings, http.StatusOK, nil
+}
+
+func buildListingQuery(query *ListingQuery) sq.SelectBuilder {
 	stmt := psql.
 		Select(
 			"listings.key_id",
@@ -140,13 +184,7 @@ func ReadListings(db *sql.DB, query *ListingQuery) ([]*Listing, int, error) {
 		Where("listings.is_active=true").
 		LeftJoin("users ON listings.user_id = users.key_id")
 
-	for _, word := range strings.Fields(query.Query) {
-		stmt = stmt.Where("(lower(listings.title) LIKE lower(?) OR lower(listings.description) LIKE lower(?))", fmt.Sprint("%", word, "%"), fmt.Sprint("%", word, "%"))
-	}
-
-	if query.UserID == 0 && (query.OnlyStarred || query.OnlyMine) {
-		return nil, http.StatusUnauthorized, errors.New("unauthenticated user attempted to view profile data")
-	}
+	stmt = whereFuzzyOrSemanticMatch(stmt, query.Query)
 
 	if query.MinPrice >= 0 {
 		stmt = stmt.Where("listings.price >= ?", query.MinPrice)
@@ -188,46 +226,7 @@ func ReadListings(db *sql.DB, query *ListingQuery) ([]*Listing, int, error) {
 	}
 	stmt = stmt.Offset(query.Offset)
 
-	queryStr, _, _ := stmt.ToSql()
-	log.WithField("query", queryStr).Debug("query!")
-
-	// Query db
-	rows, err := stmt.RunWith(db).Query()
-	if err != nil {
-		return nil, http.StatusInternalServerError, err
-	}
-	defer rows.Close()
-
-	// Populate listing structs
-	listings := make([]*Listing, 0)
-	for rows.Next() {
-		l := new(Listing)
-		err := rows.Scan(
-			&l.KeyID,
-			&l.CreationDate,
-			&l.LastModificationDate,
-			&l.Title,
-			&l.Description,
-			&l.UserID,
-			&l.Username,
-			&l.Price,
-			&l.Status,
-			&l.ExpirationDate,
-			&l.Thumbnail,
-			&l.IsStarred,
-			&l.Photos,
-		)
-		if err != nil {
-			return nil, http.StatusInternalServerError, err
-		}
-		listings = append(listings, l)
-	}
-
-	if err = rows.Err(); err != nil {
-		return nil, http.StatusInternalServerError, err
-	}
-
-	return listings, http.StatusOK, nil
+	return stmt
 }
 
 // ReadListing returns the listing with the given ID
@@ -336,13 +335,19 @@ func CreateListing(db *sql.DB, listing Listing, userID int) (Listing, int, error
 		return listing, http.StatusInternalServerError, err
 	}
 
-	// Send email(s) if this listing matches anyone's saved search.
-	go CheckNewListing(db, listing)
+	go checkNewListing(db, listing)
+	go indexListing(db, listing)
 	return listing, http.StatusCreated, nil
 }
 
 // UpdateListing overwrites the listing in the database with the given id with the given listing
 func UpdateListing(db *sql.DB, id string, listing Listing, userID int) (int, error) {
+	keyID, err := strconv.ParseInt(id, 10, 64)
+	if err != nil {
+		return http.StatusNotAcceptable, err
+	}
+
+	listing.KeyID = int(keyID)
 	listing.UserID = userID
 
 	// Update listing
@@ -357,13 +362,19 @@ func UpdateListing(db *sql.DB, id string, listing Listing, userID int) (int, err
 			"photos":          listing.Photos,
 		}).
 		Where(sq.Eq{
-			"listings.key_id":  id,
-			"listings.user_id": userID,
+			"listings.key_id":  listing.KeyID,
+			"listings.user_id": listing.UserID,
 		})
 
 	// Update listing
 	result, err := stmt.RunWith(db).Exec()
-	return getUpdateResultCode(result, err)
+	code, err := getUpdateResultCode(result, err)
+	if err == nil {
+		go checkNewListing(db, listing)
+		go indexListing(db, listing)
+	}
+
+	return code, err
 }
 
 // DeleteListing deletes the listing in the database with the given id
