@@ -111,7 +111,7 @@ export default class PhotosList extends Component {
             style={this.state.photos.length > 0 ? styles.dropzoneHide : styles.dropzone}
             accept="image/*"
             data={{ type: 'picture' }}
-            maxSize={+10e6/* 10MB */}
+            maxSize={+15e6/* 15MB */}
             disablePreview
             onDropAccepted={this.handleDropAccepted}
           >
