@@ -48,9 +48,6 @@ export default class App extends Component {
     user: PropTypes.shape({
       loggedIn: PropTypes.bool.isRequired,
     }).isRequired,
-    location: PropTypes.shape({
-      pathname: PropTypes.string.isRequired,
-    }).isRequired,
   }
 
   static styles = {
@@ -59,11 +56,10 @@ export default class App extends Component {
       bottom: '35px',
       right: '35px',
     },
-    filterBarVisible: {
-      marginBottom: '6.5rem',
-    },
-    filterBarNotVisible: {
-      marginBottom: '1.5rem',
+    cardsList: {
+      paddingTop: '2rem',
+      overflow: 'scroll',
+      maxHeight: '100%',
     },
   }
 
@@ -77,10 +73,6 @@ export default class App extends Component {
 
   render() {
     const styles = App.styles;
-    const path = this.props.location.pathname;
-    const filterPadding = (path.startsWith('/listings') || path.startsWith('/seeks'))
-      ? styles.filterBarVisible
-      : styles.filterBarNotVisible;
 
     return (
       <div className="App">
@@ -88,22 +80,22 @@ export default class App extends Component {
         <NavigationDrawer>
           <FilterBar />
 
-          <div style={filterPadding} />
+          <div style={styles.cardsList}>
+            { (!this.props.loading && !this.props.user.loggedIn) &&
+              <Welcome />
+            }
 
-          { (!this.props.loading && !this.props.user.loggedIn) &&
-            <Welcome />
-          }
-
-          <Switch>
-            <Route exact path="/">
-              <Redirect push to="/listings" />
-            </Route>
-            <Route path="/listings/:type?" component={Listings} />
-            <Route path="/listing/:id" component={Listing} />
-            <Route path="/seeks/:type?" component={Seeks} />
-            <Route path="/seek/:id" component={Seek} />
-            <Route path="/watches" component={Watches} />
-          </Switch>
+            <Switch>
+              <Route exact path="/">
+                <Redirect push to="/listings" />
+              </Route>
+              <Route path="/listings/:type?" component={Listings} />
+              <Route path="/listing/:id" component={Listing} />
+              <Route path="/seeks/:type?" component={Seeks} />
+              <Route path="/seek/:id" component={Seek} />
+              <Route path="/watches" component={Watches} />
+            </Switch>
+          </div>
         </NavigationDrawer>
 
         { this.props.showFAB ?

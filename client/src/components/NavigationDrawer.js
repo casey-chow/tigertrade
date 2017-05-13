@@ -73,6 +73,7 @@ export default class NavigationDrawer extends Component {
         zIndex: '2000',
       },
       content: {
+        overflow: 'visible',
         paddingTop: '4rem',
         paddingBottom: '2rem',
       },

@@ -67,7 +67,6 @@ export default class FilterBar extends Component {
     base: {
       minHeight: '4rem',
       right: '0',
-      position: 'fixed',
       paddingTop: '0.5em',
       paddingBottom: '0.5em',
       zIndex: '50',
