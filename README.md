@@ -125,5 +125,3 @@ referrer headers][owasp], which is the simplest valid way to do so with a
 RESTful API.
 
 [owasp]: https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)_Prevention_Cheat_Sheet#Verifying_Same_Origin_with_Standard_Headers
-
-
