@@ -26,8 +26,21 @@ export default class Listing extends Component {
     ...routerPropTypes,
     dispatch: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired,
-    // eslint-disable-next-line react/forbid-prop-types
-    listing: PropTypes.object.isRequired,
+    listing: PropTypes.shape({
+      keyId: PropTypes.number,
+      creationDate: PropTypes.string,
+      lastModificationDate: PropTypes.string,
+      title: PropTypes.string.isRequired,
+      description: PropTypes.string,
+      userId: PropTypes.number.isRequired,
+      username: PropTypes.string.isRequired,
+      price: PropTypes.number,
+      status: PropTypes.string,
+      isStarred: PropTypes.bool,
+      expirationDate: PropTypes.number,
+      thumbnail: PropTypes.string,
+      photos: PropTypes.array,
+    }).isRequired,
   };
 
   componentWillMount() {

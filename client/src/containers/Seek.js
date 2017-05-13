@@ -25,8 +25,18 @@ export default class Seek extends Component {
     ...routerPropTypes,
     dispatch: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired,
-    // eslint-disable-next-line react/forbid-prop-types
-    seek: PropTypes.object.isRequired,
+    seek: PropTypes.shape({
+      keyId: PropTypes.number,
+      creationDate: PropTypes.string,
+      lastModificationDate: PropTypes.string,
+      title: PropTypes.string.isRequired,
+      description: PropTypes.string,
+      userId: PropTypes.number.isRequired,
+      username: PropTypes.string.isRequired,
+      watchId: PropTypes.number,
+      notifyEnabled: PropTypes.bool,
+      status: PropTypes.string,
+    }).isRequired,
   };
 
   componentWillMount() {
