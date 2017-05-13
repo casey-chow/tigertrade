@@ -93,7 +93,6 @@ func ReadListing(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 // CreateListing creates a new listing based on the contents of r, owned by the current user,
 // and then writes it to w with its keyId set
 func CreateListing(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-
 	// Get listing to add from request body
 	listing := models.Listing{}
 	err := ParseJSONFromBody(r, &listing)
