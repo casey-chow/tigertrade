@@ -125,3 +125,12 @@ referrer headers][owasp], which is the simplest valid way to do so with a
 RESTful API.
 
 [owasp]: https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)_Prevention_Cheat_Sheet#Verifying_Same_Origin_with_Standard_Headers
+
+**SQL Injection**: We prevent SQL injection by using prepared statements in
+our SQL.
+
+**Resource Overload**: Rather than trying to secure the system against abusive
+use for images, we decided to set up our storage to log who uploads what image
+and delete images after a year. We have notifications set up if the amount
+stored exceeds a certain threshold, and can restrict photo uploads from there.
+We also reduce photo usage by resizing and compressing all photos.
