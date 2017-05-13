@@ -110,3 +110,20 @@ node_modules/       Javascript dependencies
 vendor/             Go dependencies
 ```
 
+# Security
+
+We aim for Security by Simplicity--that is, taking simple approaches to
+development that make it as obvious as possible whether we have security
+issues.
+
+**Cross-Site Scripting**: Since React doesn't actually parse HTML, our site
+is inherently XSS-resistant as long as everything we do is rendered using
+React (which we brelieve it is).
+
+**Cross-Site Request Forgery**: We prevent CSRF attacks using the [Origin and
+referrer headers][owasp], which is the simplest valid way to do so with a
+RESTful API.
+
+[owasp]: https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)_Prevention_Cheat_Sheet#Verifying_Same_Origin_with_Standard_Headers
+
+

@@ -57,14 +57,13 @@ func RedirectUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params) 
 	clientURL, _ := url.Parse(os.Getenv("CLIENT_ROOT"))
 	redirectURL, err := url.Parse(redirect)
 	if err != nil {
-		log.
-			WithField("url", redirect).
+		log.WithField("url", redirect).
 			WithError(err).
 			Warn("RedirectUser received invalid url")
 		raven.CaptureError(err, map[string]string{"url": redirect})
 	}
 
-	if err != nil || redirectURL.Host != clientURL.Host {
+	if err != nil || !SameOrigin(clientURL, redirectURL) {
 		redirect = os.Getenv("CLIENT_ROOT")
 	}
 
