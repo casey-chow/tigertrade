@@ -23,7 +23,7 @@ const (
 	ContactSeekPoster = "3bb3590f-04a3-4381-a79b-25a86afb4a6f"
 	// ContactSeekReader is the email to confirm to a reader that they have contacted a seek's owner
 	ContactSeekReader = "d3adbb24-4445-43f8-a026-ec4b013b5850"
-	// ContactSearchWatcher is the email to notify a user when their saved search has a new matching listing
+	// ContactSearchWatcher is the email to notify a user when their watched search has a new matching listing
 	ContactSearchWatcher = "c6388de5-deb7-416b-9527-c5017513ed91"
 )
 
