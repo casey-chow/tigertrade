@@ -24,9 +24,13 @@ func ReadSeeks(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		query.Offset = offset
 	}
 
-	// Get User ID if we happen to be logged in
-	if user, err := models.GetUser(db, getUsername(r)); err == nil {
-		query.UserID = user.KeyID
+	// Get User ID if we happen to be logged in (if necessary)
+	// getUsername makes a network call every time to see if the user is
+	// still authenticated with CAS, so it should only be used when necessary.
+	if query.OnlyMine {
+		if user, err := models.GetUser(db, getUsername(r)); err == nil {
+			query.UserID = user.KeyID
+		}
 	}
 
 	// Get optional search query from params
