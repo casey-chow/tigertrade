@@ -5,13 +5,13 @@ import { combineReducers } from 'redux';
 import { isUndefined, omitBy } from 'lodash';
 
 import * as listingsReducers from './listings';
-import * as savedSearchesReducers from './savedSearches';
+import * as watchesReducers from './watches';
 import * as seeksReducers from './seeks';
 import * as userReducers from './user';
 
 const currentQuery = (state = {}, action) => {
   switch (action.type) {
-    case 'LOAD_SAVED_SEARCHES_REQUEST':
+    case 'LOAD_WATCHES_REQUEST':
       return {};
     case 'LOAD_LISTINGS_REQUEST':
     case 'LOAD_SEEKS_REQUEST':
@@ -93,7 +93,7 @@ const expandAll = (state = false, action) => {
 
 const rootReducer = combineReducers({
   ...listingsReducers,
-  ...savedSearchesReducers,
+  ...watchesReducers,
   ...seeksReducers,
   ...userReducers,
   currentQuery,

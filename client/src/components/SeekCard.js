@@ -31,7 +31,7 @@ import { mediaQueries } from '../helpers/breakpoints';
 import { redirectToCas } from '../helpers/cas';
 import { mailBuyer } from './../actions/users';
 import { editSeek, deleteSeek } from './../actions/seeks';
-import { postSavedSearch } from './../actions/savedSearches';
+import { postWatch } from './../actions/watches';
 
 
 const mapStateToProps = state => ({
@@ -60,7 +60,7 @@ export default class SeekCard extends React.Component {
       description: PropTypes.string,
       userId: PropTypes.number.isRequired,
       username: PropTypes.string.isRequired,
-      savedSearchId: PropTypes.number,
+      watchId: PropTypes.number,
       notifyEnabled: PropTypes.bool,
       status: PropTypes.string,
     }).isRequired,
@@ -139,9 +139,9 @@ export default class SeekCard extends React.Component {
   }
 
   handleStar = () => {
-    this.props.dispatch(postSavedSearch({
+    this.props.dispatch(postWatch({
       query: this.props.seek.title,
-    }, 'Successfully created saved search'));
+    }, 'Successfully watched search'));
   }
 
   formatDescription = description => description.split('\n').map(line => <p key={line}>{line}</p>);

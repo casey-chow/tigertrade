@@ -3,10 +3,10 @@ import fetch from 'isomorphic-fetch';
 import { API_ROOT } from './common';
 import { stripQuery } from '../helpers/query';
 
-export function loadSavedSearches() {
+export function loadWatches() {
   return function (dispatch, getState) {
     dispatch({
-      type: 'LOAD_SAVED_SEARCHES_REQUEST',
+      type: 'LOAD_WATCHES_REQUEST',
     });
     fetch(`${API_ROOT}/savedsearches`, {
       credentials: 'include',
@@ -14,19 +14,19 @@ export function loadSavedSearches() {
     .then(response => response.json())
     .then(json => dispatch({
       json,
-      type: 'LOAD_SAVED_SEARCHES_SUCCESS',
+      type: 'LOAD_WATCHES_SUCCESS',
     }))
     .catch(error => dispatch({
       error,
-      type: 'LOAD_SAVED_SEARCHES_FAILURE',
+      type: 'LOAD_WATCHES_FAILURE',
     }));
   };
 }
 
-export function postSavedSearch(savedSearch, successMessage) {
+export function postWatch(watch, successMessage) {
   return function (dispatch, getState) {
     dispatch({
-      type: 'POST_SAVED_SEARCH_REQUEST',
+      type: 'POST_WATCH_REQUEST',
     });
     fetch(`${API_ROOT}/savedsearches`, {
       credentials: 'include',
@@ -34,12 +34,12 @@ export function postSavedSearch(savedSearch, successMessage) {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(stripQuery(savedSearch || getState().currentQuery)),
+      body: JSON.stringify(stripQuery(watch || getState().currentQuery)),
     })
     .then((json) => {
       dispatch({
         json,
-        type: 'POST_SAVED_SEARCH_SUCCESS',
+        type: 'POST_WATCH_SUCCESS',
       });
 
       if (successMessage) {
@@ -48,30 +48,30 @@ export function postSavedSearch(savedSearch, successMessage) {
           message: successMessage,
         });
       }
-      dispatch(loadSavedSearches());
+      dispatch(loadWatches());
     })
     .catch(error => dispatch({
       error,
-      type: 'POST_SAVED_SEARCH_FAILURE',
+      type: 'POST_WATCH_FAILURE',
     }));
   };
 }
 
-export function deleteSavedSearch(savedSearch, successMessage) {
+export function deleteWatch(watch, successMessage) {
   return function (dispatch, getState) {
     dispatch({
-      type: 'DELETE_SAVED_SEARCH_REQUEST',
-      savedSearch,
+      type: 'DELETE_WATCH_REQUEST',
+      watch,
     });
 
-    fetch(`${API_ROOT}/savedSearches/${savedSearch.keyId}`, {
+    fetch(`${API_ROOT}/savedSearches/${watch.keyId}`, {
       credentials: 'include',
       method: 'DELETE',
     })
     .then(() => {
       dispatch({
-        type: 'DELETE_SAVED_SEARCH_SUCCESS',
-        savedSearch,
+        type: 'DELETE_WATCH_SUCCESS',
+        watch,
       });
 
       if (successMessage) {
@@ -80,12 +80,12 @@ export function deleteSavedSearch(savedSearch, successMessage) {
           message: successMessage,
         });
       }
-      dispatch(loadSavedSearches({}));
+      dispatch(loadWatches({}));
     })
     .catch(error => dispatch({
       error,
-      savedSearch,
-      type: 'DELETE_SAVED_SEARCH_FAILURE',
+      watch,
+      type: 'DELETE_WATCH_FAILURE',
     }));
   };
 }

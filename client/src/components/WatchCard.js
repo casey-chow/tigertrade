@@ -18,21 +18,21 @@ import {
 import FlatButton from 'material-ui/FlatButton';
 
 import SearchIcon from 'material-ui/svg-icons/action/search';
-import DeleteIcon from 'material-ui/svg-icons/action/delete';
+import UnwatchIcon from 'material-ui/svg-icons/action/visibility-off';
 
 import { mediaQueries } from '../helpers/breakpoints';
-import { loadListings } from './../actions/listings';
-import { deleteSavedSearch } from './../actions/savedSearches';
+import { loadListings } from '../actions/listings';
+import { deleteWatch } from '../actions/watches';
 
 @withRouter
 @connect()
 @Radium
-export default class SavedSearchCard extends React.Component {
+export default class WatchCard extends React.Component {
 
   static propTypes = {
     ...routerPropTypes,
     dispatch: PropTypes.func.isRequired,
-    savedSearch: PropTypes.shape({
+    watch: PropTypes.shape({
       keyId: PropTypes.number,
       creationDate: PropTypes.string,
       lastModificationDate: PropTypes.string,
@@ -61,7 +61,7 @@ export default class SavedSearchCard extends React.Component {
   }
 
   handleActivate = () => {
-    const query = omitBy(omit(this.props.savedSearch, ['keyId', 'creationDate', 'lastModificationDate']), isNull);
+    const query = omitBy(omit(this.props.watch, ['keyId', 'creationDate', 'lastModificationDate']), isNull);
     this.props.dispatch(loadListings({
       query,
       reset: true,
@@ -70,47 +70,46 @@ export default class SavedSearchCard extends React.Component {
   }
 
   handleDelete = () => {
-    this.props.dispatch(deleteSavedSearch(
-      this.props.savedSearch,
-      'Successfully deleted saved search',
+    this.props.dispatch(deleteWatch(
+      this.props.watch,
+      'Successfully unwatched search',
     ));
   }
 
   render() {
-    const { savedSearch } = this.props;
-    const styles = SavedSearchCard.styles;
+    const { watch } = this.props;
+    const styles = WatchCard.styles;
 
     return (
       <div>
         <Style
-          scopeSelector=".savedsearch-card-expanded"
+          scopeSelector=".watch-card-expanded"
           rules={styles.cardExpanded}
         />
         <Card
           expanded
-          className="savedsearch-card-expanded"
+          className="watch-card-expanded"
         >
-          { savedSearch.query &&
+          { watch.query &&
             <CardHeader
-              title={savedSearch.query}
+              title={watch.query}
             />
           }
 
           <div style={styles.cardContentsShown}>
 
-            { (savedSearch.minPrice || savedSearch.minPrice === 0) &&
-              <CardText> Minimum Price: {savedSearch.minPrice / 100} </CardText>
+            { (watch.minPrice || watch.minPrice === 0) &&
+              <CardText> Minimum Price: {watch.minPrice / 100} </CardText>
             }
 
-            { (savedSearch.maxPrice || savedSearch.maxPrice === 0) &&
-              <CardText> Maximum Price: {savedSearch.maxPrice / 100} </CardText>
+            { (watch.maxPrice || watch.maxPrice === 0) &&
+              <CardText> Maximum Price: {watch.maxPrice / 100} </CardText>
             }
 
             <CardActions>
               <FlatButton primary icon={<SearchIcon />} label="Activate" onTouchTap={this.handleActivate} />
-              <FlatButton primary icon={<DeleteIcon />} label="Delete" onTouchTap={this.handleDelete} />
+              <FlatButton primary icon={<UnwatchIcon />} label="Stop Watching" onTouchTap={this.handleDelete} />
             </CardActions>
-
           </div>
         </Card>
       </div>

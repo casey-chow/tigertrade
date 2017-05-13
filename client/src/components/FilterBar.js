@@ -15,12 +15,12 @@ import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
 import Toggle from 'material-ui/Toggle';
 import FavoriteIcon from 'material-ui/svg-icons/action/favorite';
-import SaveIcon from 'material-ui/svg-icons/content/save';
+import WatchIcon from 'material-ui/svg-icons/action/visibility';
 
-import { loadListings } from './../actions/listings';
-import { loadSeeks } from './../actions/seeks';
-import { setExpandAll } from './../actions/ui';
-import { postSavedSearch } from './../actions/savedSearches';
+import { loadListings } from '../actions/listings';
+import { loadSeeks } from '../actions/seeks';
+import { setExpandAll } from '../actions/ui';
+import { postWatch } from '../actions/watches';
 import { writeHistory } from '../helpers/query';
 
 const mapStateToProps = state => ({
@@ -156,8 +156,8 @@ export default class FilterBar extends Component {
   }
 
   handleWatchButtonTap = () => {
-    this.props.dispatch(postSavedSearch(null, 'Successfully created saved search'));
-    this.props.history.push('/savedsearches');
+    this.props.dispatch(postWatch(null, 'Successfully watched search'));
+    this.props.history.push('/watches');
   }
 
   render() {
@@ -220,8 +220,8 @@ export default class FilterBar extends Component {
         { (this.props.location.pathname === '/listings') &&
           <FlatButton
             primary
-            icon={<SaveIcon />}
-            label="Watch Results"
+            icon={<WatchIcon />}
+            label="Watch this Search"
             onTouchTap={this.handleWatchButtonTap}
             disabled={isEmpty(omit(query, ['isStarred', 'limit']))}
           />

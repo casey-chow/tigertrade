@@ -16,7 +16,7 @@ import Listings from './Listings';
 import Listing from './Listing';
 import Seeks from './Seeks';
 import Seek from './Seek';
-import SavedSearches from './SavedSearches';
+import Watches from './Watches';
 import ComposeOverlay from '../components/ComposeOverlay';
 
 import { loadCurrentUser } from '../actions/users';
@@ -105,7 +105,7 @@ export default class App extends Component {
             <Route path="/listing/:id" component={Listing} />
             <Route path="/seeks/:type?" component={Seeks} />
             <Route path="/seek/:id" component={Seek} />
-            <Route path="/savedsearches" component={SavedSearches} />
+            <Route path="/watches" component={Watches} />
           </Switch>
         </NavigationDrawer>
 

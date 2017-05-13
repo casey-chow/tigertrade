@@ -187,9 +187,9 @@ export default class NavigationDrawer extends Component {
             ]}
           />
           <ListItem
-            key="savedsearches"
-            primaryText="Saved Searches"
-            value="/savedsearches"
+            key="watches"
+            primaryText="Watched Searches"
+            value="/watches"
             leftIcon={<Search />}
           />
           <ListItem
