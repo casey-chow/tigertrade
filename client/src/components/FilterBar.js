@@ -20,7 +20,7 @@ import WatchIcon from 'material-ui/svg-icons/action/visibility';
 import { loadListings } from '../actions/listings';
 import { loadSeeks } from '../actions/seeks';
 import { setExpandAll } from '../actions/ui';
-import { postWatch } from '../actions/watches';
+import { loadWatches, postWatch } from '../actions/watches';
 import { writeHistory } from '../helpers/query';
 
 const mapStateToProps = state => ({
@@ -158,6 +158,7 @@ export default class FilterBar extends Component {
 
   handleWatchButtonTap = () => {
     this.props.dispatch(postWatch(null, 'Successfully watched search'));
+    this.props.dispatch(loadWatches());
     this.props.history.push('/watches');
   }
 

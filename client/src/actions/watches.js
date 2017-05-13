@@ -8,7 +8,7 @@ export function loadWatches() {
     dispatch({
       type: 'LOAD_WATCHES_REQUEST',
     });
-    fetch(`${API_ROOT}/watches`, {
+    return fetch(`${API_ROOT}/watches`, {
       credentials: 'include',
     })
     .then(response => response.json())
@@ -28,7 +28,7 @@ export function postWatch(watch, successMessage) {
     dispatch({
       type: 'POST_WATCH_REQUEST',
     });
-    fetch(`${API_ROOT}/watches`, {
+    return fetch(`${API_ROOT}/watches`, {
       credentials: 'include',
       method: 'POST',
       headers: {
@@ -48,7 +48,6 @@ export function postWatch(watch, successMessage) {
           message: successMessage,
         });
       }
-      dispatch(loadWatches());
     })
     .catch(error => dispatch({
       error,
@@ -64,7 +63,7 @@ export function deleteWatch(watch, successMessage) {
       watch,
     });
 
-    fetch(`${API_ROOT}/watches/${watch.keyId}`, {
+    return fetch(`${API_ROOT}/watches/${watch.keyId}`, {
       credentials: 'include',
       method: 'DELETE',
     })
@@ -80,7 +79,6 @@ export function deleteWatch(watch, successMessage) {
           message: successMessage,
         });
       }
-      dispatch(loadWatches({}));
     })
     .catch(error => dispatch({
       error,

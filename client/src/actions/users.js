@@ -2,14 +2,13 @@ import fetch from 'isomorphic-fetch';
 
 import { API_ROOT } from './common';
 
-// eslint-disable-next-line import/prefer-default-export
 export function loadCurrentUser() {
   return function (dispatch, getState) {
     dispatch({
       type: 'LOAD_CURRENT_USER_REQUEST',
     });
 
-    fetch(`${API_ROOT}/users/current`, {
+    return fetch(`${API_ROOT}/users/current`, {
       credentials: 'include',
     })
       .then(response => response.json())
@@ -31,7 +30,7 @@ export function mailSeller(listing, data, successMessage) {
       listing,
     });
 
-    fetch(`${API_ROOT}/listings/${listing.keyId}/contact`, {
+    return fetch(`${API_ROOT}/listings/${listing.keyId}/contact`, {
       credentials: 'include',
       method: 'POST',
       headers: {
@@ -67,7 +66,7 @@ export function mailBuyer(seek, data, successMessage) {
       data,
     });
 
-    fetch(`${API_ROOT}/seeks/${seek.keyId}/contact`, {
+    return fetch(`${API_ROOT}/seeks/${seek.keyId}/contact`, {
       credentials: 'include',
       method: 'POST',
       headers: {

@@ -66,7 +66,7 @@ export default class Seek extends Component {
 
     return (
       <ListContainer style={{ marginTop: '-1rem' }}>
-        <SeekCard expanded seek={seek} />
+        <SeekCard expanded singleton seek={seek} />
         <LoadingSpinner loading={loading} />
       </ListContainer>
     );

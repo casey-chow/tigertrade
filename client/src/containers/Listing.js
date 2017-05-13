@@ -69,7 +69,7 @@ export default class Listing extends Component {
     const { listing, loading } = this.props;
     return (
       <ListContainer style={{ marginTop: '-1rem' }}>
-        <ListingCard expanded listing={listing} />
+        <ListingCard expanded singleton listing={listing} />
         <LoadingSpinner loading={loading} />
       </ListContainer>
     );

@@ -11,7 +11,7 @@ export function loadSeeks({ query = {}, reset = false }) {
       reset,
       type: 'LOAD_SEEKS_REQUEST',
     });
-    fetch(`${API_ROOT}/seeks?${stringify(getState().currentQuery)}`, {
+    return fetch(`${API_ROOT}/seeks?${stringify(getState().currentQuery)}`, {
       credentials: 'include',
     })
       .then(response => response.json())
@@ -32,7 +32,7 @@ export function loadSeek(id = '') {
       query: {},
       type: 'LOAD_SEEK_REQUEST',
     });
-    fetch(`${API_ROOT}/seeks/${id}`, {
+    return fetch(`${API_ROOT}/seeks/${id}`, {
       credentials: 'include',
     })
       .then(response => response.json())
@@ -54,7 +54,7 @@ export function postSeek(seek, successMessage) {
       seek,
     });
 
-    fetch(`${API_ROOT}/seeks`, {
+    return fetch(`${API_ROOT}/seeks`, {
       credentials: 'include',
       method: 'POST',
       headers: {
@@ -71,8 +71,6 @@ export function postSeek(seek, successMessage) {
       if (successMessage) {
         dispatch(showSnackbar(successMessage));
       }
-
-      dispatch(loadSeeks({ query: { isMine: true }, reset: true }));
     })
     .catch(error => dispatch({
       error,
@@ -89,7 +87,7 @@ export function deleteSeek(seek, successMessage) {
       seek,
     });
 
-    fetch(`${API_ROOT}/seeks/${seek.keyId}`, {
+    return fetch(`${API_ROOT}/seeks/${seek.keyId}`, {
       credentials: 'include',
       method: 'DELETE',
     })
@@ -103,8 +101,6 @@ export function deleteSeek(seek, successMessage) {
       if (successMessage) {
         dispatch(showSnackbar(successMessage));
       }
-
-      dispatch(loadSeeks({}));
     })
     .catch(error => dispatch({
       error,
@@ -124,7 +120,7 @@ export function updateSeek(seek, successMessage) {
       type: 'UPDATE_SEEK_REQUEST',
     });
 
-    fetch(`${API_ROOT}/seeks/${seek.keyId}`, {
+    return fetch(`${API_ROOT}/seeks/${seek.keyId}`, {
       credentials: 'include',
       method: 'PUT',
       headers: {
@@ -137,7 +133,6 @@ export function updateSeek(seek, successMessage) {
         json,
         type: 'UPDATE_SEEK_SUCCESS',
       });
-      dispatch(loadSeeks({}));
       if (successMessage) {
         dispatch(showSnackbar(successMessage));
       }

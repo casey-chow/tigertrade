@@ -11,7 +11,7 @@ export function loadListings({ query = {}, reset = false }) {
       reset,
       type: 'LOAD_LISTINGS_REQUEST',
     });
-    fetch(`${API_ROOT}/listings?${stringify(getState().currentQuery)}`, {
+    return fetch(`${API_ROOT}/listings?${stringify(getState().currentQuery)}`, {
       credentials: 'include',
     })
       .then(response => response.json())
@@ -32,7 +32,7 @@ export function loadListing(id = '') {
       query: {},
       type: 'LOAD_LISTING_REQUEST',
     });
-    fetch(`${API_ROOT}/listings/${id}`, {
+    return fetch(`${API_ROOT}/listings/${id}`, {
       credentials: 'include',
     })
       .then(response => response.json())
@@ -53,7 +53,7 @@ export function postListing(listing, successMessage) {
       type: 'POST_LISTING_REQUEST',
     });
 
-    fetch(`${API_ROOT}/listings`, {
+    return fetch(`${API_ROOT}/listings`, {
       credentials: 'include',
       method: 'POST',
       headers: {
@@ -70,8 +70,6 @@ export function postListing(listing, successMessage) {
       if (successMessage) {
         dispatch(showSnackbar(successMessage));
       }
-
-      dispatch(loadListings({ query: { isMine: true }, reset: true }));
     })
     .catch(error => dispatch({
       error,
@@ -87,7 +85,7 @@ export function starListing(listing) {
       type: 'STAR_LISTING_REQUEST',
     });
 
-    fetch(`${API_ROOT}/listings/${listing.keyId}/star`, {
+    return fetch(`${API_ROOT}/listings/${listing.keyId}/star`, {
       credentials: 'include',
       method: 'POST',
       headers: {
@@ -100,8 +98,6 @@ export function starListing(listing) {
         json,
         type: 'STAR_LISTING_SUCCESS',
       });
-
-      dispatch(loadListings({ }));
     })
     .catch(error => dispatch({
       error,
@@ -117,7 +113,7 @@ export function deleteListing(listing, successMessage) {
       listing,
     });
 
-    fetch(`${API_ROOT}/listings/${listing.keyId}`, {
+    return fetch(`${API_ROOT}/listings/${listing.keyId}`, {
       credentials: 'include',
       method: 'DELETE',
     })
@@ -126,11 +122,9 @@ export function deleteListing(listing, successMessage) {
         type: 'DELETE_LISTING_SUCCESS',
         listing,
       });
-
       if (successMessage) {
         dispatch(showSnackbar(successMessage));
       }
-      dispatch(loadListings({}));
     })
     .catch(error => dispatch({
       error,
@@ -150,7 +144,7 @@ export function updateListing(listing, successMessage) {
       type: 'UPDATE_LISTING_REQUEST',
     });
 
-    fetch(`${API_ROOT}/listings/${listing.keyId}`, {
+    return fetch(`${API_ROOT}/listings/${listing.keyId}`, {
       credentials: 'include',
       method: 'PUT',
       headers: {
@@ -163,7 +157,6 @@ export function updateListing(listing, successMessage) {
         json,
         type: 'UPDATE_LISTING_SUCCESS',
       });
-      dispatch(loadListings({}));
       if (successMessage) {
         dispatch(showSnackbar(successMessage));
       }

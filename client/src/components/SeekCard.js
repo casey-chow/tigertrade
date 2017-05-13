@@ -30,7 +30,7 @@ import ContactBuyerForm from './ContactBuyerForm';
 import { mediaQueries } from '../helpers/breakpoints';
 import { redirectToCas } from '../helpers/cas';
 import { mailBuyer } from './../actions/users';
-import { editSeek, deleteSeek } from './../actions/seeks';
+import { loadSeeks, editSeek, deleteSeek } from './../actions/seeks';
 import { postWatch } from './../actions/watches';
 
 
@@ -52,6 +52,7 @@ export default class SeekCard extends React.Component {
     dispatch: PropTypes.func.isRequired,
     expanded: PropTypes.bool.isRequired,
     onExpandChange: PropTypes.func,
+    singleton: PropTypes.bool.isRequired,
     seek: PropTypes.shape({
       keyId: PropTypes.number,
       creationDate: PropTypes.string,
@@ -135,13 +136,21 @@ export default class SeekCard extends React.Component {
     this.props.dispatch(deleteSeek(
       this.props.seek,
       `Successfully deleted buy request ${this.props.seek.title}`,
-    ));
+    )).then(() => {
+      if (this.props.singleton) {
+        this.props.dispatch(loadSeeks({ query: { isMine: true }, reset: true }));
+        this.props.history.push('/seeks/mine');
+      } else {
+        this.props.dispatch(loadSeeks({}));
+      }
+    });
   }
 
   handleStar = () => {
-    this.props.dispatch(postWatch({
-      query: this.props.seek.title,
-    }, 'Successfully watched search'));
+    this.props.dispatch(postWatch(
+      { query: this.props.seek.title },
+      'Successfully watched for matching listings',
+    ));
   }
 
   formatDescription = description => description.split('\n').map(line => <p key={line}>{line}</p>);
