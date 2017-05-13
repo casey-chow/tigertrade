@@ -36,7 +36,7 @@ func OriginValid(r *http.Request) bool {
 	}
 
 	// allow empty for both so we can do API testing
-	if originURLEmpty && referrerURLEmpty && os.Getenv("DEBUG") == "true" {
+	if originURLEmpty && referrerURLEmpty {
 		return true
 	}
 
