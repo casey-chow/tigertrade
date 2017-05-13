@@ -51,37 +51,33 @@ func RedirectUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params) 
 
 	go models.GetOrCreateUser(db, getUsername(r))
 
-	// TODO: Validate the return parameter for domain correctness
 	redirect := r.URL.Query().Get("return")
 
 	// Validate the URL given to us
-	_, err := url.Parse(redirect)
+	clientURL, _ := url.Parse(os.Getenv("CLIENT_ROOT"))
+	redirectURL, err := url.Parse(redirect)
 	if err != nil {
-		log.
-			WithField("url", redirect).
+		log.WithField("url", redirect).
 			WithError(err).
 			Warn("RedirectUser received invalid url")
 		raven.CaptureError(err, map[string]string{"url": redirect})
 	}
 
-	if err != nil || redirect == "" {
+	if err != nil || !SameOrigin(clientURL, redirectURL) {
 		redirect = os.Getenv("CLIENT_ROOT")
 	}
 
-	log.
-		WithFields(log.Fields{
-			"user": getUsername(r),
-			"url":  redirect,
-		}).
-		Debug("login: redirecting user back to app")
+	log.WithFields(log.Fields{
+		"user": getUsername(r),
+		"url":  redirect,
+	}).Debug("login: redirecting user back to app")
 	http.Redirect(w, r, redirect, http.StatusFound)
 }
 
 // LogoutUser logs the user out from CAS, if they are logged in, and redirects to app root
 func LogoutUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	if isAuthenticated(r) {
-		log.
-			WithField("user", getUsername(r)).
+		log.WithField("user", getUsername(r)).
 			Debug("logging out user")
 		redirectToLogout(w, r)
 	} else {
