@@ -12,14 +12,14 @@ import (
 	"strings"
 )
 
-// SameOrigin returns true iff two URLs have the same origin.
+// SameOrigin returns true iff two URLs have the same origin
 // https://github.com/cbonello/revel-csrf/blob/master/csrf.go#L100
 func SameOrigin(u1, u2 *url.URL) bool {
 	return (u1.Scheme == u2.Scheme && u1.Host == u2.Host)
 }
 
-// OriginValid returns true iff the request has valid origin or referrer
-// headers: https://goo.gl/nGnXwq
+// OriginValid returns true iff the request has valid origin or referrer headers
+// https://goo.gl/nGnXwq
 func OriginValid(r *http.Request) bool {
 	clientURL, _ := url.Parse(os.Getenv("CLIENT_ROOT"))
 
