@@ -110,14 +110,14 @@ func TestAuthentication(t *testing.T) {
 			So(res.Header().Get("Location"), ShouldEqual, "http://localhost:7373")
 		})
 
-		Convey("should redirect to an arbitrary valid URL", func() {
+		Convey("should not redirect to an arbitrary valid URL", func() {
 			isAuthenticated = func(r *http.Request) bool { return true }
 
-			req, _ := http.NewRequest("GET", "/api/users/redirect?return=http%3A%2F%2Flocalhost%3A8888", nil)
+			req, _ := http.NewRequest("GET", "/api/users/redirect?return=http%3A%2F%2Flocalhost%3A9292", nil)
 			res := executeRequest(app, req)
 
 			So(res.Code, ShouldEqual, http.StatusFound)
-			So(res.Header().Get("Location"), ShouldEqual, "http://localhost:8888")
+			So(res.Header().Get("Location"), ShouldNotEqual, "http://localhost:9292")
 		})
 
 		Convey("should not redirect to an invalid URL", func() {
