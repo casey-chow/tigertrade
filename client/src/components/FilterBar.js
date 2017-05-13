@@ -35,13 +35,8 @@ const mapStateToProps = state => ({
 export default class FilterBar extends Component {
   static propTypes = {
     ...routerPropTypes,
+    contentContainer: PropTypes.node,
     dispatch: PropTypes.func.isRequired,
-    history: PropTypes.shape({
-      push: PropTypes.func.isRequired,
-    }).isRequired,
-    location: PropTypes.shape({
-      pathname: PropTypes.string.isRequired,
-    }).isRequired,
     displayMode: PropTypes.string.isRequired,
     expandAll: PropTypes.bool.isRequired,
     query: PropTypes.shape({
@@ -53,6 +48,7 @@ export default class FilterBar extends Component {
   }
 
   static defaultProps = {
+    contentContainer: '',
     style: {
       display: 'flex',
       flexDirection: 'row',
@@ -118,6 +114,9 @@ export default class FilterBar extends Component {
   }
 
   handleExpandAllToggle = (event, checked) => {
+    if (this.props.contentContainer) {
+      this.props.contentContainer.scrollTop = 0;
+    }
     this.props.dispatch(setExpandAll(checked));
   }
 

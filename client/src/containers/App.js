@@ -56,7 +56,7 @@ export default class App extends Component {
       bottom: '35px',
       right: '35px',
     },
-    cardsList: {
+    contentContainer: {
       paddingTop: '2rem',
       paddingBottom: '4rem',
       overflow: 'scroll',
@@ -79,9 +79,9 @@ export default class App extends Component {
       <div className="App">
         <ActionBar user={this.props.user} loading={this.props.loading} />
         <NavigationDrawer>
-          <FilterBar />
+          <FilterBar contentContainer={this.contentContainer} />
 
-          <div style={styles.cardsList}>
+          <div style={styles.contentContainer} ref={(node) => { this.contentContainer = node; }}>
             { (!this.props.loading && !this.props.user.loggedIn) &&
               <Welcome />
             }
