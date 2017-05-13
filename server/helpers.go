@@ -18,31 +18,6 @@ func SameOrigin(u1, u2 *url.URL) bool {
 	return (u1.Scheme == u2.Scheme && u1.Host == u2.Host)
 }
 
-// OriginValid returns true iff the request has valid origin or referrer
-// headers: https://goo.gl/nGnXwq
-func OriginValid(r *http.Request) bool {
-	clientURL, _ := url.Parse(os.Getenv("CLIENT_ROOT"))
-
-	originURLEmpty := (r.Header.Get("Origin") == "")
-	originURL, err := url.Parse(r.Header.Get("Origin"))
-	if err == nil && !originURLEmpty && SameOrigin(originURL, clientURL) {
-		return true
-	}
-
-	referrerURLEmpty := (r.Header.Get("Referrer") == "")
-	referrerURL, err := url.Parse(r.Header.Get("Referrer"))
-	if err == nil && !referrerURLEmpty && SameOrigin(referrerURL, clientURL) {
-		return true
-	}
-
-	// allow empty for both so we can do API testing
-	if originURLEmpty && referrerURLEmpty && os.Getenv("DEBUG") == "true" {
-		return true
-	}
-
-	return false
-}
-
 // Serve converts v to a JSON string and writes to w.
 // Writes an InternalServerError on error
 func Serve(w http.ResponseWriter, v interface{}) {

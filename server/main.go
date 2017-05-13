@@ -64,21 +64,6 @@ func corsMiddleware() negroni.Handler {
 	})
 }
 
-func csrfMiddleware() negroni.HandlerFunc {
-	// detect CSRF
-	return func(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
-		if !OriginValid(r) {
-			dump, _ := httputil.DumpRequest(r, true)
-			log.WithField("request", string(dump)).
-				Error("detected request from invalid source")
-			Error(w, http.StatusForbidden)
-			return
-		}
-
-		next(w, r)
-	}
-}
-
 // Manually loads config variables from .env file if they are not already.
 // This is a workaround because we're not starting the app with Heroku local
 func loadEnvironment() {
@@ -163,7 +148,6 @@ func App() http.Handler {
 	app.Use(casMiddleware())
 	app.Use(sentryMiddleware())
 	app.Use(logMiddleware())
-	app.Use(csrfMiddleware())
 	app.Use(corsMiddleware())
 	app.Use(gzip.Gzip(gzip.DefaultCompression))
 	// NOTE: all middleware that modifies the body must be called AFTER here
