@@ -17,6 +17,7 @@ import (
 	"github.com/rs/cors"
 	"github.com/urfave/negroni"
 	"net/http"
+	"net/http/httputil"
 	"net/url"
 	"os"
 	"path"
@@ -147,8 +148,9 @@ func App() http.Handler {
 	app.Use(casMiddleware())
 	app.Use(sentryMiddleware())
 	app.Use(logMiddleware())
-	app.Use(gzip.Gzip(gzip.DefaultCompression))
 	app.Use(corsMiddleware())
+	app.Use(gzip.Gzip(gzip.DefaultCompression))
+	// NOTE: all middleware that modifies the body must be called AFTER here
 
 	app.UseHandler(Router())
 
