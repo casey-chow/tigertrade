@@ -118,7 +118,7 @@ issues.
 
 **Cross-Site Scripting**: Since React doesn't actually parse HTML, our site
 is inherently XSS-resistant as long as everything we do is rendered using
-React (which we brelieve it is).
+React (which we believe it is).
 
 **Cross-Site Request Forgery**: We prevent CSRF attacks using the [Origin and
 referrer headers][owasp], which is the simplest valid way to do so with a
