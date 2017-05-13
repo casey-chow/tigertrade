@@ -59,14 +59,11 @@ export default class App extends Component {
       bottom: '35px',
       right: '35px',
     },
-    filterBarListings: {
-      marginBottom: '5.5rem',
-    },
-    filterBarSeeks: {
-      marginBottom: '3.5rem',
+    filterBarVisible: {
+      marginBottom: '6.5rem',
     },
     filterBarNotVisible: {
-      marginBottom: '2rem',
+      marginBottom: '1.5rem',
     },
   }
 
@@ -80,10 +77,10 @@ export default class App extends Component {
 
   render() {
     const styles = App.styles;
-    // eslint-disable-next-line no-nested-ternary
-    const filterPadding = this.props.location.pathname.startsWith('/listings')
-      ? styles.filterBarListings : (this.props.location.pathname.startsWith('/seeks')
-      ? styles.filterBarSeeks : styles.filterBarNotVisible);
+    const path = this.props.location.pathname;
+    const filterPadding = (path.startsWith('/listings') || path.startsWith('/seeks'))
+      ? styles.filterBarVisible
+      : styles.filterBarNotVisible;
 
     return (
       <div className="App">

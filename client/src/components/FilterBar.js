@@ -65,6 +65,7 @@ export default class FilterBar extends Component {
 
   static styles = {
     base: {
+      minHeight: '4rem',
       right: '0',
       position: 'fixed',
       paddingTop: '0.5em',
@@ -163,70 +164,76 @@ export default class FilterBar extends Component {
   render() {
     const { query, leftDrawerVisible } = this.props;
     const styles = FilterBar.styles;
+    const isListing = this.props.location.pathname.startsWith('/listings');
+    const isSeek = this.props.location.pathname.startsWith('/seeks');
 
     return (
-      <Paper
-        style={{
-          ...styles.base,
-          left: leftDrawerVisible ? '20vw' : '0',
-          ...this.props.style,
-        }}
-      >
-        { (this.props.location.pathname.startsWith('/listings')) &&
-          <TextField
-            hintText="Min Price"
-            type="number"
-            onChange={this.handleMinChange}
-            onBlur={this.handleOnBlur}
-            value={this.state.minPrice}
-            style={styles.priceField}
-            prefix="$"
-            min="0"
-            step="0.01"
-          />
+      <div>
+        { (isListing || isSeek) &&
+          <Paper
+            style={{
+              ...styles.base,
+              left: leftDrawerVisible ? '20vw' : '0',
+              ...this.props.style,
+            }}
+          >
+            { isListing &&
+              <TextField
+                hintText="Min Price"
+                type="number"
+                onChange={this.handleMinChange}
+                onBlur={this.handleOnBlur}
+                value={this.state.minPrice}
+                style={styles.priceField}
+                prefix="$"
+                min="0"
+                step="0.01"
+              />
+            }
+            { isListing &&
+              <TextField
+                hintText="Max Price"
+                type="number"
+                onChange={this.handleMaxChange}
+                onBlur={this.handleOnBlur}
+                value={this.state.maxPrice}
+                style={styles.priceField}
+                prefix="$"
+                min="0"
+                step="0.01"
+              />
+            }
+            { isListing &&
+              <FlatButton
+                secondary
+                icon={<FavoriteIcon />}
+                label="Favorites Only"
+                backgroundColor={query.isStarred ? grey300 : 'transparent'}
+                onTouchTap={this.handleFavorite}
+              />
+            }
+            { (isListing || isSeek) &&
+              <div>
+                <Toggle
+                  label="Expand All"
+                  labelPosition="right"
+                  toggled={this.props.expandAll}
+                  onToggle={this.handleExpandAllToggle}
+                />
+              </div>
+            }
+            { isListing &&
+              <FlatButton
+                primary
+                icon={<WatchIcon />}
+                label="Watch this Search"
+                onTouchTap={this.handleWatchButtonTap}
+                disabled={isEmpty(omit(query, ['isStarred', 'limit']))}
+              />
+            }
+          </Paper>
         }
-        { (this.props.location.pathname.startsWith('/listings')) &&
-          <TextField
-            hintText="Max Price"
-            type="number"
-            onChange={this.handleMaxChange}
-            onBlur={this.handleOnBlur}
-            value={this.state.maxPrice}
-            style={styles.priceField}
-            prefix="$"
-            min="0"
-            step="0.01"
-          />
-        }
-        { (this.props.location.pathname.startsWith('/listings')) &&
-          <FlatButton
-            secondary
-            icon={<FavoriteIcon />}
-            label="Favorites Only"
-            backgroundColor={query.isStarred ? grey300 : 'transparent'}
-            onTouchTap={this.handleFavorite}
-          />
-        }
-        { (this.props.location.pathname.startsWith('/listings') || this.props.location.pathname.startsWith('/seeks')) &&
-          <div>
-            <Toggle
-              label="Expand All"
-              labelPosition="right"
-              toggled={this.props.expandAll}
-              onToggle={this.handleExpandAllToggle}
-            />
-          </div>
-        }
-        { (this.props.location.pathname === '/listings') &&
-          <FlatButton
-            primary
-            icon={<WatchIcon />}
-            label="Watch this Search"
-            onTouchTap={this.handleWatchButtonTap}
-            disabled={isEmpty(omit(query, ['isStarred', 'limit']))}
-          />
-        }
-      </Paper>
+      </div>
     );
   }
 }
