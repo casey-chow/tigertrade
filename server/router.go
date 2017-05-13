@@ -40,11 +40,11 @@ func Router() http.Handler {
 	router.POST("/api/seeks/:id/contact", ContactSeek)
 
 	// savedsearches.go
-	router.GET("/api/savedsearches", ReadSavedSearches)
-	router.POST("/api/savedsearches", CreateSavedSearch)
-	router.GET("/api/savedsearches/:id", ReadSavedSearch)
-	router.PUT("/api/savedsearches/:id", UpdateSavedSearch)
-	router.DELETE("/api/savedsearches/:id", DeleteSavedSearch)
+	router.GET("/api/watches", ReadSavedSearches)
+	router.POST("/api/watches", CreateSavedSearch)
+	router.GET("/api/watches/:id", ReadSavedSearch)
+	router.PUT("/api/watches/:id", UpdateSavedSearch)
+	router.DELETE("/api/watches/:id", DeleteSavedSearch)
 
 	// photos.go
 	router.POST("/api/photos", CreatePhoto)
