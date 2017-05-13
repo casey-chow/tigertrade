@@ -161,10 +161,10 @@ export default class FilterBar extends Component {
   }
 
   render() {
-    const { query, leftDrawerVisible } = this.props;
+    const { query, leftDrawerVisible, location } = this.props;
     const styles = FilterBar.styles;
-    const isListing = this.props.location.pathname.startsWith('/listings');
-    const isSeek = this.props.location.pathname.startsWith('/seeks');
+    const isListing = location.pathname.startsWith('/listings');
+    const isSeek = location.pathname.startsWith('/seeks');
 
     return (
       <div>
@@ -221,7 +221,7 @@ export default class FilterBar extends Component {
                 />
               </div>
             }
-            { isListing &&
+            { (isListing && !location.pathname.startsWith('/listings/mine')) &&
               <FlatButton
                 primary
                 icon={<WatchIcon />}

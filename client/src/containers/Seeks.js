@@ -75,12 +75,12 @@ export default class Seeks extends Component {
     return (
       <div>
         <SeeksList seeks={seeks} expandAll={expandAll} />
+        <LoadingSpinner loading={seeksLoading} />
         <Waypoint
           topOffset="70%"
           bottomOffset="-25%"
           onEnter={this.loadMoreSeeks}
         />
-        <LoadingSpinner loading={seeksLoading} />
       </div>
     );
   }

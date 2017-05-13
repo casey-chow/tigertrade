@@ -58,6 +58,7 @@ export default class App extends Component {
     },
     cardsList: {
       paddingTop: '2rem',
+      paddingBottom: '4rem',
       overflow: 'scroll',
       maxHeight: '100%',
     },

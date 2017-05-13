@@ -13,6 +13,7 @@ export default class LoadingSpinner extends PureComponent {
       alignItems: 'center',
       justifyContent: 'center',
       display: 'flex',
+      paddingTop: '1rem',
     },
   }
 

@@ -68,8 +68,12 @@ export default class Watches extends Component {
         <WatchesList
           watches={watches}
         />
-        <Waypoint topOffset="70%" onEnter={this.loadMoreWatches} />
         <LoadingSpinner loading={loading} />
+        <Waypoint
+          topOffset="70%"
+          bottomOffset="-25%"
+          onEnter={this.loadMoreWatches}
+        />
       </div>
     );
   }
