@@ -18,7 +18,7 @@ type Seek struct {
 	Description          null.String `json:"description"`
 	UserID               int         `json:"userId"`
 	Username             null.String `json:"username"`
-	SavedSearchID        null.Int    `json:"savedSearchId"`
+	SavedSearchID        null.Int    `json:"watchId"`
 	NotifyEnabled        null.Bool   `json:"notifyEnabled"`
 	Status               null.String `json:"status"`
 }
