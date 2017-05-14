@@ -27,6 +27,7 @@ import (
 var db *sql.DB
 var uploader *s3manager.Uploader
 
+// casMiddleware adds CAS authentication functions to the request
 func casMiddleware() negroni.Handler {
 	casURL, _ := url.Parse("https://fed.princeton.edu/cas/")
 	casClient := cas.NewClient(&cas.Options{
@@ -41,12 +42,14 @@ func casMiddleware() negroni.Handler {
 	})
 }
 
+// sentryMiddleware records panics from handlers
 func sentryMiddleware() negroni.Handler {
 	return negroni.HandlerFunc(func(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
 		raven.RecoveryHandler(next)(w, r)
 	})
 }
 
+// logMiddleware logs each request
 func logMiddleware() negroni.Handler {
 	if os.Getenv("ENVIRONMENT") == "production" {
 		return negronilogrus.NewCustomMiddleware(log.InfoLevel, &log.JSONFormatter{}, "web")
@@ -55,6 +58,7 @@ func logMiddleware() negroni.Handler {
 	return negronilogrus.NewCustomMiddleware(log.InfoLevel, &log.TextFormatter{}, "web")
 }
 
+// corsMiddleware activates the proper CORS headers
 func corsMiddleware() negroni.Handler {
 	log.WithField("CLIENT_ROOT", os.Getenv("CLIENT_ROOT")).Print("activating CORS header")
 	return cors.New(cors.Options{
@@ -64,8 +68,8 @@ func corsMiddleware() negroni.Handler {
 	})
 }
 
+// csrfMiddleware detects potential CSRF attacks and blocks them
 func csrfMiddleware() negroni.HandlerFunc {
-	// detect CSRF
 	return func(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
 		if !OriginValid(r) {
 			dump, _ := httputil.DumpRequest(r, true)
@@ -79,8 +83,9 @@ func csrfMiddleware() negroni.HandlerFunc {
 	}
 }
 
-// Manually loads config variables from .env file if they are not already.
-// This is a workaround because we're not starting the app with Heroku local
+// loadEnvironment manually loads config variables from .env file if they are
+// not already. This is a workaround because we're not starting the app with
+// Heroku local
 func loadEnvironment() {
 	if os.Getenv("CONFIG_PRESENT") == "true" {
 		return
@@ -109,12 +114,8 @@ func loadEnvironment() {
 
 }
 
-// Connects to database specified in DATABASE_URL env variable
+// initDatabase connects to database specified in DATABASE_URL env variable
 func initDatabase() {
-	if db != nil {
-		return
-	}
-
 	var err error
 	db, err = sql.Open("postgres", os.Getenv("DATABASE_URL"))
 	if err != nil {
@@ -130,6 +131,7 @@ func initDatabase() {
 	}
 }
 
+// initS3 initializes the Amazon S3 client
 func initS3() {
 	creds := credentials.NewEnvCredentials()
 	_, err := creds.Get()
@@ -146,8 +148,8 @@ func initS3() {
 	uploader = s3manager.NewUploader(sess)
 }
 
-// customize logging
-func init() {
+// initLogs customizes logging
+func initLogs() {
 	// Output to stdout instead of the default stderr
 	log.SetOutput(os.Stdout)
 
@@ -157,11 +159,15 @@ func init() {
 	}
 }
 
-func App() http.Handler {
+func init() {
 	loadEnvironment()
-	initDatabase()
+	initLogs()
 	initS3()
+	initDatabase()
+}
 
+// App returns a handler that encapsulates the entire application
+func App() http.Handler {
 	app := negroni.New()
 
 	app.Use(casMiddleware())
