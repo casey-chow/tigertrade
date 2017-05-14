@@ -23,16 +23,14 @@ type SavedSearch struct {
 
 // A SavedSearchQuery contains the necessary parameters for a parametrized query of the saved searches table
 type SavedSearchQuery struct {
-	Limit      uint64 // maximum number of listings to return
-	Offset     uint64 // offset in search results to send
-	OnlyActive bool
-	UserID     int
+	Limit  uint64 // maximum number of listings to return
+	Offset uint64 // offset in search results to send
+	UserID int
 }
 
 // NewSavedSearchQuery makes a new SavedSearchQuery with the appropriate default values
 func NewSavedSearchQuery() *SavedSearchQuery {
 	q := new(SavedSearchQuery)
-	q.OnlyActive = true
 	q.Limit = defaultNumResults
 	return q
 }
@@ -54,10 +52,6 @@ func ReadSavedSearches(db *sql.DB, query *SavedSearchQuery) ([]*SavedSearch, int
 		).
 		From("saved_searches").
 		Where(sq.Eq{"saved_searches.user_id": query.UserID})
-
-	if query.OnlyActive {
-		stmt = stmt.Where("saved_searches.is_active=true")
-	}
 
 	stmt = stmt.OrderBy("saved_searches.creation_date DESC")
 	if query.Limit > defaultNumResults {

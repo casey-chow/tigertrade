@@ -13,10 +13,6 @@ import (
 func ReadSavedSearches(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	query := models.NewSavedSearchQuery()
 
-	if includeInactive, err := strconv.ParseBool(r.URL.Query().Get("includeInactive")); err == nil {
-		query.OnlyActive = !includeInactive
-	}
-
 	// Get limit from params
 	if limit, err := strconv.ParseUint(r.URL.Query().Get("limit"), 10, 64); err == nil && limit != 0 {
 		query.Limit = limit
