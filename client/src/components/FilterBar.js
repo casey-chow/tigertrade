@@ -52,6 +52,8 @@ export default class FilterBar extends Component {
       hasPhotos: PropTypes.bool,
       minPrice: PropTypes.bool,
       maxPrice: PropTypes.bool,
+      minCreateDate: PropTypes.date,
+      maxCreateDate: PropTypes.date,
       order: PropTypes.string,
       includeInactive: PropTypes.bool,
     }).isRequired,
@@ -93,8 +95,8 @@ export default class FilterBar extends Component {
     hasPhotos: false,
     minPrice: -1,
     maxPrice: -1,
-    postedAfter: undefined,
-    postedBefore: undefined,
+    minCreateDate: undefined,
+    maxCreateDate: undefined,
   }
 
   componentWillMount() {
@@ -107,6 +109,8 @@ export default class FilterBar extends Component {
       hasPhotos: this.props.query.hasPhotos,
       minPrice: this.props.query.minPrice / 100 || '',
       maxPrice: this.props.query.maxPrice / 100 || '',
+      minCreateDate: this.props.query.minCreateDate,
+      maxCreateDate: this.props.query.maxCreateDate,
     });
   }
 
@@ -120,6 +124,8 @@ export default class FilterBar extends Component {
       hasPhotos: nextProps.query.hasPhotos,
       minPrice: nextProps.query.minPrice / 100 || '',
       maxPrice: nextProps.query.maxPrice / 100 || '',
+      minCreateDate: nextProps.query.minCreateDate,
+      maxCreateDate: nextProps.query.maxCreateDate,
     });
   }
 
@@ -205,9 +211,9 @@ export default class FilterBar extends Component {
     ));
   }
 
-  handlePostedAfterChange = (_, postedAfter) => {
-    this.setState({ postedAfter });
-    const query = { minCreateDate: postedAfter };
+  handlePostedAfterChange = (event, minCreateDate) => {
+    const query = { minCreateDate };
+    this.setState(query);
     this.props.dispatch(loadPosts(
       this.props.displayMode,
       { query },
@@ -216,9 +222,9 @@ export default class FilterBar extends Component {
     });
   }
 
-  handlePostedBeforeChange = (_, postedBefore) => {
-    this.setState({ postedBefore });
-    const query = { maxCreateDate: postedBefore };
+  handlePostedBeforeChange = (event, maxCreateDate) => {
+    const query = { maxCreateDate };
+    this.setState(query);
     this.props.dispatch(loadPosts(
       this.props.displayMode,
       { query },
@@ -362,13 +368,13 @@ export default class FilterBar extends Component {
             <DatePicker
               hintText="Posted before"
               clearSelection
-              value={this.state.postedBefore}
+              value={this.state.maxCreateDate}
               onChange={this.handlePostedBeforeChange}
             />
             <DatePicker
               hintText="Posted after"
               clearSelection
-              value={this.state.postedAfter}
+              value={this.state.minCreateDate}
               onChange={this.handlePostedAfterChange}
             />
           </Paper>
