@@ -9,10 +9,10 @@ import (
 	"time"
 )
 
-func TestAuthentication(t *testing.T) {
+func TestGetCurrentUser(t *testing.T) {
 	app := App()
 
-	Convey("ServeCurrentUser", t, func() {
+	Convey("when getting the current user", t, func() {
 		oldIsAuthenticated := isAuthenticated
 		oldGetUsername := getUsername
 		oldDb := db
@@ -30,7 +30,7 @@ func TestAuthentication(t *testing.T) {
 			t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
 		}
 
-		Convey("returns Unauthorized if not found", func() {
+		Convey("returns empty if not found", func() {
 			getUsername = func(_ *http.Request) string { return "" }
 
 			req, _ := http.NewRequest("GET", "/api/users/current", nil)
@@ -58,24 +58,12 @@ func TestAuthentication(t *testing.T) {
 
 	})
 
-	Convey("UserExists", t, func() {
+}
 
-		Convey("returns true when the user exists", nil)
+func TestRedirectUser(t *testing.T) {
+	app := App()
 
-		Convey("returns false when the user does not exist", nil)
-
-	})
-
-	Convey("EnsureUserExists", t, func() {
-
-		Convey("creates the user if they do not exist", nil)
-
-		Convey("does not create a user that already exists", nil)
-
-	})
-
-	Convey("RedirectUser", t, func() {
-
+	Convey("when redirecting the user", t, func() {
 		oldIsAuthenticated := isAuthenticated
 		oldRedirectToLogin := redirectToLogin
 		defer func() {
@@ -134,8 +122,12 @@ func TestAuthentication(t *testing.T) {
 
 	})
 
-	Convey("LogoutUser", t, func() {
+}
 
+func TestLogoutUser(t *testing.T) {
+	app := App()
+
+	Convey("LogoutUser", t, func() {
 		oldIsAuthenticated := isAuthenticated
 		oldRedirectToLogout := redirectToLogout
 		oldClientRoot := os.Getenv("CLIENT_ROOT")

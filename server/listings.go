@@ -132,10 +132,6 @@ func CreateListing(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 func UpdateListing(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	// Get ID from params
 	id := ps.ByName("id")
-	if id == "" {
-		Error(w, http.StatusBadRequest)
-		return
-	}
 
 	// Get listing to add from request body
 	listing := models.Listing{}
@@ -168,12 +164,7 @@ func UpdateListing(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 
 // DeleteListing deletes the requested listing if it is owned by the current user
 func DeleteListing(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	// Get ID from params
 	id := ps.ByName("id")
-	if id == "" {
-		Error(w, http.StatusBadRequest)
-		return
-	}
 
 	// Retrieve UserID
 	user, err := models.GetUser(db, getUsername(r))
