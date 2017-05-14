@@ -12,7 +12,7 @@ import { grey300 } from 'material-ui/styles/colors';
 
 import Paper from 'material-ui/Paper';
 import FlatButton from 'material-ui/FlatButton';
-import DropDownMenu from 'material-ui/DropDownMenu';
+import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import TextField from 'material-ui/TextField';
 import Toggle from 'material-ui/Toggle';
@@ -255,16 +255,7 @@ export default class FilterBar extends Component {
               </div>
             }
             { isListing &&
-              <FlatButton
-                secondary
-                icon={<FavoriteIcon />}
-                label="Favorites Only"
-                backgroundColor={this.state.isStarred ? grey300 : 'transparent'}
-                onTouchTap={this.handleFavorite}
-              />
-            }
-            { isListing &&
-              <DropDownMenu
+              <SelectField
                 value={this.state.order}
                 onChange={this.handleOrder}
                 autoWidth
@@ -275,7 +266,16 @@ export default class FilterBar extends Component {
                 <MenuItem value={'priceDesc'} primaryText="Most Expensive" />
                 <MenuItem value={'expirationDateAsc'} primaryText="Soonest Expiration" />
                 <MenuItem value={'expirationDateDesc'} primaryText="Furthest Expiration" />
-              </DropDownMenu>
+              </SelectField>
+            }
+            { isListing &&
+              <FlatButton
+                secondary
+                icon={<FavoriteIcon />}
+                label="Favorites Only"
+                backgroundColor={this.state.isStarred ? grey300 : 'transparent'}
+                onTouchTap={this.handleFavorite}
+              />
             }
             { (isListing && !location.pathname.startsWith('/listings/mine')) &&
               <FlatButton
