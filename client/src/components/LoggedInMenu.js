@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import { omit } from 'lodash';
 
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
@@ -11,8 +12,7 @@ export default class LoggedInMenu extends PureComponent {
   static muiName = 'FlatButton';
 
   static propTypes = {
-    // eslint-disable-next-line react/forbid-prop-types
-    style: PropTypes.object.isRequired,
+    style: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
     user: PropTypes.shape({
       netId: PropTypes.string.isRequired,
     }).isRequired,
@@ -41,8 +41,7 @@ export default class LoggedInMenu extends PureComponent {
   }
 
   render() {
-    // eslint-disable-next-line no-unused-vars
-    const { user, ...rest } = this.props;
+    const rest = omit(this.props, 'user');
     const styles = LoggedInMenu.styles;
 
     return (

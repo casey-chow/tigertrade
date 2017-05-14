@@ -52,7 +52,7 @@ export default class SeekCard extends React.Component {
     dispatch: PropTypes.func.isRequired,
     expanded: PropTypes.bool.isRequired,
     onExpandChange: PropTypes.func,
-    singleton: PropTypes.bool.isRequired,
+    singleton: PropTypes.bool,
     seek: PropTypes.shape({
       keyId: PropTypes.number,
       creationDate: PropTypes.string,
@@ -72,6 +72,7 @@ export default class SeekCard extends React.Component {
       keyId: -1,
       loggedIn: false,
     },
+    singleton: false,
     expanded: false,
     onExpandChange: () => {},
   }

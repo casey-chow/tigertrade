@@ -16,15 +16,19 @@ import TextField from 'material-ui/TextField';
 import Toggle from 'material-ui/Toggle';
 import FavoriteIcon from 'material-ui/svg-icons/action/favorite';
 import WatchIcon from 'material-ui/svg-icons/action/visibility';
+import PhotoIcon from 'material-ui/svg-icons/image/photo';
+import ExpandMoreIcon from 'material-ui/svg-icons/navigation/expand-more';
+import ExpandLessIcon from 'material-ui/svg-icons/navigation/expand-less';
 
 import { loadListings } from '../actions/listings';
 import { loadSeeks } from '../actions/seeks';
-import { setExpandAll } from '../actions/ui';
+import { setExpandAll, toggleFilterBar } from '../actions/ui';
 import { loadWatches, postWatch } from '../actions/watches';
 import { writeHistory } from '../helpers/query';
 
 const mapStateToProps = state => ({
   displayMode: state.displayMode,
+  expanded: state.filterBarExpanded,
   query: state.currentQuery,
   leftDrawerVisible: state.leftDrawerVisible,
   expandAll: state.expandAll,
@@ -35,12 +39,16 @@ const mapStateToProps = state => ({
 export default class FilterBar extends Component {
   static propTypes = {
     ...routerPropTypes,
-    contentContainer: PropTypes.node,
+    contentContainer: PropTypes.any.isRequired, // eslint-disable-line react/forbid-prop-types
     dispatch: PropTypes.func.isRequired,
     displayMode: PropTypes.string.isRequired,
     expandAll: PropTypes.bool.isRequired,
+    expanded: PropTypes.bool.isRequired,
     query: PropTypes.shape({
       isStarred: PropTypes.bool,
+      hasPhotos: PropTypes.bool,
+      minPrice: PropTypes.bool,
+      maxPrice: PropTypes.bool,
       query: PropTypes.string,
     }).isRequired,
     leftDrawerVisible: PropTypes.bool.isRequired,
@@ -48,10 +56,9 @@ export default class FilterBar extends Component {
   }
 
   static defaultProps = {
-    contentContainer: '',
     style: {
       display: 'flex',
-      flexDirection: 'row',
+      flexDirection: 'row-reverse',
       flexWrap: 'wrap',
       justifyContent: 'space-around',
       alignItems: 'center',
@@ -74,14 +81,18 @@ export default class FilterBar extends Component {
   }
 
   state = {
+    expanded: false,
     isStarred: false,
+    hasPhotos: false,
     minPrice: -1,
     maxPrice: -1,
   }
 
   componentWillMount() {
     this.setState({
+      expanded: this.props.expanded,
       isStarred: this.props.query.isStarred,
+      hasPhotos: this.props.query.hasPhotos,
       minPrice: this.props.query.minPrice / 100 || '',
       maxPrice: this.props.query.maxPrice / 100 || '',
     });
@@ -89,7 +100,9 @@ export default class FilterBar extends Component {
 
   componentWillReceiveProps(nextProps) {
     this.setState({
+      expanded: nextProps.expanded,
       isStarred: nextProps.query.isStarred,
+      hasPhotos: nextProps.query.hasPhotos,
       minPrice: nextProps.query.minPrice / 100 || '',
       maxPrice: nextProps.query.maxPrice / 100 || '',
     });
@@ -111,6 +124,30 @@ export default class FilterBar extends Component {
     }
 
     writeHistory({ query, history: this.props.history, location: this.props.location });
+  }
+
+  handlePhoto = () => {
+    const hasPhotos = !this.props.query.hasPhotos;
+    const query = { hasPhotos };
+    this.setState(query);
+    switch (this.props.displayMode) {
+      case 'seeks':
+        this.props.dispatch(loadSeeks({ query }));
+        break;
+      case 'listings':
+        this.props.dispatch(loadListings({ query }));
+        break;
+      default:
+        break;
+    }
+
+    writeHistory({ query, history: this.props.history, location: this.props.location });
+  }
+
+  handleExpandedToggle = () => {
+    const expanded = !this.props.expanded;
+    this.setState({ expanded });
+    this.props.dispatch(toggleFilterBar());
   }
 
   handleExpandAllToggle = (event, checked) => {
@@ -177,16 +214,59 @@ export default class FilterBar extends Component {
             }}
           >
             { isListing &&
-              <TextField
-                hintText="Min Price"
-                type="number"
-                onChange={this.handleMinChange}
-                onBlur={this.handleOnBlur}
-                value={this.state.minPrice}
-                style={styles.priceField}
-                prefix="$"
-                min="0"
-                step="0.01"
+              <FlatButton
+                primary
+                icon={this.state.expanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                labelPosition="before"
+                label={this.state.expanded ? 'Hide Filters' : 'Show Filters'}
+                onTouchTap={this.handleExpandedToggle}
+              />
+            }
+            { (isListing || isSeek) &&
+              <div>
+                <Toggle
+                  label="Expand All"
+                  labelPosition="right"
+                  toggled={this.props.expandAll}
+                  onToggle={this.handleExpandAllToggle}
+                />
+              </div>
+            }
+            { isListing &&
+              <FlatButton
+                secondary
+                icon={<FavoriteIcon />}
+                label="Favorites Only"
+                backgroundColor={this.state.isStarred ? grey300 : 'transparent'}
+                onTouchTap={this.handleFavorite}
+              />
+            }
+            { (isListing && !location.pathname.startsWith('/listings/mine')) &&
+              <FlatButton
+                primary
+                icon={<WatchIcon />}
+                label="Watch this Search"
+                onTouchTap={this.handleWatchButtonTap}
+                disabled={isEmpty(omit(query, ['isStarred', 'limit', 'hasPhotos']))}
+              />
+            }
+          </Paper>
+        }
+        { this.state.expanded &&
+          <Paper
+            style={{
+              ...styles.base,
+              left: leftDrawerVisible ? '20vw' : '0',
+              ...this.props.style,
+            }}
+          >
+            { isListing && this.state.expanded &&
+              <FlatButton
+                secondary
+                icon={<PhotoIcon />}
+                label="Has Photos Only"
+                backgroundColor={this.state.hasPhotos ? grey300 : 'transparent'}
+                onTouchTap={this.handlePhoto}
               />
             }
             { isListing &&
@@ -203,31 +283,16 @@ export default class FilterBar extends Component {
               />
             }
             { isListing &&
-              <FlatButton
-                secondary
-                icon={<FavoriteIcon />}
-                label="Favorites Only"
-                backgroundColor={query.isStarred ? grey300 : 'transparent'}
-                onTouchTap={this.handleFavorite}
-              />
-            }
-            { (isListing || isSeek) &&
-              <div>
-                <Toggle
-                  label="Expand All"
-                  labelPosition="right"
-                  toggled={this.props.expandAll}
-                  onToggle={this.handleExpandAllToggle}
-                />
-              </div>
-            }
-            { (isListing && !location.pathname.startsWith('/listings/mine')) &&
-              <FlatButton
-                primary
-                icon={<WatchIcon />}
-                label="Watch this Search"
-                onTouchTap={this.handleWatchButtonTap}
-                disabled={isEmpty(omit(query, ['isStarred', 'limit']))}
+              <TextField
+                hintText="Min Price"
+                type="number"
+                onChange={this.handleMinChange}
+                onBlur={this.handleOnBlur}
+                value={this.state.minPrice}
+                style={styles.priceField}
+                prefix="$"
+                min="0"
+                step="0.01"
               />
             }
           </Paper>

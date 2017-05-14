@@ -35,8 +35,7 @@ export default class SearchBar extends Component {
       isStarred: PropTypes.bool,
       query: PropTypes.string,
     }).isRequired,
-    // eslint-disable-next-line react/forbid-prop-types
-    style: PropTypes.object,
+    style: PropTypes.object, // eslint-disable-line react/forbid-prop-types
   }
 
   static defaultProps = {

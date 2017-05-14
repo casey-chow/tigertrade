@@ -70,6 +70,7 @@ type ListingQuery struct {
 	Query         string
 	OnlyStarred   bool
 	OnlyMine      bool
+	OnlyPhotos    bool
 	Limit         uint64 // maximum number of listings to return
 	Offset        uint64 // offset in search results to send
 	UserID        int
@@ -214,6 +215,10 @@ func buildListingQuery(query *ListingQuery) sq.SelectBuilder {
 
 	if query.OnlyMine {
 		stmt = stmt.Where(sq.Eq{"user_id": query.UserID})
+	}
+
+	if query.OnlyPhotos {
+		stmt = stmt.Where("cardinality(photos) > 0")
 	}
 
 	stmt = stmt.OrderBy("listings.creation_date DESC")

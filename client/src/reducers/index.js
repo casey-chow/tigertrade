@@ -67,6 +67,17 @@ const leftDrawerVisible = (state = false, action) => {
   }
 };
 
+const filterBarExpanded = (state = false, action) => {
+  switch (action.type) {
+    case 'SET_FILTER_BAR':
+      return action.visible;
+    case 'TOGGLE_FILTER_BAR':
+      return !state;
+    default:
+      return state;
+  }
+};
+
 const defaultSnackbar = { open: false, message: '' };
 const snackbar = (state = defaultSnackbar, action) => {
   switch (action.type) {
@@ -86,6 +97,8 @@ const expandAll = (state = false, action) => {
   switch (action.type) {
     case 'SET_EXPAND_ALL':
       return action.expandAll;
+    case 'TOGGLE_EXPAND_ALL':
+      return !state;
     default:
       return state;
   }
@@ -100,6 +113,7 @@ const rootReducer = combineReducers({
   composeState,
   displayMode,
   leftDrawerVisible,
+  filterBarExpanded,
   snackbar,
   expandAll,
   ui: uiReducer,
