@@ -22,7 +22,7 @@ const priceField = field => (
       type="number"
       prefix="$"
       min="0"
-      step="0.01"
+      step="1"
     />
   </div>
 );
