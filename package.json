@@ -6,6 +6,7 @@
     "isomorphic-fetch": "^2.2.1",
     "lodash": "^4.17.4",
     "material-ui": "^0.17.2",
+    "material-ui-build": "https://github.com/ewilden/material-ui.git",
     "normalizr": "^3.2.2",
     "prop-types": "^15.5.8",
     "query-string": "^4.3.4",
