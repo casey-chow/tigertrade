@@ -23,12 +23,8 @@ func ContactSeek(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 func contactPost(w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 	read models.PostReader, posterTemplate models.MailTemplate, readerTemplate models.MailTemplate) {
 
-	// Get post ID from params
 	id := ps.ByName("id")
-	if id == "" {
-		Error(w, http.StatusBadRequest)
-		return
-	}
+
 
 	email, code, err := models.NewEmailInput(db, id, read)
 	if err != nil {

@@ -21,7 +21,7 @@ type PostReader (func(*sql.DB, string) (Post, int, error))
 
 // ReadListingAsPost is a PostReader for Listings
 func ReadListingAsPost(db *sql.DB, id string) (Post, int, error) {
-	return ReadListing(db, id)
+	return ReadListing(db, id, 0)
 }
 
 // ReadSeekAsPost is a PostReader for Seek

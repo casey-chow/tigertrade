@@ -27,13 +27,9 @@ func ReadListings(w http.ResponseWriter, r *http.Request, ps httprouter.Params) 
 		query.Offset = offset
 	}
 
-	// Get User ID if we happen to be logged in (if necessary)
-	// getUsername makes a network call every time to see if the user is
-	// still authenticated with CAS, so it should only be used when necessary.
-	if query.OnlyMine {
-		if user, err := models.GetUser(db, getUsername(r)); err == nil {
-			query.UserID = user.KeyID
-		}
+	// Get User ID if we happen to be logged in
+	if user, err := models.GetUser(db, getUsername(r)); err == nil {
+		query.UserID = user.KeyID
 	}
 
 	// Get optional search query from params
@@ -77,14 +73,14 @@ func ReadListings(w http.ResponseWriter, r *http.Request, ps httprouter.Params) 
 
 // ReadListing writes a listing identified in r to w
 func ReadListing(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	// Get ID from params
 	id := ps.ByName("id")
-	if id == "" {
-		Error(w, http.StatusBadRequest)
-		return
+
+	var userID int
+	if user, err := models.GetUser(db, getUsername(r)); err == nil {
+		userID = user.KeyID
 	}
 
-	listings, code, err := models.ReadListing(db, id)
+	listings, code, err := models.ReadListing(db, id, userID)
 	if err != nil {
 		raven.CaptureError(err, nil)
 		log.WithError(err).Error("error while getting listing by ID")
@@ -188,13 +184,7 @@ func DeleteListing(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 
 // UpdateListingStar adds or removes a star to a listing for the current user
 func UpdateListingStar(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-
-	// Get ID from params
 	id := ps.ByName("id")
-	if id == "" {
-		Error(w, http.StatusBadRequest)
-		return
-	}
 
 	// Get isStarred status to change
 	input := models.IsStarred{}

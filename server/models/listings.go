@@ -233,7 +233,7 @@ func buildListingQuery(query *ListingQuery) sq.SelectBuilder {
 }
 
 // ReadListing returns the listing with the given ID
-func ReadListing(db *sql.DB, id string) (Listing, int, error) {
+func ReadListing(db *sql.DB, id string, userID int) (Listing, int, error) {
 	var listing Listing
 
 	// Create listing query
@@ -250,6 +250,7 @@ func ReadListing(db *sql.DB, id string) (Listing, int, error) {
 			"status",
 			"expiration_date",
 			"thumbnail_url",
+			isStarredBy(userID),
 			"photos",
 		).
 		From("listings").
