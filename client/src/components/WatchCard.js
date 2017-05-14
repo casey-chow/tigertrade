@@ -137,7 +137,7 @@ export default class WatchCard extends React.Component {
               <FlatButton
                 primary
                 icon={<MailOutlineIcon />}
-                label={this.props.watch.isActive ? 'Email New Matches On' : 'Email New Matches Off'}
+                label="Email Notification on New Matches"
                 backgroundColor={this.props.watch.isActive ? grey300 : 'transparent'}
                 onTouchTap={this.handleNotify}
               />
