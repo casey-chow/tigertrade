@@ -28,18 +28,6 @@ export default class Listing extends Component {
     loading: PropTypes.bool.isRequired,
     listing: PropTypes.shape({
       keyId: PropTypes.number,
-      creationDate: PropTypes.string,
-      lastModificationDate: PropTypes.string,
-      title: PropTypes.string.isRequired,
-      description: PropTypes.string,
-      userId: PropTypes.number.isRequired,
-      username: PropTypes.string.isRequired,
-      price: PropTypes.number,
-      status: PropTypes.string,
-      isStarred: PropTypes.bool,
-      expirationDate: PropTypes.number,
-      thumbnail: PropTypes.string,
-      photos: PropTypes.array,
     }).isRequired,
   };
 

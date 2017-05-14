@@ -101,6 +101,7 @@ export default class ComposeOverlay extends Component {
     },
     `Successfully updated listing ${data.title}`,
     )).then(() => {
+      // Update both Listing and Listings containers (so that singleton views update)
       this.props.dispatch(loadListing(data.keyId));
       this.props.dispatch(loadListings({}));
       this.handleRequestClose();
@@ -114,6 +115,7 @@ export default class ComposeOverlay extends Component {
     },
     `Successfully updated seek ${data.title}`,
     )).then(() => {
+      // Update both Seek and Seeks containers (so that singleton views update)
       this.props.dispatch(loadSeek(data.keyId));
       this.props.dispatch(loadSeeks({}));
       this.handleRequestClose();
