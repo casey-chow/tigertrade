@@ -18,18 +18,21 @@ type SavedSearch struct {
 	MaxPrice              null.Int    `json:"maxPrice"`
 	ListingExpirationDate null.Time   `json:"listingExpirationDate"`
 	SearchExpirationDate  null.Time   `json:"searchExpirationDate"`
+	IsActive              bool        `json:"isActive"`
 }
 
 // A SavedSearchQuery contains the necessary parameters for a parametrized query of the saved searches table
 type SavedSearchQuery struct {
-	Limit  uint64 // maximum number of listings to return
-	Offset uint64 // offset in search results to send
-	UserID int
+	Limit      uint64 // maximum number of listings to return
+	Offset     uint64 // offset in search results to send
+	OnlyActive bool
+	UserID     int
 }
 
 // NewSavedSearchQuery makes a new SavedSearchQuery with the appropriate default values
 func NewSavedSearchQuery() *SavedSearchQuery {
 	q := new(SavedSearchQuery)
+	q.OnlyActive = true
 	q.Limit = defaultNumResults
 	return q
 }
@@ -47,14 +50,16 @@ func ReadSavedSearches(db *sql.DB, query *SavedSearchQuery) ([]*SavedSearch, int
 			"max_price",
 			"listing_expiration_date",
 			"search_expiration_date",
+			"is_active",
 		).
 		From("saved_searches").
-		Where(sq.Eq{
-			"saved_searches.user_id":   query.UserID,
-			"saved_searches.is_active": true,
-		}).
-		OrderBy("saved_searches.creation_date DESC")
+		Where(sq.Eq{"saved_searches.user_id": query.UserID})
 
+	if query.OnlyActive {
+		stmt = stmt.Where("saved_searches.is_active=true")
+	}
+
+	stmt = stmt.OrderBy("saved_searches.creation_date DESC")
 	if query.Limit > defaultNumResults {
 		stmt = stmt.Limit(query.Limit)
 	} else {
@@ -83,6 +88,7 @@ func ReadSavedSearches(db *sql.DB, query *SavedSearchQuery) ([]*SavedSearch, int
 			&ss.MaxPrice,
 			&ss.ListingExpirationDate,
 			&ss.SearchExpirationDate,
+			&ss.IsActive,
 		)
 		if err != nil {
 			return nil, http.StatusInternalServerError, err
@@ -111,15 +117,15 @@ func ReadSavedSearch(db *sql.DB, id string, userID int) (SavedSearch, int, error
 			"max_price",
 			"listing_expiration_date",
 			"search_expiration_date",
+			"is_active",
 		).
 		From("saved_searches").
 		Where(sq.Eq{
-			"saved_searches.is_active": true,
-			"saved_searches.key_id":    id,
-			"saved_searches.user_id":   userID,
+			"saved_searches.key_id":  id,
+			"saved_searches.user_id": userID,
 		})
 
-	// Query db for savedSearch
+	// Query db for saved search
 	rows, err := query.RunWith(db).Query()
 	if err != nil {
 		return savedSearch, http.StatusInternalServerError, err
@@ -137,6 +143,7 @@ func ReadSavedSearch(db *sql.DB, id string, userID int) (SavedSearch, int, error
 		&savedSearch.MaxPrice,
 		&savedSearch.ListingExpirationDate,
 		&savedSearch.SearchExpirationDate,
+		&savedSearch.IsActive,
 	)
 	if err == sql.ErrNoRows {
 		return savedSearch, http.StatusNotFound, err
@@ -192,7 +199,7 @@ func CreateSavedSearch(db *sql.DB, savedSearch SavedSearch, userID int) (SavedSe
 
 // UpdateSavedSearch overwrites the saved search in the database with the given id with the given saved search
 func UpdateSavedSearch(db *sql.DB, id string, savedSearch SavedSearch, userID int) (int, error) {
-	// Update savedSearch
+	// Update saved search
 	stmt := psql.Update("saved_searches").
 		SetMap(map[string]interface{}{
 			"user_id":                 userID,
@@ -201,20 +208,21 @@ func UpdateSavedSearch(db *sql.DB, id string, savedSearch SavedSearch, userID in
 			"max_price":               savedSearch.MaxPrice,
 			"listing_expiration_date": savedSearch.ListingExpirationDate,
 			"search_expiration_date":  savedSearch.SearchExpirationDate,
+			"is_active":               savedSearch.IsActive,
 		}).
 		Where(sq.Eq{
 			"saved_searches.key_id":  id,
 			"saved_searches.user_id": userID,
 		})
 
-	// Query db for savedSearch
+	// Query db for saved search
 	result, err := stmt.RunWith(db).Exec()
 	return getExecResultCode(result, err)
 }
 
 // DeleteSavedSearch deletes the saved search in the database with the given id
 func DeleteSavedSearch(db *sql.DB, id string, userID int) (int, error) {
-	// Update savedSearch
+	// Update saved search
 	stmt := psql.Delete("saved_searches").
 		Where(sq.Eq{
 			"saved_searches.key_id":  id,

@@ -52,6 +52,7 @@ func TestReadSavedSearches(t *testing.T) {
 					"max_price",
 					"listing_expiration_date",
 					"search_expiration_date",
+					"is_active",
 				}).AddRow(
 					140,
 					time.Now(),
@@ -61,6 +62,7 @@ func TestReadSavedSearches(t *testing.T) {
 					1,
 					time.Now(),
 					time.Now(),
+					true,
 				))
 
 			req, _ := http.NewRequest("GET", "/api/watches", nil)
@@ -118,6 +120,7 @@ func TestReadSavedSearch(t *testing.T) {
 					"max_price",
 					"listing_expiration_date",
 					"search_expiration_date",
+					"is_active",
 				}).AddRow(
 					140,
 					time.Now(),
@@ -127,6 +130,7 @@ func TestReadSavedSearch(t *testing.T) {
 					1,
 					time.Now(),
 					time.Now(),
+					true,
 				))
 			req, _ := http.NewRequest("GET", "/api/watches/140", nil)
 			res := executeRequest(app, req)

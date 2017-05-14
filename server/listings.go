@@ -23,6 +23,10 @@ func ReadListings(w http.ResponseWriter, r *http.Request, ps httprouter.Params) 
 	query.OnlyMine, _ = strconv.ParseBool(r.URL.Query().Get("isMine"))
 	query.OnlyPhotos, _ = strconv.ParseBool(r.URL.Query().Get("hasPhotos"))
 
+	if onlyActive, err := strconv.ParseBool(r.URL.Query().Get("onlyActive")); err == nil {
+		query.OnlyActive = onlyActive
+	}
+
 	if offset, err := strconv.ParseUint(r.URL.Query().Get("offset"), 10, 64); err == nil {
 		query.Offset = offset
 	}

@@ -20,6 +20,7 @@ type Seek struct {
 	SavedSearchID        null.Int    `json:"watchId"`
 	NotifyEnabled        null.Bool   `json:"notifyEnabled"`
 	Status               null.String `json:"status"`
+	IsActive             bool        `json:"isActive"`
 }
 
 // GetCreationDate returns the CreationDate of the Seek
@@ -57,18 +58,25 @@ func (s Seek) GetStatus() null.String {
 	return s.Status
 }
 
+// GetIsActive returns the IsActive of the Seek
+func (s Seek) GetIsActive() bool {
+	return s.IsActive
+}
+
 // A SeekQuery contains the necessary parameters for a parametrized query of the seeks table
 type SeekQuery struct {
-	Query    string
-	OnlyMine bool
-	Limit    uint64 // maximum number of listings to return
-	Offset   uint64 // offset in search results to send
-	UserID   int
+	Query      string
+	OnlyMine   bool
+	OnlyActive bool
+	Limit      uint64 // maximum number of listings to return
+	Offset     uint64 // offset in search results to send
+	UserID     int
 }
 
 // NewSeekQuery creates a SeekQuery with the appropriate default values
 func NewSeekQuery() *SeekQuery {
 	q := new(SeekQuery)
+	q.OnlyActive = true
 	q.Limit = defaultNumResults
 	return q
 }
@@ -102,6 +110,7 @@ func ReadSeeks(db *sql.DB, query *SeekQuery) ([]*Seek, int, error) {
 			&s.SavedSearchID,
 			&s.NotifyEnabled,
 			&s.Status,
+			&s.IsActive,
 		)
 		if err != nil {
 			return nil, http.StatusInternalServerError, err
@@ -128,10 +137,14 @@ func buildSeekQuery(query *SeekQuery) sq.SelectBuilder {
 			"saved_search_id",
 			"notify_enabled",
 			"status",
+			"is_active",
 		).
 		From("seeks").
-		Where("seeks.is_active=true").
 		LeftJoin("users ON seeks.user_id = users.key_id")
+
+	if query.OnlyActive {
+		stmt = stmt.Where("seeks.is_active=true")
+	}
 
 	stmt = whereFuzzyOrSemanticMatch(stmt, query.Query)
 
@@ -167,9 +180,9 @@ func ReadSeek(db *sql.DB, id string) (Seek, int, error) {
 			"saved_search_id",
 			"notify_enabled",
 			"status",
+			"is_active",
 		).
 		From("seeks").
-		Where("seeks.is_active=true").
 		LeftJoin("users ON seeks.user_id = users.key_id").
 		Where(sq.Eq{"seeks.key_id": id})
 
@@ -182,9 +195,19 @@ func ReadSeek(db *sql.DB, id string) (Seek, int, error) {
 
 	// Populate seek struct
 	rows.Next()
-	err = rows.Scan(&seek.KeyID, &seek.CreationDate, &seek.LastModificationDate,
-		&seek.Title, &seek.Description, &seek.UserID, &seek.Username, &seek.SavedSearchID,
-		&seek.NotifyEnabled, &seek.Status)
+	err = rows.Scan(
+		&seek.KeyID,
+		&seek.CreationDate,
+		&seek.LastModificationDate,
+		&seek.Title,
+		&seek.Description,
+		&seek.UserID,
+		&seek.Username,
+		&seek.SavedSearchID,
+		&seek.NotifyEnabled,
+		&seek.Status,
+		&seek.IsActive,
+	)
 	if err == sql.ErrNoRows {
 		return seek, http.StatusNotFound, err
 	} else if err != nil {
@@ -250,6 +273,7 @@ func UpdateSeek(db *sql.DB, id string, seek Seek, userID int) (int, error) {
 			"description":     seek.Description,
 			"saved_search_id": seek.SavedSearchID,
 			"notify_enabled":  seek.NotifyEnabled,
+			"is_active":       seek.IsActive,
 		}).
 		Where(sq.Eq{
 			"seeks.key_id":  id,
