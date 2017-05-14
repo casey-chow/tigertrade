@@ -1,6 +1,6 @@
 import fetch from 'isomorphic-fetch';
 
-import { API_ROOT } from './common';
+import { API_ROOT, handleErrors } from './common';
 
 export function loadCurrentUser() {
   return function (dispatch, getState) {
@@ -11,15 +11,16 @@ export function loadCurrentUser() {
     return fetch(`${API_ROOT}/users/current`, {
       credentials: 'include',
     })
-      .then(response => response.json())
-      .then(json => dispatch({
-        json,
-        type: 'LOAD_CURRENT_USER_SUCCESS',
-      }))
-      .catch(error => dispatch({
-        error,
-        type: 'LOAD_CURRENT_USER_FAILURE',
-      }));
+    .then(handleErrors)
+    .then(response => response.json())
+    .then(json => dispatch({
+      json,
+      type: 'LOAD_CURRENT_USER_SUCCESS',
+    }))
+    .catch(error => dispatch({
+      error,
+      type: 'LOAD_CURRENT_USER_FAILURE',
+    }));
   };
 }
 
@@ -37,7 +38,10 @@ export function mailSeller(listing, data, successMessage) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ body: data.message }),
-    }).then((json) => {
+    })
+    .then(handleErrors)
+    .then(response => response.json())
+    .then((json) => {
       dispatch({
         json,
         type: 'MAIL_SELLER_SUCCESS',
@@ -73,7 +77,10 @@ export function mailBuyer(seek, data, successMessage) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ body: data.message }),
-    }).then((json) => {
+    })
+    .then(handleErrors)
+    .then(response => response.json())
+    .then((json) => {
       dispatch({
         json,
         type: 'MAIL_BUYER_SUCCESS',

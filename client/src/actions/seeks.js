@@ -2,7 +2,7 @@ import fetch from 'isomorphic-fetch';
 import { stringify } from 'query-string';
 import { setComposeState, showSnackbar } from './ui';
 
-import { API_ROOT } from './common';
+import { API_ROOT, handleErrors } from './common';
 
 export function loadSeeks({ query = {}, reset = false }) {
   return function (dispatch, getState) {
@@ -14,15 +14,16 @@ export function loadSeeks({ query = {}, reset = false }) {
     return fetch(`${API_ROOT}/seeks?${stringify(getState().currentQuery)}`, {
       credentials: 'include',
     })
-      .then(response => response.json())
-      .then(json => dispatch({
-        json,
-        type: 'LOAD_SEEKS_SUCCESS',
-      }))
-      .catch(error => dispatch({
-        error,
-        type: 'LOAD_SEEKS_FAILURE',
-      }));
+    .then(handleErrors)
+    .then(response => response.json())
+    .then(json => dispatch({
+      json,
+      type: 'LOAD_SEEKS_SUCCESS',
+    }))
+    .catch(error => dispatch({
+      error,
+      type: 'LOAD_SEEKS_FAILURE',
+    }));
   };
 }
 
@@ -35,15 +36,16 @@ export function loadSeek(id = '') {
     return fetch(`${API_ROOT}/seeks/${id}`, {
       credentials: 'include',
     })
-      .then(response => response.json())
-      .then(json => dispatch({
-        json,
-        type: 'LOAD_SEEK_SUCCESS',
-      }))
-      .catch(error => dispatch({
-        error,
-        type: 'LOAD_SEEK_FAILURE',
-      }));
+    .then(handleErrors)
+    .then(response => response.json())
+    .then(json => dispatch({
+      json,
+      type: 'LOAD_SEEK_SUCCESS',
+    }))
+    .catch(error => dispatch({
+      error,
+      type: 'LOAD_SEEK_FAILURE',
+    }));
   };
 }
 
@@ -62,6 +64,8 @@ export function postSeek(seek, successMessage) {
       },
       body: JSON.stringify(seek),
     })
+    .then(handleErrors)
+    .then(response => response.json())
     .then((json) => {
       dispatch({
         type: 'POST_SEEK_SUCCESS',
@@ -91,10 +95,10 @@ export function deleteSeek(seek, successMessage) {
       credentials: 'include',
       method: 'DELETE',
     })
-    .then((json) => {
+    .then(handleErrors)
+    .then(() => {
       dispatch({
         type: 'DELETE_SEEK_SUCCESS',
-        json,
         seek,
       });
 
@@ -128,9 +132,9 @@ export function updateSeek(seek, successMessage) {
       },
       body: JSON.stringify(seek),
     })
-    .then((json) => {
+    .then(handleErrors)
+    .then(() => {
       dispatch({
-        json,
         type: 'UPDATE_SEEK_SUCCESS',
       });
       if (successMessage) {

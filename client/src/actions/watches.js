@@ -1,6 +1,6 @@
 import fetch from 'isomorphic-fetch';
 
-import { API_ROOT } from './common';
+import { API_ROOT, handleErrors } from './common';
 import { stripQuery } from '../helpers/query';
 
 export function loadWatches() {
@@ -11,6 +11,7 @@ export function loadWatches() {
     return fetch(`${API_ROOT}/watches`, {
       credentials: 'include',
     })
+    .then(handleErrors)
     .then(response => response.json())
     .then(json => dispatch({
       json,
@@ -36,6 +37,8 @@ export function postWatch(watch, successMessage) {
       },
       body: JSON.stringify(stripQuery(watch || getState().currentQuery)),
     })
+    .then(handleErrors)
+    .then(response => response.json())
     .then((json) => {
       dispatch({
         json,
@@ -67,6 +70,7 @@ export function deleteWatch(watch, successMessage) {
       credentials: 'include',
       method: 'DELETE',
     })
+    .then(handleErrors)
     .then(() => {
       dispatch({
         type: 'DELETE_WATCH_SUCCESS',

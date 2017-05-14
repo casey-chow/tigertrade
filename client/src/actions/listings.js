@@ -2,7 +2,7 @@ import fetch from 'isomorphic-fetch';
 import { stringify } from 'query-string';
 import { setComposeState, showSnackbar } from './ui';
 
-import { API_ROOT } from './common';
+import { API_ROOT, handleErrors } from './common';
 
 export function loadListings({ query = {}, reset = false }) {
   return function (dispatch, getState) {
@@ -14,15 +14,16 @@ export function loadListings({ query = {}, reset = false }) {
     return fetch(`${API_ROOT}/listings?${stringify(getState().currentQuery)}`, {
       credentials: 'include',
     })
-      .then(response => response.json())
-      .then(json => dispatch({
-        json,
-        type: 'LOAD_LISTINGS_SUCCESS',
-      }))
-      .catch(error => dispatch({
-        error,
-        type: 'LOAD_LISTINGS_FAILURE',
-      }));
+    .then(handleErrors)
+    .then(response => response.json())
+    .then(json => dispatch({
+      json,
+      type: 'LOAD_LISTINGS_SUCCESS',
+    }))
+    .catch(error => dispatch({
+      error,
+      type: 'LOAD_LISTINGS_FAILURE',
+    }));
   };
 }
 
@@ -35,15 +36,16 @@ export function loadListing(id = '') {
     return fetch(`${API_ROOT}/listings/${id}`, {
       credentials: 'include',
     })
-      .then(response => response.json())
-      .then(json => dispatch({
-        json,
-        type: 'LOAD_LISTING_SUCCESS',
-      }))
-      .catch(error => dispatch({
-        error,
-        type: 'LOAD_LISTING_FAILURE',
-      }));
+    .then(handleErrors)
+    .then(response => response.json())
+    .then(json => dispatch({
+      json,
+      type: 'LOAD_LISTING_SUCCESS',
+    }))
+    .catch(error => dispatch({
+      error,
+      type: 'LOAD_LISTING_FAILURE',
+    }));
   };
 }
 
@@ -61,6 +63,8 @@ export function postListing(listing, successMessage) {
       },
       body: JSON.stringify(listing),
     })
+    .then(handleErrors)
+    .then(response => response.json())
     .then((json) => {
       dispatch({
         json,
@@ -87,15 +91,15 @@ export function starListing(listing) {
 
     return fetch(`${API_ROOT}/listings/${listing.keyId}/star`, {
       credentials: 'include',
-      method: 'POST',
+      method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ isStarred: !listing.isStarred }),
     })
-    .then((json) => {
+    .then(handleErrors)
+    .then(() => {
       dispatch({
-        json,
         type: 'STAR_LISTING_SUCCESS',
       });
     })
@@ -117,6 +121,7 @@ export function deleteListing(listing, successMessage) {
       credentials: 'include',
       method: 'DELETE',
     })
+    .then(handleErrors)
     .then(() => {
       dispatch({
         type: 'DELETE_LISTING_SUCCESS',
@@ -152,9 +157,9 @@ export function updateListing(listing, successMessage) {
       },
       body: JSON.stringify(listing),
     })
-    .then((json) => {
+    .then(handleErrors)
+    .then(() => {
       dispatch({
-        json,
         type: 'UPDATE_LISTING_SUCCESS',
       });
       if (successMessage) {
