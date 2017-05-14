@@ -187,6 +187,9 @@ export default class ListingCard extends React.Component {
     // eslint-disable-next-line react/no-array-index-key
     (line, idx) => <p key={line + idx}>{line}</p>);
 
+  // http://stackoverflow.com/a/14428340/237904
+  formatPrice = n => `$${(n / 100).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,')}`;
+
   render() {
     const { listing, expanded } = this.props;
     const styles = ListingCard.styles;
@@ -206,7 +209,7 @@ export default class ListingCard extends React.Component {
         >
           <CardHeader
             title={listing.title}
-            subtitle={`$${listing.price / 100}`}
+            subtitle={this.formatPrice(listing.price)}
             actAsExpander
           />
 
