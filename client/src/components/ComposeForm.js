@@ -6,6 +6,7 @@ import {
   propTypes as reduxFormPropTypes,
 } from 'redux-form';
 import { TextField } from 'redux-form-material-ui';
+import DatePicker from 'material-ui-build/build/DatePicker';
 
 import FlatButton from 'material-ui/FlatButton';
 
@@ -36,6 +37,15 @@ const descriptionField = field => (
     fullWidth
     rowsMax={6}
     rows={2}
+  />
+);
+
+const expirationField = field => (
+  <DatePicker
+    hintText="Expiration date"
+    value={field.input.value}
+    onChange={field.input.onChange}
+    clearSelection
   />
 );
 
@@ -101,6 +111,12 @@ export default class ComposeForm extends PureComponent {
             <label htmlFor="price">Price</label>
             <div>
               <Field name="price" id="price" component={priceField} />
+            </div>
+          </div>
+          <div style={styles.spacer}>
+            <label htmlFor="expirationDate">Expiration Date</label>
+            <div>
+              <Field name="expirationDate" id="expirationDate" component={expirationField} />
             </div>
           </div>
           <div style={styles.spacer}>

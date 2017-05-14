@@ -53,7 +53,7 @@ export default class ComposeOverlay extends Component {
     overlay: {
       position: 'fixed',
       bottom: '0',
-      zIndex: '9001',
+      zIndex: '1495',
       right: '5%',
       width: '40vw',
       minWidth: '16rem',

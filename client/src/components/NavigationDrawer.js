@@ -79,7 +79,7 @@ export default class NavigationDrawer extends Component {
         paddingTop: '4rem',
       },
       overlay: {
-        zIndex: '1500',
+        zIndex: '1493',
       },
     },
   }
