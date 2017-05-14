@@ -287,7 +287,7 @@ export default class FilterBar extends Component {
                 style={styles.priceField}
                 prefix="$"
                 min="0"
-                step="0.01"
+                step="1"
               />
             }
             { isListing &&
@@ -300,7 +300,7 @@ export default class FilterBar extends Component {
                 style={styles.priceField}
                 prefix="$"
                 min="0"
-                step="0.01"
+                step="1"
               />
             }
           </Paper>
