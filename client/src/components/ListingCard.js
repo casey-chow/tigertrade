@@ -72,6 +72,7 @@ export default class ListingCard extends React.Component {
       price: PropTypes.number,
       status: PropTypes.string,
       isStarred: PropTypes.bool,
+      isSold: PropTypes.bool,
       expirationDate: PropTypes.number,
       thumbnail: PropTypes.string,
       photos: PropTypes.array,
@@ -208,6 +209,7 @@ export default class ListingCard extends React.Component {
     const styles = ListingCard.styles;
 
     const favoriteButtonBackground = this.props.listing.isStarred ? grey300 : 'transparent';
+    const soldButtonBackground = this.props.listing.isSold ? grey300 : 'transparent';
 
     return (
       <div>
@@ -276,7 +278,7 @@ export default class ListingCard extends React.Component {
               [
                 <FlatButton primary icon={<ModeEdit />} label="Edit" onTouchTap={this.handleEdit} key={0} />,
                 <FlatButton primary icon={<DeleteIcon />} label="Delete" onTouchTap={this.handleDelete} key={1} />,
-                <FlatButton primary icon={<MoneyIcon />} label="Mark as Sold" onTouchTap={this.handleSold} key={2} />,
+                <FlatButton primary icon={<MoneyIcon />} backgroundColor={soldButtonBackground} label="Mark as Sold" onTouchTap={this.handleSold} key={2} />,
               ]
               }
 
