@@ -432,7 +432,7 @@ func TestUpdateListingStar(t *testing.T) {
 			getUsername = func(_ *http.Request) string { return "" }
 
 			body := strings.NewReader("asdf")
-			req, _ := http.NewRequest("POST", "/api/listings/99/star", body)
+			req, _ := http.NewRequest("PUT", "/api/listings/99/star", body)
 			res := executeRequest(app, req)
 
 			So(res.Code, ShouldEqual, http.StatusUnprocessableEntity)
@@ -442,7 +442,7 @@ func TestUpdateListingStar(t *testing.T) {
 			getUsername = func(_ *http.Request) string { return "" }
 
 			body := strings.NewReader("{}")
-			req, _ := http.NewRequest("POST", "/api/listings/99/star", body)
+			req, _ := http.NewRequest("PUT", "/api/listings/99/star", body)
 			res := executeRequest(app, req)
 
 			So(res.Code, ShouldEqual, http.StatusUnauthorized)
@@ -458,7 +458,7 @@ func TestUpdateListingStar(t *testing.T) {
 				WillReturnResult(sqlmock.NewResult(99, 1))
 
 			body := strings.NewReader("{ \"isStarred\": true }")
-			req, _ := http.NewRequest("POST", "/api/listings/99/star", body)
+			req, _ := http.NewRequest("PUT", "/api/listings/99/star", body)
 			res := executeRequest(app, req)
 
 			So(res.Code, ShouldEqual, http.StatusNoContent)
