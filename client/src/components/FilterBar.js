@@ -8,6 +8,8 @@ import {
 
 import { isEmpty, omit } from 'lodash';
 
+import DatePicker from 'material-ui-build/build/DatePicker';
+
 import { grey300 } from 'material-ui/styles/colors';
 
 import Paper from 'material-ui/Paper';
