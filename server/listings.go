@@ -43,6 +43,28 @@ func ReadListings(w http.ResponseWriter, r *http.Request, ps httprouter.Params) 
 		query.MaxPrice = maxPrice
 	}
 
+	// Get optional sort order (note the redundancy prevents SQL injections)
+	switch r.URL.Query().Get("order") {
+	case "creationDateDesc":
+		query.Order = models.ListingsCreationDateDesc
+		break
+	case "creationDateAsc":
+		query.Order = models.ListingsCreationDateAsc
+		break
+	case "expirationDateDesc":
+		query.Order = models.ListingsExpirationDateDesc
+		break
+	case "expirationDateAsc":
+		query.Order = models.ListingsExpirationDateAsc
+		break
+	case "priceDesc":
+		query.Order = models.ListingsPriceDesc
+		break
+	case "priceAsc":
+		query.Order = models.ListingsPriceAsc
+		break
+	}
+
 	// Get optional expiration date filter limits
 	iso := "Mon Jan 2 15:04:05 -0700 MST 2006"
 	if minExpDate, err := time.Parse(iso, r.URL.Query().Get("minExpDate")); err == nil {

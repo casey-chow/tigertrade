@@ -65,12 +65,31 @@ func (l Listing) GetStatus() null.String {
 	return l.Status
 }
 
+// A ListingsOrder is a legal string for a reading SQL query to order by
+type ListingsOrder string
+
+const (
+	// ListingsCreationDateDesc is creation date descending
+	ListingsCreationDateDesc ListingsOrder = "listings.creation_date DESC"
+	// ListingsCreationDateAsc is creation date ascending
+	ListingsCreationDateAsc = "listings.creation_date ASC"
+	// ListingsExpirationDateDesc is expiration date descending
+	ListingsExpirationDateDesc = "listings.expiration_date DESC"
+	// ListingsExpirationDateAsc is expiration date ascending
+	ListingsExpirationDateAsc = "listings.expiration_date ASC"
+	// ListingsPriceDesc is price descending
+	ListingsPriceDesc = "listings.price DESC"
+	// ListingsPriceAsc is price ascending
+	ListingsPriceAsc = "listings.price ASC"
+)
+
 // A ListingQuery contains the necessary parameters for a parametrized query of the listings table
 type ListingQuery struct {
 	Query         string
 	OnlyStarred   bool
 	OnlyMine      bool
 	OnlyPhotos    bool
+	Order         ListingsOrder
 	Limit         uint64 // maximum number of listings to return
 	Offset        uint64 // offset in search results to send
 	UserID        int
@@ -85,6 +104,7 @@ type ListingQuery struct {
 // NewListingQuery creates a LisitngQuery with the appropriate default values
 func NewListingQuery() *ListingQuery {
 	q := new(ListingQuery)
+	q.Order = ListingsCreationDateDesc
 	q.Limit = defaultNumResults
 	q.MinPrice = -1
 	q.MaxPrice = -1
@@ -221,7 +241,7 @@ func buildListingQuery(query *ListingQuery) sq.SelectBuilder {
 		stmt = stmt.Where("cardinality(photos) > 0")
 	}
 
-	stmt = stmt.OrderBy("listings.creation_date DESC")
+	stmt = stmt.OrderBy(string(query.Order))
 	if query.Limit > defaultNumResults {
 		stmt = stmt.Limit(query.Limit)
 	} else {
