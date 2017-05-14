@@ -16,11 +16,14 @@ import {
 } from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
 
+import { grey300 } from 'material-ui/styles/colors';
+
 import EmailIcon from 'material-ui/svg-icons/communication/email';
 import DeleteIcon from 'material-ui/svg-icons/action/delete';
-import FavoriteIcon from 'material-ui/svg-icons/action/favorite';
+import WatchIcon from 'material-ui/svg-icons/action/visibility';
 import LinkIcon from 'material-ui/svg-icons/content/link';
 import ModeEdit from 'material-ui/svg-icons/editor/mode-edit';
+import MoneyIcon from 'material-ui/svg-icons/editor/monetization-on';
 
 import Dialog from 'material-ui/Dialog';
 import Chip from 'material-ui/Chip';
@@ -30,7 +33,7 @@ import ContactBuyerForm from './ContactBuyerForm';
 import { mediaQueries } from '../helpers/breakpoints';
 import { redirectToCas } from '../helpers/cas';
 import { mailBuyer } from './../actions/users';
-import { loadSeeks, editSeek, deleteSeek } from './../actions/seeks';
+import { loadSeeks, editSeek, deleteSeek, loadSeek, updateSeek } from './../actions/seeks';
 import { postWatch } from './../actions/watches';
 
 
@@ -64,6 +67,7 @@ export default class SeekCard extends React.Component {
       watchId: PropTypes.number,
       notifyEnabled: PropTypes.bool,
       status: PropTypes.string,
+      isActive: PropTypes.bool,
     }).isRequired,
   };
 
@@ -154,11 +158,26 @@ export default class SeekCard extends React.Component {
     ));
   }
 
+  handleBought = () => {
+    this.props.dispatch(updateSeek({
+      ...this.props.seek,
+      isActive: !this.props.seek.isActive,
+    })).then(() => {
+      if (this.props.singleton) {
+        this.props.dispatch(loadSeek(this.props.seek.keyId));
+      } else {
+        this.props.dispatch(loadSeeks({}));
+      }
+    });
+  }
+
   formatDescription = description => description.split('\n').map(line => <p key={line}>{line}</p>);
 
   render() {
     const { seek, expanded } = this.props;
     const styles = SeekCard.styles;
+
+    const boughtButtonBackground = this.props.seek.isActive ? 'transparent' : grey300;
 
     return (
       <div>
@@ -190,10 +209,11 @@ export default class SeekCard extends React.Component {
               [
                 <FlatButton primary icon={<ModeEdit />} label="Edit" onTouchTap={this.handleEdit} key={0} />,
                 <FlatButton primary icon={<DeleteIcon />} label="Delete" onTouchTap={this.handleDelete} key={1} />,
+                <FlatButton primary icon={<MoneyIcon />} backgroundColor={boughtButtonBackground} label="Mark as Bought" onTouchTap={this.handleBought} key={2} />,
               ]
               }
 
-              <FlatButton secondary icon={<FavoriteIcon />} label="Notify Me" onTouchTap={this.handleStar} />
+              <FlatButton primary icon={<WatchIcon />} label="Notify Me" onTouchTap={this.handleStar} />
               <Link to={`/seek/${this.props.seek.keyId}`}><FlatButton icon={<LinkIcon />} label="Permalink" /></Link>
             </CardActions>
 
