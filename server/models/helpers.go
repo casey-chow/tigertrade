@@ -43,7 +43,7 @@ func getExecResultCode(result sql.Result, err error) (int, error) {
 // getExecDoNothingResultCode is like getExecResultCode,
 // but should be used when the SQL operation affecting no rows is not an error
 func getExecDoNothingResultCode(result sql.Result, err error) (int, error) {
-	code, err := getExecResultCode
+	code, err := getExecResultCode(result, err)
 	if code == http.StatusNotFound {
 		return http.StatusNoContent, nil
 	}
