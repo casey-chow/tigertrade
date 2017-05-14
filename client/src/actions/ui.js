@@ -18,6 +18,12 @@ export function toggleLeftDrawer() {
   };
 }
 
+export function toggleFilterBar() {
+  return {
+    type: 'TOGGLE_FILTER_BAR',
+  };
+}
+
 export function setComposeState(show = false, isEdit = false, mode = 'listings', listing, seek) {
   return {
     type: 'SET_COMPOSE_STATE',
