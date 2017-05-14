@@ -63,6 +63,7 @@ func TestReadSeeks(t *testing.T) {
 					"saved_search_id",
 					"notify_enabled",
 					"status",
+					"is_active",
 				}).AddRow(
 					1,
 					time.Now(),
@@ -74,6 +75,7 @@ func TestReadSeeks(t *testing.T) {
 					1001,
 					false,
 					"For Sale",
+					true,
 				))
 
 			req, _ := http.NewRequest("GET", "/api/seeks?query=SampleValue", nil)
@@ -111,6 +113,7 @@ func TestReadSeeks(t *testing.T) {
 					"saved_search_id",
 					"notify_enabled",
 					"status",
+					"is_active",
 				}).AddRow(
 					1,
 					time.Now(),
@@ -122,6 +125,7 @@ func TestReadSeeks(t *testing.T) {
 					1001,
 					false,
 					"For Sale",
+					true,
 				))
 
 			req, _ := http.NewRequest("GET", "/api/seeks?query=sAmPleVaLue", nil)
@@ -187,6 +191,7 @@ func TestReadSeek(t *testing.T) {
 					"saved_search_id",
 					"notify_enabled",
 					"status",
+					"is_active",
 				}).AddRow(
 					140,
 					time.Now(),
@@ -198,6 +203,7 @@ func TestReadSeek(t *testing.T) {
 					1001,
 					false,
 					"For Sale",
+					true,
 				))
 			req, _ := http.NewRequest("GET", "/api/seeks/140", nil)
 			res := executeRequest(app, req)

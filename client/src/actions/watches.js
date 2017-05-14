@@ -91,3 +91,30 @@ export function deleteWatch(watch, successMessage) {
     }));
   };
 }
+
+export function updateWatch(watch) {
+  return function (dispatch, getState) {
+    dispatch({
+      type: 'UPDATE_WATCH_REQUEST',
+    });
+
+    return fetch(`${API_ROOT}/watches/${watch.keyId}`, {
+      credentials: 'include',
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(watch),
+    })
+    .then(handleErrors)
+    .then(() => {
+      dispatch({
+        type: 'UPDATE_WATCH_SUCCESS',
+      });
+    })
+    .catch(error => dispatch({
+      error,
+      type: 'UPDATE_WATCH_FAILURE',
+    }));
+  };
+}

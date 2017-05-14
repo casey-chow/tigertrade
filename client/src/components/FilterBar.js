@@ -12,7 +12,7 @@ import { grey300 } from 'material-ui/styles/colors';
 
 import Paper from 'material-ui/Paper';
 import FlatButton from 'material-ui/FlatButton';
-import DropDownMenu from 'material-ui/DropDownMenu';
+import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import TextField from 'material-ui/TextField';
 import Toggle from 'material-ui/Toggle';
@@ -51,6 +51,7 @@ export default class FilterBar extends Component {
       minPrice: PropTypes.bool,
       maxPrice: PropTypes.bool,
       order: PropTypes.string,
+      includeInactive: PropTypes.bool,
     }).isRequired,
     leftDrawerVisible: PropTypes.bool.isRequired,
     style: PropTypes.object, // eslint-disable-line react/forbid-prop-types
@@ -83,6 +84,8 @@ export default class FilterBar extends Component {
 
   state = {
     expanded: false,
+    expandAll: false,
+    includeInactive: false,
     order: 'creationDateDesc',
     isStarred: false,
     hasPhotos: false,
@@ -93,6 +96,8 @@ export default class FilterBar extends Component {
   componentWillMount() {
     this.setState({
       expanded: this.props.expanded,
+      expandAll: this.props.expandAll,
+      includeInactive: this.props.query.includeInactive,
       order: this.props.query.order || 'creationDateDesc',
       isStarred: this.props.query.isStarred,
       hasPhotos: this.props.query.hasPhotos,
@@ -104,6 +109,8 @@ export default class FilterBar extends Component {
   componentWillReceiveProps(nextProps) {
     this.setState({
       expanded: nextProps.expanded,
+      expandAll: nextProps.expandAll,
+      includeInactive: nextProps.query.includeInactive,
       order: nextProps.query.order || 'creationDateDesc',
       isStarred: nextProps.query.isStarred,
       hasPhotos: nextProps.query.hasPhotos,
@@ -143,10 +150,23 @@ export default class FilterBar extends Component {
   }
 
   handleExpandAllToggle = (event, checked) => {
+    this.setState({ expandAll: checked });
     if (this.props.contentContainer) {
       this.props.contentContainer.scrollTop = 0;
     }
     this.props.dispatch(setExpandAll(checked));
+  }
+
+  handleIncludeInactiveToggle = (event, checked) => {
+    const includeInactive = checked;
+    const query = { includeInactive };
+    this.setState(query);
+    this.props.dispatch(loadPosts(
+      this.props.displayMode,
+      { query },
+    )).then(() => {
+      writeHistory(this.props);
+    });
   }
 
   handleOrder = (event, index, order) => {
@@ -216,27 +236,26 @@ export default class FilterBar extends Component {
                 onTouchTap={this.handleExpandedToggle}
               />
             }
-            { (isListing || isSeek) &&
+            <div>
+              <Toggle
+                label="Expand All"
+                labelPosition="right"
+                toggled={this.state.expandAll}
+                onToggle={this.handleExpandAllToggle}
+              />
+            </div>
+            { isSeek &&
               <div>
                 <Toggle
-                  label="Expand All"
+                  label="Include Bought"
                   labelPosition="right"
-                  toggled={this.props.expandAll}
-                  onToggle={this.handleExpandAllToggle}
+                  toggled={this.state.includeInactive}
+                  onToggle={this.handleIncludeInactiveToggle}
                 />
               </div>
             }
             { isListing &&
-              <FlatButton
-                secondary
-                icon={<FavoriteIcon />}
-                label="Favorites Only"
-                backgroundColor={this.state.isStarred ? grey300 : 'transparent'}
-                onTouchTap={this.handleFavorite}
-              />
-            }
-            { isListing &&
-              <DropDownMenu
+              <SelectField
                 value={this.state.order}
                 onChange={this.handleOrder}
                 autoWidth
@@ -247,7 +266,16 @@ export default class FilterBar extends Component {
                 <MenuItem value={'priceDesc'} primaryText="Most Expensive" />
                 <MenuItem value={'expirationDateAsc'} primaryText="Soonest Expiration" />
                 <MenuItem value={'expirationDateDesc'} primaryText="Furthest Expiration" />
-              </DropDownMenu>
+              </SelectField>
+            }
+            { isListing &&
+              <FlatButton
+                secondary
+                icon={<FavoriteIcon />}
+                label="Favorites Only"
+                backgroundColor={this.state.isStarred ? grey300 : 'transparent'}
+                onTouchTap={this.handleFavorite}
+              />
             }
             { (isListing && !location.pathname.startsWith('/listings/mine')) &&
               <FlatButton
@@ -255,12 +283,12 @@ export default class FilterBar extends Component {
                 icon={<WatchIcon />}
                 label="Watch this Search"
                 onTouchTap={this.handleWatchButtonTap}
-                disabled={isEmpty(omit(query, ['isStarred', 'limit', 'hasPhotos', 'order']))}
+                disabled={isEmpty(omit(query, ['isStarred', 'limit', 'hasPhotos', 'order', 'includeInactive']))}
               />
             }
           </Paper>
         }
-        { this.state.expanded &&
+        { this.state.expanded && isListing &&
           <Paper
             style={{
               ...styles.base,
@@ -268,41 +296,43 @@ export default class FilterBar extends Component {
               ...this.props.style,
             }}
           >
-            { isListing && this.state.expanded &&
-              <FlatButton
-                secondary
-                icon={<PhotoIcon />}
-                label="Has Photos Only"
-                backgroundColor={this.state.hasPhotos ? grey300 : 'transparent'}
-                onTouchTap={this.handlePhoto}
+            <div>
+              <Toggle
+                label="Include Sold"
+                labelPosition="right"
+                toggled={this.state.includeInactive}
+                onToggle={this.handleIncludeInactiveToggle}
               />
-            }
-            { isListing &&
-              <TextField
-                hintText="Max Price"
-                type="number"
-                onChange={this.handleMaxChange}
-                onBlur={this.handleOnBlur}
-                value={this.state.maxPrice}
-                style={styles.priceField}
-                prefix="$"
-                min="0"
-                step="0.01"
-              />
-            }
-            { isListing &&
-              <TextField
-                hintText="Min Price"
-                type="number"
-                onChange={this.handleMinChange}
-                onBlur={this.handleOnBlur}
-                value={this.state.minPrice}
-                style={styles.priceField}
-                prefix="$"
-                min="0"
-                step="0.01"
-              />
-            }
+            </div>
+            <FlatButton
+              secondary
+              icon={<PhotoIcon />}
+              label="Has Photos Only"
+              backgroundColor={this.state.hasPhotos ? grey300 : 'transparent'}
+              onTouchTap={this.handlePhoto}
+            />
+            <TextField
+              hintText="Max Price"
+              type="number"
+              onChange={this.handleMaxChange}
+              onBlur={this.handleOnBlur}
+              value={this.state.maxPrice}
+              style={styles.priceField}
+              prefix="$"
+              min="0"
+              step="1"
+            />
+            <TextField
+              hintText="Min Price"
+              type="number"
+              onChange={this.handleMinChange}
+              onBlur={this.handleOnBlur}
+              value={this.state.minPrice}
+              style={styles.priceField}
+              prefix="$"
+              min="0"
+              step="1"
+            />
           </Paper>
         }
       </div>

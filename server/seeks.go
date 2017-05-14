@@ -20,6 +20,10 @@ func ReadSeeks(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 
 	query.OnlyMine, _ = strconv.ParseBool(r.URL.Query().Get("isMine"))
 
+	if includeInactive, err := strconv.ParseBool(r.URL.Query().Get("includeInactive")); err == nil {
+		query.OnlyActive = !includeInactive
+	}
+
 	if offset, err := strconv.ParseUint(r.URL.Query().Get("offset"), 10, 64); err == nil {
 		query.Offset = offset
 	}

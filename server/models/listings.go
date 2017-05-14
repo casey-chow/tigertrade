@@ -27,6 +27,7 @@ type Listing struct {
 	Thumbnail            null.String    `json:"thumbnail"`
 	Photos               pq.StringArray `json:"photos"`
 	IsStarred            bool           `json:"isStarred"`
+	IsActive             bool           `json:"isActive"`
 	Keywords             pq.StringArray
 }
 
@@ -65,6 +66,11 @@ func (l Listing) GetStatus() null.String {
 	return l.Status
 }
 
+// GetIsActive returns the IsActive of the Listing
+func (l Listing) GetIsActive() bool {
+	return l.IsActive
+}
+
 // A ListingsOrder is a legal string for a reading SQL query to order by
 type ListingsOrder string
 
@@ -89,6 +95,7 @@ type ListingQuery struct {
 	OnlyStarred   bool
 	OnlyMine      bool
 	OnlyPhotos    bool
+	OnlyActive    bool
 	Order         ListingsOrder
 	Limit         uint64 // maximum number of listings to return
 	Offset        uint64 // offset in search results to send
@@ -104,6 +111,7 @@ type ListingQuery struct {
 // NewListingQuery creates a LisitngQuery with the appropriate default values
 func NewListingQuery() *ListingQuery {
 	q := new(ListingQuery)
+	q.OnlyActive = true
 	q.Order = ListingsCreationDateDesc
 	q.Limit = defaultNumResults
 	q.MinPrice = -1
@@ -168,6 +176,7 @@ func ReadListings(db *sql.DB, query *ListingQuery) ([]*Listing, int, error) {
 			&l.Thumbnail,
 			&l.IsStarred,
 			&l.Photos,
+			&l.IsActive,
 		)
 		if err != nil {
 			return nil, http.StatusInternalServerError, err
@@ -198,10 +207,14 @@ func buildListingQuery(query *ListingQuery) sq.SelectBuilder {
 			"thumbnail_url",
 			isStarredBy(query.UserID),
 			"photos",
+			"is_active",
 		).
 		From("listings").
-		Where("listings.is_active=true").
 		LeftJoin("users ON listings.user_id = users.key_id")
+
+	if query.OnlyActive {
+		stmt = stmt.Where("listings.is_active=true")
+	}
 
 	stmt = whereFuzzyOrSemanticMatch(stmt, query.Query)
 
@@ -272,9 +285,9 @@ func ReadListing(db *sql.DB, id string, userID int) (Listing, int, error) {
 			"thumbnail_url",
 			isStarredBy(userID),
 			"photos",
+			"is_active",
 		).
 		From("listings").
-		Where("listings.is_active=true").
 		LeftJoin("users ON listings.user_id = users.key_id").
 		Where(sq.Eq{"listings.key_id": id})
 
@@ -301,6 +314,7 @@ func ReadListing(db *sql.DB, id string, userID int) (Listing, int, error) {
 		&listing.Thumbnail,
 		&listing.IsStarred,
 		&listing.Photos,
+		&listing.IsActive,
 	)
 	if err == sql.ErrNoRows {
 		return listing, http.StatusNotFound, err
@@ -385,6 +399,7 @@ func UpdateListing(db *sql.DB, id string, listing Listing, userID int) (int, err
 			"expiration_date": listing.ExpirationDate,
 			"thumbnail_url":   listing.Thumbnail,
 			"photos":          listing.Photos,
+			"is_active":       listing.IsActive,
 		}).
 		Where(sq.Eq{
 			"listings.key_id":  listing.KeyID,

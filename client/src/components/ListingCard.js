@@ -26,6 +26,7 @@ import DeleteIcon from 'material-ui/svg-icons/action/delete';
 import ModeEdit from 'material-ui/svg-icons/editor/mode-edit';
 import FavoriteIcon from 'material-ui/svg-icons/action/favorite';
 import LinkIcon from 'material-ui/svg-icons/content/link';
+import MoneyIcon from 'material-ui/svg-icons/editor/monetization-on';
 
 import Lightbox from 'react-images';
 
@@ -34,7 +35,7 @@ import ContactSellerForm from './ContactSellerForm';
 import { mediaQueries } from '../helpers/breakpoints';
 import { redirectToCas } from '../helpers/cas';
 import { mailSeller } from './../actions/users';
-import { loadListings, loadListing, editListing, deleteListing, starListing } from './../actions/listings';
+import { loadListings, loadListing, editListing, deleteListing, starListing, updateListing } from './../actions/listings';
 
 import './ListingCard.css';
 
@@ -72,6 +73,7 @@ export default class ListingCard extends React.Component {
       status: PropTypes.string,
       isStarred: PropTypes.bool,
       expirationDate: PropTypes.string,
+      isActive: PropTypes.bool,
       thumbnail: PropTypes.string,
       photos: PropTypes.array,
     }).isRequired,
@@ -183,6 +185,19 @@ export default class ListingCard extends React.Component {
     });
   }
 
+  handleSold = () => {
+    this.props.dispatch(updateListing({
+      ...this.props.listing,
+      isActive: !this.props.listing.isActive,
+    })).then(() => {
+      if (this.props.singleton) {
+        this.props.dispatch(loadListing(this.props.listing.keyId));
+      } else {
+        this.props.dispatch(loadListings({}));
+      }
+    });
+  }
+
   formatDescription = desc => desc.split('\n').map(
     // eslint-disable-next-line react/no-array-index-key
     (line, idx) => <p key={line + idx}>{line}</p>);
@@ -195,6 +210,7 @@ export default class ListingCard extends React.Component {
     const styles = ListingCard.styles;
 
     const favoriteButtonBackground = this.props.listing.isStarred ? grey300 : 'transparent';
+    const soldButtonBackground = this.props.listing.isActive ? 'transparent' : grey300;
 
     return (
       <div>
@@ -263,6 +279,7 @@ export default class ListingCard extends React.Component {
               [
                 <FlatButton primary icon={<ModeEdit />} label="Edit" onTouchTap={this.handleEdit} key={0} />,
                 <FlatButton primary icon={<DeleteIcon />} label="Delete" onTouchTap={this.handleDelete} key={1} />,
+                <FlatButton primary icon={<MoneyIcon />} backgroundColor={soldButtonBackground} label="Mark as Sold" onTouchTap={this.handleSold} key={2} />,
               ]
               }
 
