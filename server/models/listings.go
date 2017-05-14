@@ -273,6 +273,7 @@ func ReadListing(db *sql.DB, id string) (Listing, int, error) {
 		&listing.Status,
 		&listing.ExpirationDate,
 		&listing.Thumbnail,
+		&listing.IsStarred,
 		&listing.Photos,
 	)
 	if err == sql.ErrNoRows {

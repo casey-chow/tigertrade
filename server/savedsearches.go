@@ -45,12 +45,7 @@ func ReadSavedSearches(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 
 // ReadSavedSearch writes a saved search identified in r to w
 func ReadSavedSearch(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	// Get ID from params
 	id := ps.ByName("id")
-	if id == "" {
-		Error(w, http.StatusBadRequest)
-		return
-	}
 
 	// Retrieve UserID
 	user, err := models.GetUser(db, getUsername(r))
@@ -108,12 +103,7 @@ func CreateSavedSearch(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 
 // UpdateSavedSearch updates the requested saved search if it is owned by the current user
 func UpdateSavedSearch(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	// Get ID from params
 	id := ps.ByName("id")
-	if id == "" {
-		Error(w, http.StatusBadRequest)
-		return
-	}
 
 	// Get savedSearch to add from request body
 	savedSearch := models.SavedSearch{}
@@ -146,12 +136,7 @@ func UpdateSavedSearch(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 
 // DeleteSavedSearch delete the requested saved search if it is owned by the current user
 func DeleteSavedSearch(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	// Get ID from params
 	id := ps.ByName("id")
-	if id == "" {
-		Error(w, http.StatusBadRequest)
-		return
-	}
 
 	// Retrieve UserID
 	user, err := models.GetUser(db, getUsername(r))

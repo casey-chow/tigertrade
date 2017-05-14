@@ -49,12 +49,7 @@ func ReadSeeks(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 
 // ReadSeek writes the seek identified in r to w
 func ReadSeek(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	// Get ID from params
 	id := ps.ByName("id")
-	if id == "" {
-		Error(w, http.StatusBadRequest)
-		return
-	}
 
 	seeks, code, err := models.ReadSeek(db, id)
 	if err != nil {
@@ -103,12 +98,7 @@ func CreateSeek(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 
 // UpdateSeek updates the requested seek if it is owned by the current user
 func UpdateSeek(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	// Get ID from params
 	id := ps.ByName("id")
-	if id == "" {
-		Error(w, http.StatusBadRequest)
-		return
-	}
 
 	// Get seek to add from request body
 	seek := models.Seek{}
@@ -141,12 +131,7 @@ func UpdateSeek(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 
 // DeleteSeek deletes the requested seek if it is owned by the current user
 func DeleteSeek(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	// Get ID from params
 	id := ps.ByName("id")
-	if id == "" {
-		Error(w, http.StatusBadRequest)
-		return
-	}
 
 	// Retrieve UserID
 	user, err := models.GetUser(db, getUsername(r))

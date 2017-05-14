@@ -111,6 +111,10 @@ func loadEnvironment() {
 
 // Connects to database specified in DATABASE_URL env variable
 func initDatabase() {
+	if db != nil {
+		return
+	}
+
 	var err error
 	db, err = sql.Open("postgres", os.Getenv("DATABASE_URL"))
 	if err != nil {
