@@ -6,8 +6,7 @@ import { withRouter } from 'react-router-dom';
 import AutoComplete from 'material-ui/AutoComplete';
 import Paper from 'material-ui/Paper';
 
-import { loadListings } from './../actions/listings';
-import { loadSeeks } from './../actions/seeks';
+import { loadPosts } from './../actions/common';
 import { writeHistory } from '../helpers/query';
 
 import './SearchBar.css';
@@ -68,16 +67,10 @@ export default class SearchBar extends Component {
 
   handleUpdateInput = (value) => {
     const query = { query: value === '' ? undefined : value };
-    switch (this.props.displayMode) {
-      case 'seeks':
-        this.props.dispatch(loadSeeks({ query }));
-        break;
-      case 'listings':
-        this.props.dispatch(loadListings({ query }));
-        break;
-      default:
-        break;
-    }
+    this.props.dispatch(loadPosts(
+      this.props.displayMode,
+      { query },
+    ));
   }
 
   handleTouchTap = (event) => {
