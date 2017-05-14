@@ -12,10 +12,6 @@ import (
 // PostgreSQL Statement Builder instance
 var psql = sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
 
-// Default maximum number of characters in a truncated description of a datum
-// Used when obtaining and displaying many datum of a given structure
-const defaultTruncationLength = 1024
-
 // Default and maximum number of datum returned by bulk API queries
 // Used when obtaining and displaying many datum of a given structure
 const defaultNumResults uint64 = 30

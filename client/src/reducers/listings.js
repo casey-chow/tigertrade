@@ -35,6 +35,8 @@ export const listings = (state = [], action) => {
       return [];
     case 'LOAD_LISTINGS_SUCCESS':
       return action.json;
+    case 'SET_EXPAND_ALL':
+      return action.expandAll ? state.slice(0, 30) : state;
     case 'LOAD_LISTINGS_REQUEST':
     default:
       return state;

@@ -76,8 +76,12 @@ export default class Listings extends Component {
           listings={listings}
           expandAll={expandAll}
         />
-        <Waypoint topOffset="70%" bottomOffset="-25%" onEnter={this.loadMoreListings} />
         <LoadingSpinner loading={listingsLoading} />
+        <Waypoint
+          topOffset="70%"
+          bottomOffset="-25%"
+          onEnter={this.loadMoreListings}
+        />
       </div>
     );
   }

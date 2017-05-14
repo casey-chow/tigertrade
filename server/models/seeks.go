@@ -3,7 +3,6 @@ package models
 import (
 	"database/sql"
 	"errors"
-	"fmt"
 	sq "github.com/Masterminds/squirrel"
 	"github.com/guregu/null"
 	"net/http"
@@ -60,18 +59,16 @@ func (s Seek) GetStatus() null.String {
 
 // A SeekQuery contains the necessary parameters for a parametrized query of the seeks table
 type SeekQuery struct {
-	Query            string
-	OnlyMine         bool
-	TruncationLength int    // number of characters to truncate listing descriptions to
-	Limit            uint64 // maximum number of listings to return
-	Offset           uint64 // offset in search results to send
-	UserID           int
+	Query    string
+	OnlyMine bool
+	Limit    uint64 // maximum number of listings to return
+	Offset   uint64 // offset in search results to send
+	UserID   int
 }
 
 // NewSeekQuery creates a SeekQuery with the appropriate default values
 func NewSeekQuery() *SeekQuery {
 	q := new(SeekQuery)
-	q.TruncationLength = defaultTruncationLength
 	q.Limit = defaultNumResults
 	return q
 }
@@ -125,7 +122,7 @@ func buildSeekQuery(query *SeekQuery) sq.SelectBuilder {
 			"seeks.creation_date",
 			"seeks.last_modification_date",
 			"title",
-			fmt.Sprintf("left(description, %d)", query.TruncationLength),
+			"description",
 			"user_id",
 			"users.net_id",
 			"saved_search_id",

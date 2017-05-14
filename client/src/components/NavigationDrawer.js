@@ -73,8 +73,10 @@ export default class NavigationDrawer extends Component {
         zIndex: '2000',
       },
       content: {
+        display: 'flex',
+        flexDirection: 'column',
+        overflow: 'visible',
         paddingTop: '4rem',
-        paddingBottom: '2rem',
       },
       overlay: {
         zIndex: '1500',

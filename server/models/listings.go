@@ -67,25 +67,23 @@ func (l Listing) GetStatus() null.String {
 
 // A ListingQuery contains the necessary parameters for a parametrized query of the listings table
 type ListingQuery struct {
-	Query            string
-	OnlyStarred      bool
-	OnlyMine         bool
-	TruncationLength int    // number of characters to truncate listing descriptions to
-	Limit            uint64 // maximum number of listings to return
-	Offset           uint64 // offset in search results to send
-	UserID           int
-	MinPrice         int
-	MaxPrice         int
-	MinExpDate       time.Time
-	MaxExpDate       time.Time
-	MinCreateDate    time.Time
-	MaxCreateDate    time.Time
+	Query         string
+	OnlyStarred   bool
+	OnlyMine      bool
+	Limit         uint64 // maximum number of listings to return
+	Offset        uint64 // offset in search results to send
+	UserID        int
+	MinPrice      int
+	MaxPrice      int
+	MinExpDate    time.Time
+	MaxExpDate    time.Time
+	MinCreateDate time.Time
+	MaxCreateDate time.Time
 }
 
 // NewListingQuery creates a LisitngQuery with the appropriate default values
 func NewListingQuery() *ListingQuery {
 	q := new(ListingQuery)
-	q.TruncationLength = defaultTruncationLength
 	q.Limit = defaultNumResults
 	q.MinPrice = -1
 	q.MaxPrice = -1
@@ -170,7 +168,7 @@ func buildListingQuery(query *ListingQuery) sq.SelectBuilder {
 			"listings.creation_date",
 			"listings.last_modification_date",
 			"title",
-			fmt.Sprintf("left(description, %d)", query.TruncationLength),
+			"description",
 			"user_id",
 			"users.net_id",
 			"price",

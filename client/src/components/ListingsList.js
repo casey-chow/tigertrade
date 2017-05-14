@@ -49,7 +49,6 @@ export default class ListingsList extends PureComponent {
             expanded={this.props.expandAll || this.isExpanded(listing.keyId)}
             listing={listing}
             onExpandChange={this.handleExpandChange}
-
           />)
         }
       </ListContainer>

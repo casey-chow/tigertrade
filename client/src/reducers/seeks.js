@@ -28,6 +28,8 @@ export const seeks = (state = [], action) => {
       return [];
     case 'LOAD_SEEKS_SUCCESS':
       return action.json;
+    case 'SET_EXPAND_ALL':
+      return action.expandAll ? state.slice(0, 30) : state;
     case 'LOAD_SEEKS_REQUEST':
     default:
       return state;

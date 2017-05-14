@@ -35,13 +35,8 @@ const mapStateToProps = state => ({
 export default class FilterBar extends Component {
   static propTypes = {
     ...routerPropTypes,
+    contentContainer: PropTypes.node,
     dispatch: PropTypes.func.isRequired,
-    history: PropTypes.shape({
-      push: PropTypes.func.isRequired,
-    }).isRequired,
-    location: PropTypes.shape({
-      pathname: PropTypes.string.isRequired,
-    }).isRequired,
     displayMode: PropTypes.string.isRequired,
     expandAll: PropTypes.bool.isRequired,
     query: PropTypes.shape({
@@ -53,6 +48,7 @@ export default class FilterBar extends Component {
   }
 
   static defaultProps = {
+    contentContainer: '',
     style: {
       display: 'flex',
       flexDirection: 'row',
@@ -67,7 +63,6 @@ export default class FilterBar extends Component {
     base: {
       minHeight: '4rem',
       right: '0',
-      position: 'fixed',
       paddingTop: '0.5em',
       paddingBottom: '0.5em',
       zIndex: '50',
@@ -119,6 +114,9 @@ export default class FilterBar extends Component {
   }
 
   handleExpandAllToggle = (event, checked) => {
+    if (this.props.contentContainer) {
+      this.props.contentContainer.scrollTop = 0;
+    }
     this.props.dispatch(setExpandAll(checked));
   }
 
@@ -162,10 +160,10 @@ export default class FilterBar extends Component {
   }
 
   render() {
-    const { query, leftDrawerVisible } = this.props;
+    const { query, leftDrawerVisible, location } = this.props;
     const styles = FilterBar.styles;
-    const isListing = this.props.location.pathname.startsWith('/listings');
-    const isSeek = this.props.location.pathname.startsWith('/seeks');
+    const isListing = location.pathname.startsWith('/listings');
+    const isSeek = location.pathname.startsWith('/seeks');
 
     return (
       <div>
@@ -222,7 +220,7 @@ export default class FilterBar extends Component {
                 />
               </div>
             }
-            { isListing &&
+            { (isListing && !location.pathname.startsWith('/listings/mine')) &&
               <FlatButton
                 primary
                 icon={<WatchIcon />}
