@@ -90,6 +90,8 @@ export default class FilterBar extends Component {
     hasPhotos: false,
     minPrice: -1,
     maxPrice: -1,
+    postedAfter: undefined,
+    postedBefore: undefined,
   }
 
   componentWillMount() {
@@ -177,6 +179,24 @@ export default class FilterBar extends Component {
   handleMaxChange = (event, maxPrice) => {
     this.setState({ maxPrice });
     const query = { maxPrice: (maxPrice === '') ? undefined : Math.floor(maxPrice * 100) };
+    this.props.dispatch(loadPosts(
+      this.props.displayMode,
+      { query },
+    ));
+  }
+
+  handlePostedAfterChange = (_, postedAfter) => {
+    this.setState({ postedAfter });
+    const query = { minCreateDate: postedAfter };
+    this.props.dispatch(loadPosts(
+      this.props.displayMode,
+      { query },
+    ));
+  }
+
+  handlePostedBeforeChange = (_, postedBefore) => {
+    this.setState({ postedBefore });
+    const query = { maxCreateDate: postedBefore };
     this.props.dispatch(loadPosts(
       this.props.displayMode,
       { query },
@@ -303,6 +323,22 @@ export default class FilterBar extends Component {
                 prefix="$"
                 min="0"
                 step="0.01"
+              />
+            }
+            { isListing &&
+              <DatePicker
+                hintText="Posted before"
+                clearSelection
+                value={this.state.postedBefore}
+                onChange={this.handlePostedBeforeChange}
+              />
+            }
+            { isListing &&
+              <DatePicker
+                hintText="Posted after"
+                clearSelection
+                value={this.state.postedAfter}
+                onChange={this.handlePostedAfterChange}
               />
             }
           </Paper>
