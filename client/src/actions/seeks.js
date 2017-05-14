@@ -2,7 +2,7 @@ import fetch from 'isomorphic-fetch';
 import { stringify } from 'query-string';
 import { setComposeState, showSnackbar } from './ui';
 
-import { API_ROOT } from './common';
+import { API_ROOT, handleErrors } from './common';
 
 export function loadSeeks({ query = {}, reset = false }) {
   return function (dispatch, getState) {
@@ -11,18 +11,19 @@ export function loadSeeks({ query = {}, reset = false }) {
       reset,
       type: 'LOAD_SEEKS_REQUEST',
     });
-    fetch(`${API_ROOT}/seeks?${stringify(getState().currentQuery)}`, {
+    return fetch(`${API_ROOT}/seeks?${stringify(getState().currentQuery)}`, {
       credentials: 'include',
     })
-      .then(response => response.json())
-      .then(json => dispatch({
-        json,
-        type: 'LOAD_SEEKS_SUCCESS',
-      }))
-      .catch(error => dispatch({
-        error,
-        type: 'LOAD_SEEKS_FAILURE',
-      }));
+    .then(handleErrors)
+    .then(response => response.json())
+    .then(json => dispatch({
+      json,
+      type: 'LOAD_SEEKS_SUCCESS',
+    }))
+    .catch(error => dispatch({
+      error,
+      type: 'LOAD_SEEKS_FAILURE',
+    }));
   };
 }
 
@@ -32,18 +33,19 @@ export function loadSeek(id = '') {
       query: {},
       type: 'LOAD_SEEK_REQUEST',
     });
-    fetch(`${API_ROOT}/seeks/${id}`, {
+    return fetch(`${API_ROOT}/seeks/${id}`, {
       credentials: 'include',
     })
-      .then(response => response.json())
-      .then(json => dispatch({
-        json,
-        type: 'LOAD_SEEK_SUCCESS',
-      }))
-      .catch(error => dispatch({
-        error,
-        type: 'LOAD_SEEK_FAILURE',
-      }));
+    .then(handleErrors)
+    .then(response => response.json())
+    .then(json => dispatch({
+      json,
+      type: 'LOAD_SEEK_SUCCESS',
+    }))
+    .catch(error => dispatch({
+      error,
+      type: 'LOAD_SEEK_FAILURE',
+    }));
   };
 }
 
@@ -54,7 +56,7 @@ export function postSeek(seek, successMessage) {
       seek,
     });
 
-    fetch(`${API_ROOT}/seeks`, {
+    return fetch(`${API_ROOT}/seeks`, {
       credentials: 'include',
       method: 'POST',
       headers: {
@@ -62,6 +64,8 @@ export function postSeek(seek, successMessage) {
       },
       body: JSON.stringify(seek),
     })
+    .then(handleErrors)
+    .then(response => response.json())
     .then((json) => {
       dispatch({
         type: 'POST_SEEK_SUCCESS',
@@ -71,8 +75,6 @@ export function postSeek(seek, successMessage) {
       if (successMessage) {
         dispatch(showSnackbar(successMessage));
       }
-
-      dispatch(loadSeeks({ query: { isMine: true }, reset: true }));
     })
     .catch(error => dispatch({
       error,
@@ -89,22 +91,20 @@ export function deleteSeek(seek, successMessage) {
       seek,
     });
 
-    fetch(`${API_ROOT}/seeks/${seek.keyId}`, {
+    return fetch(`${API_ROOT}/seeks/${seek.keyId}`, {
       credentials: 'include',
       method: 'DELETE',
     })
-    .then((json) => {
+    .then(handleErrors)
+    .then(() => {
       dispatch({
         type: 'DELETE_SEEK_SUCCESS',
-        json,
         seek,
       });
 
       if (successMessage) {
         dispatch(showSnackbar(successMessage));
       }
-
-      dispatch(loadSeeks({}));
     })
     .catch(error => dispatch({
       error,
@@ -124,7 +124,7 @@ export function updateSeek(seek, successMessage) {
       type: 'UPDATE_SEEK_REQUEST',
     });
 
-    fetch(`${API_ROOT}/seeks/${seek.keyId}`, {
+    return fetch(`${API_ROOT}/seeks/${seek.keyId}`, {
       credentials: 'include',
       method: 'PUT',
       headers: {
@@ -132,12 +132,11 @@ export function updateSeek(seek, successMessage) {
       },
       body: JSON.stringify(seek),
     })
-    .then((json) => {
+    .then(handleErrors)
+    .then(() => {
       dispatch({
-        json,
         type: 'UPDATE_SEEK_SUCCESS',
       });
-      dispatch(loadSeeks({}));
       if (successMessage) {
         dispatch(showSnackbar(successMessage));
       }

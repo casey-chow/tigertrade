@@ -26,8 +26,9 @@ export default class Listing extends Component {
     ...routerPropTypes,
     dispatch: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired,
-    // eslint-disable-next-line react/forbid-prop-types
-    listing: PropTypes.object.isRequired,
+    listing: PropTypes.shape({
+      keyId: PropTypes.number,
+    }).isRequired,
   };
 
   componentWillMount() {
@@ -56,7 +57,7 @@ export default class Listing extends Component {
     const { listing, loading } = this.props;
     return (
       <ListContainer style={{ marginTop: '-1rem' }}>
-        <ListingCard expanded listing={listing} />
+        <ListingCard expanded singleton listing={listing} />
         <LoadingSpinner loading={loading} />
       </ListContainer>
     );

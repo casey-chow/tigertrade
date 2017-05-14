@@ -15,8 +15,8 @@ import {
   setDisplayMode,
   setComposeState,
 } from '../actions/ui';
-import { postListing, updateListing } from '../actions/listings';
-import { postSeek, updateSeek } from '../actions/seeks';
+import { loadListings, loadListing, postListing, updateListing } from '../actions/listings';
+import { loadSeeks, loadSeek, postSeek, updateSeek } from '../actions/seeks';
 import ComposeForm from '../components/ComposeForm';
 import SeekComposeForm from '../components/SeekComposeForm';
 import RedirectToCas from '../components/RedirectToCas';
@@ -74,9 +74,11 @@ export default class ComposeOverlay extends Component {
       price: data.price ? Math.round(parseFloat(data.price) * 100) : 0,
     },
     `Successfully created listing ${data.title}`,
-    ));
-    this.props.history.push('/listings/mine');
-    this.handleRequestClose();
+    )).then(() => {
+      this.props.dispatch(loadListings({ query: { isMine: true }, reset: true }));
+      this.props.history.push('/listings/mine');
+      this.handleRequestClose();
+    });
   }
 
   handleSubmitSeek = (data) => {
@@ -85,9 +87,11 @@ export default class ComposeOverlay extends Component {
       price: data.price ? Math.round(parseFloat(data.price) * 100) : 0,
     },
     `Successfully created seek ${data.title}`,
-    ));
-    this.props.history.push('/seeks/mine');
-    this.handleRequestClose();
+    )).then(() => {
+      this.props.dispatch(loadSeeks({ query: { isMine: true }, reset: true }));
+      this.props.history.push('/seeks/mine');
+      this.handleRequestClose();
+    });
   }
 
   handleEditListing = (data) => {
@@ -96,8 +100,12 @@ export default class ComposeOverlay extends Component {
       price: data.price ? Math.round(parseFloat(data.price) * 100) : 0,
     },
     `Successfully updated listing ${data.title}`,
-    ));
-    this.handleRequestClose();
+    )).then(() => {
+      // Update both Listing and Listings containers (so that singleton views update)
+      this.props.dispatch(loadListing(data.keyId));
+      this.props.dispatch(loadListings({}));
+      this.handleRequestClose();
+    });
   }
 
   handleEditSeek = (data) => {
@@ -106,8 +114,12 @@ export default class ComposeOverlay extends Component {
       maxPrice: data.price ? Math.round(parseFloat(data.price) * 100) : 0,
     },
     `Successfully updated seek ${data.title}`,
-    ));
-    this.handleRequestClose();
+    )).then(() => {
+      // Update both Seek and Seeks containers (so that singleton views update)
+      this.props.dispatch(loadSeek(data.keyId));
+      this.props.dispatch(loadSeeks({}));
+      this.handleRequestClose();
+    });
   }
 
   handleToggle = (event, isInputChecked) => {

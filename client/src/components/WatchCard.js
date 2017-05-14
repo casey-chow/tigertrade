@@ -22,7 +22,7 @@ import UnwatchIcon from 'material-ui/svg-icons/action/visibility-off';
 
 import { mediaQueries } from '../helpers/breakpoints';
 import { loadListings } from '../actions/listings';
-import { deleteWatch } from '../actions/watches';
+import { loadWatches, deleteWatch } from '../actions/watches';
 
 @withRouter
 @connect()
@@ -73,7 +73,9 @@ export default class WatchCard extends React.Component {
     this.props.dispatch(deleteWatch(
       this.props.watch,
       'Successfully unwatched search',
-    ));
+    )).then(() => {
+      this.props.dispatch(loadWatches());
+    });
   }
 
   render() {

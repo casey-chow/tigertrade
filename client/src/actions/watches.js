@@ -1,6 +1,6 @@
 import fetch from 'isomorphic-fetch';
 
-import { API_ROOT } from './common';
+import { API_ROOT, handleErrors } from './common';
 import { stripQuery } from '../helpers/query';
 
 export function loadWatches() {
@@ -8,9 +8,10 @@ export function loadWatches() {
     dispatch({
       type: 'LOAD_WATCHES_REQUEST',
     });
-    fetch(`${API_ROOT}/watches`, {
+    return fetch(`${API_ROOT}/watches`, {
       credentials: 'include',
     })
+    .then(handleErrors)
     .then(response => response.json())
     .then(json => dispatch({
       json,
@@ -28,7 +29,7 @@ export function postWatch(watch, successMessage) {
     dispatch({
       type: 'POST_WATCH_REQUEST',
     });
-    fetch(`${API_ROOT}/watches`, {
+    return fetch(`${API_ROOT}/watches`, {
       credentials: 'include',
       method: 'POST',
       headers: {
@@ -36,6 +37,8 @@ export function postWatch(watch, successMessage) {
       },
       body: JSON.stringify(stripQuery(watch || getState().currentQuery)),
     })
+    .then(handleErrors)
+    .then(response => response.json())
     .then((json) => {
       dispatch({
         json,
@@ -48,7 +51,6 @@ export function postWatch(watch, successMessage) {
           message: successMessage,
         });
       }
-      dispatch(loadWatches());
     })
     .catch(error => dispatch({
       error,
@@ -64,10 +66,11 @@ export function deleteWatch(watch, successMessage) {
       watch,
     });
 
-    fetch(`${API_ROOT}/watches/${watch.keyId}`, {
+    return fetch(`${API_ROOT}/watches/${watch.keyId}`, {
       credentials: 'include',
       method: 'DELETE',
     })
+    .then(handleErrors)
     .then(() => {
       dispatch({
         type: 'DELETE_WATCH_SUCCESS',
@@ -80,7 +83,6 @@ export function deleteWatch(watch, successMessage) {
           message: successMessage,
         });
       }
-      dispatch(loadWatches({}));
     })
     .catch(error => dispatch({
       error,

@@ -2,7 +2,7 @@ import fetch from 'isomorphic-fetch';
 import { stringify } from 'query-string';
 import { setComposeState, showSnackbar } from './ui';
 
-import { API_ROOT } from './common';
+import { API_ROOT, handleErrors } from './common';
 
 export function loadListings({ query = {}, reset = false }) {
   return function (dispatch, getState) {
@@ -11,18 +11,19 @@ export function loadListings({ query = {}, reset = false }) {
       reset,
       type: 'LOAD_LISTINGS_REQUEST',
     });
-    fetch(`${API_ROOT}/listings?${stringify(getState().currentQuery)}`, {
+    return fetch(`${API_ROOT}/listings?${stringify(getState().currentQuery)}`, {
       credentials: 'include',
     })
-      .then(response => response.json())
-      .then(json => dispatch({
-        json,
-        type: 'LOAD_LISTINGS_SUCCESS',
-      }))
-      .catch(error => dispatch({
-        error,
-        type: 'LOAD_LISTINGS_FAILURE',
-      }));
+    .then(handleErrors)
+    .then(response => response.json())
+    .then(json => dispatch({
+      json,
+      type: 'LOAD_LISTINGS_SUCCESS',
+    }))
+    .catch(error => dispatch({
+      error,
+      type: 'LOAD_LISTINGS_FAILURE',
+    }));
   };
 }
 
@@ -32,18 +33,19 @@ export function loadListing(id = '') {
       query: {},
       type: 'LOAD_LISTING_REQUEST',
     });
-    fetch(`${API_ROOT}/listings/${id}`, {
+    return fetch(`${API_ROOT}/listings/${id}`, {
       credentials: 'include',
     })
-      .then(response => response.json())
-      .then(json => dispatch({
-        json,
-        type: 'LOAD_LISTING_SUCCESS',
-      }))
-      .catch(error => dispatch({
-        error,
-        type: 'LOAD_LISTING_FAILURE',
-      }));
+    .then(handleErrors)
+    .then(response => response.json())
+    .then(json => dispatch({
+      json,
+      type: 'LOAD_LISTING_SUCCESS',
+    }))
+    .catch(error => dispatch({
+      error,
+      type: 'LOAD_LISTING_FAILURE',
+    }));
   };
 }
 
@@ -53,7 +55,7 @@ export function postListing(listing, successMessage) {
       type: 'POST_LISTING_REQUEST',
     });
 
-    fetch(`${API_ROOT}/listings`, {
+    return fetch(`${API_ROOT}/listings`, {
       credentials: 'include',
       method: 'POST',
       headers: {
@@ -61,6 +63,8 @@ export function postListing(listing, successMessage) {
       },
       body: JSON.stringify(listing),
     })
+    .then(handleErrors)
+    .then(response => response.json())
     .then((json) => {
       dispatch({
         json,
@@ -70,8 +74,6 @@ export function postListing(listing, successMessage) {
       if (successMessage) {
         dispatch(showSnackbar(successMessage));
       }
-
-      dispatch(loadListings({ query: { isMine: true }, reset: true }));
     })
     .catch(error => dispatch({
       error,
@@ -87,21 +89,19 @@ export function starListing(listing) {
       type: 'STAR_LISTING_REQUEST',
     });
 
-    fetch(`${API_ROOT}/listings/${listing.keyId}/star`, {
+    return fetch(`${API_ROOT}/listings/${listing.keyId}/star`, {
       credentials: 'include',
-      method: 'POST',
+      method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ isStarred: !listing.isStarred }),
     })
-    .then((json) => {
+    .then(handleErrors)
+    .then(() => {
       dispatch({
-        json,
         type: 'STAR_LISTING_SUCCESS',
       });
-
-      dispatch(loadListings({ }));
     })
     .catch(error => dispatch({
       error,
@@ -117,20 +117,19 @@ export function deleteListing(listing, successMessage) {
       listing,
     });
 
-    fetch(`${API_ROOT}/listings/${listing.keyId}`, {
+    return fetch(`${API_ROOT}/listings/${listing.keyId}`, {
       credentials: 'include',
       method: 'DELETE',
     })
+    .then(handleErrors)
     .then(() => {
       dispatch({
         type: 'DELETE_LISTING_SUCCESS',
         listing,
       });
-
       if (successMessage) {
         dispatch(showSnackbar(successMessage));
       }
-      dispatch(loadListings({}));
     })
     .catch(error => dispatch({
       error,
@@ -150,7 +149,7 @@ export function updateListing(listing, successMessage) {
       type: 'UPDATE_LISTING_REQUEST',
     });
 
-    fetch(`${API_ROOT}/listings/${listing.keyId}`, {
+    return fetch(`${API_ROOT}/listings/${listing.keyId}`, {
       credentials: 'include',
       method: 'PUT',
       headers: {
@@ -158,12 +157,11 @@ export function updateListing(listing, successMessage) {
       },
       body: JSON.stringify(listing),
     })
-    .then((json) => {
+    .then(handleErrors)
+    .then(() => {
       dispatch({
-        json,
         type: 'UPDATE_LISTING_SUCCESS',
       });
-      dispatch(loadListings({}));
       if (successMessage) {
         dispatch(showSnackbar(successMessage));
       }

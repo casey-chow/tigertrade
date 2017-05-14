@@ -25,8 +25,9 @@ export default class Seek extends Component {
     ...routerPropTypes,
     dispatch: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired,
-    // eslint-disable-next-line react/forbid-prop-types
-    seek: PropTypes.object.isRequired,
+    seek: PropTypes.shape({
+      keyId: PropTypes.number,
+    }).isRequired,
   };
 
   componentWillMount() {
@@ -56,7 +57,7 @@ export default class Seek extends Component {
 
     return (
       <ListContainer style={{ marginTop: '-1rem' }}>
-        <SeekCard expanded seek={seek} />
+        <SeekCard expanded singleton seek={seek} />
         <LoadingSpinner loading={loading} />
       </ListContainer>
     );

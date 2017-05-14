@@ -34,7 +34,7 @@ import ContactSellerForm from './ContactSellerForm';
 import { mediaQueries } from '../helpers/breakpoints';
 import { redirectToCas } from '../helpers/cas';
 import { mailSeller } from './../actions/users';
-import { editListing, deleteListing, starListing } from './../actions/listings';
+import { loadListings, loadListing, editListing, deleteListing, starListing } from './../actions/listings';
 
 import './ListingCard.css';
 
@@ -53,9 +53,13 @@ export default class ListingCard extends React.Component {
       keyId: PropTypes.number,
       loggedIn: PropTypes.bool,
     }).isRequired,
+    history: PropTypes.shape({
+      push: PropTypes.func.isRequired,
+    }).isRequired,
     dispatch: PropTypes.func.isRequired,
     expanded: PropTypes.bool.isRequired,
     onExpandChange: PropTypes.func,
+    singleton: PropTypes.bool.isRequired,
     listing: PropTypes.shape({
       keyId: PropTypes.number,
       creationDate: PropTypes.string,
@@ -156,13 +160,26 @@ export default class ListingCard extends React.Component {
     this.props.dispatch(deleteListing(
       this.props.listing,
       `Successfully deleted listing ${this.props.listing.title}`,
-    ));
+    )).then(() => {
+      if (this.props.singleton) {
+        this.props.dispatch(loadListings({ query: { isMine: true }, reset: true }));
+        this.props.history.push('/listings/mine');
+      } else {
+        this.props.dispatch(loadListings({}));
+      }
+    });
   }
 
   handleStar = () => {
     this.props.dispatch(starListing(
       this.props.listing,
-    ));
+    )).then(() => {
+      if (this.props.singleton) {
+        this.props.dispatch(loadListing(this.props.listing.keyId));
+      } else {
+        this.props.dispatch(loadListings({}));
+      }
+    });
   }
 
   formatDescription = desc => desc.split('\n').map(
