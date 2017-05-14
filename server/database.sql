@@ -177,7 +177,8 @@ CREATE TABLE seeks (
     notify_enabled boolean DEFAULT false,
     status character varying(20),
     is_active boolean DEFAULT true,
-    thumbnail_url character varying(2084)
+    thumbnail_url character varying(2084),
+    keywords text[] DEFAULT '{}'::text[]
 );
 
 
