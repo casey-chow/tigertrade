@@ -177,7 +177,8 @@ CREATE TABLE seeks (
     notify_enabled boolean DEFAULT false,
     status character varying(20),
     is_active boolean DEFAULT true,
-    thumbnail_url character varying(2084)
+    thumbnail_url character varying(2084),
+    keywords text[] DEFAULT '{}'::text[]
 );
 
 
@@ -508,6 +509,14 @@ ALTER TABLE ONLY tags
 
 ALTER TABLE ONLY tags
     ADD CONSTRAINT uniq_name UNIQUE (name);
+
+
+--
+-- Name: saved_searches unique_saved_search; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY saved_searches
+    ADD CONSTRAINT unique_saved_search UNIQUE (user_id, query, min_price, max_price, listing_expiration_date);
 
 
 --
