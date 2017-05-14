@@ -12,6 +12,8 @@ import { grey300 } from 'material-ui/styles/colors';
 
 import Paper from 'material-ui/Paper';
 import FlatButton from 'material-ui/FlatButton';
+import DropDownMenu from 'material-ui/DropDownMenu';
+import MenuItem from 'material-ui/MenuItem';
 import TextField from 'material-ui/TextField';
 import Toggle from 'material-ui/Toggle';
 import FavoriteIcon from 'material-ui/svg-icons/action/favorite';
@@ -20,8 +22,7 @@ import PhotoIcon from 'material-ui/svg-icons/image/photo';
 import ExpandMoreIcon from 'material-ui/svg-icons/navigation/expand-more';
 import ExpandLessIcon from 'material-ui/svg-icons/navigation/expand-less';
 
-import { loadListings } from '../actions/listings';
-import { loadSeeks } from '../actions/seeks';
+import { loadPosts } from '../actions/common';
 import { setExpandAll, toggleFilterBar } from '../actions/ui';
 import { loadWatches, postWatch } from '../actions/watches';
 import { writeHistory } from '../helpers/query';
@@ -49,7 +50,7 @@ export default class FilterBar extends Component {
       hasPhotos: PropTypes.bool,
       minPrice: PropTypes.bool,
       maxPrice: PropTypes.bool,
-      query: PropTypes.string,
+      order: PropTypes.string,
     }).isRequired,
     leftDrawerVisible: PropTypes.bool.isRequired,
     style: PropTypes.object, // eslint-disable-line react/forbid-prop-types
@@ -82,6 +83,7 @@ export default class FilterBar extends Component {
 
   state = {
     expanded: false,
+    order: 'creationDateDesc',
     isStarred: false,
     hasPhotos: false,
     minPrice: -1,
@@ -91,6 +93,7 @@ export default class FilterBar extends Component {
   componentWillMount() {
     this.setState({
       expanded: this.props.expanded,
+      order: this.props.query.order || 'creationDateDesc',
       isStarred: this.props.query.isStarred,
       hasPhotos: this.props.query.hasPhotos,
       minPrice: this.props.query.minPrice / 100 || '',
@@ -101,6 +104,7 @@ export default class FilterBar extends Component {
   componentWillReceiveProps(nextProps) {
     this.setState({
       expanded: nextProps.expanded,
+      order: nextProps.query.order || 'creationDateDesc',
       isStarred: nextProps.query.isStarred,
       hasPhotos: nextProps.query.hasPhotos,
       minPrice: nextProps.query.minPrice / 100 || '',
@@ -112,36 +116,24 @@ export default class FilterBar extends Component {
     const isStarred = !this.props.query.isStarred;
     const query = { isStarred };
     this.setState(query);
-    switch (this.props.displayMode) {
-      case 'seeks':
-        this.props.dispatch(loadSeeks({ query }));
-        break;
-      case 'listings':
-        this.props.dispatch(loadListings({ query }));
-        break;
-      default:
-        break;
-    }
-
-    writeHistory({ query, history: this.props.history, location: this.props.location });
+    this.props.dispatch(loadPosts(
+      this.props.displayMode,
+      { query },
+    )).then(() => {
+      writeHistory(this.props);
+    });
   }
 
   handlePhoto = () => {
     const hasPhotos = !this.props.query.hasPhotos;
     const query = { hasPhotos };
     this.setState(query);
-    switch (this.props.displayMode) {
-      case 'seeks':
-        this.props.dispatch(loadSeeks({ query }));
-        break;
-      case 'listings':
-        this.props.dispatch(loadListings({ query }));
-        break;
-      default:
-        break;
-    }
-
-    writeHistory({ query, history: this.props.history, location: this.props.location });
+    this.props.dispatch(loadPosts(
+      this.props.displayMode,
+      { query },
+    )).then(() => {
+      writeHistory(this.props);
+    });
   }
 
   handleExpandedToggle = () => {
@@ -157,34 +149,36 @@ export default class FilterBar extends Component {
     this.props.dispatch(setExpandAll(checked));
   }
 
+  handleOrder = (event, index, order) => {
+    this.setState({ order });
+    if (this.props.contentContainer) {
+      this.props.contentContainer.scrollTop = 0;
+    }
+    const query = { order: (order === 'creationDateDesc') ? undefined : order };
+    this.props.dispatch(loadPosts(
+      this.props.displayMode,
+      { query },
+    )).then(() => {
+      writeHistory(this.props);
+    });
+  }
+
   handleMinChange = (event, minPrice) => {
     this.setState({ minPrice });
     const query = { minPrice: (minPrice === '') ? undefined : Math.floor(minPrice * 100) };
-    switch (this.props.displayMode) {
-      case 'seeks':
-        this.props.dispatch(loadSeeks({ query }));
-        break;
-      case 'listings':
-        this.props.dispatch(loadListings({ query }));
-        break;
-      default:
-        break;
-    }
+    this.props.dispatch(loadPosts(
+      this.props.displayMode,
+      { query },
+    ));
   }
 
   handleMaxChange = (event, maxPrice) => {
     this.setState({ maxPrice });
     const query = { maxPrice: (maxPrice === '') ? undefined : Math.floor(maxPrice * 100) };
-    switch (this.props.displayMode) {
-      case 'seeks':
-        this.props.dispatch(loadSeeks({ query }));
-        break;
-      case 'listings':
-        this.props.dispatch(loadListings({ query }));
-        break;
-      default:
-        break;
-    }
+    this.props.dispatch(loadPosts(
+      this.props.displayMode,
+      { query },
+    ));
   }
 
   handleOnBlur = () => {
@@ -241,13 +235,27 @@ export default class FilterBar extends Component {
                 onTouchTap={this.handleFavorite}
               />
             }
+            { isListing &&
+              <DropDownMenu
+                value={this.state.order}
+                onChange={this.handleOrder}
+                autoWidth
+              >
+                <MenuItem value={'creationDateDesc'} primaryText="Most Recently Created" />
+                <MenuItem value={'creationDateAsc'} primaryText="Oldest" />
+                <MenuItem value={'priceAsc'} primaryText="Cheapest" />
+                <MenuItem value={'priceDesc'} primaryText="Most Expensive" />
+                <MenuItem value={'expirationDateAsc'} primaryText="Soonest Expiration" />
+                <MenuItem value={'expirationDateDesc'} primaryText="Furthest Expiration" />
+              </DropDownMenu>
+            }
             { (isListing && !location.pathname.startsWith('/listings/mine')) &&
               <FlatButton
                 primary
                 icon={<WatchIcon />}
                 label="Watch this Search"
                 onTouchTap={this.handleWatchButtonTap}
-                disabled={isEmpty(omit(query, ['isStarred', 'limit', 'hasPhotos']))}
+                disabled={isEmpty(omit(query, ['isStarred', 'limit', 'hasPhotos', 'order']))}
               />
             }
           </Paper>

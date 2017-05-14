@@ -4,6 +4,5 @@
 export const redirectToCas = () => {
   const curr = window.location.href;
   const newLoc = `${process.env.REACT_APP_SERVER_ROOT}/api/users/redirect?return=${encodeURIComponent(curr)}`;
-  console.log(`login: redirecting to ${newLoc}`);
   window.location = newLoc;
 };

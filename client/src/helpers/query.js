@@ -6,6 +6,9 @@ export const parseQuery = ({ location, match }) => {
     query: queryStrings.query,
     minPrice: (queryStrings.minPrice === '' || queryStrings.minPrice === undefined) ? undefined : parseInt(queryStrings.minPrice, 10),
     maxPrice: (queryStrings.maxPrice === '' || queryStrings.maxPrice === undefined) ? undefined : parseInt(queryStrings.maxPrice, 10),
+    isStarred: (queryStrings.isStarred === 'true') ? true : undefined,
+    hasPhotos: (queryStrings.hasPhotos === 'true') ? true : undefined,
+    order: (queryStrings.order === 'creationDateDesc' || queryStrings.order === undefined) ? undefined : queryStrings.order,
   };
 
   if (match.params.type === 'mine') {
