@@ -134,3 +134,4 @@ use for images, we decided to set up our storage to log who uploads what image
 and delete images after a year. We have notifications set up if the amount
 stored exceeds a certain threshold, and can restrict photo uploads from there.
 We also reduce photo usage by resizing and compressing all photos.
+Additionally, we validate the filetypes of the uploaded images.
