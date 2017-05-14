@@ -51,6 +51,7 @@ export default class FilterBar extends Component {
       minPrice: PropTypes.bool,
       maxPrice: PropTypes.bool,
       order: PropTypes.string,
+      includeInactive: PropTypes.bool,
     }).isRequired,
     leftDrawerVisible: PropTypes.bool.isRequired,
     style: PropTypes.object, // eslint-disable-line react/forbid-prop-types
@@ -83,6 +84,8 @@ export default class FilterBar extends Component {
 
   state = {
     expanded: false,
+    expandAll: false,
+    includeInactive: false,
     order: 'creationDateDesc',
     isStarred: false,
     hasPhotos: false,
@@ -93,6 +96,8 @@ export default class FilterBar extends Component {
   componentWillMount() {
     this.setState({
       expanded: this.props.expanded,
+      expandAll: this.props.expandAll,
+      includeInactive: this.props.query.includeInactive,
       order: this.props.query.order || 'creationDateDesc',
       isStarred: this.props.query.isStarred,
       hasPhotos: this.props.query.hasPhotos,
@@ -104,6 +109,8 @@ export default class FilterBar extends Component {
   componentWillReceiveProps(nextProps) {
     this.setState({
       expanded: nextProps.expanded,
+      expandAll: nextProps.expandAll,
+      includeInactive: nextProps.query.includeInactive,
       order: nextProps.query.order || 'creationDateDesc',
       isStarred: nextProps.query.isStarred,
       hasPhotos: nextProps.query.hasPhotos,
@@ -143,10 +150,23 @@ export default class FilterBar extends Component {
   }
 
   handleExpandAllToggle = (event, checked) => {
+    this.setState({ expandAll: checked });
     if (this.props.contentContainer) {
       this.props.contentContainer.scrollTop = 0;
     }
     this.props.dispatch(setExpandAll(checked));
+  }
+
+  handleIncludeInactiveToggle = (event, checked) => {
+    const includeInactive = checked;
+    const query = { includeInactive };
+    this.setState(query);
+    this.props.dispatch(loadPosts(
+      this.props.displayMode,
+      { query },
+    )).then(() => {
+      writeHistory(this.props);
+    });
   }
 
   handleOrder = (event, index, order) => {
@@ -216,13 +236,21 @@ export default class FilterBar extends Component {
                 onTouchTap={this.handleExpandedToggle}
               />
             }
-            { (isListing || isSeek) &&
+            <div>
+              <Toggle
+                label="Expand All"
+                labelPosition="right"
+                toggled={this.state.expandAll}
+                onToggle={this.handleExpandAllToggle}
+              />
+            </div>
+            { isSeek &&
               <div>
                 <Toggle
-                  label="Expand All"
+                  label="Include Bought"
                   labelPosition="right"
-                  toggled={this.props.expandAll}
-                  onToggle={this.handleExpandAllToggle}
+                  toggled={this.state.includeInactive}
+                  onToggle={this.handleIncludeInactiveToggle}
                 />
               </div>
             }
@@ -255,7 +283,7 @@ export default class FilterBar extends Component {
                 icon={<WatchIcon />}
                 label="Watch this Search"
                 onTouchTap={this.handleWatchButtonTap}
-                disabled={isEmpty(omit(query, ['isStarred', 'limit', 'hasPhotos', 'order']))}
+                disabled={isEmpty(omit(query, ['isStarred', 'limit', 'hasPhotos', 'order', 'includeInactive']))}
               />
             }
           </Paper>
@@ -268,6 +296,14 @@ export default class FilterBar extends Component {
               ...this.props.style,
             }}
           >
+            <div>
+              <Toggle
+                label="Include Sold"
+                labelPosition="right"
+                toggled={this.state.includeInactive}
+                onToggle={this.handleIncludeInactiveToggle}
+              />
+            </div>
             <FlatButton
               secondary
               icon={<PhotoIcon />}

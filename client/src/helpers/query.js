@@ -8,6 +8,7 @@ export const parseQuery = ({ location, match }) => {
     maxPrice: (queryStrings.maxPrice === '' || queryStrings.maxPrice === undefined) ? undefined : parseInt(queryStrings.maxPrice, 10),
     isStarred: (queryStrings.isStarred === 'true') ? true : undefined,
     hasPhotos: (queryStrings.hasPhotos === 'true') ? true : undefined,
+    includeInactive: (queryStrings.includeInactive === 'true') ? true : undefined,
     order: (queryStrings.order === 'creationDateDesc' || queryStrings.order === undefined) ? undefined : queryStrings.order,
   };
 
@@ -25,6 +26,7 @@ export const stripQuery = query => ({
   isMine: undefined,
   isStarred: (query.isStarred === true) ? true : undefined,
   hasPhotos: (query.hasPhotos === true) ? true : undefined,
+  includeInactive: (query.includeInactive === true) ? true : undefined,
 });
 
 export const writeHistory = ({ query, history, location }) => {
