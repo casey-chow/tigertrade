@@ -36,7 +36,7 @@ const mapStateToProps = state => ({
 export default class FilterBar extends Component {
   static propTypes = {
     ...routerPropTypes,
-    contentContainer: PropTypes.node,
+    contentContainer: PropTypes.any.isRequired, // eslint-disable-line react/forbid-prop-types
     dispatch: PropTypes.func.isRequired,
     displayMode: PropTypes.string.isRequired,
     expandAll: PropTypes.bool.isRequired,
@@ -52,7 +52,6 @@ export default class FilterBar extends Component {
   }
 
   static defaultProps = {
-    contentContainer: '',
     style: {
       display: 'flex',
       flexDirection: 'row',

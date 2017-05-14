@@ -68,6 +68,8 @@ export default class App extends Component {
     this.props.dispatch(loadCurrentUser());
   }
 
+  contentContainer = false;
+
   handleSnackbarRequestClose = () => {
     this.props.dispatch(hideSnackbar());
   }
