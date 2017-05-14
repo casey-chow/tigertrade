@@ -260,7 +260,7 @@ export default class FilterBar extends Component {
             }
           </Paper>
         }
-        { this.state.expanded &&
+        { this.state.expanded && isListing &&
           <Paper
             style={{
               ...styles.base,
@@ -268,41 +268,35 @@ export default class FilterBar extends Component {
               ...this.props.style,
             }}
           >
-            { isListing && this.state.expanded &&
-              <FlatButton
-                secondary
-                icon={<PhotoIcon />}
-                label="Has Photos Only"
-                backgroundColor={this.state.hasPhotos ? grey300 : 'transparent'}
-                onTouchTap={this.handlePhoto}
-              />
-            }
-            { isListing &&
-              <TextField
-                hintText="Max Price"
-                type="number"
-                onChange={this.handleMaxChange}
-                onBlur={this.handleOnBlur}
-                value={this.state.maxPrice}
-                style={styles.priceField}
-                prefix="$"
-                min="0"
-                step="0.01"
-              />
-            }
-            { isListing &&
-              <TextField
-                hintText="Min Price"
-                type="number"
-                onChange={this.handleMinChange}
-                onBlur={this.handleOnBlur}
-                value={this.state.minPrice}
-                style={styles.priceField}
-                prefix="$"
-                min="0"
-                step="0.01"
-              />
-            }
+            <FlatButton
+              secondary
+              icon={<PhotoIcon />}
+              label="Has Photos Only"
+              backgroundColor={this.state.hasPhotos ? grey300 : 'transparent'}
+              onTouchTap={this.handlePhoto}
+            />
+            <TextField
+              hintText="Max Price"
+              type="number"
+              onChange={this.handleMaxChange}
+              onBlur={this.handleOnBlur}
+              value={this.state.maxPrice}
+              style={styles.priceField}
+              prefix="$"
+              min="0"
+              step="0.01"
+            />
+            <TextField
+              hintText="Min Price"
+              type="number"
+              onChange={this.handleMinChange}
+              onBlur={this.handleOnBlur}
+              value={this.state.minPrice}
+              style={styles.priceField}
+              prefix="$"
+              min="0"
+              step="0.01"
+            />
           </Paper>
         }
       </div>

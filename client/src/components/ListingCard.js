@@ -35,7 +35,7 @@ import ContactSellerForm from './ContactSellerForm';
 import { mediaQueries } from '../helpers/breakpoints';
 import { redirectToCas } from '../helpers/cas';
 import { mailSeller } from './../actions/users';
-import { loadListings, loadListing, editListing, deleteListing, starListing, soldListing } from './../actions/listings';
+import { loadListings, loadListing, editListing, deleteListing, starListing, updateListing } from './../actions/listings';
 
 import './ListingCard.css';
 
@@ -72,7 +72,7 @@ export default class ListingCard extends React.Component {
       price: PropTypes.number,
       status: PropTypes.string,
       isStarred: PropTypes.bool,
-      isSold: PropTypes.bool,
+      isActive: PropTypes.bool,
       expirationDate: PropTypes.number,
       thumbnail: PropTypes.string,
       photos: PropTypes.array,
@@ -186,9 +186,10 @@ export default class ListingCard extends React.Component {
   }
 
   handleSold = () => {
-    this.props.dispatch(soldListing(
-        this.props.listing,
-    )).then(() => {
+    this.props.dispatch(updateListing({
+      ...this.props.listing,
+      isActive: !this.props.listing.isActive,
+    })).then(() => {
       if (this.props.singleton) {
         this.props.dispatch(loadListing(this.props.listing.keyId));
       } else {
@@ -209,7 +210,7 @@ export default class ListingCard extends React.Component {
     const styles = ListingCard.styles;
 
     const favoriteButtonBackground = this.props.listing.isStarred ? grey300 : 'transparent';
-    const soldButtonBackground = this.props.listing.isSold ? grey300 : 'transparent';
+    const soldButtonBackground = this.props.listing.isActive ? 'transparent' : grey300;
 
     return (
       <div>

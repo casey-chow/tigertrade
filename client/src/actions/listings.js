@@ -110,33 +110,6 @@ export function starListing(listing) {
   };
 }
 
-export function soldListing(listing) {
-  return function (dispatch, getState) {
-    dispatch({
-      listing,
-      type: 'SOLD_LISTING_REQUEST',
-    });
-    return fetch(`${API_ROOT}/listings/${listing.keyId}/sold`, {
-      credentials: 'include',
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ isSold: !listing.isSold }),
-    })
-    .then(handleErrors)
-    .then(() => {
-      dispatch({
-        type: 'SOLD_LISTING_SUCCESS',
-      });
-    })
-    .catch(error => dispatch({
-      error,
-      type: 'SOLD_LISTING_FAILURE',
-    }));
-  };
-}
-
 export function deleteListing(listing, successMessage) {
   return function (dispatch, getState) {
     dispatch({
