@@ -20,7 +20,7 @@ export default class Welcome extends PureComponent {
     return (
       <ListContainer>
         <Paper style={styles.root}>
-          <h1>Welcome to TigerTrade!</h1>
+          <h1> Welcome to TigerTrade!</h1>
           <p>
             TigerTrade is a place for the Princeton community to buy and share items.
             Please log in to get started!
