@@ -19,7 +19,7 @@ import {
 } from 'material-ui/List';
 import ViewList from 'material-ui/svg-icons/action/view-list';
 import ShoppingCart from 'material-ui/svg-icons/action/shopping-cart';
-import Search from 'material-ui/svg-icons/action/search';
+import WatchIcon from 'material-ui/svg-icons/action/visibility';
 import Feedback from 'material-ui/svg-icons/action/feedback';
 
 import theme from '../helpers/theme';
@@ -192,7 +192,7 @@ export default class NavigationDrawer extends Component {
             key="watches"
             primaryText="Watched Searches"
             value="/watches"
-            leftIcon={<Search />}
+            leftIcon={<WatchIcon />}
           />
           <ListItem
             key="feedback"

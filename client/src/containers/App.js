@@ -20,10 +20,7 @@ import Watches from './Watches';
 import ComposeOverlay from '../components/ComposeOverlay';
 
 import { loadCurrentUser } from '../actions/users';
-import {
-  setComposeState,
-  hideSnackbar,
-} from '../actions/ui';
+import { setComposeState, hideSnackbar } from '../actions/ui';
 
 const mapStateToProps = state => ({
   loading: state.currentUserLoading,
