@@ -209,7 +209,7 @@ func UpdateSavedSearch(db *sql.DB, id string, savedSearch SavedSearch, userID in
 
 	// Query db for savedSearch
 	result, err := stmt.RunWith(db).Exec()
-	return getUpdateResultCode(result, err)
+	return getExecResultCode(result, err)
 }
 
 // DeleteSavedSearch deletes the saved search in the database with the given id
@@ -223,7 +223,7 @@ func DeleteSavedSearch(db *sql.DB, id string, userID int) (int, error) {
 
 	// Query db for savedSearch
 	result, err := stmt.RunWith(db).Exec()
-	return getUpdateResultCode(result, err)
+	return getExecResultCode(result, err)
 }
 
 // checkNewListing checks a given listing against all saved searches and emails

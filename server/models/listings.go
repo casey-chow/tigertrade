@@ -393,7 +393,7 @@ func UpdateListing(db *sql.DB, id string, listing Listing, userID int) (int, err
 
 	// Update listing
 	result, err := stmt.RunWith(db).Exec()
-	code, err := getUpdateResultCode(result, err)
+	code, err := getExecResultCode(result, err)
 	if err == nil {
 		go checkNewListing(db, listing)
 		go indexListing(db, listing)
@@ -412,7 +412,7 @@ func DeleteListing(db *sql.DB, id string, userID int) (int, error) {
 		})
 	result, err := stmt.RunWith(db).Exec()
 
-	return getUpdateResultCode(result, err)
+	return getExecResultCode(result, err)
 }
 
 // SetStar adds or removes a star, depending on whether add is set to true
@@ -442,7 +442,7 @@ func addStar(db *sql.DB, listingID string, userID int) (int, error) {
 
 	// Query db for listing
 	result, err := insertStarStmt.RunWith(db).Exec()
-	return getUpdateResultCode(result, err)
+	return getExecDoNothingResultCode(result, err)
 }
 
 // removeStar removes a star from the given listingID for a given userID
@@ -455,5 +455,5 @@ func removeStar(db *sql.DB, listingID string, userID int) (int, error) {
 
 	// Query db for listing
 	result, err := stmt.RunWith(db).Exec()
-	return getUpdateResultCode(result, err)
+	return getExecDoNothingResultCode(result, err)
 }

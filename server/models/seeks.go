@@ -258,7 +258,7 @@ func UpdateSeek(db *sql.DB, id string, seek Seek, userID int) (int, error) {
 
 	// Query db for seek
 	result, err := stmt.RunWith(db).Exec()
-	return getUpdateResultCode(result, err)
+	return getExecResultCode(result, err)
 }
 
 // DeleteSeek deletes the seek in the database with the given id
@@ -272,5 +272,5 @@ func DeleteSeek(db *sql.DB, id string, userID int) (int, error) {
 
 	// Query db for seek
 	result, err := stmt.RunWith(db).Exec()
-	return getUpdateResultCode(result, err)
+	return getExecResultCode(result, err)
 }

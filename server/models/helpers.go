@@ -22,8 +22,8 @@ func (_ emptyQuery) ToSql() (string, []interface{}, error) {
 	return "", nil, nil
 }
 
-func getUpdateResultCode(result sql.Result, err error) (int, error) {
-
+// getExecResultCode is a standard way to extract an HTTP error out of an SQL result
+func getExecResultCode(result sql.Result, err error) (int, error) {
 	if err != nil {
 		return http.StatusInternalServerError, err
 	}
@@ -32,13 +32,22 @@ func getUpdateResultCode(result sql.Result, err error) (int, error) {
 		return http.StatusInternalServerError, err
 	}
 	if numRows == 0 {
-		return http.StatusInternalServerError, sql.ErrNoRows
+		return http.StatusNotFound, sql.ErrNoRows
 	}
 	if numRows != 1 {
 		return http.StatusInternalServerError, errors.New("multiple rows affected")
 	}
-
 	return http.StatusNoContent, nil
+}
+
+// getExecDoNothingResultCode is like getExecResultCode,
+// but should be used when the SQL operation affecting no rows is not an error
+func getExecDoNothingResultCode(result sql.Result, err error) (int, error) {
+	code, err := getExecResultCode
+	if code == http.StatusNotFound {
+		return http.StatusNoContent, nil
+	}
+	return code, err
 }
 
 // https://coderwall.com/p/cp5fya/measuring-execution-time-in-go
