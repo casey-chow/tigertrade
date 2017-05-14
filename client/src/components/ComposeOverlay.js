@@ -166,7 +166,7 @@ export default class ComposeOverlay extends Component {
                     price: this.props.listing.price / 100,
                     expirationDate:
                       new Date(Date.parse(this.props.listing.expirationDate)),
-                  } : {}
+                  } : { expirationDate: new Date(Date.now() + 3.154e10) }
                 }
               />
               : <SeekComposeForm
