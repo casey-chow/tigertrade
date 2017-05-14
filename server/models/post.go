@@ -14,6 +14,7 @@ type Post interface {
 	GetUserID() int
 	GetUsername() null.String
 	GetStatus() null.String
+	GetIsActive() bool
 }
 
 // A PostReader is a function which queries the appropriate table for the post with the given ID

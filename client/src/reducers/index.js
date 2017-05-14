@@ -16,7 +16,10 @@ const currentQuery = (state = {}, action) => {
     case 'LOAD_LISTINGS_REQUEST':
     case 'LOAD_SEEKS_REQUEST':
       if (action.reset) {
-        return omitBy(action.query, isUndefined);
+        return omitBy({
+          includeInactive: action.query.isMine,
+          ...omitBy(action.query, isUndefined),
+        }, isUndefined);
       } else {
         return omitBy({
           ...state,

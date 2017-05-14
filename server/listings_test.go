@@ -66,6 +66,7 @@ func TestReadListings(t *testing.T) {
 					"thumbnail_url",
 					"starred_listings.is_starred",
 					"photos",
+					"is_active",
 				}).AddRow(
 					1,
 					time.Now(),
@@ -80,6 +81,7 @@ func TestReadListings(t *testing.T) {
 					"http://example.com/asf.gif",
 					false,
 					"{photo.png}",
+					true,
 				))
 
 			req, _ := http.NewRequest("GET", "/api/listings?query=SampleValue", nil)
@@ -120,6 +122,7 @@ func TestReadListings(t *testing.T) {
 					"thumbnail_url",
 					"starred_listings.is_starred",
 					"photos",
+					"is_active",
 				}).AddRow(
 					1,
 					time.Now(),
@@ -134,6 +137,7 @@ func TestReadListings(t *testing.T) {
 					"http://example.com/asf.gif",
 					false,
 					"{photo.png}",
+					true,
 				))
 
 			req, _ := http.NewRequest("GET", "/api/listings?query=sAmPleVaLue", nil)
@@ -202,6 +206,7 @@ func TestReadListing(t *testing.T) {
 					"thumbnail_url",
 					"starred_listings.is_starred",
 					"photos",
+					"is_active",
 				}).AddRow(
 					140,
 					time.Now(),
@@ -216,6 +221,7 @@ func TestReadListing(t *testing.T) {
 					"http://example.com/asf.gif",
 					false,
 					"{photo.png}",
+					true,
 				))
 			req, _ := http.NewRequest("GET", "/api/listings/140", nil)
 			res := executeRequest(app, req)
