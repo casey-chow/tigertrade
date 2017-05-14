@@ -162,7 +162,11 @@ export default class ComposeOverlay extends Component {
                 onSubmit={this.props.isEdit ? this.handleEditListing : this.handleSubmitListing}
                 initialValues={
                   this.props.isEdit ?
-                  { ...this.props.listing, price: this.props.listing.price / 100 } : {}
+                  { ...this.props.listing,
+                    price: this.props.listing.price / 100,
+                    expirationDate:
+                      new Date(Date.parse(this.props.listing.expirationDate)),
+                  } : {}
                 }
               />
               : <SeekComposeForm

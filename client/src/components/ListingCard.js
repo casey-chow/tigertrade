@@ -71,7 +71,7 @@ export default class ListingCard extends React.Component {
       price: PropTypes.number,
       status: PropTypes.string,
       isStarred: PropTypes.bool,
-      expirationDate: PropTypes.number,
+      expirationDate: PropTypes.string,
       thumbnail: PropTypes.string,
       photos: PropTypes.array,
     }).isRequired,
