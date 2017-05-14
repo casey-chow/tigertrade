@@ -13,6 +13,8 @@ GOLINT = $(BIN)/golint
 default: build-server
 install: install-server install-client
 
+.PHONY: docs
+
 # ENVIRONMENT
 #######################################
 
@@ -45,6 +47,10 @@ build-server: $(FRESH) clean
 
 serve: $(FRESH) clean
 	$(FRESH)
+
+docs:
+	@echo "Go doc is running, open your browser to http://localhost:6060/pkg/github.com/casey-chow/tigertrade/server/"
+	godoc -http=:6060
 
 
 # CLIENT
