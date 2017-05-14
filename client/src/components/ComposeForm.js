@@ -44,7 +44,8 @@ const expirationField = field => (
   <DatePicker
     hintText="Expiration date"
     value={field.input.value}
-    onChange={(_, date) => field.input.onChange(date || null)}
+    cancelLabel="Reset"
+    onChange={(_, date) => field.input.onChange(date || new Date(Date.now() + 3.154e10))}
     clearSelection
   />
 );
