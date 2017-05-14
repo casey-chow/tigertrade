@@ -25,7 +25,6 @@ func contactPost(w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 
 	id := ps.ByName("id")
 
-
 	email, code, err := models.NewEmailInput(db, id, read)
 	if err != nil {
 		raven.CaptureError(err, nil)
