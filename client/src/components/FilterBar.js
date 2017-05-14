@@ -191,7 +191,9 @@ export default class FilterBar extends Component {
     this.props.dispatch(loadPosts(
       this.props.displayMode,
       { query },
-    ));
+    )).then(() => {
+      writeHistory(this.props);
+    });
   }
 
   handlePostedBeforeChange = (_, postedBefore) => {
@@ -200,7 +202,9 @@ export default class FilterBar extends Component {
     this.props.dispatch(loadPosts(
       this.props.displayMode,
       { query },
-    ));
+    )).then(() => {
+      writeHistory(this.props);
+    });
   }
 
   handleOnBlur = () => {
