@@ -16,6 +16,7 @@ import TextField from 'material-ui/TextField';
 import Toggle from 'material-ui/Toggle';
 import FavoriteIcon from 'material-ui/svg-icons/action/favorite';
 import WatchIcon from 'material-ui/svg-icons/action/visibility';
+import PhotoIcon from 'material-ui/svg-icons/image/photo';
 
 import { loadListings } from '../actions/listings';
 import { loadSeeks } from '../actions/seeks';
@@ -41,6 +42,9 @@ export default class FilterBar extends Component {
     expandAll: PropTypes.bool.isRequired,
     query: PropTypes.shape({
       isStarred: PropTypes.bool,
+      hasPhotos: PropTypes.bool,
+      minPrice: PropTypes.bool,
+      maxPrice: PropTypes.bool,
       query: PropTypes.string,
     }).isRequired,
     leftDrawerVisible: PropTypes.bool.isRequired,
@@ -75,6 +79,7 @@ export default class FilterBar extends Component {
 
   state = {
     isStarred: false,
+    hasPhotos: false,
     minPrice: -1,
     maxPrice: -1,
   }
@@ -82,6 +87,7 @@ export default class FilterBar extends Component {
   componentWillMount() {
     this.setState({
       isStarred: this.props.query.isStarred,
+      hasPhotos: this.props.query.hasPhotos,
       minPrice: this.props.query.minPrice / 100 || '',
       maxPrice: this.props.query.maxPrice / 100 || '',
     });
@@ -90,6 +96,7 @@ export default class FilterBar extends Component {
   componentWillReceiveProps(nextProps) {
     this.setState({
       isStarred: nextProps.query.isStarred,
+      hasPhotos: nextProps.query.hasPhotos,
       minPrice: nextProps.query.minPrice / 100 || '',
       maxPrice: nextProps.query.maxPrice / 100 || '',
     });
@@ -109,6 +116,26 @@ export default class FilterBar extends Component {
       default:
         break;
     }
+
+    writeHistory({ query, history: this.props.history, location: this.props.location });
+  }
+
+  handlePhoto = () => {
+    const hasPhotos = !this.props.query.hasPhotos;
+    const query = { hasPhotos };
+    this.setState(query);
+    switch (this.props.displayMode) {
+      case 'seeks':
+        this.props.dispatch(loadSeeks({ query }));
+        break;
+      case 'listings':
+        this.props.dispatch(loadListings({ query }));
+        break;
+      default:
+        break;
+    }
+    console.log(this.state);
+    console.log(query);
 
     writeHistory({ query, history: this.props.history, location: this.props.location });
   }
@@ -207,8 +234,17 @@ export default class FilterBar extends Component {
                 secondary
                 icon={<FavoriteIcon />}
                 label="Favorites Only"
-                backgroundColor={query.isStarred ? grey300 : 'transparent'}
+                backgroundColor={this.state.isStarred ? grey300 : 'transparent'}
                 onTouchTap={this.handleFavorite}
+              />
+            }
+            { isListing &&
+              <FlatButton
+                secondary
+                icon={<PhotoIcon />}
+                label="Has Photos Only"
+                backgroundColor={this.state.hasPhotos ? grey300 : 'transparent'}
+                onTouchTap={this.handlePhoto}
               />
             }
             { (isListing || isSeek) &&
@@ -227,7 +263,7 @@ export default class FilterBar extends Component {
                 icon={<WatchIcon />}
                 label="Watch this Search"
                 onTouchTap={this.handleWatchButtonTap}
-                disabled={isEmpty(omit(query, ['isStarred', 'limit']))}
+                disabled={isEmpty(omit(query, ['isStarred', 'limit', 'hasPhotos']))}
               />
             }
           </Paper>

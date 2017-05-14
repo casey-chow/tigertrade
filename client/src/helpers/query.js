@@ -21,6 +21,7 @@ export const stripQuery = query => ({
   limit: undefined,
   isMine: undefined,
   isStarred: (query.isStarred === true) ? true : undefined,
+  hasPhotos: (query.hasPhotos === true) ? true : undefined,
 });
 
 export const writeHistory = ({ query, history, location }) => {
