@@ -1,12 +1,12 @@
 language: go
 go:
   - 1.8.x
-before_install:
-  - go get github.com/mattn/goveralls
 install: make install-server
 script:
   - make vet
-  - $HOME/gopath/bin/goveralls -service=travis-pro
+  - go test -race -coverprofile=coverage.txt -covermode=atomic ./server
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
 git:
   depth: 3
 notifications:
