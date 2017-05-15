@@ -57,7 +57,7 @@ export default class App extends Component {
     contentContainer: {
       paddingTop: '2rem',
       paddingBottom: '4rem',
-      overflow: 'scroll',
+      overflowY: 'scroll',
       maxHeight: '100%',
     },
   }
