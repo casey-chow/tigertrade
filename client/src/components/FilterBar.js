@@ -8,6 +8,8 @@ import {
 
 import { isEmpty, omit } from 'lodash';
 
+import DatePicker from 'material-ui-build/build/DatePicker';
+
 import { grey300 } from 'material-ui/styles/colors';
 
 import Paper from 'material-ui/Paper';
@@ -50,6 +52,8 @@ export default class FilterBar extends Component {
       hasPhotos: PropTypes.bool,
       minPrice: PropTypes.bool,
       maxPrice: PropTypes.bool,
+      minCreateDate: PropTypes.date,
+      maxCreateDate: PropTypes.date,
       order: PropTypes.string,
       includeInactive: PropTypes.bool,
     }).isRequired,
@@ -91,6 +95,8 @@ export default class FilterBar extends Component {
     hasPhotos: false,
     minPrice: -1,
     maxPrice: -1,
+    minCreateDate: undefined,
+    maxCreateDate: undefined,
   }
 
   componentWillMount() {
@@ -103,6 +109,8 @@ export default class FilterBar extends Component {
       hasPhotos: this.props.query.hasPhotos,
       minPrice: this.props.query.minPrice / 100 || '',
       maxPrice: this.props.query.maxPrice / 100 || '',
+      minCreateDate: this.props.query.minCreateDate,
+      maxCreateDate: this.props.query.maxCreateDate,
     });
   }
 
@@ -116,6 +124,8 @@ export default class FilterBar extends Component {
       hasPhotos: nextProps.query.hasPhotos,
       minPrice: nextProps.query.minPrice / 100 || '',
       maxPrice: nextProps.query.maxPrice / 100 || '',
+      minCreateDate: nextProps.query.minCreateDate,
+      maxCreateDate: nextProps.query.maxCreateDate,
     });
   }
 
@@ -199,6 +209,28 @@ export default class FilterBar extends Component {
       this.props.displayMode,
       { query },
     ));
+  }
+
+  handlePostedAfterChange = (event, minCreateDate) => {
+    const query = { minCreateDate };
+    this.setState(query);
+    this.props.dispatch(loadPosts(
+      this.props.displayMode,
+      { query },
+    )).then(() => {
+      writeHistory(this.props);
+    });
+  }
+
+  handlePostedBeforeChange = (event, maxCreateDate) => {
+    const query = { maxCreateDate };
+    this.setState(query);
+    this.props.dispatch(loadPosts(
+      this.props.displayMode,
+      { query },
+    )).then(() => {
+      writeHistory(this.props);
+    });
   }
 
   handleOnBlur = () => {
@@ -332,6 +364,18 @@ export default class FilterBar extends Component {
               prefix="$"
               min="0"
               step="1"
+            />
+            <DatePicker
+              hintText="Posted before"
+              clearSelection
+              value={this.state.maxCreateDate}
+              onChange={this.handlePostedBeforeChange}
+            />
+            <DatePicker
+              hintText="Posted after"
+              clearSelection
+              value={this.state.minCreateDate}
+              onChange={this.handlePostedAfterChange}
             />
           </Paper>
         }

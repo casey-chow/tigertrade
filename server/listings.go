@@ -69,20 +69,18 @@ func ReadListings(w http.ResponseWriter, r *http.Request, ps httprouter.Params) 
 		break
 	}
 
-	// Get optional expiration date filter limits
-	iso := "Mon Jan 2 15:04:05 -0700 MST 2006"
-	if minExpDate, err := time.Parse(iso, r.URL.Query().Get("minExpDate")); err == nil {
+	// Get optional expiration and creation date filter limits
+	timeFormat := "Mon Jan 2 2006 15:04:05 GMT-0700 (MST)"
+	if minExpDate, err := time.Parse(timeFormat, r.URL.Query().Get("minExpDate")); err == nil {
 		query.MinExpDate = minExpDate
 	}
-	if maxExpDate, err := time.Parse(iso, r.URL.Query().Get("maxExpDate")); err == nil {
+	if maxExpDate, err := time.Parse(timeFormat, r.URL.Query().Get("maxExpDate")); err == nil {
 		query.MaxExpDate = maxExpDate
 	}
-
-	// Get optional creation date filter limits
-	if minCreateDate, err := time.Parse(iso, r.URL.Query().Get("minCreateDate")); err == nil {
+	if minCreateDate, err := time.Parse(timeFormat, r.URL.Query().Get("minCreateDate")); err == nil {
 		query.MinCreateDate = minCreateDate
 	}
-	if maxCreateDate, err := time.Parse(iso, r.URL.Query().Get("maxCreateDate")); err == nil {
+	if maxCreateDate, err := time.Parse(timeFormat, r.URL.Query().Get("maxCreateDate")); err == nil {
 		query.MaxCreateDate = maxCreateDate
 	}
 

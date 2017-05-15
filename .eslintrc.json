@@ -19,6 +19,7 @@
     "no-console": "off",
     "no-unused-vars": [ "error", { "args": "none" } ],
     "react/prefer-stateless-function": "off",
-    "no-else-return": "off"
+    "no-else-return": "off",
+    "max-len": "off"
   }
 }

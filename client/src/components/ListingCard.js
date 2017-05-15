@@ -6,6 +6,7 @@ import {
   withRouter,
   propTypes as routerPropTypes,
 } from 'react-router-dom';
+import moment from 'moment-timezone';
 import Radium, { Style } from 'radium';
 
 import {
@@ -72,8 +73,8 @@ export default class ListingCard extends React.Component {
       price: PropTypes.number,
       status: PropTypes.string,
       isStarred: PropTypes.bool,
+      expirationDate: PropTypes.string,
       isActive: PropTypes.bool,
-      expirationDate: PropTypes.number,
       thumbnail: PropTypes.string,
       photos: PropTypes.array,
     }).isRequired,
@@ -227,7 +228,16 @@ export default class ListingCard extends React.Component {
             title={listing.title}
             subtitle={this.formatPrice(listing.price)}
             actAsExpander
-          />
+          >
+            <div style={{ float: 'right' }}>
+              { listing.creationDate &&
+                <CardText>Created: {moment.tz(listing.creationDate, 'America/New_York').format('M/DD/YY')} </CardText>
+              }
+              { listing.expirationDate && expanded &&
+                <CardText>Expires: {moment.tz(listing.expirationDate, 'America/New_York').format('M/DD/YY')} </CardText>
+              }
+            </div>
+          </CardHeader>
 
           <div style={expanded ? styles.cardContentsShown : styles.cardContentsHidden}>
 

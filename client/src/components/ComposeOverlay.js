@@ -53,7 +53,7 @@ export default class ComposeOverlay extends Component {
     overlay: {
       position: 'fixed',
       bottom: '0',
-      zIndex: '9001',
+      zIndex: '1495',
       right: '5%',
       width: '40vw',
       minWidth: '16rem',
@@ -162,7 +162,11 @@ export default class ComposeOverlay extends Component {
                 onSubmit={this.props.isEdit ? this.handleEditListing : this.handleSubmitListing}
                 initialValues={
                   this.props.isEdit ?
-                  { ...this.props.listing, price: this.props.listing.price / 100 } : {}
+                  { ...this.props.listing,
+                    price: this.props.listing.price / 100,
+                    expirationDate:
+                      new Date(Date.parse(this.props.listing.expirationDate)),
+                  } : { expirationDate: new Date(Date.now() + 3.154e10) } // 1 year in milliseconds
                 }
               />
               : <SeekComposeForm

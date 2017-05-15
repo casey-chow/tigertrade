@@ -10,6 +10,10 @@ export const parseQuery = ({ location, match }) => {
     hasPhotos: (queryStrings.hasPhotos === 'true') ? true : undefined,
     includeInactive: (queryStrings.includeInactive === 'true') ? true : undefined,
     order: (queryStrings.order === 'creationDateDesc' || queryStrings.order === undefined) ? undefined : queryStrings.order,
+    minCreateDate: (queryStrings.minCreateDate !== undefined) ? new Date(Date.parse(queryStrings.minCreateDate)) : undefined,
+    maxCreateDate: (queryStrings.maxCreateDate !== undefined) ? new Date(Date.parse(queryStrings.maxCreateDate)) : undefined,
+    minExpDate: (queryStrings.minExpDate !== undefined) ? new Date(Date.parse(queryStrings.minExpDate)) : undefined,
+    maxExpDate: (queryStrings.maxExpDate !== undefined) ? new Date(Date.parse(queryStrings.maxExpDate)) : undefined,
   };
 
   if (match.params.type === 'mine') {
