@@ -215,10 +215,10 @@ export default class ListingCard extends React.Component {
 
     const price = this.formatPrice(listing.price);
     const creationDate = listing.creationDate
-      ? ` • created ${moment.tz(listing.creationDate, 'America/New_York').format('M/D/YY')}`
+      ? ` • Created ${moment.tz(listing.creationDate, 'America/New_York').format('M/D/YY')}`
       : '';
     const expirationDate = listing.expirationDate
-      ? ` • expires ${moment.tz(listing.expirationDate, 'America/New_York').format('M/D/YY')}`
+      ? ` • Expires ${moment.tz(listing.expirationDate, 'America/New_York').format('M/D/YY')}`
       : '';
     const subtitle = `${price}${creationDate}${expirationDate}`;
 
