@@ -370,12 +370,16 @@ export default class FilterBar extends Component {
               clearSelection
               value={this.state.maxCreateDate}
               onChange={this.handlePostedBeforeChange}
+              style={styles.priceField}
+              textFieldStyle={styles.priceField}
             />
             <DatePicker
               hintText="Posted after"
               clearSelection
               value={this.state.minCreateDate}
               onChange={this.handlePostedAfterChange}
+              style={styles.priceField}
+              textFieldStyle={styles.priceField}
             />
           </Paper>
         }
