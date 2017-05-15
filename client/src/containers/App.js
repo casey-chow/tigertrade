@@ -17,6 +17,7 @@ import Listing from './Listing';
 import Seeks from './Seeks';
 import Seek from './Seek';
 import Watches from './Watches';
+import About from '../components/About';
 import ComposeOverlay from '../components/ComposeOverlay';
 
 import { loadCurrentUser } from '../actions/users';
@@ -94,6 +95,7 @@ export default class App extends Component {
               <Route path="/seeks/:type?" component={Seeks} />
               <Route path="/seek/:id" component={Seek} />
               <Route path="/watches" component={Watches} />
+              <Route path="/about" component={About} />
             </Switch>
           </div>
         </NavigationDrawer>
