@@ -227,7 +227,16 @@ export default class ListingCard extends React.Component {
             title={listing.title}
             subtitle={this.formatPrice(listing.price)}
             actAsExpander
-          />
+          >
+            <div style={{ float: 'right' }}>
+              { listing.creationDate &&
+                <CardText> Created: {listing.creationDate} </CardText>
+              }
+              { listing.expirationDate && expanded &&
+                <CardText> Expires: {listing.expirationDate} </CardText>
+              }
+            </div>
+          </CardHeader>
 
           <div style={expanded ? styles.cardContentsShown : styles.cardContentsHidden}>
 
