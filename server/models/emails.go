@@ -18,11 +18,11 @@ const (
 	// ContactListingPoster is the email to the owner of a listing when a reader is interesting in buying
 	ContactListingPoster MailTemplate = "b53ead7f-c9d7-4c17-9dcf-f59105b6eb65"
 	// ContactListingReader is the email to confirm to a reader that they have contacted a listing's owner
-	ContactListingReader = "7bb4322d-f98d-417b-b148-90826fe212ab"
+	ContactListingReader = "d3adbb24-4445-43f8-a026-ec4b013b5850"
 	// ContactSeekPoster is the email to the owner of a seek when a reader is interesting in selling
 	ContactSeekPoster = "3bb3590f-04a3-4381-a79b-25a86afb4a6f"
 	// ContactSeekReader is the email to confirm to a reader that they have contacted a seek's owner
-	ContactSeekReader = "d3adbb24-4445-43f8-a026-ec4b013b5850"
+	ContactSeekReader = "7bb4322d-f98d-417b-b148-90826fe212ab"
 	// ContactSearchWatcher is the email to notify a user when their watched search has a new matching listing
 	ContactSearchWatcher = "c6388de5-deb7-416b-9527-c5017513ed91"
 )
