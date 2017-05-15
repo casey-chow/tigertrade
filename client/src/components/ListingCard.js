@@ -213,6 +213,15 @@ export default class ListingCard extends React.Component {
     const favoriteButtonBackground = this.props.listing.isStarred ? grey300 : 'transparent';
     const soldButtonBackground = this.props.listing.isActive ? 'transparent' : grey300;
 
+    const price = this.formatPrice(listing.price);
+    const creationDate = listing.creationDate
+      ? ` • created ${moment.tz(listing.creationDate, 'America/New_York').format('M/D/YY')}`
+      : '';
+    const expirationDate = listing.expirationDate
+      ? ` • expires ${moment.tz(listing.expirationDate, 'America/New_York').format('M/D/YY')}`
+      : '';
+    const subtitle = `${price}${creationDate}${expirationDate}`;
+
     return (
       <div>
         <Style
@@ -226,18 +235,9 @@ export default class ListingCard extends React.Component {
         >
           <CardHeader
             title={listing.title}
-            subtitle={this.formatPrice(listing.price)}
+            subtitle={subtitle}
             actAsExpander
-          >
-            <div style={{ float: 'right' }}>
-              { listing.creationDate &&
-                <CardText>Created: {moment.tz(listing.creationDate, 'America/New_York').format('M/DD/YY')} </CardText>
-              }
-              { listing.expirationDate && expanded &&
-                <CardText>Expires: {moment.tz(listing.expirationDate, 'America/New_York').format('M/DD/YY')} </CardText>
-              }
-            </div>
-          </CardHeader>
+          />
 
           <div style={expanded ? styles.cardContentsShown : styles.cardContentsHidden}>
 
