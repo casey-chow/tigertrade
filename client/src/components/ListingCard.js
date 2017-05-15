@@ -6,6 +6,7 @@ import {
   withRouter,
   propTypes as routerPropTypes,
 } from 'react-router-dom';
+import moment from 'moment-timezone';
 import Radium, { Style } from 'radium';
 
 import {
@@ -230,10 +231,10 @@ export default class ListingCard extends React.Component {
           >
             <div style={{ float: 'right' }}>
               { listing.creationDate &&
-                <CardText> Created: {listing.creationDate} </CardText>
+                <CardText>Created: {moment.tz(listing.creationDate, 'America/New_York').format('M/DD/YY')} </CardText>
               }
               { listing.expirationDate && expanded &&
-                <CardText> Expires: {listing.expirationDate} </CardText>
+                <CardText>Expires: {moment.tz(listing.expirationDate, 'America/New_York').format('M/DD/YY')} </CardText>
               }
             </div>
           </CardHeader>
