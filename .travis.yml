@@ -1,14 +1,25 @@
-language: go
-go:
-  - 1.8.x
-install: make install-server
-script:
-  - make vet
-  - go test -race -coverprofile=coverage.txt -covermode=atomic ./server
+install: make install
+matrix:
+  include:
+    - language: go
+      go: 1.8.x
+      script:
+        - make vet
+        - go test -race -coverprofile=coverage.txt -covermode=atomic ./server
+
+    - language: node_js
+      node_js: node
+      cache: yarn
+      script:
+        - yarn lint
+        - yarn test
+
 after_success:
   - bash <(curl -s https://codecov.io/bash)
+
 git:
   depth: 3
+
 notifications:
   slack: pave-team:ybyoWBfz8v4zrsGs1lIgEcDi
   email: false
