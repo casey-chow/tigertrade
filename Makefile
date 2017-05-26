@@ -57,7 +57,6 @@ docs:
 #######################################
 
 install-client:
-	$(! command -v yarn && npm install --global yarn)
 	yarn install
 
 build-client:

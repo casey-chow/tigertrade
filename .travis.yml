@@ -1,14 +1,15 @@
-install: make install
 matrix:
   include:
     - language: go
       go: 1.8.x
+      install: make install-server
       script:
         - make vet
         - go test -race -coverprofile=coverage.txt -covermode=atomic ./server
 
     - language: node_js
       node_js: node
+      install: make install-client
       cache: yarn
       script:
         - yarn lint
