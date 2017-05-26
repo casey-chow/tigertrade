@@ -8,7 +8,7 @@ matrix:
         - go test -race -coverprofile=coverage.txt -covermode=atomic ./server
 
     - language: node_js
-      node_js: node
+      node_js: 4
       install: make install-client
       cache: yarn
       script:
