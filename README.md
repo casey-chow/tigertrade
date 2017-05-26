@@ -1,6 +1,6 @@
 # TigerTrade
 
-[![Build Status](https://travis-ci.com/casey-chow/tigertrade.svg?token=n7qYoTpmELGRfaEv2AM7&branch=master)](https://travis-ci.com/casey-chow/tigertrade) [![codecov](https://codecov.io/gh/casey-chow/tigertrade/branch/master/graph/badge.svg?token=KOR6D8zVh3)](https://codecov.io/gh/casey-chow/tigertrade) [![CircleCI](https://circleci.com/gh/casey-chow/tigertrade.svg?style=svg&circle-token=867a4bc4ca198e357b5dd0409c6becdf880a0596)](https://circleci.com/gh/casey-chow/tigertrade)
+[![Build Status](https://travis-ci.com/casey-chow/tigertrade.svg?token=n7qYoTpmELGRfaEv2AM7&branch=master)](https://travis-ci.com/casey-chow/tigertrade) [![codecov](https://codecov.io/gh/casey-chow/tigertrade/branch/master/graph/badge.svg?token=KOR6D8zVh3)](https://codecov.io/gh/casey-chow/tigertrade) [![Code Climate](https://codeclimate.com/github/codeclimate/codeclimate/badges/gpa.svg)](https://codeclimate.com/github/codeclimate/codeclimate)
 
 The Princeton COS333 Project of Andrew Casey Evan Maryam Perry.
 
