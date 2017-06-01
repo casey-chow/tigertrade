@@ -512,6 +512,14 @@ ALTER TABLE ONLY tags
 
 
 --
+-- Name: saved_searches unique_saved_search; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY saved_searches
+    ADD CONSTRAINT unique_saved_search UNIQUE (user_id, query, min_price, max_price, listing_expiration_date);
+
+
+--
 -- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 

@@ -169,6 +169,7 @@ func CreateSavedSearch(db *sql.DB, savedSearch SavedSearch, userID int) (SavedSe
 			savedSearch.ListingExpirationDate,
 			savedSearch.SearchExpirationDate,
 		).
+		Suffix("ON CONFLICT unique_saved_search DO UPDATE SET search_expiration_date = EXCLUDED.search_expiration_date").
 		Suffix("RETURNING key_id, creation_date")
 
 	// Query db for saved search
